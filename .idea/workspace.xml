@@ -51,6 +51,14 @@
       <setting name="OPEN_NEW_TAB" value="true" />
     </FindUsagesManager>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitLogSettings">
+    <option name="myDateState">
+      <MyDateState />
+    </option>
+  </component>
   <component name="GradleLocalSettings">
     <option name="tasksExpandState">
       <map>
@@ -802,7 +810,7 @@
     <option name="width" value="1260" />
     <option name="height" value="760" />
   </component>
-  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
     <OptionsSetting value="true" id="Remove" />
     <OptionsSetting value="true" id="Checkout" />
@@ -916,6 +924,7 @@
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="014E0FAC0201C01C" />
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_AVD" value="AVD_for_Galaxy_Nexus_by_Google" />
     <property name="FullScreen" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunManager" selected="Android Application.app">
     <configuration default="true" type="Remote" factoryName="Remote">
@@ -1074,6 +1083,11 @@
       <created>1428502695356</created>
       <updated>1428502695356</updated>
     </task>
+    <task id="LOCAL-00001" summary="fixed bad build path">
+      <created>1428509292354</created>
+      <updated>1428509292354</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1124,6 +1138,8 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
+    <MESSAGE value="fixed bad build path" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed bad build path" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
