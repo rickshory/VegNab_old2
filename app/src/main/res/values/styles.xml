@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Many generated using http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+<!--
+
+
+  <style name="EditTextVN" parent="android:Widget.EditText">
+	  <item name="android:background">@drawable/vn_edit_text_holo_light</item>
+	  <item name="android:textColor">#000000</item>
+  </style>
+
+  <style name="AutoCompleteTextViewVN" parent="android:Widget.AutoCompleteTextView">
+      <item name="android:dropDownSelector">@drawable/vn_list_selector_holo_light</item>
+	  <item name="android:background">@drawable/vn_edit_text_holo_light</item>
+	  <item name="android:textColor">#000000</item>
+  </style>
+
+  <style name="CheckBoxVN" parent="android:Widget.CompoundButton.CheckBox">
+      <item name="android:button">@drawable/vn_btn_check_holo_light</item>
+  </style>
+
+  <style name="RadioButtonVN" parent="android:Widget.CompoundButton.RadioButton">
+      <item name="android:button">@drawable/vn_btn_radio_holo_light</item>
+  </style>
+
+  <style name="ButtonVN" parent="android:Widget.Button">
+	  <item name="android:background">@drawable/vn_btn_default_holo_light</item>
+	  <item name="android:minHeight">48dip</item>
+	  <item name="android:minWidth">64dip</item>
+	  <item name="android:textColor">#000000</item>
+  </style>
+
+  <style name="ImageButtonVN" parent="android:Widget.ImageButton">
+	  <item name="android:background">@drawable/vn_btn_default_holo_light</item>
+  </style>
+-->
+  <style name="SpinnerVN" parent="android:Widget.Spinner">
+      <item name="android:background">@drawable/vn_spinner_background_holo_light</item>
+      <item name="android:dropDownSelector">@drawable/vn_list_selector_holo_light</item>
+  </style>
+<!--
+  <style name="SpinnerDropDownItemVN" parent="android:Widget.DropDownItem.Spinner">
+      <item name="android:checkMark">@drawable/vn_btn_radio_holo_light</item>
+  </style>
+
+  <style name="TabVN">
+      <item name="android:gravity">center_horizontal</item>
+      <item name="android:paddingLeft">16dip</item>
+      <item name="android:paddingRight">16dip</item>
+      <item name="android:background">@drawable/vn_tab_indicator_holo</item>
+      <item name="android:layout_width">0dip</item>
+      <item name="android:layout_weight">1</item>
+      <item name="android:minWidth">80dip</item>
+  </style>
+
+  <style name="TabTextVN">
+	  <item name="android:textColor">#000000</item>
+      <item name="android:textSize">12sp</item>
+      <item name="android:textStyle">bold</item>
+     
+      <item name="android:ellipsize">marquee</item>
+      <item name="android:maxLines">2</item>
+      <item name="android:maxWidth">180dip</item>
+  </style>
+
+  <style name="ProgressBarVN" parent="android:Widget.ProgressBar.Horizontal">
+      <item name="android:progressDrawable">@drawable/vn_progress_horizontal_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/vn_progress_indeterminate_horizontal_holo_light</item>
+      <item name="android:minHeight">16dip</item>
+      <item name="android:maxHeight">16dip</item>
+  </style>
+
+  <style name="SeekBarVN" parent="android:Widget.SeekBar">
+      <item name="android:progressDrawable">@drawable/vn_scrubber_progress_horizontal_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/vn_scrubber_progress_horizontal_holo_light</item>
+      <item name="android:minHeight">13dip</item>
+      <item name="android:maxHeight">13dip</item>
+      <item name="android:thumb">@drawable/vn_scrubber_control_selector_holo_light</item>
+      <item name="android:thumbOffset">16dip</item>
+      <item name="android:paddingLeft">16dip</item>
+      <item name="android:paddingRight">16dip</item>
+  </style>
+
+  <style name="RatingBarVN" parent="android:Widget.RatingBar">
+      <item name="android:progressDrawable">@drawable/vn_ratingbar_full_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/vn_ratingbar_full_holo_light</item>
+  </style>
+
+  <style name="RatingBarBigVN" parent="android:Widget.RatingBar">
+      <item name="android:progressDrawable">@drawable/vn_ratingbar_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/vn_ratingbar_holo_light</item>
+      <item name="android:minHeight">35dip</item>
+      <item name="android:maxHeight">35dip</item>
+  </style>
+
+  <style name="RatingBarSmallVN" parent="android:Widget.RatingBar">
+      <item name="android:progressDrawable">@drawable/vn_ratingbar_small_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/vn_ratingbar_small_holo_light</item>
+      <item name="android:minHeight">16dip</item>
+      <item name="android:maxHeight">16dip</item>
+  </style>
+
+  <style name="ToggleVN" parent="android:Widget.Button.Toggle">
+      <item name="android:background">@drawable/vn_btn_toggle_holo_light</item>
+      <item name="android:minHeight">48dip</item>
+	  <item name="android:textColor">#000000</item>
+  </style>
+ -->
+  <style name="ListViewVN" parent="android:Widget.ListView">
+      <item name="android:listSelector">@drawable/vn_list_selector_holo_light</item>
+  </style>
+
+  <style name="ListViewVN.White" parent="android:Widget.ListView.White">
+      <item name="android:listSelector">@drawable/vn_list_selector_holo_light</item>
+  </style>
+
+  <style name="SpinnerItemVN" parent="android:TextAppearance.Widget.TextView.SpinnerItem">
+      <item name="android:textColor">#000000</item>
+  </style>
+  
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="Theme.AppCompat.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+    
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="android:spinnerStyle">@style/SpinnerVN</item>
+    </style>
+
+    
+</resources>

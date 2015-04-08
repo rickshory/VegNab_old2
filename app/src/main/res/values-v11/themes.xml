@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Many generated using http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="VN" parent="@style/_VN">
+<!-- 
+    <item name="android:textSelectHandleLeft">@drawable/vn_text_select_handle_left</item>
+    <item name="android:textSelectHandleRight">@drawable/vn_text_select_handle_right</item>
+    <item name="android:textSelectHandle">@drawable/vn_text_select_handle_middle</item>
+ -->
+  </style>
+
+</resources>

@@ -1,0 +1,49 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+     >
+
+    <item
+        android:id="@+id/action_edit_proj"
+        android:orderInCategory="110"
+        android:title="@string/action_edit_proj"
+        app:showAsAction="ifRoom"/>
+    
+    <item
+        android:id="@+id/action_new_proj"
+        android:orderInCategory="120"
+        android:title="@string/action_new_proj"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_del_proj"
+        android:orderInCategory="122"
+        android:title="@string/action_delete_proj"
+        app:showAsAction="never"/>
+    
+    <item
+        android:id="@+id/action_new_plottype"
+        android:orderInCategory="130"
+        android:title="@string/action_new_plottype"
+        app:showAsAction="never"/>
+    
+    <item
+        android:id="@+id/action_get_species"
+        android:orderInCategory="135"
+        android:title="@string/action_get_species"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_export_db"
+        android:orderInCategory="140"
+        android:title="@string/action_export_db"
+        app:showAsAction="never"/>
+    
+    <item
+        android:id="@+id/action_unhide_visits"
+        android:orderInCategory="150"
+        android:title="@string/action_unhide_visits"
+        app:showAsAction="never"/>
+    
+</menu>
+<!-- From: file:/C:/Users/rshory/Documents/CurrentWork/AndroidStudioProjects/VegNab/app/src/main/res/menu/new_visit.xml -->

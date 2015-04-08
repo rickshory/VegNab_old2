@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\rshory\Documents\CurrentWork\AndroidStudioProjects\VegNab\app\build\intermediates\exploded-aar\com.google.android.gms\play-services\6.5.87\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="dd9247ea0fabe8ee479638c4b4a23e93752be256">
+        <dex dex="C:\Users\rshory\Documents\CurrentWork\AndroidStudioProjects\VegNab\app\build\intermediates\pre-dexed\debug\classes-3912c3cb8f0d6f8bb2b9fc178370ab113c48c22f.jar" />
+    </item>
+    <item
+        jar="C:\Users\rshory\Documents\CurrentWork\AndroidStudioProjects\VegNab\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
+        <dex dex="C:\Users\rshory\Documents\CurrentWork\AndroidStudioProjects\VegNab\app\build\intermediates\pre-dexed\debug\classes-7f2ccb6ba32ce8c5f6558c3bb7bcdbb310a6d37c.jar" />
+    </item>
+    <item
+        jar="C:\Users\rshory\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\21.0.3\support-annotations-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4b74cefe1f0c1b819e7260c8627a14674e37fd35">
+        <dex dex="C:\Users\rshory\Documents\CurrentWork\AndroidStudioProjects\VegNab\app\build\intermediates\pre-dexed\debug\support-annotations-21.0.3-7fd6c74130eaf3b00f55fabbb3e2e77deee9113a.jar" />
+    </item>
+    <item
+        jar="C:\Users\rshory\Documents\CurrentWork\AndroidStudioProjects\VegNab\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\21.0.3\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
+        <dex dex="C:\Users\rshory\Documents\CurrentWork\AndroidStudioProjects\VegNab\app\build\intermediates\pre-dexed\debug\classes-2a5c9bf40724d824c8da35a99c4ac26659563728.jar" />
+    </item>
+    <item
+        jar="C:\Users\rshory\Documents\CurrentWork\AndroidStudioProjects\VegNab\app\libs\sqliteassethelper-2.0.1.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="d5f02e4a4d65ec0fbb339f2e4228723d1540bb9f">
+        <dex dex="C:\Users\rshory\Documents\CurrentWork\AndroidStudioProjects\VegNab\app\build\intermediates\pre-dexed\debug\sqliteassethelper-2.0.1-3d652612591ec1cb1a0de47d100c620d7b34ba21.jar" />
+    </item>
+    <item
+        jar="C:\Users\rshory\Documents\CurrentWork\AndroidStudioProjects\VegNab\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\libs\internal_impl-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="01ec05bfbafcc07646ba813000bf2ef11742dd03">
+        <dex dex="C:\Users\rshory\Documents\CurrentWork\AndroidStudioProjects\VegNab\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-355bb7377f83caebff15d254d3cfb1fcbd3744d8.jar" />
+    </item>
+
+</items>

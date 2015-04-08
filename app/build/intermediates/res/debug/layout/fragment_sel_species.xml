@@ -1,0 +1,46 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    >
+
+    <EditText
+        android:id="@+id/txt_search_chars"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/sel_spp_search_hint_all_code"
+        android:inputType="text"
+        android:maxLines="1"
+		/>
+    
+    <View android:id="@+id/sel_spp_divider_line"
+	    android:layout_width="fill_parent"
+	    android:layout_height="1dp"
+	    android:background="@android:color/darker_gray"
+	    android:layout_alignLeft="@id/txt_search_chars"
+        android:layout_below="@id/txt_search_chars"
+	    />
+    
+    <ListView android:id="@id/android:list"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:drawSelectorOnTop="false"
+         android:layout_alignLeft="@id/sel_spp_divider_line"
+         android:layout_below="@id/sel_spp_divider_line"
+         />
+    
+    <TextView android:id="@id/android:empty"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:text="@string/sel_spp_search_msg_no_results"
+         android:layout_alignLeft="@id/android:list"
+         android:layout_below="@id/android:list"
+         android:textAppearance="?android:attr/textAppearanceLarge"
+         />
+
+</RelativeLayout>
+<!-- From: file:/C:/Users/rshory/Documents/CurrentWork/AndroidStudioProjects/VegNab/app/src/main/res/layout/fragment_sel_species.xml -->

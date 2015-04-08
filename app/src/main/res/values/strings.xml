@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">VegNab</string>
+    <string name="empty_string"></string>
+    <string name="under_construction">Not implemented yet</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_app_info">App info</string>
+    <string name="action_edit_proj">Edit Project</string>
+    <string name="action_new_proj">New Project</string>
+    <string name="action_delete_proj">Delete Project</string>
+    <string name="action_new_plottype">New Plot Type</string>
+    <string name="action_get_species">Get species</string>
+    <string name="action_export_db">Export database</string>
+    <string name="action_unhide_visits">Un-hide Visits</string>
+    <string name="action_visit_info">Visit details</string>
+    <string name="action_delete_visit">Delete Visit</string>
+    <string name="action_export_visit">Export Visit</string>
+    <string name="action_delete_namer">Delete Namer</string>
+   
+    <string name="default_project">MyProject</string>
+    <string name="default_plottype">Species List</string>
+    
+    <string name="action_affirm">OK</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_save">Save</string>
+    <string name="action_toggle">Toggle</string>
+    <string name="action_swap">Swap</string>
+    
+    <string name="msg_help">Help</string>
+    <string name="msg_help_apology">Help is Under Construction</string>
+    
+    <string name="err_need_2_chars">Need at least 2 characters</string>
+    <string name="err_need_3_chars">Need at least 3 characters</string>
+    
+    <string name="new_visit_title">Start a new visit</string>
+    <string name="new_visit_plot_type">Of Plot Type</string>
+    <string name="new_visit_plot_type_prompt">Plot Type</string>
+    <string name="new_visit_project">In the Project</string>
+    <string name="new_visit_project_prompt">Project</string>
+    <string name="new_visit_existing">Work on an exisitng Visit</string>
+    <string name="new_visit_go_button_msg">Start a new Visit</string>
+    <string name="new_visit_no_visits_msg">No Visits yet</string>
+
+    <string name="empty_projects">No Projects yet</string>
+    <string name="empty_plottypes">No Plot Types yet</string>
+    <string name="empty_namers">No Namers yet</string>
+    <string name="empty_data">No data yet</string>
+
+    <string name="missing_project">Please select a Project, or create a new one.</string>
+    <string name="missing_plottype">Please select a Plot Type, or set up a new one.</string>
+    <string name="missing_namer">Please select a Namer, or enter a new one.</string>
+
+    <string name="edit_proj_title_add">New Project</string>
+    <string name="edit_proj_title_edit">Edit Project</string>
+    <string name="edit_proj_label_projcode">Project Code, up to 10 characters</string>
+    <string name="edit_proj_hint_projcode">Brief code</string>
+    <string name="edit_proj_label_overall">You can edit the following fields later:</string>
+    <string name="edit_proj_label_descr">Longer description of this project</string>
+    <string name="edit_proj_hint_descr">Project description</string>
+    <string name="edit_proj_label_person">Who to contact about this project</string>
+    <string name="edit_proj_hint_person">Contact person</string>
+    <string name="edit_proj_label_context">Overall context of this data set</string>
+    <string name="edit_proj_hint_context">Project context</string>
+    <string name="edit_proj_label_caveats">Any user considerations about data</string>
+    <string name="edit_proj_hint_caveats">Data caveats</string>
+    <string name="edit_proj_label_timeframe">The timeframe of this data set:</string> 
+    <string name="edit_proj_label_date_start">From</string>
+    <string name="edit_proj_hint_date_start">Start date</string>
+    <string name="edit_proj_label_date_end">To</string>
+    <string name="edit_proj_hint_date_end">End date</string>
+    <string name="edit_proj_msg_no_proj">Need Project Code</string>
+    <string name="edit_proj_msg_dup_proj">Duplicate Project Code</string>
+    
+    <string name="del_proj_details">Can\'t delete first Project, current Project, or Projects with Visits</string>
+    <string name="del_proj_confirm">Delete Project?</string>
+    
+    <string name="visit_header_title">Visit Header Information</string>
+    <string name="visit_header_label_name">Memorable short name for this Visit, up to 16 characters</string>
+    <string name="visit_header_hint_name">Visit Name</string>
+    <string name="visit_header_label_date">Date</string>
+    <string name="visit_header_hint_date">Visit Date</string>
+    <string name="visit_header_label_namer">Person naming the species</string>
+    <string name="visit_header_hint_namer">Species namer</string>
+    <string name="visit_header_label_scribe">Optional: if someone besides the Namer is entering data</string>
+    <string name="visit_header_hint_scribe">Scribe</string>
+    <string name="visit_header_label_location">Reference location. Long-press for options.</string>
+    <string name="visit_header_hint_location">Location</string>
+    <string name="visit_header_label_azimuth">If azimuth is relevant to this visit</string>
+    <string name="visit_header_hint_azimuth">Azimuth</string>
+    <string name="visit_header_label_notes">Notes</string>
+    <string name="visit_header_hint_notes">Notes</string>
+
+    <string name="latitude_label">Latitude: </string>
+    <string name="longitude_label">Longitude: </string>
+    
+    <string name="visit_header_go_button_msg">Start subplots</string>
+    <string name="visit_header_map_button_msg">Map more locations</string>
+    <string name="visit_header_photo_button_msg">Add pictures</string>
+    
+    <string name="add_namer_title">Species Namer</string>
+    <string name="add_namer_header">Person\'s name who will be deciding the species</string>
+    <string name="add_namer_msg">This should be an identifiable human, not something untraceable like \"team two\"</string>
+    <string name="add_namer_hint">Person\'s Name</string>
+    <string name="add_namer_missing">Need person\'s Name</string>
+    <string name="add_namer_duplicate">Duplicate Name</string>
+    
+    <string name="edit_namer_title_edit">Edit Namer</string>
+    <string name="edit_namer_label_namername">This will change the spelling in any Visits this Namer has already done.</string>
+
+    <string name="del_namer_details">Can\'t delete the current Namer, or any Namer who has done Visits</string>
+    <string name="del_namer_confirm">Delete Namer?</string>
+    
+    <string name="vis_hdr_ctxmenu_namer_edit">Edit</string>
+    <string name="vis_hdr_ctxmenu_namer_delete">Delete</string>
+    <string name="vis_hdr_ctxmenu_namer_help">Help</string>
+    
+    <string name="vis_hdr_ctxmenu_loc_rstore_prev">Restore previous</string>
+    <string name="vis_hdr_ctxmenu_loc_reacquire">Re-acquire</string>
+    <string name="vis_hdr_ctxmenu_loc_accept">Accept accuracy</string>
+    <string name="vis_hdr_ctxmenu_loc_manual">Enter manually</string>
+    <string name="vis_hdr_ctxmenu_loc_details">Details</string>
+    <string name="vis_hdr_ctxmenu_loc_help">Help</string>
+    
+    <string name="help_generic_text">(Help text will go here)</string>
+
+    <string name="vis_hdr_help_visname_title">\"Visit Name\" Help</string>
+    <string name="vis_hdr_help_visname_text">Enter a brief name for you to track this Visit. Typically, you use some abbreviation of the place name, such as \"LostLakeAug15\"\n\r\n\rIf you use the same name for different visits it can be very confusing later, but this app allows duplicate names for your convenience.</string>
+    <string name="vis_hdr_help_namer_title">\"Namer\" Help</string>
+    <string name="vis_hdr_help_namer_text">You, as the \"Namer\", decide what the species are. Put in your real name. Something like \"team two\" does not allow traceability.\n\r\n\rIt\'s OK if there are species you don\'t know. You will be able to create \"Placeholder Names\" for those. You can take pictures and collect specimens that will allow identifying these species later.\n\r\n\rYour Placeholders will be available on any future Visits where you are the Namer.</string>
+    <string name="vis_hdr_help_scribe_title">\"Scribe\" Help</string>
+    <string name="vis_hdr_help_scribe_text">In rare cases where someone besides the Namer is physically entering the data, this person is the \"Scribe\". If you, as the Namer, are inputting your own data, leave \"Scribe\" blank.</string>
+    <string name="vis_hdr_help_loc_title">\"Location\" Help</string>
+    <string name="vis_hdr_help_loc_text">The \"Location\" is the GPS coordinates for this Visit. This app will try to acquire the Location automatically, but you can override it in various ways by using other context menu items.</string>
+    <string name="vis_hdr_help_azimuth_title">\"Azimuth\" Help</string>
+    <string name="vis_hdr_help_azimuth_text">If it applies, \"Azimuth\" would be the compass direction of a plot, in degrees from true North. For some plot types, such as Transects, this is crucial to relocate them. Other plot types, like Species Lists, have no orientation so you would leave \"Azimuth\" blank.</string>
+    <string name="vis_hdr_help_notes_title">\"Notes\" Help</string>
+    <string name="vis_hdr_help_notes_text">Enter brief notes about the Visit here. For information longer than 256 characters, use separate documentation.</string>
+
+    <string name="vis_hdr_validate_generic_title">Critical Error</string>
+    <string name="vis_hdr_validate_name_none">No Name for this Visit</string>
+    <string name="vis_hdr_validate_name_short">Visit Name must be at least 2 characters</string>
+    <string name="vis_hdr_validate_name_dup">Duplicate Name for this Visit, already used.</string>
+    <string name="vis_hdr_validate_date_none">Need a Date for this Visit</string>
+    <string name="vis_hdr_validate_date_bad">Invalid Date for this Visit</string>
+    <string name="vis_hdr_validate_namer_none">Need a Species Namer for this Visit (the person naming the species)</string>
+    <string name="vis_hdr_validate_loc_not_ready">Wait till Location is valid, or long-press for options.</string>
+    <string name="vis_hdr_validate_azimuth_bad">Azimuth must be 0 to 360</string>
+    
+    <string name="vis_hdr_loc_good_ok_title">Accuracy accepted</string>
+    <string name="vis_hdr_loc_good_ok_text_pre">Accuracy has reached target of </string>
+    <string name="vis_hdr_loc_good_ok_text_post">m, is already accepted.</string>
+    <string name="vis_hdr_loc_good_prev_ok">Accuracy was already manually accepted.</string>
+    <string name="vis_hdr_loc_none">No Location is acquired yet.\n\r\n\rWait for acquire, or Enter Manually.</string>
+    <string name="vis_hdr_loc_good_ack_title">Accuracy accepted</string>
+    <string name="vis_hdr_loc_good_ack_text_pre">Current location accepted, at </string>
+    <string name="vis_hdr_loc_good_ack_text_post">m accuracy</string>
+    <string name="vis_hdr_loc_retrieving">(retrieving previously recorded visit location)</string>
+
+    <string name="sel_spp_search_hint_found_code">Search found species by code</string>
+    <string name="sel_spp_search_hint_found_text">Search found species by full text</string>
+    <string name="sel_spp_search_hint_all_code">Search all species by code</string>
+    <string name="sel_spp_search_hint_all_text">Search all species by full text</string>
+    <string name="sel_spp_search_msg_no_results">(matches will appear here)</string>
+    <string name="sel_spp_search_msg_no_match">No matches</string>
+    <string name="sel_spp_search_msg_3chars">Enter at least 3 characters</string>
+    
+    <string name="veg_subplot_menu_add_item">Add item</string>
+    <string name="veg_subplot_menu_help">Help</string>
+    <string name="veg_subplot_menu_mark_no_veg">Mark \""no veg\"</string>
+    <string name="veg_subplot_menu_go_to">Go to...</string>
+    
+    <string name="veg_subplot_header_msg">This is where you work on a subplot</string>
+    <string name="veg_subplot_name_msg">Subplot: </string>
+    <string name="veg_subplot_new_item_button_msg">New item</string>
+    <string name="veg_subplot_next_button_msg">Next screen</string>
+    <string name="veg_subplot_no_items">No items yet</string>
+    
+    <string name="edit_spp_item_msg_dup_general">This species is already entered on this subplot</string>
+    <string name="edit_spp_item_msg_dup_detail">You do not normally enter a species twice unless the identities are of different confidence</string>
+    <string name="edit_spp_item_msg_dup_verify">Do you want to enter it again?</string>
+    <string name="edit_spp_item_title_add">New Species Item</string>
+    <string name="edit_spp_item_title_edit">Edit Species Item</string>
+    <string name="edit_spp_item_label_sppitem">Code: Description</string>
+    <string name="edit_spp_item_label_height">Plant height, in centimeters</string>
+    <string name="edit_spp_item_hint_height">Height</string>
+    <string name="edit_spp_item_label_cover">Plant cover, percent</string>
+    <string name="edit_spp_item_hint_cover">Cover</string>
+    <string name="edit_spp_item_label_present">This species is Present (un-check to verify that it is Absent)</string>
+    <string name="edit_spp_item_label_present_do_not_ask">Assume that species I enter are Present, and do not ask to verify again, for this session</string>
+    <string name="edit_spp_item_label_confidence">Confidence of species identity</string>
+    <string name="edit_spp_item_msg_no_height">Need Height</string>
+    <string name="edit_spp_item_msg_no_cover">Need Cover</string>
+    <string name="edit_spp_item_title_pls_note">Please Note</string>
+    <string name="edit_spp_item_msg_zero_height">Zero height means you verify this species is absent here</string>
+    <string name="edit_spp_item_msg_zero_cover">Zero cover means you verify this species is absent here</string>
+    
+    <string name="edit_spp_item_validate_height_bad">Need a number for Height, in centimeters</string>
+    <string name="edit_spp_item_validate_cover_bad">Need a number for Cover between 1 and 100 percent</string>
+    
+
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item android:id="@+id/vis_hdr_namer_edit"
+        android:title="@string/vis_hdr_ctxmenu_namer_edit" />
+    <item android:id="@+id/vis_hdr_namer_delete"
+        android:title="@string/vis_hdr_ctxmenu_namer_delete" />
+    <item android:id="@+id/vis_hdr_namer_help"
+        android:title="@string/vis_hdr_ctxmenu_namer_help" />
+
+</menu>
+<!-- From: file:/C:/Users/rshory/Documents/CurrentWork/AndroidStudioProjects/VegNab/app/src/main/res/menu/context_visit_header_namer.xml -->

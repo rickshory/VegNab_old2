@@ -1,0 +1,38 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+<RelativeLayout
+    android:id="@+id/edit_namer"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    >
+
+    <TextView
+        android:id="@+id/lbl_namer"
+        android:text="@string/edit_namer_label_namername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
+    <EditText
+        android:id="@+id/txt_edit_namer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/lbl_namer"
+        android:layout_below="@id/lbl_namer"
+        android:hint="@string/add_namer_hint"
+        android:inputType="textPersonName|textCapWords"
+        android:maxLines="1"
+        android:maxLength="16"
+		/>
+        
+</RelativeLayout>
+</ScrollView>
+<!-- From: file:/C:/Users/rshory/Documents/CurrentWork/AndroidStudioProjects/VegNab/app/src/main/res/layout/fragment_edit_namer.xml -->

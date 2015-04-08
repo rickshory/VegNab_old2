@@ -1,0 +1,102 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+<RelativeLayout
+    android:id="@+id/edit_spp_item"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    >
+
+    <TextView
+        android:id="@+id/lbl_spp_item"
+        android:text="@string/edit_spp_item_label_sppitem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        />
+    
+    <TextView
+        android:id="@+id/lbl_spp_height"
+        android:text="@string/edit_spp_item_label_height"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/lbl_spp_item"
+        />
+    
+    <EditText
+        android:id="@+id/txt_spp_height"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/lbl_spp_height"
+        android:hint="@string/edit_spp_item_hint_height"
+        android:inputType="number"
+        android:maxLines="1"
+        android:maxLength="5"
+		/>
+
+    <TextView
+        android:id="@+id/lbl_spp_cover"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/txt_spp_height"
+        android:text="@string/edit_spp_item_label_cover"
+        />
+
+    <EditText
+        android:id="@+id/txt_spp_cover"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/lbl_spp_cover"
+        android:hint="@string/edit_spp_item_hint_cover"
+        android:inputType="number"
+        android:maxLength="3"
+         />
+
+    <CheckBox
+        android:id="@+id/ck_spp_present"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/txt_spp_cover"
+        android:text="@string/edit_spp_item_label_present"
+         />
+
+    <CheckBox
+        android:id="@+id/ck_spp_present_do_not_ask"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/ck_spp_present"
+        android:text="@string/edit_spp_item_label_present_do_not_ask"
+         />
+    
+    <TextView
+        android:id="@+id/lbl_spp_confidence"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/ck_spp_present_do_not_ask"
+        android:text="@string/edit_spp_item_label_confidence"
+        />
+
+    <Spinner
+        android:id="@+id/spinner_spp_confidence"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/lbl_spp_confidence"
+        />
+        
+</RelativeLayout>
+</ScrollView>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Many generated using http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        Base application theme for API 11+. This theme completely replaces
+        AppBaseTheme from res/values/styles.xml on API 11+ devices.
+    -->
+    <style name="AppBaseTheme" parent="Theme.AppCompat.Light">
+        <!-- API 11 theme customizations can go here. -->
+    </style>
+
+    <!--
+
+  <style name="AutoCompleteTextViewVN" parent="android:Widget.Holo.Light.AutoCompleteTextView">
+      <item name="android:dropDownSelector">@drawable/vn_list_selector_holo_light</item>
+	    <item name="android:background">@drawable/vn_edit_text_holo_light</item>
+  </style>
+
+  <style name="ButtonVN" parent="android:Widget.Holo.Light.Button">
+	  <item name="android:background">@drawable/vn_btn_default_holo_light</item>
+  </style>
+
+  <style name="ImageButtonVN" parent="android:Widget.Holo.Light.ImageButton">
+	  <item name="android:background">@drawable/vn_btn_default_holo_light</item>
+  </style>
+-->
+  <style name="SpinnerVN" parent="android:Widget.Holo.Light.Spinner">
+      <item name="android:background">@drawable/vn_spinner_background_holo_light</item>
+      <item name="android:dropDownSelector">@drawable/vn_list_selector_holo_light</item>
+  </style>
+<!--
+  <style name="ProgressBarVN" parent="android:Widget.Holo.Light.ProgressBar.Horizontal">
+      <item name="android:progressDrawable">@drawable/vn_progress_horizontal_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/vn_progress_indeterminate_horizontal_holo_light</item>
+  </style>
+
+  <style name="SeekBarVN" parent="android:Widget.Holo.Light.SeekBar">
+      <item name="android:progressDrawable">@drawable/vn_scrubber_progress_horizontal_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/vn_scrubber_progress_horizontal_holo_light</item>
+      <item name="android:thumb">@drawable/vn_scrubber_control_selector_holo_light</item>
+  </style>
+
+  <style name="RatingBarVN" parent="android:Widget.Holo.Light.RatingBar">
+      <item name="android:progressDrawable">@drawable/vn_ratingbar_full_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/vn_ratingbar_full_holo_light</item>
+  </style>
+
+  <style name="RatingBarBigVN" parent="android:Widget.Holo.Light.RatingBar.Indicator">
+      <item name="android:progressDrawable">@drawable/vn_ratingbar_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/vn_ratingbar_holo_light</item>
+  </style>
+
+  <style name="RatingBarSmallVN" parent="android:Widget.Holo.Light.RatingBar.Small">
+      <item name="android:progressDrawable">@drawable/vn_ratingbar_small_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/vn_ratingbar_small_holo_light</item>
+  </style>
+
+  <style name="ToggleVN" parent="android:Widget.Holo.Light.Button.Toggle">
+      <item name="android:background">@drawable/vn_btn_toggle_holo_light</item>
+  </style>
+    -->
+</resources>

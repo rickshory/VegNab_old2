@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- original
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/spp_text"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:gravity="center_vertical"
+    android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+    android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+ />
+alt source
+    
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/spp_text"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textAppearance="?attr/textAppearanceListItemSmall"
+    android:gravity="center_vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:textColor="#fff"
+    android:background="?attr/listChoiceBackgroundIndicator"
+    android:minHeight="?attr/listPreferredItemHeightSmall"/>    
+-->
+
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/spp_text"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textAppearance="?attr/textAppearanceListItemSmall"
+    android:gravity="center_vertical"
+    android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+    android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+    android:background="?attr/listChoiceBackgroundIndicator"
+    android:minHeight="?attr/listPreferredItemHeightSmall"/>
