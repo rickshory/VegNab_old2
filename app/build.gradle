@@ -19,7 +19,7 @@ android {
 
         debug {
             debuggable true
-            packageNameSuffix ".debug"
+            applicationIdSuffix ".debug"
         }
     }
 }
