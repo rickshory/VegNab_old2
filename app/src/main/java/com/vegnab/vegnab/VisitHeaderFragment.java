@@ -167,7 +167,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		super.onCreate(savedInstanceState);
         try {
         	mEditVisitListener = (EditVisitDialogListener) getActivity();
-        	Log.v(LOG_TAG, "(EditVisitDialogListener) getActivity()");
+        	Log.d(LOG_TAG, "(EditVisitDialogListener) getActivity()");
         } catch (ClassCastException e) {
             throw new ClassCastException("Main Activity must implement EditVisitDialogListener interface");
         }
@@ -204,9 +204,9 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 			Toast.makeText(getActivity(), "''Delete Visit'' is not fully implemented yet", Toast.LENGTH_SHORT).show();
 			Fragment newVisFragment = fm.findFragmentByTag("new_visit");
 			if (newVisFragment == null) {
-				Log.v(LOG_TAG, "newVisFragment == null");
+				Log.d(LOG_TAG, "newVisFragment == null");
 			} else {
-				Log.v(LOG_TAG, "newVisFragment: " + newVisFragment.toString());
+				Log.d(LOG_TAG, "newVisFragment: " + newVisFragment.toString());
 				FragmentTransaction transaction = fm.beginTransaction();
 				// replace the fragment in the fragment container with the stored New Visit fragment
 				transaction.replace(R.id.fragment_container, newVisFragment);
@@ -236,9 +236,9 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		if (savedInstanceState != null) {
 		    mResolvingError = savedInstanceState.getBoolean(STATE_RESOLVING_ERROR, false);
 			mCurrentSubplot = savedInstanceState.getInt(ARG_SUBPLOT, 0);
-			Log.v(LOG_TAG, "In onCreateView, about to retrieve mVisitId: " + mVisitId);
+			Log.d(LOG_TAG, "In onCreateView, about to retrieve mVisitId: " + mVisitId);
 			mVisitId = savedInstanceState.getLong(ARG_VISIT_ID, 0);
-			Log.v(LOG_TAG, "In onCreateView, retrieved mVisitId: " + mVisitId);
+			Log.d(LOG_TAG, "In onCreateView, retrieved mVisitId: " + mVisitId);
 			mLocIsGood = savedInstanceState.getBoolean(ARG_LOC_GOOD_FLAG, false);
 			mCurLocation = savedInstanceState.getParcelable(ARG_CUR_LOCATION);
 			mPrevLocation = savedInstanceState.getParcelable(ARG_PREV_LOCATION);
@@ -249,7 +249,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 				mLocTime = savedInstanceState.getString(ARG_LOC_TIME);
 			}
 		} else {
-			Log.v(LOG_TAG, "In onCreateView, savedInstanceState == null, mVisitId: " + mVisitId);
+			Log.d(LOG_TAG, "In onCreateView, savedInstanceState == null, mVisitId: " + mVisitId);
 		}
 		// inflate the layout for this fragment
 		View rootView = inflater.inflate(R.layout.fragment_visit_header, container, false);
@@ -292,7 +292,9 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		mViewVisitLocation.setOnFocusChangeListener(this);
 		registerForContextMenu(mViewVisitLocation); // enable long-press
         // should the following go in onCreate() ?
+        Log.d(LOG_TAG, "in CreateView about to call 'buildGoogleApiClient()'");
         buildGoogleApiClient();
+        Log.d(LOG_TAG, "in CreateView returned from call to 'buildGoogleApiClient()'");
     	mLocationRequest = LocationRequest.create()
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
             .setInterval(10 * 1000)        // 10 seconds, in milliseconds
@@ -320,9 +322,9 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		// to the fragment
 		Bundle args = getArguments();
 		if (args != null) {
-			Log.v(LOG_TAG, "In onStart, about to retrieve mVisitId: " + mVisitId);
+			Log.d(LOG_TAG, "In onStart, about to retrieve mVisitId: " + mVisitId);
 			mVisitId = args.getLong(ARG_VISIT_ID, 0);
-			Log.v(LOG_TAG, "In onStart, retrieved mVisitId: " + mVisitId);
+			Log.d(LOG_TAG, "In onStart, retrieved mVisitId: " + mVisitId);
 			// fire off loaders
 			getLoaderManager().initLoader(Loaders.VISIT_TO_EDIT, null, this);
 			getLoaderManager().initLoader(Loaders.EXISTING_VISITS, null, this);
@@ -414,7 +416,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 //			AddSpeciesNamerDialog addSppNamerDlg = AddSpeciesNamerDialog.newInstance();
 //			addSppNamerDlg.setTargetFragment(this, 0); // does not work
 //			FragmentManager fm = getActivity().getSupportFragmentManager();
-			Log.v(LOG_TAG, "Starting 'add new' for Namer from onClick of 'lbl_spp_namer_spinner_cover'");
+			Log.d(LOG_TAG, "Starting 'add new' for Namer from onClick of 'lbl_spp_namer_spinner_cover'");
 //			addSppNamerDlg.show(fm, "sppNamerDialog_TextClick");
 			EditNamerDialog newNmrDlg = EditNamerDialog.newInstance(0);
 			newNmrDlg.show(getFragmentManager(), "frg_new_namer_fromCover");
@@ -425,16 +427,16 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 			mValidationLevel = Validation.CRITICAL; // save if possible, and announce anything invalid
 			numUpdated = saveVisitRecord();
 			if (numUpdated == 0) {
-				Log.v(LOG_TAG, "Failed to save record in onClick; mValues: " + mValues.toString());
+				Log.d(LOG_TAG, "Failed to save record in onClick; mValues: " + mValues.toString());
 			} else {
-				Log.v(LOG_TAG, "Saved record in onClick; mValues: " + mValues.toString());
+				Log.d(LOG_TAG, "Saved record in onClick; mValues: " + mValues.toString());
 			}
 			if (numUpdated == 0) {
 				break;
 			}
-			Log.v(LOG_TAG, "in onClick, about to do 'mButtonCallback.onVisitHeaderGoButtonClicked()'");
+			Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onVisitHeaderGoButtonClicked()'");
 			mButtonCallback.onVisitHeaderGoButtonClicked(mVisitId);
-			Log.v(LOG_TAG, "in onClick, completed 'mButtonCallback.onVisitHeaderGoButtonClicked()'");
+			Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onVisitHeaderGoButtonClicked()'");
 			break;
 		}
 	}
@@ -515,15 +517,15 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		case Loaders.EXISTING_VISITS:
 			mExistingVisitNames.clear();
 			while (c.moveToNext()) {
-				Log.v(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("VisitName")));
+				Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("VisitName")));
 				mExistingVisitNames.put(c.getLong(c.getColumnIndexOrThrow("_id")), 
 						c.getString(c.getColumnIndexOrThrow("VisitName")));
 			}
-			Log.v(LOG_TAG, "onLoadFinished, number of items in mExistingProjCodes: " + mExistingVisitNames.size());
-			Log.v(LOG_TAG, "onLoadFinished, items in mExistingProjCodes: " + mExistingVisitNames.toString());
+			Log.d(LOG_TAG, "onLoadFinished, number of items in mExistingProjCodes: " + mExistingVisitNames.size());
+			Log.d(LOG_TAG, "onLoadFinished, items in mExistingProjCodes: " + mExistingVisitNames.toString());
 			break;
 		case Loaders.VISIT_TO_EDIT:
-			Log.v(LOG_TAG, "onLoadFinished, VISIT_TO_EDIT, records: " + c.getCount());
+			Log.d(LOG_TAG, "onLoadFinished, VISIT_TO_EDIT, records: " + c.getCount());
 			if (c.moveToFirst()) {
 				mViewVisitName.setText(c.getString(c.getColumnIndexOrThrow("VisitName")));
 				mViewVisitDate.setText(c.getString(c.getColumnIndexOrThrow("VisitDate")));
@@ -552,7 +554,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 			break;
 			
 		case Loaders.VISIT_REF_LOCATION:
-			Log.v(LOG_TAG, "onLoadFinished, VISIT_REF_LOCATION, records: " + c.getCount());
+			Log.d(LOG_TAG, "onLoadFinished, VISIT_REF_LOCATION, records: " + c.getCount());
 			if (c.moveToFirst()) {
 				mLatitude = c.getDouble(c.getColumnIndexOrThrow("Latitude"));
 				mLongitude = c.getDouble(c.getColumnIndexOrThrow("Longitude"));
@@ -594,9 +596,9 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 	public void setNamerSpinnerSelection() {
 		// set the current Namer to show in its spinner
 		for (int i=0; i<mRowCt; i++) {
-			Log.v(LOG_TAG, "Setting mNamerSpinner; testing index " + i);
+			Log.d(LOG_TAG, "Setting mNamerSpinner; testing index " + i);
 			if (mNamerSpinner.getItemIdAtPosition(i) == mNamerId) {
-				Log.v(LOG_TAG, "Setting mNamerSpinner; found matching index " + i);
+				Log.d(LOG_TAG, "Setting mNamerSpinner; found matching index " + i);
 				mNamerSpinner.setSelection(i);
 				break;
 			}
@@ -609,11 +611,11 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		// is about to be closed. Need to make sure it is no longer is use.
 		switch (loader.getId()) {
 		case Loaders.EXISTING_VISITS:
-			Log.v(LOG_TAG, "onLoaderReset, EXISTING_VISITS.");
+			Log.d(LOG_TAG, "onLoaderReset, EXISTING_VISITS.");
 //			don't need to do anything here, no cursor adapter
 			break;
 		case Loaders.VISIT_TO_EDIT:
-			Log.v(LOG_TAG, "onLoaderReset, VISIT_TO_EDIT.");
+			Log.d(LOG_TAG, "onLoaderReset, VISIT_TO_EDIT.");
 //			don't need to do anything here, no cursor adapter
 			break;
 			
@@ -622,7 +624,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 			break;
 			
 		case Loaders.VISIT_REF_LOCATION:
-			Log.v(LOG_TAG, "onLoaderReset, VISIT_REF_LOCATION.");
+			Log.d(LOG_TAG, "onLoaderReset, VISIT_REF_LOCATION.");
 //			don't need to do anything here, no cursor adapter
 			break;
 		}
@@ -708,7 +710,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		try {
 			Date date = mDateFormat.parse(stringVisitDate);
 		} catch (ParseException e) {
-			Log.v(LOG_TAG, "Date error: " + e.toString());
+			Log.d(LOG_TAG, "Date error: " + e.toString());
 			if (mValidationLevel > Validation.SILENT) {
 				stringProblem = c.getResources().getString(R.string.vis_hdr_validate_date_bad);
 				if (mValidationLevel == Validation.QUIET) {
@@ -777,7 +779,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		if (stringAz.length() == 0) {
 			mValues.putNull("Azimuth"); // null is valid
 		} else {
-			Log.v(LOG_TAG, "Azimuth is length " + stringAz.length());
+			Log.d(LOG_TAG, "Azimuth is length " + stringAz.length());
 			int Az = 0;
 			try {
 				Az = Integer.parseInt(stringAz);
@@ -832,7 +834,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 	private int saveVisitRecord() {
 		int numUpdated = 0;
 		if (!validateVisitHeader()) {
-			Log.v(LOG_TAG, "Failed validation in saveVisitRecord; mValues: " + mValues.toString());
+			Log.d(LOG_TAG, "Failed validation in saveVisitRecord; mValues: " + mValues.toString());
 			return numUpdated;
 		}
 		ContentResolver rs = getActivity().getContentResolver();
@@ -858,17 +860,17 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 			mValues.put("NumAdditionalLocations", 0); // if additional locations are mapped, maintain the count
 			mValues.put("AdditionalLocationsType", 1); // 1=points, 2=line, 3=polygon			
 			mUri = rs.insert(mVisitsUri, mValues);
-			Log.v(LOG_TAG, "new record in saveVisitRecord; returned URI: " + mUri.toString());
+			Log.d(LOG_TAG, "new record in saveVisitRecord; returned URI: " + mUri.toString());
 			long newRecId = Long.parseLong(mUri.getLastPathSegment());
 			if (newRecId < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
-				Log.v(LOG_TAG, "new record in saveVisitRecord has Id == " + newRecId + "); canceled");
+				Log.d(LOG_TAG, "new record in saveVisitRecord has Id == " + newRecId + "); canceled");
 				return 0;
 			}
 			mVisitId = newRecId;
 			getLoaderManager().restartLoader(Loaders.EXISTING_VISITS, null, this);
 			
 			mUri = ContentUris.withAppendedId(mVisitsUri, mVisitId);
-			Log.v(LOG_TAG, "new record in saveVisitRecord; URI re-parsed: " + mUri.toString());
+			Log.d(LOG_TAG, "new record in saveVisitRecord; URI re-parsed: " + mUri.toString());
 			SharedPreferences.Editor prefEditor = sharedPref.edit();
 			prefEditor.putLong(Prefs.CURRENT_VISIT_ID, mVisitId);
 			prefEditor.commit();
@@ -886,19 +888,19 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 				mUri = rs.insert(mLocationsUri, mValues);
 				long newLocID = Long.parseLong(mUri.getLastPathSegment());
 				if (newLocID < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
-					Log.v(LOG_TAG, "new Location record in saveVisitRecord has Id == " + newLocID + "); canceled");
+					Log.d(LOG_TAG, "new Location record in saveVisitRecord has Id == " + newLocID + "); canceled");
 				} else {
 					mLocId = newLocID;
-					Log.v(LOG_TAG, "saveVisitRecord; new Location record created, locID = " + mLocId);
+					Log.d(LOG_TAG, "saveVisitRecord; new Location record created, locID = " + mLocId);
 					// update the Visit record to include the Location
 					mValues.clear();
 					mValues.put("RefLocID", mLocId);
 					mUri = ContentUris.withAppendedId(mVisitsUri, mVisitId);
 					numUpdated = rs.update(mUri, mValues, null, null);
 					if (numUpdated == 0) {
-						Log.v(LOG_TAG, "saveVisitRecord; new Visit record NOT updated with locID = " + mLocId);
+						Log.d(LOG_TAG, "saveVisitRecord; new Visit record NOT updated with locID = " + mLocId);
 					} else {
-						Log.v(LOG_TAG, "saveVisitRecord; new Visit record updated with locID = " + mLocId);
+						Log.d(LOG_TAG, "saveVisitRecord; new Visit record updated with locID = " + mLocId);
 					}
 				}
 			}
@@ -907,7 +909,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 			mValues.put("LastChanged", mTimeFormat.format(new Date())); // update the last-changed time
 			mUri = ContentUris.withAppendedId(mVisitsUri, mVisitId);
 			numUpdated = rs.update(mUri, mValues, null, null);
-			Log.v(LOG_TAG, "Updated record in saveVisitRecord; numUpdated: " + numUpdated);
+			Log.d(LOG_TAG, "Updated record in saveVisitRecord; numUpdated: " + numUpdated);
 		}
 		if (numUpdated > 0) {
 			mEditVisitListener.onEditVisitComplete(VisitHeaderFragment.this);
@@ -926,7 +928,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		// get the text by:
 		//Cursor cur = (Cursor)mNamerAdapter.getItem(position);
 		//String strSel = cur.getString(cur.getColumnIndex("NamerName"));
-		//Log.v(LOG_TAG, strSel);
+		//Log.d(LOG_TAG, strSel);
 		// if spinner is filled by Content Provider, can't get text by:
 		//String strSel = parent.getItemAtPosition(position).toString();
 		// that returns something like below, which there is no way to get text out of:
@@ -942,7 +944,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 	        }
 			mNamerId = id;
 			if (mNamerId == 0) { // picked '(add new)'
-				Log.v(LOG_TAG, "Starting 'add new' for Namer from onItemSelect");
+				Log.d(LOG_TAG, "Starting 'add new' for Namer from onItemSelect");
 //				AddSpeciesNamerDialog  addSppNamerDlg = AddSpeciesNamerDialog.newInstance();
 //				FragmentManager fm = getActivity().getSupportFragmentManager();
 //				addSppNamerDlg.show(fm, "sppNamerDialog_SpinnerSelect");
@@ -976,9 +978,9 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 				mValidationLevel = Validation.QUIET; // save if possible, but notify minimally
 				int numUpdated = saveVisitRecord();
 				if (numUpdated == 0) {
-					Log.v(LOG_TAG, "Failed to save record in onFocusChange; mValues: " + mValues.toString());
+					Log.d(LOG_TAG, "Failed to save record in onFocusChange; mValues: " + mValues.toString());
 				} else {
-					Log.v(LOG_TAG, "Saved record in onFocusChange; mValues: " + mValues.toString());
+					Log.d(LOG_TAG, "Saved record in onFocusChange; mValues: " + mValues.toString());
 				}
 				break;
 			}
@@ -1021,9 +1023,9 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 	public boolean onContextItemSelected(MenuItem item) {
 	AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 	if (info == null) {
-		Log.v(LOG_TAG, "onContextItemSelected info is null");
+		Log.d(LOG_TAG, "onContextItemSelected info is null");
 	} else {
-		Log.v(LOG_TAG, "onContextItemSelected info: " + info.toString());
+		Log.d(LOG_TAG, "onContextItemSelected info: " + info.toString());
 	}
 	Context c = getActivity();
 	UnderConstrDialog notYetDlg = new UnderConstrDialog();
@@ -1032,7 +1034,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 	String helpTitle, helpMessage;
 	switch (item.getItemId()) {
 	case R.id.vis_hdr_visname_help:
-		Log.v(LOG_TAG, "'Visit Name Help' selected");
+		Log.d(LOG_TAG, "'Visit Name Help' selected");
 		// Visit Name help
 		helpTitle = c.getResources().getString(R.string.vis_hdr_help_visname_title);
 		helpMessage = c.getResources().getString(R.string.vis_hdr_help_visname_text);
@@ -1040,7 +1042,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		flexHlpDlg.show(getFragmentManager(), "frg_help_visname");
 		return true;
 	case R.id.vis_hdr_namer_edit:
-		Log.v(LOG_TAG, "'Edit Namer' selected");
+		Log.d(LOG_TAG, "'Edit Namer' selected");
 		// edit Namer
 		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
 		long defaultNamerId = sharedPref.getLong(Prefs.DEFAULT_NAMER_ID, 0);
@@ -1051,7 +1053,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		editNmrDlg.show(getFragmentManager(), "frg_edit_namer");
 		return true;
 	case R.id.vis_hdr_namer_delete:
-		Log.v(LOG_TAG, "'Delete Namer' selected");
+		Log.d(LOG_TAG, "'Delete Namer' selected");
 		// delete Namer
 		DelNamerDialog delNamerDlg = new DelNamerDialog();
 		delNamerDlg.show(getFragmentManager(), "frg_del_namer");
@@ -1060,7 +1062,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		// drop through to the same Help for the text view that covers the
 		//  Namer spinner to catch the first '(add new)' click
 	case R.id.vis_hdr_namer_cover_help:
-		Log.v(LOG_TAG, "'Namer Help' selected");
+		Log.d(LOG_TAG, "'Namer Help' selected");
 		// Namer help
 		helpTitle = c.getResources().getString(R.string.vis_hdr_help_namer_title);
 		helpMessage = c.getResources().getString(R.string.vis_hdr_help_namer_text);
@@ -1068,7 +1070,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		flexHlpDlg.show(getFragmentManager(), "frg_help_namer");
 		return true;
 	case R.id.vis_hdr_scribe_help:
-		Log.v(LOG_TAG, "'Scribe Help' selected");
+		Log.d(LOG_TAG, "'Scribe Help' selected");
 		// Scribe help
 		helpTitle = c.getResources().getString(R.string.vis_hdr_help_scribe_title);
 		helpMessage = c.getResources().getString(R.string.vis_hdr_help_scribe_text);
@@ -1076,17 +1078,17 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		flexHlpDlg.show(getFragmentManager(), "frg_help_scribe");
 		return true;
 	case R.id.vis_hdr_loc_restore_prev:
-		Log.v(LOG_TAG, "'Restore Previous' selected");
+		Log.d(LOG_TAG, "'Restore Previous' selected");
 		// re-acquire location
 		notYetDlg.show(getFragmentManager(), null);
 		return true;
 	case R.id.vis_hdr_loc_reacquire:
-		Log.v(LOG_TAG, "'Re-acquire' selected");
+		Log.d(LOG_TAG, "'Re-acquire' selected");
 		// re-acquire location
 		notYetDlg.show(getFragmentManager(), null);
 		return true;
 	case R.id.vis_hdr_loc_accept:
-		Log.v(LOG_TAG, "'Accept accuracy' selected");
+		Log.d(LOG_TAG, "'Accept accuracy' selected");
 		if (mLocIsGood == true) { // message that accuracy is already OK
 			helpTitle = c.getResources().getString(R.string.vis_hdr_loc_good_ok_title);
 			if (mLocationSource == USER_OKD_ACCURACY) {
@@ -1118,17 +1120,17 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		flexHlpDlg.show(getFragmentManager(), "frg_loc_acc_accept");
 		return true;
 	case R.id.vis_hdr_loc_manual:
-		Log.v(LOG_TAG, "'Enter manually' selected");
+		Log.d(LOG_TAG, "'Enter manually' selected");
 		// enter location manually
 		notYetDlg.show(getFragmentManager(), null);
 		return true;
 	case R.id.vis_hdr_loc_details:
-		Log.v(LOG_TAG, "'Details' selected");
+		Log.d(LOG_TAG, "'Details' selected");
 		// show location details
 		notYetDlg.show(getFragmentManager(), null);
 		return true;
 	case R.id.vis_hdr_loc_help:
-		Log.v(LOG_TAG, "'Location Help' selected");
+		Log.d(LOG_TAG, "'Location Help' selected");
 		// Location help
 		helpTitle = c.getResources().getString(R.string.vis_hdr_help_loc_title);
 		helpMessage = c.getResources().getString(R.string.vis_hdr_help_loc_text);
@@ -1136,7 +1138,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		flexHlpDlg.show(getFragmentManager(), "frg_help_loc");
 		return true;
 	case R.id.vis_hdr_azimuth_help:
-		Log.v(LOG_TAG, "'Azimuth Help' selected");
+		Log.d(LOG_TAG, "'Azimuth Help' selected");
 		// Azimuth help
 		helpTitle = c.getResources().getString(R.string.vis_hdr_help_azimuth_title);
 		helpMessage = c.getResources().getString(R.string.vis_hdr_help_azimuth_text);
@@ -1144,7 +1146,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		flexHlpDlg.show(getFragmentManager(), "frg_help_azimuth");
 		return true;
 	case R.id.vis_hdr_notes_help:
-		Log.v(LOG_TAG, "'Notes Help' selected");
+		Log.d(LOG_TAG, "'Notes Help' selected");
 		// Notes help
 		helpTitle = c.getResources().getString(R.string.vis_hdr_help_notes_title);
 		helpMessage = c.getResources().getString(R.string.vis_hdr_help_notes_text);
@@ -1152,15 +1154,15 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		flexHlpDlg.show(getFragmentManager(), "frg_help_notes");
 		return true;
 	case MENU_EDIT:
-		Log.v(LOG_TAG, "MENU_EDIT selected");
+		Log.d(LOG_TAG, "MENU_EDIT selected");
 //	        mark_item(info.id);
 		return true;
 	case MENU_DELETE:
-	    Log.v(LOG_TAG, "MENU_DELETE selected");
+	    Log.d(LOG_TAG, "MENU_DELETE selected");
 //	        delete_item(info.id);
 	    return true;
 	case MENU_HELP:
-		Log.v(LOG_TAG, "MENU_HELP selected");
+		Log.d(LOG_TAG, "MENU_HELP selected");
 		hlpDlg.show(getFragmentManager(), null);
 		return true;
     default:
@@ -1187,7 +1189,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         	// Show dialog using GooglePlayServicesUtil.getErrorDialog()
 //        	showErrorDialog(connectionResult.getErrorCode());
             mResolvingError = true;
-            Log.v(LOG_TAG, "Connection failed with code " + connectionResult.getErrorCode());
+            Log.d(LOG_TAG, "Connection failed with code " + connectionResult.getErrorCode());
             switch (mGACState) {
             case GAC_STATE_LOCATION:
             	mViewVisitLocation.setText("Location services connection failed with code " + connectionResult.getErrorCode());
@@ -1235,7 +1237,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         	try { // is this what occasionally crashes?, e.g. on pause while error dialog is displayed
         		((VisitHeaderFragment)getTargetFragment()).onDialogDismissed();
         	} catch (Exception e) {
-        		Log.v(LOG_TAG, "onDismiss error: " + e);
+        		Log.d(LOG_TAG, "onDismiss error: " + e);
         	}
         }
         	
@@ -1244,7 +1246,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         	try { // is this what occasionally crashes?, e.g. on pause while error dialog is displayed
         		super.onSaveInstanceState(outState);
         	} catch (Exception e) {
-        		Log.v(LOG_TAG, "onSaveInstanceState error: " + e);
+        		Log.d(LOG_TAG, "onSaveInstanceState error: " + e);
         	}
         }
     }
@@ -1272,14 +1274,14 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     	try {
     		LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
     	} catch (Exception e) {
-    		Log.v(LOG_TAG, "GoogleApiClient may not be connected yet, error code " + e);
+    		Log.d(LOG_TAG, "GoogleApiClient may not be connected yet, error code " + e);
     	}
     	mGACState = GAC_STATE_DRIVE;
-    	Log.v(LOG_TAG, "about to call 'buildGoogleApiClient()'");
+    	Log.d(LOG_TAG, "about to call 'buildGoogleApiClient()'");
     	buildGoogleApiClient();
-    	Log.v(LOG_TAG, "about to do 'mGoogleApiClient.connect()'");
+    	Log.d(LOG_TAG, "about to do 'mGoogleApiClient.connect()'");
     	mGoogleApiClient.connect();
-    	Log.v(LOG_TAG, "just after 'mGoogleApiClient.connect()'");
+    	Log.d(LOG_TAG, "just after 'mGoogleApiClient.connect()'");
     	// file is actually created by a callback, search in this code for:
     	// ResultCallback<DriveContentsResult> driveContentsCallback
     }
@@ -1289,7 +1291,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     	@Override
     	public void onResult(DriveContentsResult result) {
     		if (!result.getStatus().isSuccess()) {
-    			Log.v(LOG_TAG, "Error while trying to create new file contents");
+    			Log.d(LOG_TAG, "Error while trying to create new file contents");
 //    			showMessage("Error while trying to create new file contents");
     			Toast.makeText(getActivity(), "Error while trying to create new file contents", Toast.LENGTH_LONG).show();
     			return;
@@ -1354,11 +1356,11 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 	    								writer.write("\r\n");
 	    							}
 	    						}
-//	    						Log.v(LOG_TAG, "wrote a record");
+//	    						Log.d(LOG_TAG, "wrote a record");
 	    					}
-	    					Log.v(LOG_TAG, "cursor done");
+	    					Log.d(LOG_TAG, "cursor done");
 	    					thdCs.close();
-	    					Log.v(LOG_TAG, "cursor closed");
+	    					Log.d(LOG_TAG, "cursor closed");
 	    					// get the Subplots for this Visit
 	    					long sbId;
 	    					String sbName, spCode, spDescr, spParams;
@@ -1408,11 +1410,11 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 	    					}
 	    					thdSb.close();
 	    					thdDb.close();
-	    					Log.v(LOG_TAG, "database closed");
+	    					Log.d(LOG_TAG, "database closed");
 	    				}
 	    				writer.close();
 	    			} catch (IOException e) {
-	    				Log.v(LOG_TAG, "Error writing file: " + e.getMessage());
+	    				Log.d(LOG_TAG, "Error writing file: " + e.getMessage());
 	    			}
 	    			MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
 	    				.setTitle(fileName + ".txt")
@@ -1433,16 +1435,16 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     	@Override
     	public void onResult(DriveFileResult result) {
     		if (!result.getStatus().isSuccess()) {
-    			Log.v(LOG_TAG, "Error trying to create the file");
+    			Log.d(LOG_TAG, "Error trying to create the file");
 //    			showMessage("Error while trying to create new file contents");
     			Toast.makeText(getActivity(), "Error trying to create the file", Toast.LENGTH_LONG).show();
     			return;
     		}
     		Toast.makeText(getActivity(), "Created file, content: " + result.getDriveFile().getDriveId(), Toast.LENGTH_LONG).show();
 			mGACState = GAC_STATE_LOCATION;
-			Log.v(LOG_TAG, "about to call 'buildGoogleApiClient()' to change back to Location");
+			Log.d(LOG_TAG, "about to call 'buildGoogleApiClient()' to change back to Location");
 			buildGoogleApiClient();
-			Log.v(LOG_TAG, "about to do 'mGoogleApiClient.connect()'");
+			Log.d(LOG_TAG, "about to do 'mGoogleApiClient.connect()'");
 			mGoogleApiClient.connect();
     	}
 
@@ -1452,14 +1454,14 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     // Called by Google Play services if the connection to GoogleApiClient drops because of an error.
 
     public void onDisconnected() {
-        Log.v(LOG_TAG, "Disconnected");
+        Log.d(LOG_TAG, "Disconnected");
     }
 
     @Override
     public void onConnectionSuspended(int cause) {
         // The connection to Google Play services was lost for some reason. We call connect() to
         // attempt to re-establish the connection.
-        Log.v(LOG_TAG, "Connection suspended");
+        Log.d(LOG_TAG, "Connection suspended");
         mGoogleApiClient.connect();
     }
 
@@ -1468,7 +1470,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     	try {
     		mGoogleApiClient.disconnect();
     	} catch (NullPointerException e) {
-    		Log.v(LOG_TAG, "'mGoogleApiClient' is still null");
+    		Log.d(LOG_TAG, "'mGoogleApiClient' is still null");
     	}
     	if (servicesAvailable()) {
     		// for testing, separate the states to isolate errors
@@ -1542,7 +1544,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		mAccuracy = mCurLocation.getAccuracy();
 		long n = mCurLocation.getTime();
 		mLocTime = mTimeFormat.format(new Date(n));
-		Log.v(LOG_TAG, "Location time: " + mLocTime);
+		Log.d(LOG_TAG, "Location time: " + mLocTime);
 		if (mGoogleApiClient.isConnected()) {
 	        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 	        mGoogleApiClient.disconnect();
