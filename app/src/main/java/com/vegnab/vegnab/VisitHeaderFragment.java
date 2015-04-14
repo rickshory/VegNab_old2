@@ -297,8 +297,8 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         Log.d(LOG_TAG, "in CreateView returned from call to 'buildGoogleApiClient()'");
     	mLocationRequest = LocationRequest.create()
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-            .setInterval(10 * 1000)        // 10 seconds, in milliseconds
-            .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+            .setInterval(10000)        // 10 seconds, in milliseconds
+            .setFastestInterval(1000); // 1 second, in milliseconds
 
 		mViewAzimuth = (EditText) rootView.findViewById(R.id.txt_visit_azimuth);
 		mViewAzimuth.setOnFocusChangeListener(this);
@@ -406,7 +406,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 
 	@Override
 	public void onClick(View v) {
-		int numUpdated = 0;
+		int numUpdated;
 		switch (v.getId()) {
 		case R.id.txt_visit_date:
 			fireOffDatePicker();
@@ -535,7 +535,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 				setNamerSpinnerSelectionFromDefaultNamer();
 				mViewVisitScribe.setText(c.getString(c.getColumnIndexOrThrow("Scribe")));
 				// write code to save/retrieve Locations
-				mLocIsGood = (c.getInt(c.getColumnIndexOrThrow("RefLocIsGood")) == 0) ? false : true;
+				mLocIsGood = (c.getInt(c.getColumnIndexOrThrow("RefLocIsGood")) != 0);
 				mLocId = c.getLong(c.getColumnIndexOrThrow("RefLocID"));
 				if (mLocIsGood) {
 					if (mGoogleApiClient.isConnected()) {
@@ -956,7 +956,6 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 				saveDefaultNamerId(mNamerId);
 			}
 			setNamerSpinnerSelectionFromDefaultNamer(); // in either case, reset selection
-			return;
 		}
 		// write code for any other spinner(s) here
 	}
@@ -1089,7 +1088,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		return true;
 	case R.id.vis_hdr_loc_accept:
 		Log.d(LOG_TAG, "'Accept accuracy' selected");
-		if (mLocIsGood == true) { // message that accuracy is already OK
+		if (mLocIsGood) { // message that accuracy is already OK
 			helpTitle = c.getResources().getString(R.string.vis_hdr_loc_good_ok_title);
 			if (mLocationSource == USER_OKD_ACCURACY) {
 				helpMessage = c.getResources().getString(R.string.vis_hdr_loc_good_prev_ok);
