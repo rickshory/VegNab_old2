@@ -329,9 +329,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 			getLoaderManager().initLoader(Loaders.VISIT_TO_EDIT, null, this);
 			getLoaderManager().initLoader(Loaders.EXISTING_VISITS, null, this);
 			// set up subplot based on arguments passed in
-            int tmpSbp = args.getInt(ARG_SUBPLOT);
-            updateSubplotViews(tmpSbp);
-//			updateSubplotViews(args.getInt(ARG_SUBPLOT));
+			updateSubplotViews(args.getInt(ARG_SUBPLOT));
 		} else if (mCurrentSubplot != -1) {
 			// set up subplot based on saved instance state defined in onCreateView
 			updateSubplotViews(mCurrentSubplot);
