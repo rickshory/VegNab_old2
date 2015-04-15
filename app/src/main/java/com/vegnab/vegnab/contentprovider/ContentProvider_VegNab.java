@@ -3,6 +3,7 @@ package com.vegnab.vegnab.contentprovider;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import com.vegnab.vegnab.BuildConfig;
 import com.vegnab.vegnab.database.VegNabDbHelper;
 
 import android.content.ContentProvider;
@@ -45,7 +46,9 @@ public class ContentProvider_VegNab extends ContentProvider {
 //	private static final int SPECIESFOUND = 190;
 //	private static final int SPECIESFOUND_ID = 200;
 	
-	private static final String AUTHORITY = "com.vegnab.provider"; // must match in app Manifest
+//	private static final String AUTHORITY = "com.vegnab.provider"; // must match in app Manifest
+    public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".provider";
+
 	private static final String BASE_PATH = "data";
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
 			+ "/" + BASE_PATH);
