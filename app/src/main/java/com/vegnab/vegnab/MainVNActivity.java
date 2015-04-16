@@ -13,6 +13,8 @@ import java.util.UUID;
 import com.vegnab.vegnab.database.VNContract.Prefs;
 import com.vegnab.vegnab.database.VNContract.Tags;
 
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -472,8 +474,16 @@ public class MainVNActivity extends ActionBarActivity
 	}
 
 */	
-	
+/*public static String getApplicationName(Context context) {
+    int stringId = context.getApplicationInfo().labelRes;
+    return context.getString(stringId);
+}
+
+*/
 	private static final String DATABASE_NAME = "VegNab.db";
+
+//    String saveFolderName = getResources().getString(R.string.app_name);
+    String saveFolderName = "VegNab Alpha Test";
 
 	public File getBackupDatabaseFile() {
 		SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-", Locale.US);
@@ -484,9 +494,9 @@ public class MainVNActivity extends ActionBarActivity
 
 		File sdCard = Environment.getExternalStorageDirectory();
 		// create the folder
-		File vnFolder = new File(sdCard.getAbsolutePath() + "/VegNab");
+		File vnFolder = new File(sdCard.getAbsolutePath() + "/" + saveFolderName);
 		vnFolder.mkdirs();
-		Log.v(LOG_TAG, "folder created 'VegNab'");
+		Log.v(LOG_TAG, "folder created '" + saveFolderName + "'");
 		File backupDB = new File(vnFolder, dbBkupName);
 
 		return backupDB;
