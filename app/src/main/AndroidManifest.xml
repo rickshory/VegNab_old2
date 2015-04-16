@@ -36,6 +36,8 @@
         <provider
             android:name=".contentprovider.ContentProvider_VegNab"
             android:authorities="${applicationId}.provider"
+            android:enabled="true"
+            android:exported="false"
             >
         </provider>
 		<meta-data android:name="com.google.android.gms.version"
