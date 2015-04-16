@@ -168,16 +168,16 @@ public class MainVNActivity extends ActionBarActivity
 //					"''Get species'' is not implemented yet", Toast.LENGTH_SHORT);
 //			toast.setGravity(Gravity.TOP, 25, 400);
 //			toast.show();
-			TestDownloadFragment tstDnLdFrag = new TestDownloadFragment();
+			DownloadSppFragment frgDnldSpp = new DownloadSppFragment();
 //			Bundle args = new Bundle();
 			// screenTag serves both as this fn's switch and the tag name of the fragment instance
 //			args.putString(ConfigurableWebviewFragment.ARG_TAG_ID, screenTag);
-//			tstDnLdFrag.setArguments(args);
+//			frgDnldSpp.setArguments(args);
 			FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 			// replace the fragment in the fragment container with this new fragment and
 			// put the present fragment on the backstack so the user can navigate back to it
 			// the tag is for the fragment now being added, not the one replaced
-			transaction.replace(R.id.fragment_container, tstDnLdFrag, "frg_tst_download");
+			transaction.replace(R.id.fragment_container, frgDnldSpp, "frg_download_spp");
 //			transaction.replace(R.id.fragment_container, webVwFrag, screenTag);
 			transaction.addToBackStack(null);
 			transaction.commit();

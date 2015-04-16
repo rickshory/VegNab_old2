@@ -1,0 +1,49 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">>
+ 
+    <Button
+        android:id="@+id/startDownload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dnld_spp_btn_start" />
+      
+    <Button
+        android:id="@+id/displayDownload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dnld_spp_btn_show_all" />
+ 
+    <Button
+        android:id="@+id/checkStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dnld_spp_btn_ck_status" />
+ 
+     <Button
+        android:id="@+id/cancelDownload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dnld_spp_btn_cancel" />
+     
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+ 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+ 
+            <TextView
+                android:id="@+id/spp_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+ 
+        </LinearLayout>
+    </ScrollView>
+     
+</LinearLayout>

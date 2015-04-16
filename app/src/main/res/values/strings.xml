@@ -42,6 +42,18 @@
     <string name="new_visit_go_button_msg">Start a new Visit</string>
     <string name="new_visit_no_visits_msg">No Visits yet</string>
 
+    <string name="dnld_spp_btn_start">Download Species List</string>
+    <string name="dnld_spp_btn_show_all">Display all Downloads</string>
+    <string name="dnld_spp_btn_ck_status">Check Status of Download</string>
+    <string name="dnld_spp_btn_cancel">Cancel the current Download</string>
+
+    <string name="dnld_spp_title">Species Download</string>
+    <string name="dnld_spp_descr">Android Data download using DownloadManager.</string>
+    <string name="dnld_spp_pls_wait">Getting species list from server, please wait...</string>
+    <string name="dnld_spp_canceled">Download of the file cancelled</string>
+    <string name="dnld_spp_done">Downloading of data just finished</string>
+    <string name="dnld_spp_parsed">File parsed into database</string>
+
     <string name="empty_projects">No Projects yet</string>
     <string name="empty_plottypes">No Plot Types yet</string>
     <string name="empty_namers">No Namers yet</string>
