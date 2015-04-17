@@ -231,10 +231,10 @@ public class MainVNActivity extends ActionBarActivity
 	public void onVisitHeaderGoButtonClicked(long visitId) {
 		mVisitId = visitId;
 		// swap DataEntryContainerFragment in place of existing fragment
-		Log.e(LOG_TAG, "About to go to DataEntryContainer");
+		Log.d(LOG_TAG, "About to go to DataEntryContainer");
 		FragmentManager fm = getSupportFragmentManager();
 		Bundle args = new Bundle();
-		Log.e(LOG_TAG, "In onVisitHeaderGoButtonClicked, about to putLong mVisitId=" +  mVisitId);
+		Log.d(LOG_TAG, "In onVisitHeaderGoButtonClicked, about to putLong mVisitId=" +  mVisitId);
 		args.putLong(DataEntryContainerFragment.VISIT_ID, mVisitId);
 		DataEntryContainerFragment dataEntryFrag = DataEntryContainerFragment.newInstance(args);
 		FragmentTransaction transaction = fm.beginTransaction();
@@ -243,7 +243,7 @@ public class MainVNActivity extends ActionBarActivity
 		transaction.replace(R.id.fragment_container, dataEntryFrag, Tags.DATA_SCREENS_CONTAINER);
 		transaction.addToBackStack(null);
 		transaction.commit();
-		Log.e(LOG_TAG, "Call to DataEntryContainer complete");
+		Log.d(LOG_TAG, "Call to DataEntryContainer complete");
 
 	}
 	
@@ -504,7 +504,7 @@ public class MainVNActivity extends ActionBarActivity
 			flexErrDlg.show(getSupportFragmentManager(), "frg_db_copy_ok");
 			return true;
 		} catch (IOException e) {
-			Log.e(LOG_TAG, "Error backuping up database: " + e.getMessage(), e);
+			Log.d(LOG_TAG, "Error backuping up database: " + e.getMessage(), e);
 			flexErrDlg = ConfigurableMsgDialog.newInstance("Error backuping up database: ", e.getMessage().toString());
 			flexErrDlg.show(getSupportFragmentManager(), "frg_db_copy_ok");
 		}

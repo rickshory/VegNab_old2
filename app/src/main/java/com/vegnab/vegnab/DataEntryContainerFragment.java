@@ -64,9 +64,9 @@ public class DataEntryContainerFragment extends Fragment
 		View root = inflater.inflate(R.layout.fragment_data_entry_container, container, false);
 // assign UI elements
 		mDataScreenPager = (ViewPager) root.findViewById(R.id.data_entry_pager);
-		Log.e(LOG_TAG, "About to call LoaderManager.initLoader CURRENT_SUBPLOTS");
+		Log.d(LOG_TAG, "About to call LoaderManager.initLoader CURRENT_SUBPLOTS");
 		getLoaderManager().initLoader(Loaders.CURRENT_SUBPLOTS, null, this);
-		Log.e(LOG_TAG, "Called LoaderManager.initLoader CURRENT_SUBPLOTS");
+		Log.d(LOG_TAG, "Called LoaderManager.initLoader CURRENT_SUBPLOTS");
 		if (savedInstanceState != null) {
 			Log.d(LOG_TAG, "About to do 'getInt(dataPagePosition)', mScreenToShow=" + mScreenToShow);
 			mVisitId = savedInstanceState.getLong(VISIT_ID);
