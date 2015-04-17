@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
+import com.vegnab.vegnab.BuildConfig;
 import com.vegnab.vegnab.database.VNContract.Prefs;
 import com.vegnab.vegnab.database.VNContract.Tags;
 
@@ -472,18 +473,9 @@ public class MainVNActivity extends ActionBarActivity
 				getSupportFragmentManager().findFragmentByTag(Tags.NEW_VISIT);
 		newVisFragment.refreshVisitsList();
 	}
-
-*/	
-/*public static String getApplicationName(Context context) {
-    int stringId = context.getApplicationInfo().labelRes;
-    return context.getString(stringId);
-}
-
 */
 	private static final String DATABASE_NAME = "VegNab.db";
-
-//    String saveFolderName = getResources().getString(R.string.app_name);
-    String saveFolderName = "VegNab Alpha Test";
+    String saveFolderName = BuildConfig.PUBLIC_DB_FOLDER;
 
 	public File getBackupDatabaseFile() {
 		SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-", Locale.US);
