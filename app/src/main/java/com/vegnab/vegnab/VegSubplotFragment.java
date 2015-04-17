@@ -62,14 +62,14 @@ public class VegSubplotFragment extends ListFragment
 		super.onCreate(savedInstanceState);
 //	setHasOptionsMenu(true);
 		if (savedInstanceState == null) {
-			Log.v(LOG_TAG, "onCreate FIRST TIME, position = " + mPosition);
+			Log.d(LOG_TAG, "onCreate FIRST TIME, position = " + mPosition);
 		} else {
-			Log.v(LOG_TAG, "onCreate SUBSEQUENT TIME, position = " + mPosition);
+			Log.d(LOG_TAG, "onCreate SUBSEQUENT TIME, position = " + mPosition);
 		}
 // set up any interfaces
 //		try {
 //        	mEditNamerListener = (EditNamerDialogListener) getActivity();
-//        	Log.v(LOG_TAG, "(EditNamerDialogListener) getActivity()");
+//        	Log.d(LOG_TAG, "(EditNamerDialogListener) getActivity()");
 //        } catch (ClassCastException e) {
 //            throw new ClassCastException("Main Activity must implement EditNamerDialogListener interface");
 //        }
@@ -140,14 +140,14 @@ public class VegSubplotFragment extends ListFragment
 		mVegSubplotSppAdapter = new VegItemAdapter(getActivity(),
 				R.layout.list_veg_item, null, 0);
 		setListAdapter(mVegSubplotSppAdapter);
-		Log.v(LOG_TAG, "onCreateView, position = " + mPosition);
+		Log.d(LOG_TAG, "onCreateView, position = " + mPosition);
 		return rootView;
 	}
 
 	@Override
 	public void onStart() {
 		super.onStart();
-		Log.v(LOG_TAG, "onStart, position = " + mPosition);
+		Log.d(LOG_TAG, "onStart, position = " + mPosition);
 //		mSubplotLoaderId = Loaders.BASE_SUBPLOT + (int) mSubplotTypeId;
 //		getLoaderManager().initLoader(mSubplotLoaderId, null, this);
 		mSppLoaderId = Loaders.BASE_SUBPLOT_SPP + (int) mSubplotTypeId;
@@ -157,7 +157,7 @@ public class VegSubplotFragment extends ListFragment
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		Log.v(LOG_TAG, "onAttach, position = " + mPosition);
+		Log.d(LOG_TAG, "onAttach, position = " + mPosition);
 		// assure the container activity has implemented the callback interface
 		try {
 			mButtonCallback = (OnButtonListener) activity;
@@ -169,7 +169,7 @@ public class VegSubplotFragment extends ListFragment
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		Log.v(LOG_TAG, "onSaveInstanceState, position = " + mPosition);
+		Log.d(LOG_TAG, "onSaveInstanceState, position = " + mPosition);
 		// save the current subplot arguments in case we need to re-create the fragment
 		outState.putLong(VISIT_ID, mVisitId);
 		outState.putLong(SUBPLOT_TYPE_ID, mSubplotTypeId);
@@ -178,43 +178,43 @@ public class VegSubplotFragment extends ListFragment
 	@Override
 	public void onStop() {
 		super.onStop();
-		Log.v(LOG_TAG, "onStop, position = " + mPosition);
+		Log.d(LOG_TAG, "onStop, position = " + mPosition);
 	}
 	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		Log.v(LOG_TAG, "onDestroy, position = " + mPosition);
+		Log.d(LOG_TAG, "onDestroy, position = " + mPosition);
 	}
 	
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
-		Log.v(LOG_TAG, "onDestroyView, position = " + mPosition);
+		Log.d(LOG_TAG, "onDestroyView, position = " + mPosition);
 	}	
 	
 	@Override
 	public void onDetach() {
 		super.onDetach();
-		Log.v(LOG_TAG, "onDetach, position = " + mPosition);
+		Log.d(LOG_TAG, "onDetach, position = " + mPosition);
 	}	
 	
 	@Override
 	public void onPause() {
 		super.onPause();
-		Log.v(LOG_TAG, "onPause, position = " + mPosition);
+		Log.d(LOG_TAG, "onPause, position = " + mPosition);
 	}	
 	
 	@Override
 	public void onResume() {
 		super.onResume();
-		Log.v(LOG_TAG, "onResume, position = " + mPosition);
+		Log.d(LOG_TAG, "onResume, position = " + mPosition);
 	}
 	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		Log.v(LOG_TAG, "onActivityCreated, position = " + mPosition);
+		Log.d(LOG_TAG, "onActivityCreated, position = " + mPosition);
 	}
 
 	@Override
@@ -256,7 +256,7 @@ public class VegSubplotFragment extends ListFragment
 					+ "FROM VegItems LEFT JOIN IdLevels ON VegItems.IdLevelID = IdLevels._id "
 					+ "WHERE (((VegItems.VisitID)=?) AND ((VegItems.SubPlotID)=?)) "
 					+ "ORDER BY VegItems.TimeLastChanged DESC;";
-			Log.v(LOG_TAG, "onCreateLoader CURRENT_SUBPLOT_SPP, mVisitId=" + mVisitId 
+			Log.d(LOG_TAG, "onCreateLoader CURRENT_SUBPLOT_SPP, mVisitId=" + mVisitId
 					+ ", mSubplotTypeId=" + mSubplotTypeId);
 			String[] sppSelectionArgs = { "" + mVisitId, "" + mSubplotTypeId };
 			cl = new CursorLoader(getActivity(), baseUri,
@@ -274,13 +274,13 @@ public class VegSubplotFragment extends ListFragment
 //			// fill in any header info
 //			// SubplotDescription, PresenceOnly, HasNested
 //			int rowCt = c.getCount();
-//			Log.v(LOG_TAG, "onLoadFinished CURRENT_SUBPLOT, number of rows returned: " + rowCt);
+//			Log.d(LOG_TAG, "onLoadFinished CURRENT_SUBPLOT, number of rows returned: " + rowCt);
 //			if (c.moveToNext()) {
 //				mPresenceOnly = ((c.getInt(c.getColumnIndexOrThrow("PresenceOnly")) == 1) ? true : false);
 //			}
 //		}
 		if (loaderId == mSppLoaderId) {
-			Log.v(LOG_TAG, "onLoadFinished CURRENT_SUBPLOT_SPP, number of rows returned: " + c.getCount());
+			Log.d(LOG_TAG, "onLoadFinished CURRENT_SUBPLOT_SPP, number of rows returned: " + c.getCount());
 			mVegSubplotSppAdapter.swapCursor(c);
 		}
 	}

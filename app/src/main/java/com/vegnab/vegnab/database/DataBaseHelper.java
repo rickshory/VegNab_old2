@@ -164,7 +164,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 			BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 			
 			while ((line = br.readLine()) != null) {
-//				Log.v(LOG_TAG, line.toString());
+//				Log.d(LOG_TAG, line.toString());
 				if (ct == 0) { // the internal description of the list
 					listName = line.toString();
 				} else if  (ct == 1) { // field name headings, presently don't do anything with
@@ -172,26 +172,26 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 					// readLine gets the lines one at a time, strips the delimiters
 					fieldValues = new ArrayList<String>(Arrays.asList(line.split("\t")));
 					// List<String> list = new ArrayList<String>(Arrays.asList(string.split(" , ")));
-//					Log.v(LOG_TAG, "number of fieldValues: " + fieldValues.size());
+//					Log.d(LOG_TAG, "number of fieldValues: " + fieldValues.size());
 					while (fieldValues.size() < 5) {
 						fieldValues.add("");
-//						Log.v(LOG_TAG, "Empty string added, number of fieldValues now: " + fieldValues.size());
+//						Log.d(LOG_TAG, "Empty string added, number of fieldValues now: " + fieldValues.size());
 					}
-//					Log.v(LOG_TAG, "fieldValues.get(0): " + fieldValues.get(0).toString());
+//					Log.d(LOG_TAG, "fieldValues.get(0): " + fieldValues.get(0).toString());
 					stmt.bindString(1, fieldValues.get(0));
-//					Log.v(LOG_TAG, "fieldValues.get(1): " + fieldValues.get(1).toString());
+//					Log.d(LOG_TAG, "fieldValues.get(1): " + fieldValues.get(1).toString());
 					stmt.bindString(2, fieldValues.get(1));
-//					Log.v(LOG_TAG, "fieldValues.get(2): " + fieldValues.get(2).toString());
+//					Log.d(LOG_TAG, "fieldValues.get(2): " + fieldValues.get(2).toString());
 					stmt.bindString(3, fieldValues.get(2));
-//					Log.v(LOG_TAG, "fieldValues.get(3): " + fieldValues.get(3).toString());
+//					Log.d(LOG_TAG, "fieldValues.get(3): " + fieldValues.get(3).toString());
 //					if (fieldValues.get(3) == null) {
-//						Log.v(LOG_TAG, "fieldValues.get(3) is null");
+//						Log.d(LOG_TAG, "fieldValues.get(3) is null");
 //					}
 //					if (fieldValues.get(3).length() == 0) {
-//						Log.v(LOG_TAG, "fieldValues.get(3) length is zero");
+//						Log.d(LOG_TAG, "fieldValues.get(3) length is zero");
 //					}
 					stmt.bindString(4, fieldValues.get(3));
-//					Log.v(LOG_TAG, "fieldValues.get(4): " + fieldValues.get(4).toString());
+//					Log.d(LOG_TAG, "fieldValues.get(4): " + fieldValues.get(4).toString());
 					stmt.bindString(5, fieldValues.get(4));
 
 					stmt.execute();
@@ -199,14 +199,14 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 				}
 				ct++;
 //				if ((ct % 100) == 0) {
-//					Log.v(LOG_TAG, "item " + ct + ", currentTimeMillis = " + System.currentTimeMillis());
+//					Log.d(LOG_TAG, "item " + ct + ", currentTimeMillis = " + System.currentTimeMillis());
 //				}
 				if ((ct % 5000) == 0) { 
 					// reportedly, can do 7000 records at at time, but to be on the safe side
 					// do 5000 records at a time
 					db.setTransactionSuccessful();
 					db.endTransaction();
-					Log.v(LOG_TAG, "re-starting bulk transactions at item " + ct
+					Log.d(LOG_TAG, "re-starting bulk transactions at item " + ct
 							+ ", currentTimeMillis = " + System.currentTimeMillis());
 					db.beginTransactionNonExclusive();
 			        stmt = db.compileStatement(sSql);
@@ -217,7 +217,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 //		} catch (FileNotFoundException e) {
 //			e.printStackTrace();
 		} catch (IOException e) {
-			Log.v(LOG_TAG, "IOException " + e.getMessage());
+			Log.d(LOG_TAG, "IOException " + e.getMessage());
 		}
 		
 		db.endTransaction();

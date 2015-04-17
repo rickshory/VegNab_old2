@@ -39,7 +39,7 @@ public class ConfirmDelNamerDialog extends DialogFragment {
 		super.onCreate(savedInstanceState);
         try {
         	mEditNamerListener = (EditNamerDialogListener) getActivity();
-        	Log.v(LOG_TAG, "(EditNamerDialogListener) getActivity()");
+        	Log.d(LOG_TAG, "(EditNamerDialogListener) getActivity()");
         } catch (ClassCastException e) {
             throw new ClassCastException("Main Activity must implement EditNamerDialogListener interface");
         }
@@ -51,8 +51,8 @@ public class ConfirmDelNamerDialog extends DialogFragment {
 		if (args != null) {
 			mNamerRecId = args.getLong("namerRecId");
 			mStringNamer = args.getString("stringNamer");
-//			Log.v(LOG_TAG, "In DialogFragment, onCreateDialog, mNamerRecId: " + mNamerRecId);
-//			Log.v(LOG_TAG, "In DialogFragment, onCreateDialog, mStringNamer: " + mStringNamer);
+//			Log.d(LOG_TAG, "In DialogFragment, onCreateDialog, mNamerRecId: " + mNamerRecId);
+//			Log.d(LOG_TAG, "In DialogFragment, onCreateDialog, mStringNamer: " + mStringNamer);
 		}
 		
 		AlertDialog.Builder bld = new AlertDialog.Builder(getActivity());
@@ -60,23 +60,23 @@ public class ConfirmDelNamerDialog extends DialogFragment {
 			.setPositiveButton(R.string.action_affirm, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					Log.v(LOG_TAG, "In DialogFragment, onCreateDialog, Positive button clicked");
-					Log.v(LOG_TAG, "About to delete Namer record id=" + mNamerRecId);
+					Log.d(LOG_TAG, "In DialogFragment, onCreateDialog, Positive button clicked");
+					Log.d(LOG_TAG, "About to delete Namer record id=" + mNamerRecId);
 					
 					//old, not used any more: "DELETE FROM Namers WHERE _id = ?;" {"" + mNamerRecId}
 					Uri uri = ContentUris.withAppendedId(
 							Uri.withAppendedPath(
 							ContentProvider_VegNab.CONTENT_URI, "namers"), mNamerRecId);
-					Log.v(LOG_TAG, "In ConfirmDelNamerDialog URI: " + uri.toString());
+					Log.d(LOG_TAG, "In ConfirmDelNamerDialog URI: " + uri.toString());
 					ContentResolver rs = getActivity().getContentResolver();
 					int numDeleted = rs.delete(uri, null, null);
-					Log.v(LOG_TAG, "numDeleted: " + numDeleted);
+					Log.d(LOG_TAG, "numDeleted: " + numDeleted);
 					mEditNamerListener.onEditNamerComplete(ConfirmDelNamerDialog.this);
 				}
 			})
 			.setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
 	            public void onClick(DialogInterface dialog, int id) {
-	            	Log.v(LOG_TAG, "In DialogFragment, onCreateDialog, Negative button clicked");
+	            	Log.d(LOG_TAG, "In DialogFragment, onCreateDialog, Negative button clicked");
 	                // User cancelled the dialog
 	            }
 	        });

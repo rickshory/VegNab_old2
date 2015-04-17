@@ -204,16 +204,16 @@ public class MainVNActivity extends ActionBarActivity
 /* comment out onBackPressed()
 	@Override
 	public void onBackPressed() {
-		Log.v(LOG_TAG, "Caught 'onBackPressed'");
+		Log.d(LOG_TAG, "Caught 'onBackPressed'");
 		FragmentManager fm = getSupportFragmentManager();
 		try {
 			// try to pop the data screens container fragment
 			if (fm.popBackStackImmediate (Tags.DATA_SCREENS_CONTAINER, FragmentManager.POP_BACK_STACK_INCLUSIVE)) {
-				Log.v(LOG_TAG, "DATA_SCREENS_CONTAINER fragment popped from backstack");
+				Log.d(LOG_TAG, "DATA_SCREENS_CONTAINER fragment popped from backstack");
 //				wasRemoved = true;
 			}
 		} catch (Exception e) {
-			Log.v(LOG_TAG, "stack pop exception: " + e.getMessage());
+			Log.d(LOG_TAG, "stack pop exception: " + e.getMessage());
 		}
 
 //		Fragment currentFragment = this.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
@@ -373,7 +373,7 @@ public class MainVNActivity extends ActionBarActivity
 
 	@Override
 	public void onEditNamerComplete(DialogFragment dialog) {
-		Log.v(LOG_TAG, "onEditNamerComplete(DialogFragment dialog)");
+		Log.d(LOG_TAG, "onEditNamerComplete(DialogFragment dialog)");
 		VisitHeaderFragment visHdrFragment = (VisitHeaderFragment) 
 				getSupportFragmentManager().findFragmentByTag(Tags.VISIT_HEADER);
 		visHdrFragment.refreshNamerSpinner();				
@@ -381,7 +381,7 @@ public class MainVNActivity extends ActionBarActivity
 
 	@Override
 	public void onEditVisitComplete(VisitHeaderFragment visitHeaderFragment) {
-		Log.v(LOG_TAG, "onEditVisitComplete(VisitHeaderFragment visitHeaderFragment)");
+		Log.d(LOG_TAG, "onEditVisitComplete(VisitHeaderFragment visitHeaderFragment)");
 		NewVisitFragment newVisFragment = (NewVisitFragment) 
 				getSupportFragmentManager().findFragmentByTag(Tags.NEW_VISIT);
 		newVisFragment.refreshVisitsList();
@@ -395,13 +395,13 @@ public class MainVNActivity extends ActionBarActivity
 	
 	@Override
 	public void onEditVegItemComplete(DialogFragment dialog) {
-		Log.v(LOG_TAG, "onEditSppComplete(DialogFragment dialog)");
+		Log.d(LOG_TAG, "onEditSppComplete(DialogFragment dialog)");
 		DataEntryContainerFragment dataScreensFrag = (DataEntryContainerFragment)
 				getSupportFragmentManager().findFragmentByTag(Tags.DATA_SCREENS_CONTAINER);
 		if (dataScreensFrag == null) {
-			Log.v(LOG_TAG, "dataScreensFrag == null");
+			Log.d(LOG_TAG, "dataScreensFrag == null");
 		} else {
-			Log.v(LOG_TAG, "dataScreensFrag: " + dataScreensFrag.toString());
+			Log.d(LOG_TAG, "dataScreensFrag: " + dataScreensFrag.toString());
 			try {
 				// Sometimes screen-rotates while EditSppItemDialog is displayed destroy some of
 				// the following objects, in which case the app would crash with null pointer exceptions
@@ -413,25 +413,25 @@ public class MainVNActivity extends ActionBarActivity
 						((DataEntryContainerFragment.dataPagerAdapter)dataScreensFrag.mDataScreenPager.getAdapter());
 				VegSubplotFragment vegSubpFragment = (VegSubplotFragment) adapter.getFragment(index);
 				if (vegSubpFragment == null) {
-					Log.v(LOG_TAG, "vegSubpFragment == null");
+					Log.d(LOG_TAG, "vegSubpFragment == null");
 				} else {
-					Log.v(LOG_TAG, "vegSubpFragment: " + vegSubpFragment.toString());
-					Log.v(LOG_TAG, "About to do 'refreshSppList' for data page " + index);
+					Log.d(LOG_TAG, "vegSubpFragment: " + vegSubpFragment.toString());
+					Log.d(LOG_TAG, "About to do 'refreshSppList' for data page " + index);
 					vegSubpFragment.refreshSppList();
-					Log.v(LOG_TAG, "Completed 'refreshSppList' for data page " + index);
+					Log.d(LOG_TAG, "Completed 'refreshSppList' for data page " + index);
 	//				dataScreensFrag.mDataScreenPager.setCurrentItem(index);
 				}
 			} catch (Exception e) {
-				Log.v(LOG_TAG, "exception: " + e.getMessage());
+				Log.d(LOG_TAG, "exception: " + e.getMessage());
 			} 
 		}
 		
 //		VegSubplotFragment vegSubpFragment = (VegSubplotFragment) 
 //				getSupportFragmentManager().findFragmentByTag(Tags.VEG_SUBPLOT);
 //		if (vegSubpFragment == null) {
-//			Log.v(LOG_TAG, "vegSubpFragment == null");
+//			Log.d(LOG_TAG, "vegSubpFragment == null");
 //		} else {
-//			Log.v(LOG_TAG, "vegSubpFragment: " + vegSubpFragment.toString());
+//			Log.d(LOG_TAG, "vegSubpFragment: " + vegSubpFragment.toString());
 //			vegSubpFragment.refreshSppList();
 //		}
 		Fragment currentFragment = this.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
@@ -443,7 +443,7 @@ public class MainVNActivity extends ActionBarActivity
 	@Override
 	public void onSppMatchListClicked(int sourceId, long recId, String sppCode, String sppDescr, 
 			String vegGenus, String vegSpecies, String vegSubsppVar, String vegVernacular) {
-		Log.v(LOG_TAG, "OnSppResultClickListener, sourceId=" + sourceId + ", recId=" + recId 
+		Log.d(LOG_TAG, "OnSppResultClickListener, sourceId=" + sourceId + ", recId=" + recId
 				+ ", sppCode: '" + sppCode +"', sppDescr: '" + sppDescr + "'");
 		// if from Regional List, save in Found List, change Source and substitute that new record's ID
 		// for testing, try to save via dialog
@@ -454,7 +454,7 @@ public class MainVNActivity extends ActionBarActivity
 		FragmentManager fm = getSupportFragmentManager();
 		Fragment vegSubpFragment = fm.findFragmentByTag(Tags.VEG_SUBPLOT);
 		if (vegSubpFragment == null) {
-			Log.v(LOG_TAG, "vegSubpFragment == null");
+			Log.d(LOG_TAG, "vegSubpFragment == null");
 		} else {
 			
 			FragmentTransaction transaction = fm.beginTransaction();
@@ -468,7 +468,7 @@ public class MainVNActivity extends ActionBarActivity
 /*	
 		@Override
 	public void onEditSppComplete(VisitHeaderFragment visitHeaderFragment) {
-		Log.v(LOG_TAG, "onEditVisitComplete(VisitHeaderFragment visitHeaderFragment)");
+		Log.d(LOG_TAG, "onEditVisitComplete(VisitHeaderFragment visitHeaderFragment)");
 		NewVisitFragment newVisFragment = (NewVisitFragment) 
 				getSupportFragmentManager().findFragmentByTag(Tags.NEW_VISIT);
 		newVisFragment.refreshVisitsList();
@@ -480,15 +480,15 @@ public class MainVNActivity extends ActionBarActivity
 	public File getBackupDatabaseFile() {
 		SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-", Locale.US);
 		String uniqueTime = timeFormat.format(new Date()).toString();
-		Log.v(LOG_TAG, "uniqueTime: " + uniqueTime);
+		Log.d(LOG_TAG, "uniqueTime: " + uniqueTime);
 		String dbBkupName = uniqueTime + DATABASE_NAME;
-		Log.v(LOG_TAG, "dbBkupName: " + dbBkupName);
+		Log.d(LOG_TAG, "dbBkupName: " + dbBkupName);
 
 		File sdCard = Environment.getExternalStorageDirectory();
 		// create the folder
 		File vnFolder = new File(sdCard.getAbsolutePath() + "/" + saveFolderName);
 		vnFolder.mkdirs();
-		Log.v(LOG_TAG, "folder created '" + saveFolderName + "'");
+		Log.d(LOG_TAG, "folder created '" + saveFolderName + "'");
 		File backupDB = new File(vnFolder, dbBkupName);
 
 		return backupDB;
@@ -499,7 +499,7 @@ public class MainVNActivity extends ActionBarActivity
 		ConfigurableMsgDialog flexErrDlg = new ConfigurableMsgDialog();
 		try {
 			copyFile(from, to);
-			Log.v(LOG_TAG, "DB backed up to: " + to.getPath());
+			Log.d(LOG_TAG, "DB backed up to: " + to.getPath());
 			flexErrDlg = ConfigurableMsgDialog.newInstance("DB backed up to: ", to.getPath().toString());
 			flexErrDlg.show(getSupportFragmentManager(), "frg_db_copy_ok");
 			return true;

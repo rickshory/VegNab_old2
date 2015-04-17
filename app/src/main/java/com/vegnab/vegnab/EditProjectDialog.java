@@ -57,18 +57,18 @@ public class EditProjectDialog extends DialogFragment implements android.view.Vi
 	        mValues.clear();
 	        // put required field, will test for validity before Save
 	        mValues.put("ProjCode", mProjCode.getText().toString().trim());
-	        Log.v(LOG_TAG, "Date set");
+	        Log.d(LOG_TAG, "Date set");
 	        if (mActiveDateView == mStartDate) {
-	        	Log.v(LOG_TAG, "Date set for mStartDate, about to save record");
+	        	Log.d(LOG_TAG, "Date set for mStartDate, about to save record");
 	        	mValues.put("StartDate", mStartDate.getText().toString().trim());
 	        }
 	        if (mActiveDateView == mEndDate) {
-	        	Log.v(LOG_TAG, "Date set for mEndDate, about to save record");
+	        	Log.d(LOG_TAG, "Date set for mEndDate, about to save record");
 	        	mValues.put("EndDate", mEndDate.getText().toString().trim());
 	        }
-	        Log.v(LOG_TAG, "About to save record after date set, mValues: " + mValues.toString());
+	        Log.d(LOG_TAG, "About to save record after date set, mValues: " + mValues.toString());
 	        int numUpdated = saveProjRecord();
-	        Log.v(LOG_TAG, "Date set, saved record, numUpdated=" + numUpdated);
+	        Log.d(LOG_TAG, "Date set, saved record, numUpdated=" + numUpdated);
 	    }
 	};
 	
@@ -190,7 +190,7 @@ public class EditProjectDialog extends DialogFragment implements android.view.Vi
 			if (!mValues.containsKey("ProjCode")) { // assure contains required field
 				mValues.put("ProjCode", mProjCode.getText().toString().trim());
 			}
-			Log.v(LOG_TAG, "Saving record in onFocusChange; mValues: " + mValues.toString().trim());
+			Log.d(LOG_TAG, "Saving record in onFocusChange; mValues: " + mValues.toString().trim());
 			int numUpdated = saveProjRecord();
 			}		
 		}
@@ -207,7 +207,7 @@ public class EditProjectDialog extends DialogFragment implements android.view.Vi
 		mValues.put("ContactPerson", mContactPerson.getText().toString().trim());
 		mValues.put("StartDate", mStartDate.getText().toString().trim());
 		mValues.put("EndDate", mEndDate.getText().toString().trim());
-		Log.v(LOG_TAG, "Saving record in onCancel; mValues: " + mValues.toString());
+		Log.d(LOG_TAG, "Saving record in onCancel; mValues: " + mValues.toString());
 		int numUpdated = saveProjRecord();
 	}
 	
@@ -231,26 +231,26 @@ public class EditProjectDialog extends DialogFragment implements android.view.Vi
 			Toast.makeText(this.getActivity(),
 					c.getResources().getString(R.string.edit_proj_msg_dup_proj) + " \"" + projCodeString + "\"" ,
 					Toast.LENGTH_LONG).show();
-			Log.v(LOG_TAG, "in saveProjRecord, canceled because of duplicate ProjCode; mProjRecId = " + mProjRecId);
+			Log.d(LOG_TAG, "in saveProjRecord, canceled because of duplicate ProjCode; mProjRecId = " + mProjRecId);
 			return 0;
 		}
 		ContentResolver rs = c.getContentResolver();
 		if (mProjRecId == -1) {
-			Log.v(LOG_TAG, "entered saveProjRecord with (mProjRecId == -1); canceled");
+			Log.d(LOG_TAG, "entered saveProjRecord with (mProjRecId == -1); canceled");
 			return 0;
 		}
 		if (mProjRecId == 0) { // new record
 			mUri = rs.insert(mProjectsUri, mValues);
-			Log.v(LOG_TAG, "new record in saveProjRecord; returned URI: " + mUri.toString());
+			Log.d(LOG_TAG, "new record in saveProjRecord; returned URI: " + mUri.toString());
 			long newRecId = Long.parseLong(mUri.getLastPathSegment());
 			if (newRecId < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
-				Log.v(LOG_TAG, "new record in saveProjRecord has Id == " + newRecId + "); canceled");
+				Log.d(LOG_TAG, "new record in saveProjRecord has Id == " + newRecId + "); canceled");
 				return 0;
 			}
 			mProjRecId = newRecId;
 			getLoaderManager().restartLoader(Loaders.EXISTING_PROJCODES, null, this);
 			mUri = ContentUris.withAppendedId(mProjectsUri, mProjRecId);
-			Log.v(LOG_TAG, "new record in saveProjRecord; URI re-parsed: " + mUri.toString());
+			Log.d(LOG_TAG, "new record in saveProjRecord; URI re-parsed: " + mUri.toString());
 			// set default project; redundant with fn in NewVisitFragment; low priority fix
 			SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
 			SharedPreferences.Editor prefEditor = sharedPref.edit();
@@ -260,7 +260,7 @@ public class EditProjectDialog extends DialogFragment implements android.view.Vi
 		} else {
 			mUri = ContentUris.withAppendedId(mProjectsUri, mProjRecId);
 			int numUpdated = rs.update(mUri, mValues, null, null);
-			Log.v(LOG_TAG, "Saved record in saveProjRecord; numUpdated: " + numUpdated);
+			Log.d(LOG_TAG, "Saved record in saveProjRecord; numUpdated: " + numUpdated);
 			return numUpdated;
 		}
 	}
@@ -306,15 +306,15 @@ public class EditProjectDialog extends DialogFragment implements android.view.Vi
 		case Loaders.EXISTING_PROJCODES:
 			mExistingProjCodes.clear();
 			while (c.moveToNext()) {
-				Log.v(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("ProjCode")));
+				Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("ProjCode")));
 				mExistingProjCodes.put(c.getLong(c.getColumnIndexOrThrow("_id")), 
 						c.getString(c.getColumnIndexOrThrow("ProjCode")));
 			}
-			Log.v(LOG_TAG, "onLoadFinished, number of items in mExistingProjCodes: " + mExistingProjCodes.size());
-			Log.v(LOG_TAG, "onLoadFinished, items in mExistingProjCodes: " + mExistingProjCodes.toString());
+			Log.d(LOG_TAG, "onLoadFinished, number of items in mExistingProjCodes: " + mExistingProjCodes.size());
+			Log.d(LOG_TAG, "onLoadFinished, items in mExistingProjCodes: " + mExistingProjCodes.toString());
 			break;
 		case Loaders.PROJECT_TO_EDIT:
-			Log.v(LOG_TAG, "onLoadFinished, records: " + c.getCount());
+			Log.d(LOG_TAG, "onLoadFinished, records: " + c.getCount());
 			if (c.moveToFirst()) {
 				mProjCode.setText(c.getString(c.getColumnIndexOrThrow("ProjCode")));
 				mDescription.setText(c.getString(c.getColumnIndexOrThrow("Description")));

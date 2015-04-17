@@ -37,13 +37,13 @@ public class DatePickerFragment extends DialogFragment
 				Toast.LENGTH_SHORT).show();
 		
 		txt = (EditText) this.getActivity().findViewById(R.id.txt_date_from);
-		Log.v("DatePicker", "about to test 'txt == null'");
+		Log.d("DatePicker", "about to test 'txt == null'");
 		if (txt == null) {
-			Log.v("DatePicker", "EditText is null ");
+			Log.d("DatePicker", "EditText is null ");
 		} else {
-			Log.v("DatePicker", "EditText not null ");
+			Log.d("DatePicker", "EditText not null ");
 		}
-//		Log.v("DatePicker", "verifity EditText: " + txt.toString());
+//		Log.d("DatePicker", "verifity EditText: " + txt.toString());
 //		String s = "2000";
 //		txt.setText(s);
 //		txt.setText(year + "-" + (month + 1) + "-" + day);

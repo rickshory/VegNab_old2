@@ -290,10 +290,10 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
 		mRowCt = finishedCursor.getCount();
 		switch (loader.getId()) {
 		case Loaders.TEST_SQL:
-			Log.v(LOG_TAG, "Loaders.TEST_SQL returned cursor ");
+			Log.d(LOG_TAG, "Loaders.TEST_SQL returned cursor ");
 			finishedCursor.moveToFirst();
 			String d = finishedCursor.getString(0);
-			Log.v(LOG_TAG, "Loaders.TEST_SQL value returned: " + d);
+			Log.d(LOG_TAG, "Loaders.TEST_SQL value returned: " + d);
 /*			Toast.makeText(this.getActivity(),
 					"Date: " + d,
 					Toast.LENGTH_LONG).show();
@@ -317,7 +317,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
 							"Prefs key '" + PREF_DEFAULT_PROJECT_ID + "' does not exist yet.", 
 							Toast.LENGTH_LONG).show();
 */
-					Log.v(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PROJECT_ID + "' does not exist yet.");
+					Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PROJECT_ID + "' does not exist yet.");
 					// update the create time in the database from when the DB file was created to 'now'
 					String sql = "UPDATE Projects SET StartDate = DATETIME('now') WHERE _id = 1;";
 					ContentResolver resolver = getActivity().getContentResolver();
@@ -329,20 +329,20 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
 							"Prefs key '" + PREF_DEFAULT_PROJECT_ID + "' set for the first time.", 
 							Toast.LENGTH_LONG).show();
 */
-					Log.v(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PROJECT_ID + "' set for the first time."); 
+					Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PROJECT_ID + "' set for the first time."); 
 				} else {
 /*					Toast.makeText(this.getActivity(), 
 							"Prefs key '" + PREF_DEFAULT_PROJECT_ID + "' = " + mProjectId, 
 							Toast.LENGTH_LONG).show();
 */
-					Log.v(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PROJECT_ID + "' = " + mProjectId);
+					Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PROJECT_ID + "' = " + mProjectId);
 				}
 				// set the default Project to show in its spinner
 				// for a generalized fn, try: mProjSpinner.getAdapter().getCount()
 				for (int i=0; i<mRowCt; i++) {
-					Log.v(LOG_TAG, "Setting mProjSpinner default; testing index " + i);
+					Log.d(LOG_TAG, "Setting mProjSpinner default; testing index " + i);
 					if (mProjSpinner.getItemIdAtPosition(i) == mProjectId) {
-						Log.v(LOG_TAG, "Setting mProjSpinner default; found matching index " + i);
+						Log.d(LOG_TAG, "Setting mProjSpinner default; found matching index " + i);
 						mProjSpinner.setSelection(i);
 						break;
 					}
@@ -369,26 +369,26 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
 							"Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' does not exist yet.", 
 							Toast.LENGTH_LONG).show();
 */
-					Log.v(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' does not exist yet.");
+					Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' does not exist yet.");
 					saveDefaultPlotTypeId(mPlotTypeId);
 /*					Toast.makeText(this.getActivity(), 
 							"Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' set for the first time.", 
 							Toast.LENGTH_LONG).show();
 */
-					Log.v(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' set for the first time."); 
+					Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' set for the first time."); 
 				} else {
 /*					Toast.makeText(this.getActivity(), 
 							"Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' = " + mPlotTypeId, 
 							Toast.LENGTH_LONG).show();
 */
-					Log.v(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PROJECT_ID + "' = " + mPlotTypeId);
+					Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PROJECT_ID + "' = " + mPlotTypeId);
 				}
 				// set the default Plot Type to show in its spinner
 				// for a generalized fn, try: mySpinner.getAdapter().getCount()
 				for (int i=0; i<mRowCt; i++) {
-					Log.v(LOG_TAG, "Setting mPlotTypeSpinner default; testing index " + i);
+					Log.d(LOG_TAG, "Setting mPlotTypeSpinner default; testing index " + i);
 					if (mPlotTypeSpinner.getItemIdAtPosition(i) == mPlotTypeId) {
-						Log.v(LOG_TAG, "Setting mPlotTypeSpinner default; found matching index " + i);
+						Log.d(LOG_TAG, "Setting mPlotTypeSpinner default; found matching index " + i);
 						mPlotTypeSpinner.setSelection(i);
 						break;
 					}
@@ -432,7 +432,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
 		// get the text by:
 		//Cursor cur = (Cursor)mProjAdapter.getItem(position);
 		//String strSel = cur.getString(cur.getColumnIndex("ProjCode"));
-		//Log.v(LOG_TAG, strSel);
+		//Log.d(LOG_TAG, strSel);
 		// if spinner is filled by Content Provider, can't get text by:
 		//String strSel = parent.getItemAtPosition(position).toString();
 		// that returns something like below, which there is no way to get text out of:
@@ -479,12 +479,12 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
 /*
 	// no Override
 	public static void onBackPressed() {
-		Log.v("NewVist", "In NewVisitFragment, caught 'onBackPressed'");
+		Log.d("NewVist", "In NewVisitFragment, caught 'onBackPressed'");
 	return;
 	}
 */	
 	public void showDatePickerDialog(View v) {
-		Log.v("NewVisit", "Event caught in NewVisitFragment");
+		Log.d("NewVisit", "Event caught in NewVisitFragment");
 	}
 
 }

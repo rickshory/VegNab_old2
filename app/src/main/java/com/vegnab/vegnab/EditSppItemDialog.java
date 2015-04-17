@@ -98,7 +98,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 		super.onCreate(savedInstanceState);
         try {
         	mEditVegItemListener = (EditSppItemDialogListener) getActivity();
-        	Log.v(LOG_TAG, "(EditSppItemDialogListener) getActivity()");
+        	Log.d(LOG_TAG, "(EditSppItemDialogListener) getActivity()");
         } catch (ClassCastException e) {
             throw new ClassCastException("Main Activity must implement EditSppItemDialogListener interface");
         }
@@ -198,7 +198,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 				mValidationLevel = Validation.QUIET;
 				if (validateVegItemValues()) {
 					int numUpdated = saveVegItemRecord();
-					Log.v(LOG_TAG, "Saved record in onFocusChange; numUpdated: " + numUpdated);
+					Log.d(LOG_TAG, "Saved record in onFocusChange; numUpdated: " + numUpdated);
 				}
 			}
 		}		
@@ -210,7 +210,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 		mValidationLevel = Validation.CRITICAL;
 		if (validateVegItemValues()) {
 			int numUpdated = saveVegItemRecord();
-			Log.v(LOG_TAG, "Saved record in onCancel; numUpdated: " + numUpdated);
+			Log.d(LOG_TAG, "Saved record in onCancel; numUpdated: " + numUpdated);
 			if (numUpdated > 0) {
 				mEditVegItemListener.onEditVegItemComplete(EditSppItemDialog.this);
 			}
@@ -231,7 +231,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 
 		ContentResolver rs = c.getContentResolver();
 		if (mVegItemRecId == -1) {
-			Log.v(LOG_TAG, "entered saveVegItemRecord with (mVegItemRecId == -1); canceled");
+			Log.d(LOG_TAG, "entered saveVegItemRecord with (mVegItemRecId == -1); canceled");
 			return 0;
 		}
 		if (mVegItemRecId == 0) { // new record
@@ -246,21 +246,21 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 			mValues.put("TimeLastChanged", mTimeFormat.format(new Date()));
 			
 			mUri = rs.insert(mVegItemsUri, mValues);
-			Log.v(LOG_TAG, "new record in saveVegItemRecord; returned URI: " + mUri.toString());
+			Log.d(LOG_TAG, "new record in saveVegItemRecord; returned URI: " + mUri.toString());
 			long newRecId = Long.parseLong(mUri.getLastPathSegment());
 			if (newRecId < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
-				Log.v(LOG_TAG, "new record in saveVegItemRecord has Id == " + newRecId + "); canceled");
+				Log.d(LOG_TAG, "new record in saveVegItemRecord has Id == " + newRecId + "); canceled");
 				return 0;
 			}
 			mVegItemRecId = newRecId;
 			mUri = ContentUris.withAppendedId(mVegItemsUri, mVegItemRecId);
-			Log.v(LOG_TAG, "new record in saveVegItemRecord; URI re-parsed: " + mUri.toString());
+			Log.d(LOG_TAG, "new record in saveVegItemRecord; URI re-parsed: " + mUri.toString());
 			return 1;
 		} else {
 			mUri = ContentUris.withAppendedId(mVegItemsUri, mVegItemRecId);
 			mValues.put("TimeLastChanged", mTimeFormat.format(new Date()));
 			int numUpdated = rs.update(mUri, mValues, null, null);
-			Log.v(LOG_TAG, "Saved record in saveVegItemRecord; numUpdated: " + numUpdated);
+			Log.d(LOG_TAG, "Saved record in saveVegItemRecord; numUpdated: " + numUpdated);
 			return numUpdated;
 		}
 	}
@@ -291,7 +291,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 			// validate Height
 			String stringHt = mEditSpeciesHeight.getText().toString().trim();
 			if (stringHt.length() == 0) {
-				Log.v(LOG_TAG, "Height is length zero");
+				Log.d(LOG_TAG, "Height is length zero");
 				if (mValidationLevel > Validation.SILENT) {
 					stringProblem = c.getResources().getString(R.string.edit_spp_item_msg_no_height);
 					if (mValidationLevel == Validation.QUIET) {
@@ -310,7 +310,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 				try {
 					Ht = Integer.parseInt(stringHt);
 					if ((Ht < 0) || (Ht > 35000)) { // tallest plants are 300m redwoods
-						Log.v(LOG_TAG, "Height is out of range");
+						Log.d(LOG_TAG, "Height is out of range");
 						if (mValidationLevel > Validation.SILENT) {
 							stringProblem = c.getResources().getString(R.string.edit_spp_item_validate_height_bad);
 							if (mValidationLevel == Validation.QUIET) {
@@ -332,10 +332,10 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 						flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
 						flexErrDlg.show(getFragmentManager(), "frg_verify_height_zero");
 						Cv = 0;
-						Log.v(LOG_TAG, "Height is zero, Cover set to zero");
+						Log.d(LOG_TAG, "Height is zero, Cover set to zero");
 					}
 				} catch(NumberFormatException e) {
-					Log.v(LOG_TAG, "Height is not a valid number");
+					Log.d(LOG_TAG, "Height is not a valid number");
 					if (mValidationLevel > Validation.SILENT) {
 						stringProblem = c.getResources().getString(R.string.edit_spp_item_validate_height_bad);
 						if (mValidationLevel == Validation.QUIET) {
@@ -356,7 +356,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 			// validate Cover
 			String stringCv = mEditSpeciesCover.getText().toString().trim();
 			if (stringCv.length() == 0) {
-				Log.v(LOG_TAG, "Cover is length zero");
+				Log.d(LOG_TAG, "Cover is length zero");
 				if (mValidationLevel > Validation.SILENT) {
 					stringProblem = c.getResources().getString(R.string.edit_spp_item_msg_no_cover);
 					if (mValidationLevel == Validation.QUIET) {
@@ -375,7 +375,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 				try {
 					Cv = Integer.parseInt(stringCv);
 					if ((Cv < 0) || (Cv > 100)) { // percent
-						Log.v(LOG_TAG, "Cover is out of range");
+						Log.d(LOG_TAG, "Cover is out of range");
 						if (mValidationLevel > Validation.SILENT) {
 							stringProblem = c.getResources().getString(R.string.edit_spp_item_validate_cover_bad);
 							if (mValidationLevel == Validation.QUIET) {
@@ -399,7 +399,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 						Ht = 0;
 					}
 				} catch(NumberFormatException e) {
-					Log.v(LOG_TAG, "Cover is not a valid number");
+					Log.d(LOG_TAG, "Cover is not a valid number");
 					if (mValidationLevel > Validation.SILENT) {
 						stringProblem = c.getResources().getString(R.string.edit_spp_item_validate_cover_bad);
 						if (mValidationLevel == Validation.QUIET) {
@@ -456,7 +456,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 		switch (loader.getId()) {
 			
 		case Loaders.VEGITEM_TO_EDIT:
-			Log.v(LOG_TAG, "onLoadFinished, records: " + c.getCount());
+			Log.d(LOG_TAG, "onLoadFinished, records: " + c.getCount());
 			if (c.moveToFirst()) {
 				getDialog().setTitle(R.string.edit_spp_item_title_edit);
 				String vegItemLabel = c.getString(c.getColumnIndexOrThrow("OrigCode")) + ": "
@@ -511,7 +511,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 		// get the text by:
 		//Cursor cur = (Cursor)mNamerAdapter.getItem(position);
 		//String strSel = cur.getString(cur.getColumnIndex("NamerName"));
-		//Log.v(LOG_TAG, strSel);
+		//Log.d(LOG_TAG, strSel);
 		// if spinner is filled by Content Provider, can't get text by:
 		//String strSel = parent.getItemAtPosition(position).toString();
 		// that returns something like below, which there is no way to get text out of:
@@ -540,9 +540,9 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 		// set the id confidence spinner
 		int ct = mCFCursor.getCount();
 		for (int i=0; i<ct; i++) {
-			Log.v(LOG_TAG, "Setting mSpinnerSpeciesConfidence; testing index " + i);
+			Log.d(LOG_TAG, "Setting mSpinnerSpeciesConfidence; testing index " + i);
 			if (mSpinnerSpeciesConfidence.getItemIdAtPosition(i) == mIDConfidence) {
-				Log.v(LOG_TAG, "Setting mSpinnerSpeciesConfidence; found matching index " + i);
+				Log.d(LOG_TAG, "Setting mSpinnerSpeciesConfidence; found matching index " + i);
 				mSpinnerSpeciesConfidence.setSelection(i);
 				break;
 			}

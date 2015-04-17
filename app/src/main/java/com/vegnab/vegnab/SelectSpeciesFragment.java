@@ -66,8 +66,8 @@ public class SelectSpeciesFragment extends ListFragment
 		@Override
 		public void afterTextChanged(Editable s) {
 			// use this method; test length of string; e.g. 'count' of other methods does not give this length
-			//Log.v(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "'");
-			Log.v(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "', length: " + s.length());
+			//Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "'");
+			Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "', length: " + s.length());
 			mStSearch = s.toString();
 			if (s.length() == 0) {
 				mStSQL = "SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, " 
@@ -89,14 +89,14 @@ public class SelectSpeciesFragment extends ListFragment
 		@Override
 		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 			// the 'count' characters beginning at 'start' are about to be replaced by new text with length 'after'
-			//Log.v(LOG_TAG, "beforeTextChanged, s: '" + s.toString() + "', start: " + start + ", count: " + count + ", after: " + after);
+			//Log.d(LOG_TAG, "beforeTextChanged, s: '" + s.toString() + "', start: " + start + ", count: " + count + ", after: " + after);
 			
 		}
 
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before, int count) {
 			// the 'count' characters beginning at 'start' have just replaced old text that had length 'before'
-			//Log.v(LOG_TAG, "onTextChanged, s: '" + s.toString() + "', start: " + start + ", before: " + before + ", count: " + count);
+			//Log.d(LOG_TAG, "onTextChanged, s: '" + s.toString() + "', start: " + start + ", before: " + before + ", count: " + count);
 			
 		}
 	};
@@ -213,11 +213,11 @@ public class SelectSpeciesFragment extends ListFragment
         		mSppMatchCursor.getColumnIndexOrThrow("Vernacular"));
         
         
-        Log.v(LOG_TAG, "mSppMatchCursor, pos = " + pos + " SppCode: " + vegCode);
+        Log.d(LOG_TAG, "mSppMatchCursor, pos = " + pos + " SppCode: " + vegCode);
         if (mVegCodesAlreadyOnSubplot.contains(vegCode)) {
         	// warn user and allow to cancel
         }
-        Log.v(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to create new record");
+        Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to create new record");
         Bundle args = new Bundle();
         args.putLong(EditSppItemDialog.VEG_ITEM_REC_ID, 0); // don't need this, default is in class
         args.putLong(EditSppItemDialog.CUR_VISIT_REC_ID, mCurVisitRecId);
@@ -304,7 +304,7 @@ public class SelectSpeciesFragment extends ListFragment
 /*
 	// no Override
 	public static void onBackPressed() {
-		Log.v("NewVist", "In NewVisitFragment, caught 'onBackPressed'");
+		Log.d("NewVist", "In NewVisitFragment, caught 'onBackPressed'");
 	return;
 	}
 */	

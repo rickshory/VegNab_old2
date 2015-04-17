@@ -36,16 +36,16 @@ public class ConfirmDelProjDialog extends DialogFragment {
 		if (args != null) {
 			mProjRecId = args.getLong("projRecId");
 			mProjCode = args.getString("projCode");
-//			Log.v(LOG_TAG, "In ConfirmDelProjDialog DialogFragment, onCreateDialog, mProjRecId: " + mProjRecId);
-//			Log.v(LOG_TAG, "In ConfirmDelProjDialog DialogFragment, onCreateDialog, mProjCode: " + mProjCode);
+//			Log.d(LOG_TAG, "In ConfirmDelProjDialog DialogFragment, onCreateDialog, mProjRecId: " + mProjRecId);
+//			Log.d(LOG_TAG, "In ConfirmDelProjDialog DialogFragment, onCreateDialog, mProjCode: " + mProjCode);
 		}
 		AlertDialog.Builder bld = new AlertDialog.Builder(getActivity());
 		bld.setTitle(R.string.del_proj_confirm).setMessage(mProjCode)
 			.setPositiveButton(R.string.action_affirm, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					Log.v(LOG_TAG, "In ConfirmDelProjDialog DialogFragment, onCreateDialog, Positive button clicked");
-					Log.v(LOG_TAG, "In ConfirmDelProjDialog about to delete Project record id=" + mProjRecId);
+					Log.d(LOG_TAG, "In ConfirmDelProjDialog DialogFragment, onCreateDialog, Positive button clicked");
+					Log.d(LOG_TAG, "In ConfirmDelProjDialog about to delete Project record id=" + mProjRecId);
 					
 					//old, not used any more: "DELETE FROM Projects WHERE _id = ?;" {"" + mProjRecId}
 					// "UPDATE Projects SET IsDeleted = 1 WHERE _id = ?;" {"" + mProjRecId}
@@ -54,16 +54,16 @@ public class ConfirmDelProjDialog extends DialogFragment {
 					Uri uri = ContentUris.withAppendedId(
 							Uri.withAppendedPath(
 							ContentProvider_VegNab.CONTENT_URI, "projects"), mProjRecId);
-					Log.v(LOG_TAG, "In ConfirmDelProjDialog URI: " + uri.toString());
+					Log.d(LOG_TAG, "In ConfirmDelProjDialog URI: " + uri.toString());
 					ContentResolver rs = getActivity().getContentResolver();
 					int numUpdated = rs.update(uri, mValues, null, null);
-					Log.v(LOG_TAG, "In ConfirmDelProjDialog numUpdated: " + numUpdated);
+					Log.d(LOG_TAG, "In ConfirmDelProjDialog numUpdated: " + numUpdated);
 				}
 				
 			})
 			.setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
 	            public void onClick(DialogInterface dialog, int id) {
-	            	Log.v(LOG_TAG, "In ConfirmDelProjDialog DialogFragment, onCreateDialog, Negative button clicked");
+	            	Log.d(LOG_TAG, "In ConfirmDelProjDialog DialogFragment, onCreateDialog, Negative button clicked");
 	                // User cancelled the dialog
 	            }
 	        });

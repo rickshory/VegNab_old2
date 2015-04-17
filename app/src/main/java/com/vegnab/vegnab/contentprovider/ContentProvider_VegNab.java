@@ -91,7 +91,7 @@ public class ContentProvider_VegNab extends ContentProvider {
 		String s = "pragma table_info(Projects);";
 		Cursor c = database.getReadableDatabase().rawQuery(s, null);
 		while (c.moveToNext()) {
-//			Log.v(LOG_TAG, "Project field added to HashMap: " + c.getString(c.getColumnIndexOrThrow("name")));
+//			Log.d(LOG_TAG, "Project field added to HashMap: " + c.getString(c.getColumnIndexOrThrow("name")));
 			mFields_Projects.add(c.getString(c.getColumnIndexOrThrow("name")));
 		}
 		// could extend this to other tables, but is there any point?
@@ -149,63 +149,63 @@ public class ContentProvider_VegNab extends ContentProvider {
 
 			case NAMER_ID:
 				queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-				Log.v(LOG_TAG, "NAMER_ID appendWhere");
+				Log.d(LOG_TAG, "NAMER_ID appendWhere");
 				// note, no break, so drops through
 			case NAMERS:
 				queryBuilder.setTables("Namers");
-				Log.v(LOG_TAG, "NAMERS setTables");
+				Log.d(LOG_TAG, "NAMERS setTables");
 				break;
 				
 			case PLOTTYPE_ID:
 				queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-				Log.v(LOG_TAG, "PLOTTYPE_ID appendWhere");
+				Log.d(LOG_TAG, "PLOTTYPE_ID appendWhere");
 				// note, no break, so drops through
 			case PLOTTYPES:
 				queryBuilder.setTables("PlotTypes");
-				Log.v(LOG_TAG, "PLOTTYPES setTables");
+				Log.d(LOG_TAG, "PLOTTYPES setTables");
 				break;
 				
 			case SUBPLOTTYPE_ID:
 				queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-				Log.v(LOG_TAG, "SUBPLOTTYPE_ID appendWhere");
+				Log.d(LOG_TAG, "SUBPLOTTYPE_ID appendWhere");
 				// note, no break, so drops through
 			case SUBPLOTTYPES:
 				queryBuilder.setTables("SubplotTypes");
-				Log.v(LOG_TAG, "SUBPLOTTYPES setTables");
+				Log.d(LOG_TAG, "SUBPLOTTYPES setTables");
 				break;
 
 			case VEGITEM_ID:
 				queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-				Log.v(LOG_TAG, "VEGITEM_ID appendWhere");
+				Log.d(LOG_TAG, "VEGITEM_ID appendWhere");
 				// note, no break, so drops through
 			case VEGITEMS:
 				queryBuilder.setTables("VegItems");
-				Log.v(LOG_TAG, "VEGITEMS setTables");
+				Log.d(LOG_TAG, "VEGITEMS setTables");
 				break;
 				
 			case PLACEHOLDER_ID:
 				queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-				Log.v(LOG_TAG, "PLACEHOLDER_ID appendWhere");
+				Log.d(LOG_TAG, "PLACEHOLDER_ID appendWhere");
 				// note, no break, so drops through
 			case PLACEHOLDERS:
 				queryBuilder.setTables("Placeholders");
-				Log.v(LOG_TAG, "PLACEHOLDERS setTables");
+				Log.d(LOG_TAG, "PLACEHOLDERS setTables");
 				break;
 			case IDLEVEL_ID:
 				queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-				Log.v(LOG_TAG, "IDLEVEL_ID appendWhere");
+				Log.d(LOG_TAG, "IDLEVEL_ID appendWhere");
 				// note, no break, so drops through
 			case IDLEVELS:
 				queryBuilder.setTables("IdLevels");
-				Log.v(LOG_TAG, "IDLEVELS setTables");
+				Log.d(LOG_TAG, "IDLEVELS setTables");
 				break;
 //			case SPECIESFOUND_ID:
 //				queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-//				Log.v(LOG_TAG, "SPECIESFOUND_ID appendWhere");
+//				Log.d(LOG_TAG, "SPECIESFOUND_ID appendWhere");
 //				// note, no break, so drops through
 //			case SPECIESFOUND:
 //				queryBuilder.setTables("SpeciesFound");
-//				Log.v(LOG_TAG, "SPECIESFOUND setTables");
+//				Log.d(LOG_TAG, "SPECIESFOUND setTables");
 //				break;
 			default:
 				throw new IllegalArgumentException("Unknown URI: " + uri);		
