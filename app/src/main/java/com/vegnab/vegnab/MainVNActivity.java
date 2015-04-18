@@ -78,6 +78,22 @@ public class MainVNActivity extends ActionBarActivity
 			prefEditor.putString(Prefs.UNIQUE_DEVICE_ID, mUniqueDeviceId);
 			prefEditor.commit();
 		}
+
+        // Is there a description of what "local" is (e.g. "Iowa")? Initially, no.
+        if (!sharedPref.contains(Prefs.LOCAL_SPECIES_LIST_DESCRIPTION)) {
+            SharedPreferences.Editor prefEditor = sharedPref.edit();
+            prefEditor.putString(Prefs.LOCAL_SPECIES_LIST_DESCRIPTION, "");
+            prefEditor.commit();
+        }
+
+        // Has the regional species list been downloaded? Initially, no.
+        if (!sharedPref.contains(Prefs.SPECIES_LIST_DOWNLOADED)) {
+            SharedPreferences.Editor prefEditor = sharedPref.edit();
+            prefEditor.putBoolean(Prefs.SPECIES_LIST_DOWNLOADED, false);
+            prefEditor.commit();
+        }
+
+		// Have the user verify each species entered as presence/absence? Initially, yes.
 		// user will probably turn this one off each session, but turn it on on each restart
 		SharedPreferences.Editor prefEditor = sharedPref.edit();
 		prefEditor.putBoolean(Prefs.VERIFY_VEG_ITEMS_PRESENCE, true);
@@ -167,6 +183,8 @@ public class MainVNActivity extends ActionBarActivity
 	*/
 			return true;
 		case R.id.action_get_species:
+            goToGetSppScreen();
+/*
 //			Toast toast = Toast.makeText(getApplicationContext(),
 //					"''Get species'' is not implemented yet", Toast.LENGTH_SHORT);
 //			toast.setGravity(Gravity.TOP, 25, 400);
@@ -184,6 +202,7 @@ public class MainVNActivity extends ActionBarActivity
 //			transaction.replace(R.id.fragment_container, webVwFrag, screenTag);
 			transaction.addToBackStack(null);
 			transaction.commit();
+*/
 			return true;
 			
 		case R.id.action_export_db:
@@ -257,9 +276,31 @@ public class MainVNActivity extends ActionBarActivity
 	
 	@Override
 	public void onNewVisitGoButtonClicked() {
-		goToVisitHeaderScreen(0);
+        // check if SPECIES_LIST_DOWNLOADED
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        Boolean hasSpp = sharedPref.getBoolean(Prefs.SPECIES_LIST_DOWNLOADED, false);
+        if (hasSpp) {
+            goToVisitHeaderScreen(0);
+        } else {
+            ConfigurableMsgDialog flexMsgDlg =
+                    ConfigurableMsgDialog.newInstance("You need the NRCS species list before doing plots.",
+                    "(Requires network connectivity)");
+            flexMsgDlg.show(getSupportFragmentManager(), "frg_dnld_spp");
+            goToGetSppScreen();
+        }
 	}
-	
+
+    public void goToGetSppScreen() {
+        DownloadSppFragment frgDnldSpp = new DownloadSppFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        // replace the fragment in the fragment container with this new fragment and
+        // put the present fragment on the backstack so the user can navigate back to it
+        // the tag is for the fragment now being added, not the one replaced
+        transaction.replace(R.id.fragment_container, frgDnldSpp, "frg_download_spp");
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
 	public void goToVisitHeaderScreen(long visitID) {
 		VisitHeaderFragment visHdrFrag = new VisitHeaderFragment();
 		Bundle args = new Bundle();
