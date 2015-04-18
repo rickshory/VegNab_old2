@@ -89,6 +89,7 @@ public class MainVNActivity extends ActionBarActivity
         // Has the regional species list been downloaded? Initially, no.
         if (!sharedPref.contains(Prefs.SPECIES_LIST_DOWNLOADED)) {
             SharedPreferences.Editor prefEditor = sharedPref.edit();
+            // improve this, test if table contains any species
             prefEditor.putBoolean(Prefs.SPECIES_LIST_DOWNLOADED, false);
             prefEditor.commit();
         }
@@ -283,8 +284,8 @@ public class MainVNActivity extends ActionBarActivity
             goToVisitHeaderScreen(0);
         } else {
             ConfigurableMsgDialog flexMsgDlg =
-                    ConfigurableMsgDialog.newInstance("You need the NRCS species list before doing plots.",
-                    "(Requires network connectivity)");
+                    ConfigurableMsgDialog.newInstance("No Species List",
+                    "You need to download the NRCS species list before doing plots. Download is about 3Mb and requires network connectivity.");
             flexMsgDlg.show(getSupportFragmentManager(), "frg_dnld_spp");
             goToGetSppScreen();
         }

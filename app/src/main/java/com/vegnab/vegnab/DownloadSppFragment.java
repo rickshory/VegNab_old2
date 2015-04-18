@@ -104,7 +104,7 @@ public class DownloadSppFragment extends Fragment
 			//Set the local destination for the downloaded file to a path within the application's external files directory
 			request.setDestinationInExternalFilesDir(getActivity(),Environment.DIRECTORY_DOWNLOADS,"VegNabSpeciesList.txt");
 		
-			//Enqueue a new download and same the referenceId
+			//Enqueue a new download and save the referenceId
 			downloadReference = downloadManager.enqueue(request);
 			
 			mTxtVwShowSpp.setText("" + getResources().getString(R.string.dnld_spp_pls_wait));
@@ -251,6 +251,8 @@ public class DownloadSppFragment extends Fragment
 					SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
 					SharedPreferences.Editor prefEditor = sharedPref.edit();
 					prefEditor.putString(Prefs.SPECIES_LIST_DESCRIPTION, listLabel);
+                    // improve this, test if table now contains any species
+                    prefEditor.putBoolean(Prefs.SPECIES_LIST_DOWNLOADED, true);
 					prefEditor.commit();
 					
 					// 'file' here is a pointer, cannot directly read InputStream
