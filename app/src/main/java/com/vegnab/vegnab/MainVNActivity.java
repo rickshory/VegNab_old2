@@ -185,25 +185,6 @@ public class MainVNActivity extends ActionBarActivity
 			return true;
 		case R.id.action_get_species:
             goToGetSppScreen();
-/*
-//			Toast toast = Toast.makeText(getApplicationContext(),
-//					"''Get species'' is not implemented yet", Toast.LENGTH_SHORT);
-//			toast.setGravity(Gravity.TOP, 25, 400);
-//			toast.show();
-			DownloadSppFragment frgDnldSpp = new DownloadSppFragment();
-//			Bundle args = new Bundle();
-			// screenTag serves both as this fn's switch and the tag name of the fragment instance
-//			args.putString(ConfigurableWebviewFragment.ARG_TAG_ID, screenTag);
-//			frgDnldSpp.setArguments(args);
-			FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-			// replace the fragment in the fragment container with this new fragment and
-			// put the present fragment on the backstack so the user can navigate back to it
-			// the tag is for the fragment now being added, not the one replaced
-			transaction.replace(R.id.fragment_container, frgDnldSpp, "frg_download_spp");
-//			transaction.replace(R.id.fragment_container, webVwFrag, screenTag);
-			transaction.addToBackStack(null);
-			transaction.commit();
-*/
 			return true;
 			
 		case R.id.action_export_db:
@@ -283,9 +264,10 @@ public class MainVNActivity extends ActionBarActivity
         if (hasSpp) {
             goToVisitHeaderScreen(0);
         } else {
+            String errTitle = this.getResources().getString(R.string.dnld_spp_no_spp_title);
+            String errMsg = this.getResources().getString(R.string.dnld_spp_no_spp_msg);
             ConfigurableMsgDialog flexMsgDlg =
-                    ConfigurableMsgDialog.newInstance("No Species List",
-                    "You need to download the NRCS species list before doing plots. Download is about 3Mb and requires network connectivity.");
+                    ConfigurableMsgDialog.newInstance(errTitle,  errMsg);
             flexMsgDlg.show(getSupportFragmentManager(), "frg_dnld_spp");
             goToGetSppScreen();
         }

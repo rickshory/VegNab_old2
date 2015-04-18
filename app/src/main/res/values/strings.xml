@@ -42,6 +42,9 @@
     <string name="new_visit_go_button_msg">Start a new Visit</string>
     <string name="new_visit_no_visits_msg">No Visits yet</string>
 
+    <string name="dnld_spp_no_spp_title">No Species List</string>
+    <string name="dnld_spp_no_spp_msg">You need to download the NRCS species list. Download is about 3Mb and requires network connectivity.</string>
+
     <string name="dnld_spp_btn_start">Download Species List</string>
     <string name="dnld_spp_btn_show_all">Display all Downloads</string>
     <string name="dnld_spp_btn_ck_status">Check Status of Download</string>
