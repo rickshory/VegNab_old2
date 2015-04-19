@@ -52,10 +52,10 @@
   
     <Button
         android:id="@+id/new_visit_go_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/new_visit_go_button_msg"
-        android:padding="5dp"
+        android:padding="10dp"
         android:layout_alignLeft="@id/project_label_text"
         android:layout_below="@id/project_label_text"
         />

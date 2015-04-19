@@ -10,10 +10,10 @@
     
     <Button
         android:id="@+id/subplotNewItemButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/veg_subplot_new_item_button_msg"
-        android:padding="5dp"
+        android:padding="10dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
          />
