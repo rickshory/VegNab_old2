@@ -840,6 +840,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		ContentResolver rs = getActivity().getContentResolver();
 		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
 		if (mVisitId == 0) { // new record
+            Log.d(LOG_TAG, "saveVisitRecord; creating new record with mVisitId = " + mVisitId);
 			// fill in fields the user never sees
 			mValues.put("ProjID", sharedPref.getLong(Prefs.DEFAULT_PROJECT_ID, 0));
 			mValues.put("PlotTypeID", sharedPref.getLong(Prefs.DEFAULT_PLOTTYPE_ID, 0));
@@ -906,6 +907,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 			}
 			numUpdated = 1;
 		} else { // update the existing record
+            Log.d(LOG_TAG, "saveVisitRecord; updating existing record with mVisitId = " + mVisitId);
 			mValues.put("LastChanged", mTimeFormat.format(new Date())); // update the last-changed time
 			mUri = ContentUris.withAppendedId(mVisitsUri, mVisitId);
 			numUpdated = rs.update(mUri, mValues, null, null);
