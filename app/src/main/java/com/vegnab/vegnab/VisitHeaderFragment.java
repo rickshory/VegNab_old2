@@ -323,7 +323,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onStart() {
 		super.onStart();
-        // start loaders that depend on layout being ready to receive results
+        // fire off loaders that depend on layout being ready to receive results
         getLoaderManager().initLoader(Loaders.VISIT_TO_EDIT, null, this);
         getLoaderManager().initLoader(Loaders.EXISTING_VISITS, null, this);
         // check if arguments are passed to the fragment that will change the layout
