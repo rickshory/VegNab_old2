@@ -323,25 +323,16 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onStart() {
 		super.onStart();
-		// during startup, check if arguments are passed to the fragment
-		// this is where to do this because the layout has been applied
-		// to the fragment
-		Bundle args = getArguments();
-		if (args != null) {
-			Log.d(LOG_TAG, "In onStart, about to retrieve mVisitId: " + mVisitId);
-			mVisitId = args.getLong(ARG_VISIT_ID, 0);
-			Log.d(LOG_TAG, "In onStart, retrieved mVisitId: " + mVisitId);
-			// fire off loaders
-			getLoaderManager().initLoader(Loaders.VISIT_TO_EDIT, null, this);
-			getLoaderManager().initLoader(Loaders.EXISTING_VISITS, null, this);
-			// set up subplot based on arguments passed in
-			updateSubplotViews(args.getInt(ARG_SUBPLOT));
-		} else if (mCurrentSubplot != -1) {
-			// set up subplot based on saved instance state defined in onCreateView
-			updateSubplotViews(mCurrentSubplot);
-		} else {
-			updateSubplotViews(-1); // figure out what to do for default state 
-		}
+        // start loaders that depend on layout being ready to receive results
+        getLoaderManager().initLoader(Loaders.VISIT_TO_EDIT, null, this);
+        getLoaderManager().initLoader(Loaders.EXISTING_VISITS, null, this);
+        // check if arguments are passed to the fragment that will change the layout
+//		Bundle args = getArguments();
+//		if (args != null) {
+            // these are the arguments originally passed when created, or updated by SaveInstanceState
+            // do not use e.g. VisitId or it will overwrite to 0 if that's still there from newly created
+            // use for special arguments like screen layout
+//        }
 	}
 	
 	@Override
@@ -364,6 +355,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onPause() {
 	    super.onPause();
+
 	    if (mGoogleApiClient.isConnected()) {
 	    	LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 	        mGoogleApiClient.disconnect();
@@ -384,12 +376,6 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		} catch (ClassCastException e) {
 			throw new ClassCastException (activity.toString() + " must implement OnButtonListener");
 		}
-	}
-	
-	public void updateSubplotViews(int subplotNum) {
-		// don't do anything yet
-		// figure out how to deal with default of -1
-		mCurrentSubplot = subplotNum;
 	}
 	
 	@Override
