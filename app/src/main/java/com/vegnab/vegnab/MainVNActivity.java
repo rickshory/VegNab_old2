@@ -226,8 +226,6 @@ public class MainVNActivity extends ActionBarActivity
 	return;
 	}
 */
-	
-	
 
 	public void onVisitHeaderGoButtonClicked(long visitId) {
 		mVisitId = visitId;
@@ -245,7 +243,6 @@ public class MainVNActivity extends ActionBarActivity
 		transaction.addToBackStack(null);
 		transaction.commit();
 		Log.d(LOG_TAG, "Call to DataEntryContainer complete");
-
 	}
 	
 	@Override
@@ -285,25 +282,21 @@ public class MainVNActivity extends ActionBarActivity
     }
 
 	public void goToVisitHeaderScreen(long visitID) {
-		VisitHeaderFragment visHdrFrag = new VisitHeaderFragment();
+        // swap VisitHeaderFragment in place of existing fragment
+        Log.d(LOG_TAG, "About to go to VisitHeader");
 		Bundle args = new Bundle();
 		// visitID = 0 means new visit, not assigned or created yet
 		args.putLong(VisitHeaderFragment.ARG_VISIT_ID, visitID);
-		SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-		SharedPreferences.Editor prefEditor = sharedPref.edit();
-		prefEditor.putLong(Prefs.CURRENT_VISIT_ID, visitID);
-		prefEditor.commit();
 		args.putInt(VisitHeaderFragment.ARG_SUBPLOT, 0); // start with dummy value, subplot 0
-		visHdrFrag.setArguments(args);
+        VisitHeaderFragment visHdrFrag = VisitHeaderFragment.newInstance(args);
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-		// replace the fragment in the fragment container with this new fragment and
 		// put the present fragment on the backstack so the user can navigate back to it
 		// the tag is for the fragment now being added, not the one replaced
 		transaction.replace(R.id.fragment_container, visHdrFrag, Tags.VISIT_HEADER);
 		transaction.addToBackStack(null);
 		transaction.commit();
 	}
-	
+
 	public void showWebViewScreen(String screenTag) {
 		ConfigurableWebviewFragment webVwFrag = new ConfigurableWebviewFragment();
 		Bundle args = new Bundle();
@@ -529,7 +522,7 @@ public class MainVNActivity extends ActionBarActivity
 			return true;
 		} catch (IOException e) {
 			Log.d(LOG_TAG, "Error backuping up database: " + e.getMessage(), e);
-			flexErrDlg = ConfigurableMsgDialog.newInstance("Error backuping up database: ", e.getMessage().toString());
+			flexErrDlg = ConfigurableMsgDialog.newInstance("Error backing up database: ", e.getMessage().toString());
 			flexErrDlg.show(getSupportFragmentManager(), "frg_db_copy_ok");
 		}
 		return false;

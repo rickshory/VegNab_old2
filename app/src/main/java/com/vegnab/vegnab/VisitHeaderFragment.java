@@ -161,7 +161,13 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		// methods that must be implemented in the container Activity
 		public void onVisitHeaderGoButtonClicked(long visitId);
 	}
-	
+
+    public static VisitHeaderFragment newInstance(Bundle args) {
+        VisitHeaderFragment f = new VisitHeaderFragment();
+        f.setArguments(args);
+        return f;
+    }
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
