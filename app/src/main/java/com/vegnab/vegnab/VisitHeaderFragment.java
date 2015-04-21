@@ -319,20 +319,45 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		// set the onclicklistener for all the Button instances found
 		return rootView;
 	}
-	
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            mVisitId = savedInstanceState.getLong(ARG_VISIT_ID, 0);
+        }
+    }
+    /*
+
+		outState.putBoolean(STATE_RESOLVING_ERROR, mResolvingError);
+		outState.putInt(ARG_SUBPLOT, mCurrentSubplot);
+		outState.putLong(ARG_VISIT_ID, mVisitId);
+		outState.putBoolean(ARG_LOC_GOOD_FLAG, mLocIsGood);
+		outState.putParcelable(ARG_CUR_LOCATION, mCurLocation);
+		outState.putParcelable(ARG_PREV_LOCATION, mPrevLocation);
+		if (mLocIsGood) {
+			outState.putDouble(ARG_LOC_LATITUDE, mLatitude);
+			outState.putDouble(ARG_LOC_LONGITUDE, mLongitude);
+			outState.putFloat(ARG_LOC_ACCURACY, mAccuracy);
+			outState.putString(ARG_LOC_TIME, mLocTime);
+		}
+
+    */
 	@Override
 	public void onStart() {
 		super.onStart();
+        // check if arguments are passed to the fragment that will change the layout
+		Bundle args = getArguments();
+		if (args != null) {
+        // these are the arguments originally passed when created, or updated by SaveInstanceState
+            mVisitId = args.getLong(ARG_VISIT_ID, 0);
+        // do not use e.g. VisitId or it will overwrite to 0 if that's still there from newly created
+
+        // also use for special arguments like screen layout
+        }
         // fire off loaders that depend on layout being ready to receive results
         getLoaderManager().initLoader(Loaders.VISIT_TO_EDIT, null, this);
         getLoaderManager().initLoader(Loaders.EXISTING_VISITS, null, this);
-        // check if arguments are passed to the fragment that will change the layout
-//		Bundle args = getArguments();
-//		if (args != null) {
-            // these are the arguments originally passed when created, or updated by SaveInstanceState
-            // do not use e.g. VisitId or it will overwrite to 0 if that's still there from newly created
-            // use for special arguments like screen layout
-//        }
 	}
 	
 	@Override
@@ -355,6 +380,8 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onPause() {
 	    super.onPause();
+
+//        setArguments();
 
 	    if (mGoogleApiClient.isConnected()) {
 	    	LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
