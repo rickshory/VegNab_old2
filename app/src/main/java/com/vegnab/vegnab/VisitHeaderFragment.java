@@ -911,7 +911,14 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 			Log.d(LOG_TAG, "Updated record in saveVisitRecord; numUpdated: " + numUpdated);
 		}
 		if (numUpdated > 0) {
-			mEditVisitListener.onEditVisitComplete(VisitHeaderFragment.this);
+            try {
+                mEditVisitListener.onEditVisitComplete(VisitHeaderFragment.this);
+                // sometimes this fails with null pointer exception because fragment is gone
+            } catch (Exception e) {
+                // ignore; fn is just to refresh the screen and that will happen on fragment rebuild
+            }
+
+
 		}
 		return numUpdated;
 	}	
