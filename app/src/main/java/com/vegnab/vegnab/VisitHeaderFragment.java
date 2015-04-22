@@ -320,39 +320,20 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		return rootView;
 	}
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState != null) {
-            mVisitId = savedInstanceState.getLong(ARG_VISIT_ID, 0);
-        }
-    }
-    /*
-
-		outState.putBoolean(STATE_RESOLVING_ERROR, mResolvingError);
-		outState.putInt(ARG_SUBPLOT, mCurrentSubplot);
-		outState.putLong(ARG_VISIT_ID, mVisitId);
-		outState.putBoolean(ARG_LOC_GOOD_FLAG, mLocIsGood);
-		outState.putParcelable(ARG_CUR_LOCATION, mCurLocation);
-		outState.putParcelable(ARG_PREV_LOCATION, mPrevLocation);
-		if (mLocIsGood) {
-			outState.putDouble(ARG_LOC_LATITUDE, mLatitude);
-			outState.putDouble(ARG_LOC_LONGITUDE, mLongitude);
-			outState.putFloat(ARG_LOC_ACCURACY, mAccuracy);
-			outState.putString(ARG_LOC_TIME, mLocTime);
-		}
-
-    */
 	@Override
 	public void onStart() {
 		super.onStart();
         // check if arguments are passed to the fragment that will change the layout
 		Bundle args = getArguments();
 		if (args != null) {
-        // these are the arguments originally passed when created, or updated by SaveInstanceState
-            mVisitId = args.getLong(ARG_VISIT_ID, 0);
-        // do not use e.g. VisitId or it will overwrite to 0 if that's still there from newly created
-
+            if (mVisitId == 0) {
+                // On return from Subplots container, this method can re-run before
+                // SaveInstanceState and so retain arguments originally passed when created,
+                // such as VisitId=0.
+                // Do not allow that zero to overwrite a new (nonzero) Visit ID, or
+                // it will flag to create a second copy of the same header.
+                mVisitId = args.getLong(ARG_VISIT_ID, 0);
+            }
         // also use for special arguments like screen layout
         }
         // fire off loaders that depend on layout being ready to receive results
@@ -380,9 +361,6 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onPause() {
 	    super.onPause();
-
-//        setArguments();
-
 	    if (mGoogleApiClient.isConnected()) {
 	    	LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 	        mGoogleApiClient.disconnect();
