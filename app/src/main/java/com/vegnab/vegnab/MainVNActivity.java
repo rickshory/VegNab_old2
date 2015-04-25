@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.UUID;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.BuildConfig;
 import com.vegnab.vegnab.database.VNContract.Prefs;
@@ -61,6 +62,8 @@ public class MainVNActivity extends ActionBarActivity
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        //Get a Tracker (should auto-report)
+        ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
 		// set up some default Preferences
 		SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
 		if (!sharedPref.contains(Prefs.TARGET_ACCURACY_OF_VISIT_LOCATIONS)) {
@@ -134,6 +137,20 @@ public class MainVNActivity extends ActionBarActivity
 			transaction.commit();
 		}
 	}
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //Get an Analytics tracker to report app starts & uncaught exceptions etc.
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        //Stop the analytics tracking
+        GoogleAnalytics.getInstance(this).reportActivityStop(this);
+    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
