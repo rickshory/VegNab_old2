@@ -7,17 +7,17 @@
     <integer name="ga_dispatchPeriod">30</integer>
     <integer name="ga_sessionTimeout">300</integer>
     <!-- Treat events as test events and don't send to google -->
-    <bool name="ga_dryRun">false</bool>
+    <bool name="ga_dryRun">true</bool>
     <!-- Enable automatic Activity measurement -->
     <bool name="ga_autoActivityTracking">true</bool>
     <!-- The screen names that will appear in reports -->
-    <string name="com.mycompany.MyActivity">My Activity</string>
+    <string name="com.vegnab.vegnab.VNMainActivity">VN Main Activity</string>
     <!-- The screen names that will appear in reports -->
-    <screenName name="com.google.android.gms.analytics.samples.mobileplayground.ScreenviewFragment">
-        AnalyticsSampleApp ScreenViewSampleScreen
+    <screenName name="com.vegnab.vegnab.NewVisitFragment">
+        VegNabAlphaTest StartupScreen
     </screenName>
-    <screenName name="com.google.android.gms.analytics.samples.mobileplayground.EcommerceFragment">
-        AnalyticsSampleApp EcommerceSampleScreen
+    <screenName name="com.vegnab.vegnab.VisitHeaderFragment">
+        VegNabAlphaTest HeaderScreen
     </screenName>
     <!--  Tracking id for VegNab Alpha Test 1.0.0 -->
     <string name="ga_trackingId">UA-62236020-1</string>
