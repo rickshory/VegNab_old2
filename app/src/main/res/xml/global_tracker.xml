@@ -10,14 +10,13 @@
     <bool name="ga_dryRun">true</bool>
     <!-- Enable automatic Activity measurement -->
     <bool name="ga_autoActivityTracking">true</bool>
-    <!-- The screen names that will appear in reports -->
     <string name="com.vegnab.vegnab.VNMainActivity">VN Main Activity</string>
     <!-- The screen names that will appear in reports -->
     <screenName name="com.vegnab.vegnab.NewVisitFragment">
-        VegNabAlphaTest StartupScreen
+        VegNab Alpha Test StartupScreen
     </screenName>
     <screenName name="com.vegnab.vegnab.VisitHeaderFragment">
-        VegNabAlphaTest HeaderScreen
+        VegNab Alpha Test HeaderScreen
     </screenName>
     <!--  Tracking id for VegNab Alpha Test 1.0.0 -->
     <string name="ga_trackingId">UA-62236020-1</string>
