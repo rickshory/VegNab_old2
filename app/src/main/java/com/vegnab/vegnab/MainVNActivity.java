@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.BuildConfig;
 import com.vegnab.vegnab.database.VNContract.Prefs;
@@ -277,9 +278,21 @@ public class MainVNActivity extends ActionBarActivity
         // check if SPECIES_LIST_DOWNLOADED
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         Boolean hasSpp = sharedPref.getBoolean(Prefs.SPECIES_LIST_DOWNLOADED, false);
+        // get an Analytics event tracker
+        Tracker newVisitTracker = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
         if (hasSpp) {
+            // build and send the Analytics event
+            // track that user started a new visit
+            newVisitTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("Visit Event")
+                    .setAction("New Visit")
+                    .build());
             goToVisitHeaderScreen(0);
         } else {
+            newVisitTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("Visit Event")
+                    .setAction("Download Species")
+                    .build());
             String errTitle = this.getResources().getString(R.string.dnld_spp_no_spp_title);
             String errMsg = this.getResources().getString(R.string.dnld_spp_no_spp_msg);
             ConfigurableMsgDialog flexMsgDlg =
