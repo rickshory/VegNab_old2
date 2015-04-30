@@ -286,6 +286,8 @@ public class MainVNActivity extends ActionBarActivity
             newVisitTracker.send(new HitBuilders.EventBuilder()
                     .setCategory("Visit Event")
                     .setAction("New Visit")
+                    .setLabel("no name yet")
+                    .setValue(0)
                     .build());
             goToVisitHeaderScreen(0);
         } else {
