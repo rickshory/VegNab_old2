@@ -29,6 +29,12 @@ public class VNApplication extends Application {
         super();
     }
 
+    private static VNApplication sInstance;
+
+    public static VNApplication getInstance() {
+        return sInstance;
+    }
+
     synchronized Tracker getTracker(TrackerName trackerId) {
         if (!mTrackers.containsKey(trackerId)) {
             GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
@@ -39,5 +45,4 @@ public class VNApplication extends Application {
         }
         return mTrackers.get(trackerId);
     }
-
 }
