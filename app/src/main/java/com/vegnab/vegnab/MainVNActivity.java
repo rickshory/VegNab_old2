@@ -305,6 +305,13 @@ public class MainVNActivity extends ActionBarActivity
 	}
 
     public void goToGetSppScreen() {
+        // get tracker
+        Tracker t = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+        // set screen name
+        t.setScreenName("VegSubplotScreen");
+        // send a screen view
+        t.send(new HitBuilders.ScreenViewBuilder().build());
+        // continue with work
         DownloadSppFragment frgDnldSpp = new DownloadSppFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         // replace the fragment in the fragment container with this new fragment and
