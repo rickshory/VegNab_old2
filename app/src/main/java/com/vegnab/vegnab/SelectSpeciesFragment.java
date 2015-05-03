@@ -79,7 +79,7 @@ public class SelectSpeciesFragment extends ListFragment
 						+ "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
 						+ "(CASE WHEN LENGTH(SubsppVar)>0 THEN (' ' || SubsppVar) ELSE '' END) || "
 						+ "(CASE WHEN LENGTH(Vernacular)>0 THEN (', ' || Vernacular) ELSE '' END) "
-						+ "AS MatchTxt FROM RegionalSpeciesList "
+						+ "AS MatchTxt, 1 AS SubListOrder FROM RegionalSpeciesList "
 						+ "WHERE Code LIKE '" + mStSearch + "%' "
 						+ "ORDER BY Code;";
 			}
