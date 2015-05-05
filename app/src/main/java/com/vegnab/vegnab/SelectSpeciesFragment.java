@@ -112,7 +112,7 @@ public class SelectSpeciesFragment extends ListFragment
 		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 			// the 'count' characters beginning at 'start' are about to be replaced by new text with length 'after'
 			//Log.d(LOG_TAG, "beforeTextChanged, s: '" + s.toString() + "', start: " + start + ", count: " + count + ", after: " + after);
-			
+			//
 		}
 
 		@Override
