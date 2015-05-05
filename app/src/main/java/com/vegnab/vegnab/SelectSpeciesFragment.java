@@ -30,6 +30,8 @@ public class SelectSpeciesFragment extends ListFragment
 	final static String ARG_VISIT_ID = "visId";
 	final static String ARG_SUBPLOT_TYPE_ID = "sbpId";
 	final static String ARG_PRESENCE_ONLY_SUBPLOT = "presenceOnly";
+	final static String ARG_PROJECT_ID = "projectId";
+	final static String ARG_NAMER_ID = "namerId";
 	final static String ARG_SEARCH_TEXT = "search_text";
 	final static String ARG_SQL_TEXT = "sql_text";
 	final static String ARG_SEARCH_FULL_LIST = "regional_list";
@@ -37,7 +39,9 @@ public class SelectSpeciesFragment extends ListFragment
 	
 	long mCurVisitRecId = 0;
 	long mCurSubplotTypeRecId = 0;
-	boolean mPresenceOnly = true; 
+	boolean mPresenceOnly = true;
+	long mProjectId = 0;
+	long mNamerId = 0;
 	HashSet<String> mVegCodesAlreadyOnSubplot = new HashSet<String>();
 	Cursor mSppMatchCursor;
 	
@@ -81,6 +85,12 @@ public class SelectSpeciesFragment extends ListFragment
 						+ "(CASE WHEN LENGTH(Vernacular)>0 THEN (', ' || Vernacular) ELSE '' END) "
 						+ "AS MatchTxt, 1 AS SubListOrder FROM RegionalSpeciesList "
 						+ "WHERE Code LIKE '" + mStSearch + "%' AND Local = 1 AND HasBeenFound = 1 "
+						+ "UNION SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
+						+ "'' AS SubsppVar, '' AS Vernacular, "
+						+ "Description AS MatchTxt, 1 AS SubListOrder "
+						+ "FROM PlaceHolders "
+						+ "WHERE Code Like '" + mStSearch + "%' "
+						+ "AND ProjID=" + mProjectId + " AND PlaceHolders.NamerID=" + mNamerId + " "
 						+ "UNION SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, "
 						+ "Code || ': ' || Genus || "
 						+ "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
@@ -179,6 +189,8 @@ public class SelectSpeciesFragment extends ListFragment
 			mCurVisitRecId = args.getLong(ARG_VISIT_ID);
 			mCurSubplotTypeRecId = args.getLong(ARG_SUBPLOT_TYPE_ID);
 			mPresenceOnly = args.getBoolean(ARG_PRESENCE_ONLY_SUBPLOT);
+			mProjectId = args.getLong(ARG_PROJECT_ID);
+			mNamerId = args.getLong(ARG_NAMER_ID);
 			/*	final static String ARG_VISIT_ID = "visId";
 	final static String ARG_SUBPLOT_TYPE_ID = "sbpId";
 	final static String ARG_PRESENCE_ONLY_SUBPLOT = "presenceOnly";
