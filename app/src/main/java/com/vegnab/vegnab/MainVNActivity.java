@@ -53,7 +53,7 @@ public class MainVNActivity extends ActionBarActivity
 	
 	private static final String LOG_TAG = MainVNActivity.class.getSimpleName();
 	static String mUniqueDeviceId, mDeviceIdSource;
-	long mRowCt, mVisitId = 0, mSubplotTypeId = 0;
+	long mRowCt, mVisitId = 0, mSubplotTypeId = 0, mProjectId = 0, mNamerId = 0  ;
 	
 	final static String ARG_SUBPLOT_TYPE_ID = "subplotTypeId";
 	final static String ARG_VISIT_ID = "visitId";
@@ -374,7 +374,9 @@ public class MainVNActivity extends ActionBarActivity
 		args.putLong(SelectSpeciesFragment.ARG_VISIT_ID, visitId);
 		args.putLong(SelectSpeciesFragment.ARG_SUBPLOT_TYPE_ID, subplotId);
 		// following not used by Spp Select, but passed along to Edit Spp
-		args.putBoolean(SelectSpeciesFragment.ARG_PRESENCE_ONLY_SUBPLOT, presenceOnly); 
+		args.putBoolean(SelectSpeciesFragment.ARG_PRESENCE_ONLY_SUBPLOT, presenceOnly);
+		args.putLong(SelectSpeciesFragment.ARG_PROJECT_ID, mProjectId);
+		args.putLong(SelectSpeciesFragment.ARG_NAMER_ID, mNamerId);
 
 		selSppFrag.setArguments(args);
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

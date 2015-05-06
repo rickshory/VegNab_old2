@@ -229,6 +229,12 @@ public class SelectSpeciesFragment extends ListFragment
 		outState.putString(ARG_SQL_TEXT, mStSQL);
 		outState.putBoolean(ARG_SEARCH_FULL_LIST, mSearchFullList);
 		outState.putBoolean(ARG_USE_FULLTEXT_SEARCH, mUseFullText);
+
+		outState.putLong(ARG_VISIT_ID, mCurVisitRecId);
+		outState.putLong(ARG_SUBPLOT_TYPE_ID, mCurSubplotTypeRecId);
+		outState.putBoolean(ARG_PRESENCE_ONLY_SUBPLOT, mPresenceOnly);
+		outState.putLong(ARG_PROJECT_ID, mProjectId);
+		outState.putLong(ARG_NAMER_ID, mNamerId);
 	}
 	
     @Override
