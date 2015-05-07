@@ -359,13 +359,6 @@ public class MainVNActivity extends ActionBarActivity
 		// presenceOnly is not used by Species Select, but passed along to Edit Species
 		SelectSpeciesFragment selSppFrag = new SelectSpeciesFragment();
 		Bundle args = new Bundle();
-		// args available to send to the fragment
-		// ARG_VISIT_ID = "visId";
-		// ARG_SUBPLOT_TYPE_ID = "sbpId";
-		// ARG_SEARCH_TEXT = "search_text";
-		// ARG_SQL_TEXT = "sql_text";
-		// ARG_USE_REGIONAL_LIST = "regional_list";
-		// ARG_USE_FULLTEXT_SEARCH = "fulltext_search";
 
 		// screenTag can serve both as this fn's switch and the tag name of the fragment instance
 		// args.putString(SelectSpeciesFragment.ARG_TAG_ID, screenTag);
@@ -373,7 +366,7 @@ public class MainVNActivity extends ActionBarActivity
 		// provide Visit and Subplot IDs, so selector can check for duplicate codes
 		args.putLong(SelectSpeciesFragment.ARG_VISIT_ID, visitId);
 		args.putLong(SelectSpeciesFragment.ARG_SUBPLOT_TYPE_ID, subplotId);
-		// following not used by Spp Select, but passed along to Edit Spp
+		// presenceOnly not used by SppSelect, but passed along to Edit Spp
 		args.putBoolean(SelectSpeciesFragment.ARG_PRESENCE_ONLY_SUBPLOT, presenceOnly);
 		args.putLong(SelectSpeciesFragment.ARG_PROJECT_ID, mProjectId);
 		args.putLong(SelectSpeciesFragment.ARG_NAMER_ID, mNamerId);

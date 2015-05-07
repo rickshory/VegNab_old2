@@ -18,6 +18,18 @@
     <screenName name="com.vegnab.vegnab.VisitHeaderFragment">
         VegNab Alpha Test HeaderScreen
     </screenName>
+    <screenName name="com.vegnab.vegnab.VegSubplotFragment">
+        VegNab Alpha Test VegSubplotScreen
+    </screenName>
+    <screenName name="com.vegnab.vegnab.DownloadSppFragment">
+        VegNab Alpha Test DownloadSpeciesScreen
+    </screenName>
+    <screenName name="com.vegnab.vegnab.SelectSpeciesFragment">
+        VegNab Alpha Test SelectSpeciesScreen
+    </screenName>
+    <screenName name="com.vegnab.vegnab.EditSppItemDialog">
+        VegNab Alpha Test EditSpeciesScreen
+    </screenName>
     <!--  Tracking id for VegNab Alpha Test 1.0.0 -->
     <string name="ga_trackingId">UA-62236020-1</string>
 </resources>
