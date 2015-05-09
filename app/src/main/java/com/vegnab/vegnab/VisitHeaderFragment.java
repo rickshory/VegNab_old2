@@ -12,6 +12,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
@@ -171,6 +174,8 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		//Get a Tracker (should auto-report)
+		((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
         try {
         	mEditVisitListener = (EditVisitDialogListener) getActivity();
         	Log.d(LOG_TAG, "(EditVisitDialogListener) getActivity()");
@@ -323,6 +328,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onStart() {
 		super.onStart();
+		GoogleAnalytics.getInstance(getActivity()).reportActivityStart(getActivity());
         // check if arguments are passed to the fragment that will change the layout
 		Bundle args = getArguments();
 		if (args != null) {
@@ -1037,9 +1043,18 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 	HelpUnderConstrDialog hlpDlg = new HelpUnderConstrDialog();
 	ConfigurableMsgDialog flexHlpDlg = new ConfigurableMsgDialog();
 	String helpTitle, helpMessage;
+		// get an Analytics event tracker
+	Tracker headerContextTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+
 	switch (item.getItemId()) {
 	case R.id.vis_hdr_visname_help:
 		Log.d(LOG_TAG, "'Visit Name Help' selected");
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Visit Header Event")
+				.setAction("Context Menu")
+				.setLabel("Visit Name Help")
+				.setValue(1)
+				.build());
 		// Visit Name help
 		helpTitle = c.getResources().getString(R.string.vis_hdr_help_visname_title);
 		helpMessage = c.getResources().getString(R.string.vis_hdr_help_visname_text);
@@ -1048,6 +1063,12 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		return true;
 	case R.id.vis_hdr_namer_edit:
 		Log.d(LOG_TAG, "'Edit Namer' selected");
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Visit Header Event")
+				.setAction("Context Menu")
+				.setLabel("Edit Namer")
+				.setValue(1)
+				.build());
 		// edit Namer
 		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
 		long defaultNamerId = sharedPref.getLong(Prefs.DEFAULT_NAMER_ID, 0);
@@ -1059,6 +1080,12 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		return true;
 	case R.id.vis_hdr_namer_delete:
 		Log.d(LOG_TAG, "'Delete Namer' selected");
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Visit Header Event")
+				.setAction("Context Menu")
+				.setLabel("Delete Namer")
+				.setValue(1)
+				.build());
 		// delete Namer
 		DelNamerDialog delNamerDlg = new DelNamerDialog();
 		delNamerDlg.show(getFragmentManager(), "frg_del_namer");
@@ -1068,6 +1095,12 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		//  Namer spinner to catch the first '(add new)' click
 	case R.id.vis_hdr_namer_cover_help:
 		Log.d(LOG_TAG, "'Namer Help' selected");
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Visit Header Event")
+				.setAction("Context Menu")
+				.setLabel("Namer Help")
+				.setValue(1)
+				.build());
 		// Namer help
 		helpTitle = c.getResources().getString(R.string.vis_hdr_help_namer_title);
 		helpMessage = c.getResources().getString(R.string.vis_hdr_help_namer_text);
@@ -1076,6 +1109,12 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		return true;
 	case R.id.vis_hdr_scribe_help:
 		Log.d(LOG_TAG, "'Scribe Help' selected");
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Visit Header Event")
+				.setAction("Context Menu")
+				.setLabel("Scribe Help")
+				.setValue(1)
+				.build());
 		// Scribe help
 		helpTitle = c.getResources().getString(R.string.vis_hdr_help_scribe_title);
 		helpMessage = c.getResources().getString(R.string.vis_hdr_help_scribe_text);
@@ -1084,10 +1123,22 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		return true;
 	case R.id.vis_hdr_loc_restore_prev:
 		Log.d(LOG_TAG, "'Restore Previous' selected");
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Visit Header Event")
+				.setAction("Context Menu")
+				.setLabel("Restore Previous Location")
+				.setValue(1)
+				.build());
 		// re-acquire location
 		notYetDlg.show(getFragmentManager(), null);
 		return true;
 	case R.id.vis_hdr_loc_reacquire:
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Visit Header Event")
+				.setAction("Context Menu")
+				.setLabel("Re-acquire Location")
+				.setValue(1)
+				.build());
 		Log.d(LOG_TAG, "'Re-acquire' selected");
 		// re-acquire location
 		notYetDlg.show(getFragmentManager(), null);
@@ -1095,6 +1146,13 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 	case R.id.vis_hdr_loc_accept:
 		Log.d(LOG_TAG, "'Accept accuracy' selected");
 		if (mLocIsGood) { // message that accuracy is already OK
+			headerContextTracker.send(new HitBuilders.EventBuilder()
+					.setCategory("Visit Header Event")
+					.setAction("Context Menu")
+					.setLabel("Accept Location Accuracy, already good")
+					.setValue(1)
+					.build());
+
 			helpTitle = c.getResources().getString(R.string.vis_hdr_loc_good_ok_title);
 			if (mLocationSource == USER_OKD_ACCURACY) {
 				helpMessage = c.getResources().getString(R.string.vis_hdr_loc_good_prev_ok);
@@ -1108,6 +1166,13 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 			return true;
 		}
 		if (mCurLocation == null) { // no location at all yet
+			headerContextTracker.send(new HitBuilders.EventBuilder()
+					.setCategory("Visit Header Event")
+					.setAction("Context Menu")
+					.setLabel("Accept Location Accuracy, but no location")
+					.setValue(1)
+					.build());
+
 			helpTitle = c.getResources().getString(R.string.vis_hdr_validate_generic_title);
 			helpMessage = c.getResources().getString(R.string.vis_hdr_loc_none);
 			flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
@@ -1115,6 +1180,12 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 			return true;
 		}
 		// accept location even with poor accuracy
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Visit Header Event")
+				.setAction("Context Menu")
+				.setLabel("Accept Location Accuracy, accepted")
+				.setValue(1)
+				.build());
 	    mLocationSource = USER_OKD_ACCURACY;
 	    finalizeLocation(); // depends on mCurLocation, tested above
 		helpTitle = c.getResources().getString(R.string.vis_hdr_loc_good_ack_title);
@@ -1126,16 +1197,34 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		return true;
 	case R.id.vis_hdr_loc_manual:
 		Log.d(LOG_TAG, "'Enter manually' selected");
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Visit Header Event")
+				.setAction("Context Menu")
+				.setLabel("Enter Location Manually")
+				.setValue(1)
+				.build());
 		// enter location manually
 		notYetDlg.show(getFragmentManager(), null);
 		return true;
 	case R.id.vis_hdr_loc_details:
 		Log.d(LOG_TAG, "'Details' selected");
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Visit Header Event")
+				.setAction("Context Menu")
+				.setLabel("Show Location Details")
+				.setValue(1)
+				.build());
 		// show location details
 		notYetDlg.show(getFragmentManager(), null);
 		return true;
 	case R.id.vis_hdr_loc_help:
 		Log.d(LOG_TAG, "'Location Help' selected");
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Visit Header Event")
+				.setAction("Context Menu")
+				.setLabel("Location Help Requested")
+				.setValue(1)
+				.build());
 		// Location help
 		helpTitle = c.getResources().getString(R.string.vis_hdr_help_loc_title);
 		helpMessage = c.getResources().getString(R.string.vis_hdr_help_loc_text);
@@ -1144,6 +1233,12 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		return true;
 	case R.id.vis_hdr_azimuth_help:
 		Log.d(LOG_TAG, "'Azimuth Help' selected");
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Visit Header Event")
+				.setAction("Context Menu")
+				.setLabel("Azimuth Help Requested")
+				.setValue(1)
+				.build());
 		// Azimuth help
 		helpTitle = c.getResources().getString(R.string.vis_hdr_help_azimuth_title);
 		helpMessage = c.getResources().getString(R.string.vis_hdr_help_azimuth_text);
@@ -1152,6 +1247,12 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 		return true;
 	case R.id.vis_hdr_notes_help:
 		Log.d(LOG_TAG, "'Notes Help' selected");
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Visit Header Event")
+				.setAction("Context Menu")
+				.setLabel("Notes Help Requested")
+				.setValue(1)
+				.build());
 		// Notes help
 		helpTitle = c.getResources().getString(R.string.vis_hdr_help_notes_title);
 		helpMessage = c.getResources().getString(R.string.vis_hdr_help_notes_text);
