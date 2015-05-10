@@ -84,6 +84,8 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
 		}
 		// inflate the layout for this fragment
 		View rootView = inflater.inflate(R.layout.fragment_new_visit, container, false);
+		Button s = (Button) rootView.findViewById(R.id.sign_in_button);
+		s.setOnClickListener(this);
 		// set click listener for the button in the view
 		Button b = (Button) rootView.findViewById(R.id.new_visit_go_button);
 		b.setOnClickListener(this);
