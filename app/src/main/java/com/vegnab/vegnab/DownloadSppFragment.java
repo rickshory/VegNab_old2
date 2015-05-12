@@ -30,7 +30,6 @@ import java.io.IOException;
 
 public class DownloadSppFragment extends Fragment
 		implements OnClickListener {
-	private DataBaseHelper mDb;
 	private DownloadManager downloadManager;
 	private long downloadReference;
 	Button mBtnStartDownload, mBtnDisplayDownload, mBtnCheckStatus, mBtnCancelDownload;
@@ -245,8 +244,8 @@ public class DownloadSppFragment extends Fragment
 				//parse the data
 				try {
 					file = downloadManager.openDownloadedFile(downloadReference);
-					mDb = new DataBaseHelper(getActivity());
-					String listLabel = mDb.fillSpeciesTable(file);
+					DataBaseHelper vnDb = new DataBaseHelper(getActivity());
+					String listLabel = vnDb.fillSpeciesTable(file);
 					// returns the description of the species list from the first line in the file, e.g. "Oregon"
 					SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
 					SharedPreferences.Editor prefEditor = sharedPref.edit();
