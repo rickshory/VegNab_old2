@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.database.DataBaseHelper;
 import com.vegnab.vegnab.database.VNContract.Prefs;
 
@@ -30,11 +33,21 @@ import java.io.IOException;
 
 public class DownloadSppFragment extends Fragment
 		implements OnClickListener {
+	private boolean downloadInProgress;
+	private long downloadStartTimeMs, downloadEndTimeMs, downloadElapsedTimeMs = 0;
 	private DownloadManager downloadManager;
 	private long downloadReference;
 	Button mBtnStartDownload, mBtnDisplayDownload, mBtnCheckStatus, mBtnCancelDownload;
 	TextView mTxtVwShowSpp;
-	
+
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		//Get a Tracker (should auto-report)
+		((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, 
 			Bundle savedInstanceState) {
@@ -88,6 +101,9 @@ public class DownloadSppFragment extends Fragment
 		switch (v.getId()) {
 		//start the download process
 		case R.id.startDownload:
+			downloadInProgress = true;
+			downloadStartTimeMs = System.currentTimeMillis();
+			// downloadStartTimeMs, downloadEndTimeMs, downloadElapsedTimeMs
 			downloadManager = (DownloadManager)getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
 			Uri Download_Uri = Uri.parse("http://www.vegnab.com/specieslists/USASpecies.txt");
 			DownloadManager.Request request = new DownloadManager.Request(Download_Uri);
@@ -283,6 +299,20 @@ public class DownloadSppFragment extends Fragment
 					
 					// delete the file when done
 					downloadManager.remove(downloadReference);
+
+					if (downloadInProgress) {
+						downloadInProgress = false;
+						downloadEndTimeMs = System.currentTimeMillis();
+						downloadElapsedTimeMs += (downloadEndTimeMs - downloadStartTimeMs);
+						// Build and send a timing hit.
+						Tracker sppDownloadTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+						sppDownloadTracker.send(new HitBuilders.TimingBuilder()
+								.setCategory("Downloads")
+								.setValue(downloadElapsedTimeMs)
+								.setVariable("Complete Species List")
+								.setLabel("USA")
+								.build());
+					}
 				
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();

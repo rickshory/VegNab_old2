@@ -148,9 +148,9 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 		long ct = 0;
 		// clear existing codes from the table
         SQLiteDatabase db = this.getWritableDatabase();
-        // for testing, always clear the list
+        // for testing, always add to the list, never clear it
         // for production, make this a user option
-        db.execSQL("DELETE FROM RegionalSpeciesList;");
+     //   db.execSQL("DELETE FROM RegionalSpeciesList;");
 //        String sSql = "INSERT OR REPLACE INTO RegionalSpeciesList ( Code, SppDescr ) VALUES ( ?, ? )";
         String sSql = "INSERT OR IGNORE INTO RegionalSpeciesList ( Code, Genus, Species, SubsppVar, Vernacular ) VALUES ( ?, ?, ?, ?, ? )";
         
