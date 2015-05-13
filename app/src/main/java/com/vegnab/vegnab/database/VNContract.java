@@ -15,9 +15,13 @@ public final class VNContract {
 	// inner class to define preferences
 	public static abstract class Prefs {
 		public static final String DEFAULT_PROJECT_ID = "Default_Project_Id";
+		public static final String DEFAULT_PROJECT_NAME = "Default_Project_Name";
 		public static final String DEFAULT_PLOTTYPE_ID = "Default_PlotType_Id";
+		public static final String DEFAULT_PLOTTYPE_NAME = "Default_PlotType_Name";
 		public static final String DEFAULT_NAMER_ID = "Default_Namer_Id";
+		public static final String DEFAULT_NAMER_NAME = "Default_Namer_Name";
 		public static final String CURRENT_VISIT_ID = "Current_Visit_Id";
+		public static final String CURRENT_VISIT_NAME = "Current_Visit_Name";
 		public static final String TARGET_ACCURACY_OF_VISIT_LOCATIONS = "Target_Accuracy_VisitLocs";
 		public static final String TARGET_ACCURACY_OF_MAPPED_LOCATIONS = "Target_Accuracy_MappedLocs";
 		public static final String UNIQUE_DEVICE_ID = "Unique_Device_Id";

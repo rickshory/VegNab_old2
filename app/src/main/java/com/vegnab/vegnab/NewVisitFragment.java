@@ -179,6 +179,12 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
 		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
 		SharedPreferences.Editor prefEditor = sharedPref.edit();
 		prefEditor.putLong(Prefs.DEFAULT_PLOTTYPE_ID, id);
+		// get the text by:
+		//Cursor cur = (Cursor)mPlotTypeAdapter.getItem(position);
+		Cursor cur = (Cursor)mPlotTypeAdapter.getCursor();
+		cur.moveToPosition(mPlotTypeSpinner.getSelectedItemPosition());
+		String strSel = cur.getString(cur.getColumnIndex("PlotTypeDescr"));
+		prefEditor.putString(Prefs.DEFAULT_PLOTTYPE_NAME, strSel);
 		prefEditor.commit();
 	}
 	
@@ -353,6 +359,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
 				mProjSpinner.setEnabled(false);
 			}
 			break;
+
 		case Loaders.PLOTTYPES:
 			// Swap the new cursor in.
 			// The framework will take care of closing the old cursor once we return.
@@ -378,12 +385,12 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
 							Toast.LENGTH_LONG).show();
 */
 					Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' set for the first time."); 
-				} else {
+				} else { // default plot type already exisits
 /*					Toast.makeText(this.getActivity(), 
 							"Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' = " + mPlotTypeId, 
 							Toast.LENGTH_LONG).show();
 */
-					Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PROJECT_ID + "' = " + mPlotTypeId);
+					Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' = " + mPlotTypeId);
 				}
 				// set the default Plot Type to show in its spinner
 				// for a generalized fn, try: mySpinner.getAdapter().getCount()
@@ -420,12 +427,12 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
 		case Loaders.PREV_VISITS:
 			mVisitListAdapter.swapCursor(null);
 			break;
-		}
 	}
- 
+}
+
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
-			long id) {
+							   long id) {
 		// 'parent' is the spinner
 		// 'view' is one of the internal Android constants (e.g. text1=16908307, text2=16908308)
 		//    in the item layout, unless set up otherwise

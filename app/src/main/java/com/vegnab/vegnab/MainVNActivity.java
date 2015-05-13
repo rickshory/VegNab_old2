@@ -283,11 +283,13 @@ public class MainVNActivity extends ActionBarActivity
         if (hasSpp) {
             // build and send the Analytics event
             // track that user started a new visit
+			Long plotTypeID = sharedPref.getLong(Prefs.DEFAULT_PLOTTYPE_ID, 0);
+			String plotTypeName = sharedPref.getString(Prefs.DEFAULT_PLOTTYPE_NAME, "no plot type yet");
             newVisitTracker.send(new HitBuilders.EventBuilder()
                     .setCategory("Visit Event")
                     .setAction("New Visit")
-                    .setLabel("no name yet")
-                    .setValue(0)
+                    .setLabel(plotTypeName)
+                    .setValue(plotTypeID)
                     .build());
             goToVisitHeaderScreen(0);
         } else {
