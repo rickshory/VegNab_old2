@@ -172,6 +172,7 @@
     <string name="vis_hdr_loc_good_ack_text_post">m accuracy</string>
     <string name="vis_hdr_loc_retrieving">(retrieving previously recorded visit location)</string>
 
+    <string name="sel_spp_search_hint">Type here to search species</string>
     <string name="sel_spp_search_hint_found_code">Search found species by code</string>
     <string name="sel_spp_search_hint_found_text">Search found species by full text</string>
     <string name="sel_spp_search_hint_all_code">Search all species by code</string>
