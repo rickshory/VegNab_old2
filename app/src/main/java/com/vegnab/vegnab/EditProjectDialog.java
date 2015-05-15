@@ -47,29 +47,29 @@ public class EditProjectDialog extends DialogFragment implements android.view.Vi
 	private Calendar mCalendar = Calendar.getInstance();
 	private DatePickerDialog.OnDateSetListener myDateListener = new DatePickerDialog.OnDateSetListener() {
 
-	    @Override
-	    public void onDateSet(DatePicker view, int year, int monthOfYear,
-	            int dayOfMonth) {
-	        mCalendar.set(Calendar.YEAR, year);
-	        mCalendar.set(Calendar.MONTH, monthOfYear);
-	        mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-	        mActiveDateView.setText(mDateFormat.format(mCalendar.getTime()));
-	        mValues.clear();
-	        // put required field, will test for validity before Save
-	        mValues.put("ProjCode", mProjCode.getText().toString().trim());
-	        Log.d(LOG_TAG, "Date set");
-	        if (mActiveDateView == mStartDate) {
-	        	Log.d(LOG_TAG, "Date set for mStartDate, about to save record");
-	        	mValues.put("StartDate", mStartDate.getText().toString().trim());
-	        }
-	        if (mActiveDateView == mEndDate) {
-	        	Log.d(LOG_TAG, "Date set for mEndDate, about to save record");
-	        	mValues.put("EndDate", mEndDate.getText().toString().trim());
-	        }
-	        Log.d(LOG_TAG, "About to save record after date set, mValues: " + mValues.toString());
-	        int numUpdated = saveProjRecord();
-	        Log.d(LOG_TAG, "Date set, saved record, numUpdated=" + numUpdated);
-	    }
+		@Override
+		public void onDateSet(DatePicker view, int year, int monthOfYear,
+				int dayOfMonth) {
+			mCalendar.set(Calendar.YEAR, year);
+			mCalendar.set(Calendar.MONTH, monthOfYear);
+			mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+			mActiveDateView.setText(mDateFormat.format(mCalendar.getTime()));
+			mValues.clear();
+			// put required field, will test for validity before Save
+			mValues.put("ProjCode", mProjCode.getText().toString().trim());
+			Log.d(LOG_TAG, "Date set");
+			if (mActiveDateView == mStartDate) {
+				Log.d(LOG_TAG, "Date set for mStartDate, about to save record");
+				mValues.put("StartDate", mStartDate.getText().toString().trim());
+			}
+			if (mActiveDateView == mEndDate) {
+				Log.d(LOG_TAG, "Date set for mEndDate, about to save record");
+				mValues.put("EndDate", mEndDate.getText().toString().trim());
+			}
+			Log.d(LOG_TAG, "About to save record after date set, mValues: " + mValues.toString());
+			int numUpdated = saveProjRecord();
+			Log.d(LOG_TAG, "Date set, saved record, numUpdated=" + numUpdated);
+		}
 	};
 	
 	static EditProjectDialog newInstance(long mProjRecId) {
@@ -124,8 +124,8 @@ public class EditProjectDialog extends DialogFragment implements android.view.Vi
 		
 	private void fireOffDatePicker() {
 		String s = mActiveDateView.getText().toString();
-        try { // if the EditText view contains a valid date
-        	mCalendar.setTime(mDateFormat.parse(s)); // use it
+		try { // if the EditText view contains a valid date
+			mCalendar.setTime(mDateFormat.parse(s)); // use it
 		} catch (java.text.ParseException e) { // otherwise
 			mCalendar = Calendar.getInstance(); // use today's date
 		}

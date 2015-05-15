@@ -138,21 +138,21 @@ public class DataEntryContainerFragment extends Fragment
 		}
 	
 		@Override
-        public Fragment getItem(int position) {
+		public Fragment getItem(int position) {
 			Log.d(LOG_TAG, "called dataPagerAdapter 'getItem' " + position);
-            Bundle args = new Bundle();
-            args.putInt(VegSubplotFragment.POSITION_KEY, position);
-            mSubplotsCursor.moveToPosition(position);
-            args.putLong(VegSubplotFragment.VISIT_ID, mSubplotsCursor.getLong(
-            		mSubplotsCursor.getColumnIndexOrThrow("VisitId")));
-            args.putString(VegSubplotFragment.VISIT_NAME, mSubplotsCursor.getString(
-            		mSubplotsCursor.getColumnIndexOrThrow("VisitName")));
-            args.putLong(VegSubplotFragment.SUBPLOT_TYPE_ID, mSubplotsCursor.getLong(
-            		mSubplotsCursor.getColumnIndexOrThrow("SubplotTypeId")));
-            args.putBoolean(VegSubplotFragment.PRESENCE_ONLY, ((mSubplotsCursor.getInt(
-            		mSubplotsCursor.getColumnIndexOrThrow("PresenceOnly")) == 0) ? false : true));
-            return VegSubplotFragment.newInstance(args);
-        }
+			Bundle args = new Bundle();
+			args.putInt(VegSubplotFragment.POSITION_KEY, position);
+			mSubplotsCursor.moveToPosition(position);
+			args.putLong(VegSubplotFragment.VISIT_ID, mSubplotsCursor.getLong(
+					mSubplotsCursor.getColumnIndexOrThrow("VisitId")));
+			args.putString(VegSubplotFragment.VISIT_NAME, mSubplotsCursor.getString(
+					mSubplotsCursor.getColumnIndexOrThrow("VisitName")));
+			args.putLong(VegSubplotFragment.SUBPLOT_TYPE_ID, mSubplotsCursor.getLong(
+					mSubplotsCursor.getColumnIndexOrThrow("SubplotTypeId")));
+			args.putBoolean(VegSubplotFragment.PRESENCE_ONLY, ((mSubplotsCursor.getInt(
+					mSubplotsCursor.getColumnIndexOrThrow("PresenceOnly")) == 0) ? false : true));
+			return VegSubplotFragment.newInstance(args);
+		}
 	
 		@Override
 		public int getCount() {
@@ -163,8 +163,8 @@ public class DataEntryContainerFragment extends Fragment
 		@Override
 		public CharSequence getPageTitle(int position) {
 			mSubplotsCursor.moveToPosition(position);
-            return mSubplotsCursor.getString(
-            		mSubplotsCursor.getColumnIndexOrThrow("SubplotDescription"));
+			return mSubplotsCursor.getString(
+					mSubplotsCursor.getColumnIndexOrThrow("SubplotDescription"));
 		}
 
 		@Override
@@ -249,7 +249,7 @@ public class DataEntryContainerFragment extends Fragment
 				// can put in the auxiliary data specs, here or in post-processing
 				mPlotSpecs.put(mSubplotSpec);
 			}
-	        // must use ChildFragmentManager
+			// must use ChildFragmentManager
 			mDataScreenPager.setAdapter(new dataPagerAdapter(getChildFragmentManager()));
 			Log.d(LOG_TAG, "About to do mDataScreenPager.setCurrentItem(mScreenToShow)=" + mScreenToShow);
 			mDataScreenPager.setCurrentItem(mScreenToShow);

@@ -96,12 +96,12 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        try {
-        	mEditVegItemListener = (EditSppItemDialogListener) getActivity();
-        	Log.d(LOG_TAG, "(EditSppItemDialogListener) getActivity()");
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Main Activity must implement EditSppItemDialogListener interface");
-        }
+		try {
+			mEditVegItemListener = (EditSppItemDialogListener) getActivity();
+			Log.d(LOG_TAG, "(EditSppItemDialogListener) getActivity()");
+		} catch (ClassCastException e) {
+			throw new ClassCastException("Main Activity must implement EditSppItemDialogListener interface");
+		}
 	}
 	
 	@Override
@@ -522,9 +522,9 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 		if (parent.getId() == mSpinnerSpeciesConfidence.getId()) {
 			// workaround for spinner firing when first set
 			if(((String)parent.getTag()).equalsIgnoreCase(Tags.SPINNER_FIRST_USE)) {
-	            parent.setTag("");
-	            return;
-	        }
+				parent.setTag("");
+				return;
+			}
 			mIDConfidence = id;
 			return;
 		}

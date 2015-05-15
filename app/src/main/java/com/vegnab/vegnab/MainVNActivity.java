@@ -60,11 +60,11 @@ public class MainVNActivity extends ActionBarActivity
 	
 	ViewPager viewPager = null;
 
-    @Override
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        //Get a Tracker (should auto-report)
-        ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+		//Get a Tracker (should auto-report)
+		((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
 		// set up some default Preferences
 		SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
 		if (!sharedPref.contains(Prefs.TARGET_ACCURACY_OF_VISIT_LOCATIONS)) {
@@ -85,20 +85,20 @@ public class MainVNActivity extends ActionBarActivity
 			prefEditor.commit();
 		}
 
-        // Is there a description of what "local" is (e.g. "Iowa")? Initially, no.
-        if (!sharedPref.contains(Prefs.LOCAL_SPECIES_LIST_DESCRIPTION)) {
-            SharedPreferences.Editor prefEditor = sharedPref.edit();
-            prefEditor.putString(Prefs.LOCAL_SPECIES_LIST_DESCRIPTION, "");
-            prefEditor.commit();
-        }
+		// Is there a description of what "local" is (e.g. "Iowa")? Initially, no.
+		if (!sharedPref.contains(Prefs.LOCAL_SPECIES_LIST_DESCRIPTION)) {
+			SharedPreferences.Editor prefEditor = sharedPref.edit();
+			prefEditor.putString(Prefs.LOCAL_SPECIES_LIST_DESCRIPTION, "");
+			prefEditor.commit();
+		}
 
-        // Has the regional species list been downloaded? Initially, no.
-        if (!sharedPref.contains(Prefs.SPECIES_LIST_DOWNLOADED)) {
-            SharedPreferences.Editor prefEditor = sharedPref.edit();
-            // improve this, test if table contains any species
-            prefEditor.putBoolean(Prefs.SPECIES_LIST_DOWNLOADED, false);
-            prefEditor.commit();
-        }
+		// Has the regional species list been downloaded? Initially, no.
+		if (!sharedPref.contains(Prefs.SPECIES_LIST_DOWNLOADED)) {
+			SharedPreferences.Editor prefEditor = sharedPref.edit();
+			// improve this, test if table contains any species
+			prefEditor.putBoolean(Prefs.SPECIES_LIST_DOWNLOADED, false);
+			prefEditor.commit();
+		}
 
 		// Have the user verify each species entered as presence/absence? Initially, yes.
 		// user will probably turn this one off each session, but turn it on on each restart
@@ -139,19 +139,19 @@ public class MainVNActivity extends ActionBarActivity
 		}
 	}
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //Get an Analytics tracker to report app starts & uncaught exceptions etc.
-        GoogleAnalytics.getInstance(this).reportActivityStart(this);
-    }
+	@Override
+	protected void onStart() {
+		super.onStart();
+		//Get an Analytics tracker to report app starts & uncaught exceptions etc.
+		GoogleAnalytics.getInstance(this).reportActivityStart(this);
+	}
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        //Stop the analytics tracking
-        GoogleAnalytics.getInstance(this).reportActivityStop(this);
-    }
+	@Override
+	public void onStop() {
+		super.onStop();
+		//Stop the analytics tracking
+		GoogleAnalytics.getInstance(this).reportActivityStop(this);
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -204,7 +204,7 @@ public class MainVNActivity extends ActionBarActivity
 	*/
 			return true;
 		case R.id.action_get_species:
-            goToGetSppScreen();
+			goToGetSppScreen();
 			return true;
 			
 		case R.id.action_export_db:
@@ -275,63 +275,63 @@ public class MainVNActivity extends ActionBarActivity
 	
 	@Override
 	public void onNewVisitGoButtonClicked() {
-        // check if SPECIES_LIST_DOWNLOADED
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        Boolean hasSpp = sharedPref.getBoolean(Prefs.SPECIES_LIST_DOWNLOADED, false);
-        // get an Analytics event tracker
-        Tracker newVisitTracker = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
-        if (hasSpp) {
-            // build and send the Analytics event
-            // track that user started a new visit
+		// check if SPECIES_LIST_DOWNLOADED
+		SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+		Boolean hasSpp = sharedPref.getBoolean(Prefs.SPECIES_LIST_DOWNLOADED, false);
+		// get an Analytics event tracker
+		Tracker newVisitTracker = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+		if (hasSpp) {
+			// build and send the Analytics event
+			// track that user started a new visit
 			Long plotTypeID = sharedPref.getLong(Prefs.DEFAULT_PLOTTYPE_ID, 0);
 			String plotTypeName = sharedPref.getString(Prefs.DEFAULT_PLOTTYPE_NAME, "no plot type yet");
-            newVisitTracker.send(new HitBuilders.EventBuilder()
-                    .setCategory("Visit Event")
-                    .setAction("New Visit")
-                    .setLabel(plotTypeName)
-                    .setValue(plotTypeID)
-                    .build());
-            goToVisitHeaderScreen(0);
-        } else {
-            newVisitTracker.send(new HitBuilders.EventBuilder()
-                    .setCategory("Visit Event")
-                    .setAction("Download Species")
-                    .build());
-            String errTitle = this.getResources().getString(R.string.dnld_spp_no_spp_title);
-            String errMsg = this.getResources().getString(R.string.dnld_spp_no_spp_msg);
-            ConfigurableMsgDialog flexMsgDlg =
-                    ConfigurableMsgDialog.newInstance(errTitle,  errMsg);
-            flexMsgDlg.show(getSupportFragmentManager(), "frg_dnld_spp");
-            goToGetSppScreen();
-        }
+			newVisitTracker.send(new HitBuilders.EventBuilder()
+					.setCategory("Visit Event")
+					.setAction("New Visit")
+					.setLabel(plotTypeName)
+					.setValue(plotTypeID)
+					.build());
+			goToVisitHeaderScreen(0);
+		} else {
+			newVisitTracker.send(new HitBuilders.EventBuilder()
+					.setCategory("Visit Event")
+					.setAction("Download Species")
+					.build());
+			String errTitle = this.getResources().getString(R.string.dnld_spp_no_spp_title);
+			String errMsg = this.getResources().getString(R.string.dnld_spp_no_spp_msg);
+			ConfigurableMsgDialog flexMsgDlg =
+					ConfigurableMsgDialog.newInstance(errTitle,  errMsg);
+			flexMsgDlg.show(getSupportFragmentManager(), "frg_dnld_spp");
+			goToGetSppScreen();
+		}
 	}
 
-    public void goToGetSppScreen() {
-        // get tracker
-        Tracker t = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
-        // set screen name
-        t.setScreenName("VegSubplotScreen");
-        // send a screen view
-        t.send(new HitBuilders.ScreenViewBuilder().build());
-        // continue with work
-        DownloadSppFragment frgDnldSpp = new DownloadSppFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        // replace the fragment in the fragment container with this new fragment and
-        // put the present fragment on the backstack so the user can navigate back to it
-        // the tag is for the fragment now being added, not the one replaced
-        transaction.replace(R.id.fragment_container, frgDnldSpp, "frg_download_spp");
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
+	public void goToGetSppScreen() {
+		// get tracker
+		Tracker t = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+		// set screen name
+		t.setScreenName("VegSubplotScreen");
+		// send a screen view
+		t.send(new HitBuilders.ScreenViewBuilder().build());
+		// continue with work
+		DownloadSppFragment frgDnldSpp = new DownloadSppFragment();
+		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+		// replace the fragment in the fragment container with this new fragment and
+		// put the present fragment on the backstack so the user can navigate back to it
+		// the tag is for the fragment now being added, not the one replaced
+		transaction.replace(R.id.fragment_container, frgDnldSpp, "frg_download_spp");
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
 
 	public void goToVisitHeaderScreen(long visitID) {
-        // swap VisitHeaderFragment in place of existing fragment
-        Log.d(LOG_TAG, "About to go to VisitHeader");
+		// swap VisitHeaderFragment in place of existing fragment
+		Log.d(LOG_TAG, "About to go to VisitHeader");
 		Bundle args = new Bundle();
 		// visitID = 0 means new visit, not assigned or created yet
 		args.putLong(VisitHeaderFragment.ARG_VISIT_ID, visitID);
 		args.putInt(VisitHeaderFragment.ARG_SUBPLOT, 0); // start with dummy value, subplot 0
-        VisitHeaderFragment visHdrFrag = VisitHeaderFragment.newInstance(args);
+		VisitHeaderFragment visHdrFrag = VisitHeaderFragment.newInstance(args);
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 		// put the present fragment on the backstack so the user can navigate back to it
 		// the tag is for the fragment now being added, not the one replaced
@@ -391,39 +391,39 @@ public class MainVNActivity extends ActionBarActivity
 		// This simple fn is not entirely robust for various reasons, but it is adequate since
 		// it is rare for Visits to be edited, and even more rare to be downloaded before editing
 		// this ID may be useful in sorting out field work chaos, to tell where the data came from
-	    String deviceId;
-	    try {
-	    	TelephonyManager tMgr = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE));
-	    	deviceId = tMgr.getDeviceId();
-		    if (deviceId != null) { // won't have this if device is not a phone, and
-		    						//not always reliable to read even if it is a phone
-		    	mDeviceIdSource = "Phone";
-		    	mUniqueDeviceId = deviceId;
-		        return;
-		    } else { // try to get the Android ID
-		    	deviceId = android.os.Build.SERIAL; // generated on first boot, so may change on system reset
-		    	// only guaranteed available from API 9 and up
-		    	// since Gingerbread (Android 2.3) android.os.Build.SERIAL must exist on any device that doesn't provide IMEI
-		    	if (deviceId != null) {
-		    		// some Froyo 2.2 builds give the same serial number "9774d56d682e549c" for
-		    		// all, but these are rare and dying out (fixed ~December 2010.
-		    		// 4.2+, different profiles on the same device may give different IDs
-			    	mDeviceIdSource = "Android serial number";
-			    	mUniqueDeviceId = deviceId;
-		    		return;
-		    	} else { 
-		    		// generate a random number
-			    	mDeviceIdSource = "random UUID";
-			    	mUniqueDeviceId = UUID.randomUUID().toString();
-		    		return;
-		    	}
-		    }	
-	    } catch (Exception e) {
-    		// generate a random number
-	    	mDeviceIdSource = "random UUID";
-	    	mUniqueDeviceId = UUID.randomUUID().toString();
-    		return;	    	
-	    }
+		String deviceId;
+		try {
+			TelephonyManager tMgr = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE));
+			deviceId = tMgr.getDeviceId();
+			if (deviceId != null) { // won't have this if device is not a phone, and
+									//not always reliable to read even if it is a phone
+				mDeviceIdSource = "Phone";
+				mUniqueDeviceId = deviceId;
+				return;
+			} else { // try to get the Android ID
+				deviceId = android.os.Build.SERIAL; // generated on first boot, so may change on system reset
+				// only guaranteed available from API 9 and up
+				// since Gingerbread (Android 2.3) android.os.Build.SERIAL must exist on any device that doesn't provide IMEI
+				if (deviceId != null) {
+					// some Froyo 2.2 builds give the same serial number "9774d56d682e549c" for
+					// all, but these are rare and dying out (fixed ~December 2010.
+					// 4.2+, different profiles on the same device may give different IDs
+					mDeviceIdSource = "Android serial number";
+					mUniqueDeviceId = deviceId;
+					return;
+				} else {
+					// generate a random number
+					mDeviceIdSource = "random UUID";
+					mUniqueDeviceId = UUID.randomUUID().toString();
+					return;
+				}
+			}
+		} catch (Exception e) {
+			// generate a random number
+			mDeviceIdSource = "random UUID";
+			mUniqueDeviceId = UUID.randomUUID().toString();
+			return;
+		}
 	}
 
 	@Override
@@ -530,7 +530,7 @@ public class MainVNActivity extends ActionBarActivity
 	}
 */
 	private static final String DATABASE_NAME = "VegNab.db";
-    String saveFolderName = BuildConfig.PUBLIC_DB_FOLDER;
+	String saveFolderName = BuildConfig.PUBLIC_DB_FOLDER;
 
 	public File getBackupDatabaseFile() {
 		SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-", Locale.US);

@@ -266,8 +266,8 @@ public class DownloadSppFragment extends Fragment
 					SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
 					SharedPreferences.Editor prefEditor = sharedPref.edit();
 					prefEditor.putString(Prefs.SPECIES_LIST_DESCRIPTION, listLabel);
-                    // improve this, test if table now contains any species
-                    prefEditor.putBoolean(Prefs.SPECIES_LIST_DOWNLOADED, true);
+					// improve this, test if table now contains any species
+					prefEditor.putBoolean(Prefs.SPECIES_LIST_DOWNLOADED, true);
 					prefEditor.commit();
 					
 					// 'file' here is a pointer, cannot directly read InputStream
@@ -292,7 +292,7 @@ public class DownloadSppFragment extends Fragment
 */					
 					mTxtVwShowSpp.setText("" + getResources().getString(R.string.dnld_spp_parsed));
 					Toast toast = Toast.makeText(getActivity(),
-                        "" + getResources().getString(R.string.dnld_spp_done),
+						"" + getResources().getString(R.string.dnld_spp_done),
 						Toast.LENGTH_LONG);
 					toast.setGravity(Gravity.TOP, 25, 400);
 					toast.show();

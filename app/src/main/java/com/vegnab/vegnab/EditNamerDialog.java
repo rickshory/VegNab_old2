@@ -55,12 +55,12 @@ public class EditNamerDialog extends DialogFragment implements android.view.View
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        try {
-        	mEditNamerListener = (EditNamerDialogListener) getActivity();
-        	Log.d(LOG_TAG, "(EditNamerDialogListener) getActivity()");
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Main Activity must implement EditNamerDialogListener interface");
-        }
+		try {
+			mEditNamerListener = (EditNamerDialogListener) getActivity();
+			Log.d(LOG_TAG, "(EditNamerDialogListener) getActivity()");
+		} catch (ClassCastException e) {
+			throw new ClassCastException("Main Activity must implement EditNamerDialogListener interface");
+		}
 	}
 	
 	@Override

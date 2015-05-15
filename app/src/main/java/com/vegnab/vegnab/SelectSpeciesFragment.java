@@ -237,52 +237,53 @@ public class SelectSpeciesFragment extends ListFragment
 		outState.putLong(ARG_NAMER_ID, mNamerId);
 	}
 	
-    @Override
-    public void onListItemClick(ListView l, View v, int pos, long id) {
+	@Override
+	public void onListItemClick(ListView l, View v, int pos, long id) {
 //        Toast.makeText(this.getActivity(), "Clicked position " + pos + ", id " + id, Toast.LENGTH_SHORT).show();
-    	// check if selected code is in mVegCodesAlreadyOnSubplot
+		// check if selected code is in mVegCodesAlreadyOnSubplot
 //    	getListView().getItemAtPosition(pos).toString(); // not useful, gets cursor wrapper
-    	mSppMatchCursor.moveToPosition(pos);
+		mSppMatchCursor.moveToPosition(pos);
 // available fields: _id, Code, Genus, Species, SubsppVar, Vernacular, MatchTxt
-        String vegCode = mSppMatchCursor.getString(
-        		mSppMatchCursor.getColumnIndexOrThrow("Code"));
-        String vegDescr = mSppMatchCursor.getString(
-        		mSppMatchCursor.getColumnIndexOrThrow("MatchTxt"));
+		String vegCode = mSppMatchCursor.getString(
+				mSppMatchCursor.getColumnIndexOrThrow("Code"));
+		String vegDescr = mSppMatchCursor.getString(
+				mSppMatchCursor.getColumnIndexOrThrow("MatchTxt"));
 
-        String vegGenus = mSppMatchCursor.getString(
-        		mSppMatchCursor.getColumnIndexOrThrow("Genus"));
-        String vegSpecies = mSppMatchCursor.getString(
-        		mSppMatchCursor.getColumnIndexOrThrow("Species"));
-        String vegSubsppVar = mSppMatchCursor.getString(
-        		mSppMatchCursor.getColumnIndexOrThrow("SubsppVar"));
-        String vegVernacular = mSppMatchCursor.getString(
-        		mSppMatchCursor.getColumnIndexOrThrow("Vernacular"));
-        
-        
-        Log.d(LOG_TAG, "mSppMatchCursor, pos = " + pos + " SppCode: " + vegCode);
-        if (mVegCodesAlreadyOnSubplot.contains(vegCode)) {
-        	// warn user and allow to cancel
-        }
-        Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to create new record");
-        Bundle args = new Bundle();
-        args.putLong(EditSppItemDialog.VEG_ITEM_REC_ID, 0); // don't need this, default is in class
-        args.putLong(EditSppItemDialog.CUR_VISIT_REC_ID, mCurVisitRecId);
-        args.putLong(EditSppItemDialog.CUR_SUBPLOT_REC_ID, mCurSubplotTypeRecId);
-        args.putInt(EditSppItemDialog.REC_SOURCE, VegcodeSources.REGIONAL_LIST);
-        args.putLong(EditSppItemDialog.SOURCE_REC_ID, id);
-        args.putBoolean(EditSppItemDialog.PRESENCE_ONLY, mPresenceOnly);
-        // streamline this, get directly from cursor
-        args.putString(EditSppItemDialog.VEG_CODE, vegCode);
-        args.putString(EditSppItemDialog.VEG_DESCR, vegDescr);
-        args.putString(EditSppItemDialog.VEG_GENUS, vegGenus);
-        args.putString(EditSppItemDialog.VEG_SPECIES, vegSpecies);
-        args.putString(EditSppItemDialog.VEG_SUBSPP_VAR, vegSubsppVar);
-        args.putString(EditSppItemDialog.VEG_VERNACULAR, vegVernacular);
-        
-        EditSppItemDialog newVegItemDlg = EditSppItemDialog.newInstance(args);
+		String vegGenus = mSppMatchCursor.getString(
+				mSppMatchCursor.getColumnIndexOrThrow("Genus"));
+		String vegSpecies = mSppMatchCursor.getString(
+				mSppMatchCursor.getColumnIndexOrThrow("Species"));
+		String vegSubsppVar = mSppMatchCursor.getString(
+				mSppMatchCursor.getColumnIndexOrThrow("SubsppVar"));
+		String vegVernacular = mSppMatchCursor.getString(
+				mSppMatchCursor.getColumnIndexOrThrow("Vernacular"));
 
-        newVegItemDlg.show(getFragmentManager(), "frg_new_veg_item");
-    }
+
+		Log.d(LOG_TAG, "mSppMatchCursor, pos = " + pos + " SppCode: " + vegCode);
+		if (mVegCodesAlreadyOnSubplot.contains(vegCode)) {
+
+			// warn user and allow to cancel
+		}
+		Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to create new record");
+		Bundle args = new Bundle();
+		args.putLong(EditSppItemDialog.VEG_ITEM_REC_ID, 0); // don't need this, default is in class
+		args.putLong(EditSppItemDialog.CUR_VISIT_REC_ID, mCurVisitRecId);
+		args.putLong(EditSppItemDialog.CUR_SUBPLOT_REC_ID, mCurSubplotTypeRecId);
+		args.putInt(EditSppItemDialog.REC_SOURCE, VegcodeSources.REGIONAL_LIST);
+		args.putLong(EditSppItemDialog.SOURCE_REC_ID, id);
+		args.putBoolean(EditSppItemDialog.PRESENCE_ONLY, mPresenceOnly);
+		// streamline this, get directly from cursor
+		args.putString(EditSppItemDialog.VEG_CODE, vegCode);
+		args.putString(EditSppItemDialog.VEG_DESCR, vegDescr);
+		args.putString(EditSppItemDialog.VEG_GENUS, vegGenus);
+		args.putString(EditSppItemDialog.VEG_SPECIES, vegSpecies);
+		args.putString(EditSppItemDialog.VEG_SUBSPP_VAR, vegSubsppVar);
+		args.putString(EditSppItemDialog.VEG_VERNACULAR, vegVernacular);
+
+		EditSppItemDialog newVegItemDlg = EditSppItemDialog.newInstance(args);
+
+		newVegItemDlg.show(getFragmentManager(), "frg_new_veg_item");
+	}
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {

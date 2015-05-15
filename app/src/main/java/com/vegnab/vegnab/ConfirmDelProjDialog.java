@@ -62,11 +62,11 @@ public class ConfirmDelProjDialog extends DialogFragment {
 				
 			})
 			.setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
-	            public void onClick(DialogInterface dialog, int id) {
-	            	Log.d(LOG_TAG, "In ConfirmDelProjDialog DialogFragment, onCreateDialog, Negative button clicked");
-	                // User cancelled the dialog
-	            }
-	        });
+				public void onClick(DialogInterface dialog, int id) {
+					Log.d(LOG_TAG, "In ConfirmDelProjDialog DialogFragment, onCreateDialog, Negative button clicked");
+					// User cancelled the dialog
+				}
+			});
 		return bld.create();
 	}
 }
