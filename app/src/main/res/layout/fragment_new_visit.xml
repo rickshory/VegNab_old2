@@ -7,12 +7,12 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.vegnab.vegnab.NewVisit$PlaceholderFragment" >
-
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/sign_in_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
+    <!--
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+-->
     <TextView
         android:id="@+id/new_visit_title_text"
         android:layout_width="wrap_content"
@@ -36,7 +36,7 @@
         android:layout_alignLeft="@id/new_visit_plottype_text"
         android:layout_below="@id/new_visit_plottype_text"
         android:prompt="@string/new_visit_plot_type_prompt" />
-    
+
     <TextView
         android:id="@+id/project_label_text"
         android:layout_width="wrap_content"
@@ -54,7 +54,7 @@
         android:layout_toRightOf="@id/project_label_text"
         android:prompt="@string/new_visit_project_prompt"
          />
-  
+
     <Button
         android:id="@+id/new_visit_go_button"
         android:layout_width="match_parent"
@@ -64,15 +64,15 @@
         android:layout_alignLeft="@id/project_label_text"
         android:layout_below="@id/project_label_text"
         />
-    
+
     <View android:id="@+id/divider_line"
-	    android:layout_width="fill_parent"
-	    android:layout_height="1dp"
-	    android:background="@android:color/darker_gray"
-	    android:layout_alignLeft="@id/new_visit_go_button"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_alignLeft="@id/new_visit_go_button"
         android:layout_below="@id/new_visit_go_button"
-	    />
-    
+        />
+
     <ListView android:id="@id/android:list"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
          android:layout_alignLeft="@id/divider_line"
          android:layout_below="@id/divider_line"
          />
-    
+
     <TextView android:id="@id/android:empty"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
@@ -90,5 +90,5 @@
          android:textAppearance="?android:attr/textAppearanceLarge"
          />
 
-    
-</RelativeLayout>
+
+    </RelativeLayout>
