@@ -191,9 +191,11 @@
     <string name="veg_subplot_new_item_button_msg">New item</string>
     <string name="veg_subplot_next_button_msg">Next screen</string>
     <string name="veg_subplot_no_items">No items yet</string>
-    
-    <string name="edit_spp_item_msg_dup_general">This species is already entered on this subplot</string>
-    <string name="edit_spp_item_msg_dup_detail">You do not normally enter a species twice unless the identities are of different confidence</string>
+
+    <string name="edit_spp_item_msg_dup_title">Duplicate Species</string>
+    <string name="edit_spp_item_msg_dup_msg">"This species is already on this subplot.\n\r\n\rYou can only have a species twice if it is of different confidence, for example \"No doubt...\" the first time, and \"Uncertain...\" the next.\n\r\n\rOtherwise, the duplicate will not be saved."</string>
+    <string name="edit_spp_item_msg_dup_general">This species is already entered on this subplot.</string>
+    <string name="edit_spp_item_msg_dup_detail">You do not normally enter a species twice unless the identities are of different confidence.</string>
     <string name="edit_spp_item_msg_dup_verify">Do you want to enter it again?</string>
     <string name="edit_spp_item_title_add">New Species Item</string>
     <string name="edit_spp_item_title_edit">Edit Species Item</string>

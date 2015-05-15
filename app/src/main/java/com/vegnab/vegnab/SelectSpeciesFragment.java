@@ -7,6 +7,7 @@ import com.vegnab.vegnab.database.VNContract.Loaders;
 import com.vegnab.vegnab.database.VNContract.VegcodeSources;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -246,9 +247,18 @@ public class SelectSpeciesFragment extends ListFragment
 // available fields: _id, Code, Genus, Species, SubsppVar, Vernacular, MatchTxt
 		String vegCode = mSppMatchCursor.getString(
 				mSppMatchCursor.getColumnIndexOrThrow("Code"));
+
+		Log.d(LOG_TAG, "mSppMatchCursor, pos = " + pos + " SppCode: " + vegCode);
+		if (mVegCodesAlreadyOnSubplot.contains(vegCode)) {
+			Context c = getActivity();
+			// warn user and allow to cancel
+			String ckTitle = c.getResources().getString(R.string.edit_spp_item_msg_dup_title);
+			String ckMsg = c.getResources().getString(R.string.edit_spp_item_msg_dup_msg);
+			ConfigurableMsgDialog ckDupSppDlg = ConfigurableMsgDialog.newInstance(ckTitle, ckMsg);
+			ckDupSppDlg.show(getFragmentManager(), "frg_ck_dup_spp");
+		}
 		String vegDescr = mSppMatchCursor.getString(
 				mSppMatchCursor.getColumnIndexOrThrow("MatchTxt"));
-
 		String vegGenus = mSppMatchCursor.getString(
 				mSppMatchCursor.getColumnIndexOrThrow("Genus"));
 		String vegSpecies = mSppMatchCursor.getString(
@@ -258,12 +268,6 @@ public class SelectSpeciesFragment extends ListFragment
 		String vegVernacular = mSppMatchCursor.getString(
 				mSppMatchCursor.getColumnIndexOrThrow("Vernacular"));
 
-
-		Log.d(LOG_TAG, "mSppMatchCursor, pos = " + pos + " SppCode: " + vegCode);
-		if (mVegCodesAlreadyOnSubplot.contains(vegCode)) {
-
-			// warn user and allow to cancel
-		}
 		Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to create new record");
 		Bundle args = new Bundle();
 		args.putLong(EditSppItemDialog.VEG_ITEM_REC_ID, 0); // don't need this, default is in class
@@ -326,6 +330,12 @@ public class SelectSpeciesFragment extends ListFragment
 		case Loaders.CODES_ALREADY_ON_SUBPLOT:
 			mVegCodesAlreadyOnSubplot.clear();
 			while (finishedCursor.moveToNext()) {
+/*				String code;
+				Log.d(LOG_TAG, "subplot already has code: '" + code + "'");
+				code = finishedCursor.getString(
+						finishedCursor.getColumnIndexOrThrow("OrigCode")).toString();
+				mVegCodesAlreadyOnSubplot.add(code);
+*/
 				mVegCodesAlreadyOnSubplot.add(finishedCursor.getString(
 						finishedCursor.getColumnIndexOrThrow("OrigCode")).toString());
 			}
