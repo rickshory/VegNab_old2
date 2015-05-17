@@ -23,12 +23,21 @@
 		/>
 
 	<TextView
+		android:id="@+id/lbl_spp_dups"
+		android:text="@string/edit_spp_item_label_dup_notice"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true"
+		android:layout_below="@id/lbl_spp_item"
+		/>
+
+	<TextView
 		android:id="@+id/lbl_spp_height"
 		android:text="@string/edit_spp_item_label_height"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignParentLeft="true"
-		android:layout_below="@id/lbl_spp_item"
+		android:layout_below="@id/lbl_spp_dups"
 		/>
 
 	<EditText

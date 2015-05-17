@@ -79,7 +79,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 	private int mValidationLevel = Validation.SILENT;
 	Uri mUri, mVegItemsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "vegitems");
 	ContentValues mValues = new ContentValues();
-	private TextView mTxtSpeciesItemLabel, mTxtHeightLabel, mTxtCoverLabel;
+	private TextView mTxtSpeciesItemLabel, mTxtSppDupLabel, mTxtHeightLabel, mTxtCoverLabel;
 	private EditText mEditSpeciesHeight, mEditSpeciesCover;
 	private CheckBox mCkSpeciesIsPresent, mCkDontVerifyPresence;
 	private Spinner mSpinnerSpeciesConfidence;
@@ -109,6 +109,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 		View view = inflater.inflate(R.layout.fragment_edit_spp_item, root);
 
 		mTxtSpeciesItemLabel = (TextView) view.findViewById(R.id.lbl_spp_item);
+		mTxtSppDupLabel = (TextView) view.findViewById(R.id.lbl_spp_dups);
 		mTxtHeightLabel = (TextView) view.findViewById(R.id.lbl_spp_height);
 		mEditSpeciesHeight = (EditText) view.findViewById(R.id.txt_spp_height);
 		mTxtCoverLabel = (TextView) view.findViewById(R.id.lbl_spp_cover);
@@ -500,13 +501,17 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 
 		case Loaders.VEG_ITEM_DUP_CODES:
 			mDupSppCursor = c;
-			if (mDupSppCursor.getCount() > 0) {
+			if (mDupSppCursor.getCount() == 0) {
+				mTxtSppDupLabel.setVisibility(View.GONE);
+				// mTxtHeightLabel.setVisibility(View.GONE);
 				// potential duplicates, notify user
+/*
 				Context cx = getActivity();
 				String ckTitle = cx.getResources().getString(R.string.edit_spp_item_msg_dup_title);
 				String ckMsg = cx.getResources().getString(R.string.edit_spp_item_msg_dup_msg);
 				ConfigurableMsgDialog ckDupSppDlg = ConfigurableMsgDialog.newInstance(ckTitle, ckMsg);
 				ckDupSppDlg.show(getFragmentManager(), "frg_ck_dup_spp");
+*/
 			}
 			break;
 		}

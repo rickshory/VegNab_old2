@@ -200,6 +200,7 @@
     <string name="edit_spp_item_title_add">New Species Item</string>
     <string name="edit_spp_item_title_edit">Edit Species Item</string>
     <string name="edit_spp_item_label_sppitem">Code: Description</string>
+    <string name="edit_spp_item_label_dup_notice">"\n\rThis is already entered.\n\rYou can only only enter it again at a different Confidence.\n\rOtherwise, the duplicate will not be saved.\n\r"</string>
     <string name="edit_spp_item_label_height">Plant height, in centimeters</string>
     <string name="edit_spp_item_hint_height">Height</string>
     <string name="edit_spp_item_label_cover">Plant cover, percent</string>
