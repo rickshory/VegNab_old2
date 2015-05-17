@@ -69,9 +69,7 @@ public final class VNContract {
 		// in Edit VegItem
 		public static final int VEGITEM_TO_EDIT = 81; // The current veg item
 		public static final int VEG_ITEM_CONFIDENCE_LEVELS = 82; //
-		public static final int VEG_ITEM_SUBPLOT = 83; // parameters needed to correctly show dialog
-		public static final int VEG_ITEM_VISIT = 84; // parameters needed to process dialog
-		
+		public static final int VEG_ITEM_DUP_CODES = 83; // codes duplicated on the subplot?
 		
 	}
 

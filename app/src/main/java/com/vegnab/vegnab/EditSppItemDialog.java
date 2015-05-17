@@ -447,6 +447,9 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 			cl = new CursorLoader(getActivity(), allCFLevelsUri,
 					null, select, null, null);
 			break;
+
+		case Loaders.VEG_ITEM_DUP_CODES:
+			break;
 		}
 		return cl;
 	}
@@ -485,6 +488,9 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 				mSpinnerSpeciesConfidence.setEnabled(false);
 			}
 			break;
+
+		case Loaders.VEG_ITEM_DUP_CODES:
+			break;
 		}
 	}
 
@@ -496,6 +502,9 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 			break;
 		case Loaders.VEG_ITEM_CONFIDENCE_LEVELS:
 			mCFSpinnerAdapter.swapCursor(null);
+			break;
+		case Loaders.VEG_ITEM_DUP_CODES:
+			// nothing to do here since no adapter
 			break;
 		}
 	}
