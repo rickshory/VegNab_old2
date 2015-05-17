@@ -249,6 +249,7 @@ public class SelectSpeciesFragment extends ListFragment
 				mSppMatchCursor.getColumnIndexOrThrow("Code"));
 
 		Log.d(LOG_TAG, "mSppMatchCursor, pos = " + pos + " SppCode: " + vegCode);
+/*
 		if (mVegCodesAlreadyOnSubplot.contains(vegCode)) {
 			Context c = getActivity();
 			// warn user and allow to cancel
@@ -257,6 +258,7 @@ public class SelectSpeciesFragment extends ListFragment
 			ConfigurableMsgDialog ckDupSppDlg = ConfigurableMsgDialog.newInstance(ckTitle, ckMsg);
 			ckDupSppDlg.show(getFragmentManager(), "frg_ck_dup_spp");
 		}
+*/
 		String vegDescr = mSppMatchCursor.getString(
 				mSppMatchCursor.getColumnIndexOrThrow("MatchTxt"));
 		String vegGenus = mSppMatchCursor.getString(

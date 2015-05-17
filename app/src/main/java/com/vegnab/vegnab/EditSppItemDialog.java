@@ -74,7 +74,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 	private int mHeight, mCover;
 	private boolean isPresent = true; // assume present; explicit false by user means verified absent
 	long mIDConfidence = 1; // default 'no doubt of ID'
-	Cursor mCFCursor;
+	Cursor mCFCursor, mDupSppCursor;
 	boolean mAutoVerifyPresence = false;
 	private int mValidationLevel = Validation.SILENT;
 	Uri mUri, mVegItemsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "vegitems");
@@ -173,6 +173,8 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 		// fire off these database requests
 		getLoaderManager().initLoader(Loaders.VEG_ITEM_CONFIDENCE_LEVELS, null, this);
 		getLoaderManager().initLoader(Loaders.VEGITEM_TO_EDIT, null, this);
+		// try this loader here
+		getLoaderManager().initLoader(Loaders.VEG_ITEM_DUP_CODES, null, this);
 		
 		// adjust UI depending on whether we want Height/Cover information, or only Presence/Absence
 		if (mPresenceOnly) { // hide the Height/Cover views
@@ -497,6 +499,15 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 			break;
 
 		case Loaders.VEG_ITEM_DUP_CODES:
+			mDupSppCursor = c;
+			if (mDupSppCursor.getCount() > 0) {
+				// potential duplicates, notify user
+				Context cx = getActivity();
+				String ckTitle = cx.getResources().getString(R.string.edit_spp_item_msg_dup_title);
+				String ckMsg = cx.getResources().getString(R.string.edit_spp_item_msg_dup_msg);
+				ConfigurableMsgDialog ckDupSppDlg = ConfigurableMsgDialog.newInstance(ckTitle, ckMsg);
+				ckDupSppDlg.show(getFragmentManager(), "frg_ck_dup_spp");
+			}
 			break;
 		}
 	}
