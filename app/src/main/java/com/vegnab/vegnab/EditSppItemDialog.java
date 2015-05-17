@@ -449,6 +449,13 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 			break;
 
 		case Loaders.VEG_ITEM_DUP_CODES:
+			Uri dupSppUri = ContentProvider_VegNab.SQL_URI;
+			select = "SELECT OrigCode, IdLevelID FROM VegItems WHERE VisitID = " + mCurVisitRecId
+				+ " AND SubPlotID = " + mCurSubplotRecId
+				+ " AND OrigCode = '" + mStrVegCode + "'"
+				+ " AND _id != " + mVegItemRecId + ";";
+			cl = new CursorLoader(getActivity(), dupSppUri,
+					null, select, null, null);
 			break;
 		}
 		return cl;
