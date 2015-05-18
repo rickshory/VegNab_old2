@@ -192,15 +192,10 @@
     <string name="veg_subplot_next_button_msg">Next screen</string>
     <string name="veg_subplot_no_items">No items yet</string>
 
-    <string name="edit_spp_item_msg_dup_title">Duplicate Species</string>
-    <string name="edit_spp_item_msg_dup_msg">"This species is already on this subplot.\n\r\n\rYou can only have a species twice if it is of different confidence, for example \"No doubt...\" the first time, and \"Uncertain...\" the next.\n\r\n\rOtherwise, the duplicate will not be saved."</string>
-    <string name="edit_spp_item_msg_dup_general">This species is already entered on this subplot.</string>
-    <string name="edit_spp_item_msg_dup_detail">You do not normally enter a species twice unless the identities are of different confidence.</string>
-    <string name="edit_spp_item_msg_dup_verify">Do you want to enter it again?</string>
     <string name="edit_spp_item_title_add">New Species Item</string>
     <string name="edit_spp_item_title_edit">Edit Species Item</string>
     <string name="edit_spp_item_label_sppitem">Code: Description</string>
-    <string name="edit_spp_item_label_dup_notice">"\n\rThis is already entered.\n\rYou can only only enter it again at a different Confidence.\n\rOtherwise, the duplicate will not be saved.\n\r"</string>
+    <string name="edit_spp_item_label_dup_notice">"\n\rThis is already entered.\n\rYou can only only enter it again at a different Confidence or the duplicate will not be saved.\n\r"</string>
     <string name="edit_spp_item_label_height">Plant height, in centimeters</string>
     <string name="edit_spp_item_hint_height">Height</string>
     <string name="edit_spp_item_label_cover">Plant cover, percent</string>

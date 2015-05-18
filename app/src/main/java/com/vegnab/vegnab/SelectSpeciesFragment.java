@@ -43,7 +43,6 @@ public class SelectSpeciesFragment extends ListFragment
 	boolean mPresenceOnly = true;
 	long mProjectId = 0;
 	long mNamerId = 0;
-	HashSet<String> mVegCodesAlreadyOnSubplot = new HashSet<String>();
 	Cursor mSppMatchCursor;
 	
 	SimpleCursorAdapter mSppResultsAdapter;
@@ -207,8 +206,6 @@ public class SelectSpeciesFragment extends ListFragment
 	final static String ARG_USE_FULLTEXT_SEARCH = "fulltext_search";
 */
 		}
-		// get following, to warn about duplicates
-		getLoaderManager().initLoader(Loaders.CODES_ALREADY_ON_SUBPLOT, null, this);
 	}
 	
 	@Override
@@ -247,18 +244,7 @@ public class SelectSpeciesFragment extends ListFragment
 // available fields: _id, Code, Genus, Species, SubsppVar, Vernacular, MatchTxt
 		String vegCode = mSppMatchCursor.getString(
 				mSppMatchCursor.getColumnIndexOrThrow("Code"));
-
 		Log.d(LOG_TAG, "mSppMatchCursor, pos = " + pos + " SppCode: " + vegCode);
-/*
-		if (mVegCodesAlreadyOnSubplot.contains(vegCode)) {
-			Context c = getActivity();
-			// warn user and allow to cancel
-			String ckTitle = c.getResources().getString(R.string.edit_spp_item_msg_dup_title);
-			String ckMsg = c.getResources().getString(R.string.edit_spp_item_msg_dup_msg);
-			ConfigurableMsgDialog ckDupSppDlg = ConfigurableMsgDialog.newInstance(ckTitle, ckMsg);
-			ckDupSppDlg.show(getFragmentManager(), "frg_ck_dup_spp");
-		}
-*/
 		String vegDescr = mSppMatchCursor.getString(
 				mSppMatchCursor.getColumnIndexOrThrow("MatchTxt"));
 		String vegGenus = mSppMatchCursor.getString(
@@ -305,15 +291,7 @@ public class SelectSpeciesFragment extends ListFragment
 			select = mStSQL;
 			cl = new CursorLoader(getActivity(), baseUri,
 					null, select, null, null);
-			break;		
-		
-		case Loaders.CODES_ALREADY_ON_SUBPLOT:
-			baseUri = ContentProvider_VegNab.SQL_URI;
-			select = "SELECT OrigCode FROM VegItems WHERE VisitID = " + mCurVisitRecId 
-					+ " AND SubPlotID = " + mCurSubplotTypeRecId + " GROUP BY OrigCode;";
-			cl = new CursorLoader(getActivity(), baseUri,
-					null, select, null, null);
-			break;		
+			break;
 		}
 		return cl;
 		
@@ -328,20 +306,6 @@ public class SelectSpeciesFragment extends ListFragment
 			mSppResultsAdapter.swapCursor(finishedCursor);
 			mSppMatchCursor = finishedCursor;
 			break;
-			
-		case Loaders.CODES_ALREADY_ON_SUBPLOT:
-			mVegCodesAlreadyOnSubplot.clear();
-			while (finishedCursor.moveToNext()) {
-/*				String code;
-				Log.d(LOG_TAG, "subplot already has code: '" + code + "'");
-				code = finishedCursor.getString(
-						finishedCursor.getColumnIndexOrThrow("OrigCode")).toString();
-				mVegCodesAlreadyOnSubplot.add(code);
-*/
-				mVegCodesAlreadyOnSubplot.add(finishedCursor.getString(
-						finishedCursor.getColumnIndexOrThrow("OrigCode")).toString());
-			}
-			break;
 		}
 	}
 
@@ -352,10 +316,6 @@ public class SelectSpeciesFragment extends ListFragment
 		switch (loader.getId()) {
 		case Loaders.SPP_MATCHES:
 			mSppResultsAdapter.swapCursor(null);
-			break;
-			
-		case Loaders.CODES_ALREADY_ON_SUBPLOT:
-			// not an adapter, nothing to do here
 			break;
 		}
 	}

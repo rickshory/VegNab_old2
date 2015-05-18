@@ -64,7 +64,7 @@ public final class VNContract {
 		public static final int BASE_SUBPLOT_SPP = 2000; // Veg species for the current subplot; base number, instances will increment
 		// in Species Select
 		public static final int SPP_MATCHES = 71; // Species that match the search string
-		public static final int CODES_ALREADY_ON_SUBPLOT = 72; // To warn about duplicates
+
 		// in Main Activity
 		// in Edit VegItem
 		public static final int VEGITEM_TO_EDIT = 81; // The current veg item

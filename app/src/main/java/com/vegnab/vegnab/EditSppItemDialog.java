@@ -503,15 +503,6 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 			mDupSppCursor = c;
 			if (mDupSppCursor.getCount() == 0) {
 				mTxtSppDupLabel.setVisibility(View.GONE);
-				// mTxtHeightLabel.setVisibility(View.GONE);
-				// potential duplicates, notify user
-/*
-				Context cx = getActivity();
-				String ckTitle = cx.getResources().getString(R.string.edit_spp_item_msg_dup_title);
-				String ckMsg = cx.getResources().getString(R.string.edit_spp_item_msg_dup_msg);
-				ConfigurableMsgDialog ckDupSppDlg = ConfigurableMsgDialog.newInstance(ckTitle, ckMsg);
-				ckDupSppDlg.show(getFragmentManager(), "frg_ck_dup_spp");
-*/
 			}
 			break;
 		}
