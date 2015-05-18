@@ -179,11 +179,15 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
 		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
 		SharedPreferences.Editor prefEditor = sharedPref.edit();
 		prefEditor.putLong(Prefs.DEFAULT_PLOTTYPE_ID, id);
-		// get the text by:
-		//Cursor cur = (Cursor)mPlotTypeAdapter.getItem(position);
-		Cursor cur = (Cursor)mPlotTypeAdapter.getCursor();
-		cur.moveToPosition(mPlotTypeSpinner.getSelectedItemPosition());
-		String strSel = cur.getString(cur.getColumnIndex("PlotTypeDescr"));
+		// get the plot type text description
+		String strSel;
+		try { // on first app load, this cursor may not be set up yet
+			Cursor cur = (Cursor)mPlotTypeAdapter.getCursor();
+			cur.moveToPosition(mPlotTypeSpinner.getSelectedItemPosition());
+			strSel = cur.getString(cur.getColumnIndex("PlotTypeDescr"));
+		}  catch (Exception e) {
+			strSel = "Species List"; // use the default
+		}
 		prefEditor.putString(Prefs.DEFAULT_PLOTTYPE_NAME, strSel);
 		prefEditor.commit();
 	}
