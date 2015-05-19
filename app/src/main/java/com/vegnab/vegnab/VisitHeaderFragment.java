@@ -551,7 +551,10 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 					// fetch the stored location
 					getLoaderManager().initLoader(Loaders.VISIT_REF_LOCATION, null, this);
 				}
-				mViewAzimuth.setText("" + c.getInt(c.getColumnIndexOrThrow("Azimuth")));
+				// explicitly test null, to avoid spurious zeroes
+				if (!(c.isNull(c.getColumnIndexOrThrow("Azimuth")))) {
+					mViewAzimuth.setText("" + c.getInt(c.getColumnIndexOrThrow("Azimuth")));
+				}
 				mViewVisitNotes.setText(c.getString(c.getColumnIndexOrThrow("VisitNotes")));
 			}
 			break;
