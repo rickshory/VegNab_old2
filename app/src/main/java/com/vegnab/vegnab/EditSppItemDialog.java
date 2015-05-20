@@ -222,6 +222,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 	
 	private int saveVegItemRecord() {
 		Context c = getActivity();
+		String strSaveDescription;
 		mValues.clear();
 		if (mPresenceOnly) {
 			mValues.put("Presence", (mCkSpeciesIsPresent.isChecked() ? 1 : 0));
@@ -231,6 +232,22 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 		}
 		mValues.put("IdLevelID", mIDConfidence);
 
+		if (mIDConfidence == 3) { // uncertain of genus, build botanical nomenclature
+			strSaveDescription = "CF " + mStrGenus
+					+ ((mStrSpecies == "") ? "" : " " + mStrSpecies)
+					+ ((mStrSubsppVar == "") ? "" : " " + mStrSubsppVar)
+					+ ((mStrVernacular == "") ? "" : ", " + mStrVernacular);
+		} else if (mIDConfidence == 2) { // uncertain of species, build botanical nomenclature
+			strSaveDescription = mStrGenus + " CF"
+					+ ((mStrSpecies == "") ? "" : " " + mStrSpecies)
+					+ ((mStrSubsppVar == "") ? "" : " " + mStrSubsppVar)
+					+ ((mStrVernacular == "") ? "" : ", " + mStrVernacular);
+		}  else { // usual default, no uncertainty, build botanical nomenclature
+			strSaveDescription = mStrGenus
+					+ ((mStrSpecies == "") ? "" : " " + mStrSpecies)
+					+ ((mStrSubsppVar == "") ? "" : " " + mStrSubsppVar)
+					+ ((mStrVernacular == "") ? "" : ", " + mStrVernacular);
+		}
 
 		ContentResolver rs = c.getContentResolver();
 		if (mVegItemRecId == -1) {
@@ -244,7 +261,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 			mValues.put("SourceID", mRecSource);
 			mValues.put("SourceRecID", mSourceRecId);
 			mValues.put("OrigCode", mStrVegCode);
-			mValues.put("OrigDescr", mStrDescription);
+			mValues.put("OrigDescr", strSaveDescription);
 			mValues.put("TimeCreated", mTimeFormat.format(new Date()));
 			mValues.put("TimeLastChanged", mTimeFormat.format(new Date()));
 			
@@ -261,6 +278,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 			return 1;
 		} else {
 			mUri = ContentUris.withAppendedId(mVegItemsUri, mVegItemRecId);
+			mValues.put("OrigDescr", strSaveDescription);
 			mValues.put("TimeLastChanged", mTimeFormat.format(new Date()));
 			int numUpdated = rs.update(mUri, mValues, null, null);
 			Log.d(LOG_TAG, "Saved record in saveVegItemRecord; numUpdated: " + numUpdated);
