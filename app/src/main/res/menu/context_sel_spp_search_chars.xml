@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <item android:id="@+id/sel_spp_search_add_placeholder"
+        android:title="@string/sel_spp_ctxmenu_add_placeholder" />
+    <item android:id="@+id/sel_spp_search_help"
+        android:title="@string/sel_spp_ctxmenu_search_help" />
+</menu>

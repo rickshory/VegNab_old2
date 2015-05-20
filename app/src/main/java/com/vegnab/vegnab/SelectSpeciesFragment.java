@@ -2,6 +2,8 @@ package com.vegnab.vegnab;
 
 import java.util.HashSet;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract.Loaders;
 import com.vegnab.vegnab.database.VNContract.VegcodeSources;
@@ -16,10 +18,14 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v7.internal.widget.AdapterViewCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -171,6 +177,7 @@ public class SelectSpeciesFragment extends ListFragment
 		mViewSearchChars = (EditText) rootView.findViewById(R.id.txt_search_chars);
 		
 		mViewSearchChars.addTextChangedListener(sppCodeTextWatcher);
+		registerForContextMenu(mViewSearchChars); // enable long-press
 
 		// use query to return 'MatchTxt', concatenated from code and description; more reading room
 		mSppResultsAdapter = new SimpleCursorAdapter(getActivity(),
@@ -275,6 +282,76 @@ public class SelectSpeciesFragment extends ListFragment
 		EditSppItemDialog newVegItemDlg = EditSppItemDialog.newInstance(args);
 
 		newVegItemDlg.show(getFragmentManager(), "frg_new_veg_item");
+	}
+
+	// create context menus
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+	   ContextMenu.ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		MenuInflater inflater = getActivity().getMenuInflater();
+		switch (v.getId()) {
+		case R.id.txt_search_chars:
+			inflater.inflate(R.menu.context_sel_spp_search_chars, menu);
+			break;
+		}
+	}
+
+	// This is executed when the user selects an option
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+	AdapterViewCompat.AdapterContextMenuInfo info = (AdapterViewCompat.AdapterContextMenuInfo) item.getMenuInfo();
+	if (info == null) {
+		Log.d(LOG_TAG, "onContextItemSelected info is null");
+	} else {
+		Log.d(LOG_TAG, "onContextItemSelected info: " + info.toString());
+	}
+	Context c = getActivity();
+	UnderConstrDialog notYetDlg = new UnderConstrDialog();
+	HelpUnderConstrDialog hlpDlg = new HelpUnderConstrDialog();
+	ConfigurableMsgDialog flexHlpDlg = new ConfigurableMsgDialog();
+	String helpTitle, helpMessage;
+		// get an Analytics event tracker
+	Tracker headerContextTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+
+	switch (item.getItemId()) {
+
+	case R.id.sel_spp_search_add_placeholder:
+		Log.d(LOG_TAG, "'Create Placeholder' selected");
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Species Select Event")
+				.setAction("Context Menu")
+				.setLabel("Create Placeholder")
+				.setValue(1)
+				.build());
+		// edit Namer
+// replace following with Placeholder dialog
+//		EditNamerDialog editNmrDlg = EditNamerDialog.newInstance(defaultNamerId);
+//		editNmrDlg.show(getFragmentManager(), "frg_edit_namer");
+// for menu testing, pop us some Help
+		helpTitle = "New Placeholder";
+		helpMessage = "This will open the Placeholder dialog";
+		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+		flexHlpDlg.show(getFragmentManager(), "frg_help_phld_dlg");
+		return true;
+
+	case R.id.sel_spp_search_help:
+		Log.d(LOG_TAG, "'Search Chars Help' selected");
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Species Select Event")
+				.setAction("Context Menu")
+				.setLabel("Search Chars Help")
+				.setValue(1)
+				.build());
+		// Search Characters help
+		helpTitle = c.getResources().getString(R.string.sel_spp_help_search_title);
+		helpMessage = c.getResources().getString(R.string.sel_spp_help_search_text);
+		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+		flexHlpDlg.show(getFragmentManager(), "frg_help_search_chars");
+		return true;
+    default:
+    	return super.onContextItemSelected(item);
+	   }
 	}
 
 	@Override
