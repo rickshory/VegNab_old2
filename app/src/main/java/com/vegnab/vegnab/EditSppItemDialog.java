@@ -234,19 +234,19 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 
 		if (mIDConfidence == 3) { // uncertain of genus, build botanical nomenclature
 			strSaveDescription = "CF " + mStrGenus
-					+ ((mStrSpecies == "") ? "" : " " + mStrSpecies)
-					+ ((mStrSubsppVar == "") ? "" : " " + mStrSubsppVar)
-					+ ((mStrVernacular == "") ? "" : ", " + mStrVernacular);
+					+ ((mStrSpecies.length() == 0) ? "" : " " + mStrSpecies)
+					+ ((mStrSubsppVar.length() == 0) ? "" : " " + mStrSubsppVar)
+					+ ((mStrVernacular.length() == 0) ? "" : ", " + mStrVernacular);
 		} else if (mIDConfidence == 2) { // uncertain of species, build botanical nomenclature
 			strSaveDescription = mStrGenus + " CF"
-					+ ((mStrSpecies == "") ? "" : " " + mStrSpecies)
-					+ ((mStrSubsppVar == "") ? "" : " " + mStrSubsppVar)
-					+ ((mStrVernacular == "") ? "" : ", " + mStrVernacular);
+					+ ((mStrSpecies.length() == 0) ? "" : " " + mStrSpecies)
+					+ ((mStrSubsppVar.length() == 0) ? "" : " " + mStrSubsppVar)
+					+ ((mStrVernacular.length() == 0) ? "" : ", " + mStrVernacular);
 		}  else { // usual default, no uncertainty, build botanical nomenclature
 			strSaveDescription = mStrGenus
-					+ ((mStrSpecies == "") ? "" : " " + mStrSpecies)
-					+ ((mStrSubsppVar == "") ? "" : " " + mStrSubsppVar)
-					+ ((mStrVernacular == "") ? "" : ", " + mStrVernacular);
+					+ ((mStrSpecies.length() == 0) ? "" : " " + mStrSpecies)
+					+ ((mStrSubsppVar.length() == 0) ? "" : " " + mStrSubsppVar)
+					+ ((mStrVernacular.length() == 0) ? "" : ", " + mStrVernacular);
 		}
 
 		ContentResolver rs = c.getContentResolver();
