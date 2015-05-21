@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class SelectSpeciesFragment extends ListFragment 
 		implements LoaderManager.LoaderCallbacks<Cursor>{
@@ -324,10 +325,22 @@ public class SelectSpeciesFragment extends ListFragment
 				.setLabel("Create Placeholder")
 				.setValue(1)
 				.build());
-		// edit Namer
+		// add or edit Placeholder
+		String phCode;
+		phCode = mStSearch;
+		Toast.makeText(this.getActivity(), "Placeholder code '" + phCode + "'", Toast.LENGTH_SHORT).show();
+		if (phCode.length() < 3) {
+			Toast.makeText(this.getActivity(), "Placeholder codes must be at least 3 characters long.", Toast.LENGTH_SHORT).show();
+			return true;
+		}
+		String nrcsCodePattern = "[a-zA-Z {3,5}]"; // not correct yet
+		if (phCode.matches(nrcsCodePattern)) {
+			Toast.makeText(this.getActivity(), "Placeholder can\'t be like an NRCS code.", Toast.LENGTH_SHORT).show();
+			return true;
+		}
 // replace following with Placeholder dialog
-//		EditNamerDialog editNmrDlg = EditNamerDialog.newInstance(defaultNamerId);
-//		editNmrDlg.show(getFragmentManager(), "frg_edit_namer");
+//		EditPlaceholderDialog editPhDlg = EditPlaceholderDialog.newInstance(phCode);
+//		editPhDlg.show(getFragmentManager(), "frg_edit_placeholder");
 // for menu testing, pop us some Help
 		helpTitle = "New Placeholder";
 		helpMessage = "This will open the Placeholder dialog";
