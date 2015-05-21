@@ -64,6 +64,7 @@ public final class VNContract {
 		public static final int BASE_SUBPLOT_SPP = 2000; // Veg species for the current subplot; base number, instances will increment
 		// in Species Select
 		public static final int SPP_MATCHES = 71; // Species that match the search string
+		public static final int EXISTING_PLACEHOLDER_CODES = 72; // Placeholder codes already defined by this Namer
 
 		// in Main Activity
 		// in Edit VegItem

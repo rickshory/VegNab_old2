@@ -50,6 +50,7 @@ public class SelectSpeciesFragment extends ListFragment
 	boolean mPresenceOnly = true;
 	long mProjectId = 0;
 	long mNamerId = 0;
+	HashSet<String> mPlaceholderCodesForThisNamer = new HashSet<String>();
 	Cursor mSppMatchCursor;
 	
 	SimpleCursorAdapter mSppResultsAdapter;
@@ -214,6 +215,8 @@ public class SelectSpeciesFragment extends ListFragment
 	final static String ARG_USE_FULLTEXT_SEARCH = "fulltext_search";
 */
 		}
+		// get following to disallow duplicate Placeholder definitions
+		getLoaderManager().initLoader(Loaders.EXISTING_PLACEHOLDER_CODES, null, this);
 	}
 	
 	@Override
@@ -334,12 +337,18 @@ public class SelectSpeciesFragment extends ListFragment
 		}
 		String nrcsCodePattern = "[a-zA-Z]{3,5}[0-9]*|2[a-zA-Z]{1,4}";
 		// disallow 3 to 5 letters, alone or followed by numbers
-		// disallow any with numerals trailing 3-5 letter, though never seen real codes with more than 2 digits here
+		// disallow any with numerals trailing 3-5 letters, though never saw real codes with more than 2 digits here
 		// also disallow codes like "2FDA" (forb dicot annual) some agencies use for general ids
 		if (phCode.matches(nrcsCodePattern)) {
 			Toast.makeText(this.getActivity(), "Placeholder can\'t be like an NRCS code.", Toast.LENGTH_SHORT).show();
 			return true;
 		}
+
+		if (mPlaceholderCodesForThisNamer.contains(phCode)) {
+			Toast.makeText(this.getActivity(), "Placeholder code \"" + phCode + "\" is already used.", Toast.LENGTH_SHORT).show();
+			return true;
+		}
+
 // replace following with Placeholder dialog
 //		EditPlaceholderDialog editPhDlg = EditPlaceholderDialog.newInstance(phCode);
 //		editPhDlg.show(getFragmentManager(), "frg_edit_placeholder");
@@ -384,6 +393,14 @@ public class SelectSpeciesFragment extends ListFragment
 			cl = new CursorLoader(getActivity(), baseUri,
 					null, select, null, null);
 			break;
+
+			case Loaders.EXISTING_PLACEHOLDER_CODES:
+				baseUri = ContentProvider_VegNab.SQL_URI;
+				select = "SELECT PlaceHolderCode FROM PlaceHolders "
+					+ "WHERE ProjID = " + mProjectId + " "
+					+ "AND NamerID = " + mNamerId + ";";
+				cl = new CursorLoader(getActivity(), baseUri, null, select, null, null);
+				break;
 		}
 		return cl;
 		
@@ -398,6 +415,20 @@ public class SelectSpeciesFragment extends ListFragment
 			mSppResultsAdapter.swapCursor(finishedCursor);
 			mSppMatchCursor = finishedCursor;
 			break;
+
+		case Loaders.EXISTING_PLACEHOLDER_CODES:
+			mPlaceholderCodesForThisNamer.clear();
+			while (finishedCursor.moveToNext()) {
+/*				String code;
+				Log.d(LOG_TAG, "Namer already used code: '" + code + "'");
+				code = finishedCursor.getString(
+						finishedCursor.getColumnIndexOrThrow("PlaceHolderCode"));
+				mVegCodesAlreadyOnSubplot.add(code);
+*/
+				mPlaceholderCodesForThisNamer.add(finishedCursor.getString(
+						finishedCursor.getColumnIndexOrThrow("PlaceHolderCode")));
+			}
+			break;
 		}
 	}
 
@@ -408,6 +439,9 @@ public class SelectSpeciesFragment extends ListFragment
 		switch (loader.getId()) {
 		case Loaders.SPP_MATCHES:
 			mSppResultsAdapter.swapCursor(null);
+			break;
+		case Loaders.EXISTING_PLACEHOLDER_CODES:
+			// not an adapter, nothing to do here
 			break;
 		}
 	}
