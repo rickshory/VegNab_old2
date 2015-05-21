@@ -333,7 +333,7 @@ public class SelectSpeciesFragment extends ListFragment
 			Toast.makeText(this.getActivity(), "Placeholder codes must be at least 3 characters long.", Toast.LENGTH_SHORT).show();
 			return true;
 		}
-		String nrcsCodePattern = "[a-zA-Z {3,5}]"; // not correct yet
+		String nrcsCodePattern = "[a-zA-Z]{3,5}[0-9]{0,3}"; // somewhat stricter, usually only have 2 digits max
 		if (phCode.matches(nrcsCodePattern)) {
 			Toast.makeText(this.getActivity(), "Placeholder can\'t be like an NRCS code.", Toast.LENGTH_SHORT).show();
 			return true;
