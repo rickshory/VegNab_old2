@@ -326,8 +326,7 @@ public class SelectSpeciesFragment extends ListFragment
 				.setValue(1)
 				.build());
 		// add or edit Placeholder
-		String phCode;
-		phCode = mStSearch;
+		String phCode = mStSearch.trim();
 		Toast.makeText(this.getActivity(), "Placeholder code '" + phCode + "'", Toast.LENGTH_SHORT).show();
 		if (phCode.length() < 3) {
 			Toast.makeText(this.getActivity(), "Placeholder codes must be at least 3 characters long.", Toast.LENGTH_SHORT).show();
