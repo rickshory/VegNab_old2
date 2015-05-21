@@ -332,7 +332,10 @@ public class SelectSpeciesFragment extends ListFragment
 			Toast.makeText(this.getActivity(), "Placeholder codes must be at least 3 characters long.", Toast.LENGTH_SHORT).show();
 			return true;
 		}
-		String nrcsCodePattern = "[a-zA-Z]{3,5}[0-9]{0,3}"; // somewhat stricter, usually only have 2 digits max
+		String nrcsCodePattern = "[a-zA-Z]{3,5}[0-9]*|2[a-zA-Z]{1,4}";
+		// disallow 3 to 5 letters, alone or followed by numbers
+		// disallow any with numerals trailing 3-5 letter, though never seen real codes with more than 2 digits here
+		// also disallow codes like "2FDA" (forb dicot annual) some agencies use for general ids
 		if (phCode.matches(nrcsCodePattern)) {
 			Toast.makeText(this.getActivity(), "Placeholder can\'t be like an NRCS code.", Toast.LENGTH_SHORT).show();
 			return true;
