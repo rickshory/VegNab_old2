@@ -1,5 +1,6 @@
 package com.vegnab.vegnab;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -50,7 +51,7 @@ public class SelectSpeciesFragment extends ListFragment
 	boolean mPresenceOnly = true;
 	long mProjectId = 0;
 	long mNamerId = 0;
-	HashSet<String> mPlaceholderCodesForThisNamer = new HashSet<String>();
+	HashMap<String, Long> mPlaceholderCodesForThisNamer = new HashMap<String, Long>();
 	Cursor mSppMatchCursor;
 	
 	SimpleCursorAdapter mSppResultsAdapter;
@@ -344,7 +345,7 @@ public class SelectSpeciesFragment extends ListFragment
 			return true;
 		}
 
-		if (mPlaceholderCodesForThisNamer.contains(phCode)) {
+		if (mPlaceholderCodesForThisNamer.containsKey(phCode)) {
 			Toast.makeText(this.getActivity(), "Placeholder code \"" + phCode + "\" is already used.", Toast.LENGTH_SHORT).show();
 			return true;
 		}
@@ -396,7 +397,7 @@ public class SelectSpeciesFragment extends ListFragment
 
 			case Loaders.EXISTING_PLACEHOLDER_CODES:
 				baseUri = ContentProvider_VegNab.SQL_URI;
-				select = "SELECT PlaceHolderCode FROM PlaceHolders "
+				select = "SELECT _id, PlaceHolderCode FROM PlaceHolders "
 					+ "WHERE ProjID = " + mProjectId + " "
 					+ "AND NamerID = " + mNamerId + ";";
 				cl = new CursorLoader(getActivity(), baseUri, null, select, null, null);
@@ -425,8 +426,10 @@ public class SelectSpeciesFragment extends ListFragment
 						finishedCursor.getColumnIndexOrThrow("PlaceHolderCode"));
 				mVegCodesAlreadyOnSubplot.add(code);
 */
-				mPlaceholderCodesForThisNamer.add(finishedCursor.getString(
-						finishedCursor.getColumnIndexOrThrow("PlaceHolderCode")));
+				mPlaceholderCodesForThisNamer.put(finishedCursor.getString(
+						finishedCursor.getColumnIndexOrThrow("PlaceHolderCode")),
+						finishedCursor.getLong(
+						finishedCursor.getColumnIndexOrThrow("_id")));
 			}
 			break;
 		}

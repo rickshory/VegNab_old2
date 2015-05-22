@@ -100,13 +100,22 @@
 		android:maxLength="255" />
 
 	<Button
-		android:id="@+id/placeholder_go_button"
+		android:id="@+id/placeholder_save_button"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:text="@string/edit_placeholder__go_button_msg"
+		android:text="@string/edit_placeholder_save_button_msg"
 		android:padding="10dp"
 		android:layout_alignLeft="@id/txt_placeholder_labelnumber"
 		android:layout_below="@id/txt_placeholder_labelnumber"
+		/>
+	<Button
+		android:id="@+id/placeholder_cancel_button"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/edit_placeholder_cancel_button_msg"
+		android:padding="10dp"
+		android:layout_alignLeft="@id/placeholder_save_button"
+		android:layout_below="@id/placeholder_save_button"
 		/>
 </RelativeLayout>
 </ScrollView>

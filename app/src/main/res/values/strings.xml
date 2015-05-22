@@ -226,8 +226,9 @@
     <string name="edit_placeholder_label_habitat">Habitat</string>
     <string name="edit_placeholder_hint_habitat">Habitat where found</string>
     <string name="edit_placeholder_label_labelnumber">Label number or other identifier</string>
-    <string name="edit_placeholder_hint_labelnumber">Identifier</string>
-    <string name="edit_placeholder__go_button_msg">Save</string>
+    <string name="edit_placeholder_hint_labelnumber">Specimen identifier, if used</string>
+    <string name="edit_placeholder_save_button_msg">Save</string>
+    <string name="edit_placeholder_cancel_button_msg">Cancel</string>
 
     
 
