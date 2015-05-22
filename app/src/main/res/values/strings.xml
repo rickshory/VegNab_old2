@@ -217,6 +217,18 @@
     
     <string name="edit_spp_item_validate_height_bad">Need a number for Height, in centimeters</string>
     <string name="edit_spp_item_validate_cover_bad">Need a number for Cover between 1 and 100 percent</string>
+
+    <string name="edit_placeholder_title">Placeholder</string>
+    <string name="edit_placeholder_label_code">Code</string>
+    <string name="edit_placeholder_hint_code">Code</string>
+    <string name="edit_placeholder_label_description">Description</string>
+    <string name="edit_placeholder_hint_description">Description of the plant</string>
+    <string name="edit_placeholder_label_habitat">Habitat</string>
+    <string name="edit_placeholder_hint_habitat">Habitat where found</string>
+    <string name="edit_placeholder_label_labelnumber">Label number or other identifier</string>
+    <string name="edit_placeholder_hint_labelnumber">Identifier</string>
+    <string name="edit_placeholder__go_button_msg">Save</string>
+
     
 
 </resources>
