@@ -160,38 +160,16 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 //		DialogFragment editProjDlg;
 		switch (item.getItemId()) { // the Activity has first opportunity to handle these
 		// any not handled come here to this Fragment
-		case R.id.action_app_info:
-			Toast.makeText(getActivity(), "''App Info'' of Placeholder Header is not implemented yet", Toast.LENGTH_SHORT).show();
+		case R.id.action_ph_photo:
+			Toast.makeText(getActivity(), "''Take Photo'' of Placeholder is not implemented yet", Toast.LENGTH_SHORT).show();
 			return true;
-		case R.id.action_visit_info:
-			Toast.makeText(getActivity(), "''Placeholder Details'' of Placeholder Header is not implemented yet", Toast.LENGTH_SHORT).show();
-			return true;
-		case R.id.action_export_visit:
-			exportPlaceholder();
-			return true;
-		
-		case R.id.action_delete_visit:
-			Toast.makeText(getActivity(), "''Delete Placeholder'' is not fully implemented yet", Toast.LENGTH_SHORT).show();
-			Fragment newVisFragment = fm.findFragmentByTag("new_visit");
-			if (newVisFragment == null) {
-				Log.d(LOG_TAG, "newVisFragment == null");
-			} else {
-				Log.d(LOG_TAG, "newVisFragment: " + newVisFragment.toString());
-				FragmentTransaction transaction = fm.beginTransaction();
-				// replace the fragment in the fragment container with the stored New Placeholder fragment
-				transaction.replace(R.id.fragment_container, newVisFragment);
-				// we are deleting this record, so do not put the present fragment on the backstack
-				transaction.commit();		
-			}
 
-//			DelProjectDialog delProjDlg = new DelProjectDialog();
-//			delProjDlg.show(fm, "frg_del_proj");
+		case R.id.action_ph_details:
+			Toast.makeText(getActivity(), "''Details'' of Placeholder is not implemented yet", Toast.LENGTH_SHORT).show();
 			return true;
-		case R.id.action_visit_help:
-			Toast.makeText(getActivity(), "''Placeholder Help'' is not implemented yet", Toast.LENGTH_SHORT).show();
-			return true;
-		case R.id.action_settings:
-			Toast.makeText(getActivity(), "''Settings'' of Placeholder Header is not implemented yet", Toast.LENGTH_SHORT).show();
+
+		case R.id.action_ph_help:
+			Toast.makeText(getActivity(), "''Help'' of Placeholder is not implemented yet", Toast.LENGTH_SHORT).show();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -287,13 +265,14 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
 	@Override
 	public void onClick(View v) {
+		Bundle args;
 		int numUpdated;
 		switch (v.getId()) {
 
 		case R.id.placeholder_save_button:
 			// create or update the Placeholder record in the database, if everything is valid
 			mValidationLevel = Validation.CRITICAL; // save if possible, and announce anything invalid
-			numUpdated = saveVisitRecord();
+			numUpdated = savePlaceholderRecord();
 			if (numUpdated == 0) {
 				Log.d(LOG_TAG, "Failed to save record in onClick; mValues: " + mValues.toString());
 			} else {
@@ -303,7 +282,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 				break;
 			}
 			Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onVisitHeaderGoButtonClicked()'");
-			mButtonCallback.onVisitHeaderGoButtonClicked(mVisitId);
+//			mButtonCallback.onPlaceholderSaveButtonClicked(args);
 			Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onVisitHeaderGoButtonClicked()'");
 			break;
 		}
@@ -651,16 +630,16 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 	}
 
 	
-	private int saveVisitRecord() {
+	private int savePlaceholderRecord() {
 		int numUpdated = 0;
 		if (!validateVisitHeader()) {
-			Log.d(LOG_TAG, "Failed validation in saveVisitRecord; mValues: " + mValues.toString());
+			Log.d(LOG_TAG, "Failed validation in savePlaceholderRecord; mValues: " + mValues.toString());
 			return numUpdated;
 		}
 		ContentResolver rs = getActivity().getContentResolver();
 		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
 		if (mVisitId == 0) { // new record
-            Log.d(LOG_TAG, "saveVisitRecord; creating new record with mVisitId = " + mVisitId);
+            Log.d(LOG_TAG, "savePlaceholderRecord; creating new record with mVisitId = " + mVisitId);
 			// fill in fields the user never sees
 			mValues.put("ProjID", sharedPref.getLong(Prefs.DEFAULT_PROJECT_ID, 0));
 			mValues.put("PlotTypeID", sharedPref.getLong(Prefs.DEFAULT_PLOTTYPE_ID, 0));
@@ -681,17 +660,17 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 			mValues.put("NumAdditionalLocations", 0); // if additional locations are mapped, maintain the count
 			mValues.put("AdditionalLocationsType", 1); // 1=points, 2=line, 3=polygon			
 			mUri = rs.insert(mVisitsUri, mValues);
-			Log.d(LOG_TAG, "new record in saveVisitRecord; returned URI: " + mUri.toString());
+			Log.d(LOG_TAG, "new record in savePlaceholderRecord; returned URI: " + mUri.toString());
 			long newRecId = Long.parseLong(mUri.getLastPathSegment());
 			if (newRecId < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
-				Log.d(LOG_TAG, "new record in saveVisitRecord has Id == " + newRecId + "); canceled");
+				Log.d(LOG_TAG, "new record in savePlaceholderRecord has Id == " + newRecId + "); canceled");
 				return 0;
 			}
 			mVisitId = newRecId;
 			getLoaderManager().restartLoader(Loaders.EXISTING_VISITS, null, this);
 			
 			mUri = ContentUris.withAppendedId(mVisitsUri, mVisitId);
-			Log.d(LOG_TAG, "new record in saveVisitRecord; URI re-parsed: " + mUri.toString());
+			Log.d(LOG_TAG, "new record in savePlaceholderRecord; URI re-parsed: " + mUri.toString());
 			SharedPreferences.Editor prefEditor = sharedPref.edit();
 			prefEditor.putLong(Prefs.CURRENT_VISIT_ID, mVisitId);
 			prefEditor.commit();
@@ -709,29 +688,29 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 				mUri = rs.insert(mLocationsUri, mValues);
 				long newLocID = Long.parseLong(mUri.getLastPathSegment());
 				if (newLocID < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
-					Log.d(LOG_TAG, "new Location record in saveVisitRecord has Id == " + newLocID + "); canceled");
+					Log.d(LOG_TAG, "new Location record in savePlaceholderRecord has Id == " + newLocID + "); canceled");
 				} else {
 					mLocId = newLocID;
-					Log.d(LOG_TAG, "saveVisitRecord; new Location record created, locID = " + mLocId);
+					Log.d(LOG_TAG, "savePlaceholderRecord; new Location record created, locID = " + mLocId);
 					// update the Visit record to include the Location
 					mValues.clear();
 					mValues.put("RefLocID", mLocId);
 					mUri = ContentUris.withAppendedId(mVisitsUri, mVisitId);
 					numUpdated = rs.update(mUri, mValues, null, null);
 					if (numUpdated == 0) {
-						Log.d(LOG_TAG, "saveVisitRecord; new Visit record NOT updated with locID = " + mLocId);
+						Log.d(LOG_TAG, "savePlaceholderRecord; new Visit record NOT updated with locID = " + mLocId);
 					} else {
-						Log.d(LOG_TAG, "saveVisitRecord; new Visit record updated with locID = " + mLocId);
+						Log.d(LOG_TAG, "savePlaceholderRecord; new Visit record updated with locID = " + mLocId);
 					}
 				}
 			}
 			numUpdated = 1;
 		} else { // update the existing record
-            Log.d(LOG_TAG, "saveVisitRecord; updating existing record with mVisitId = " + mVisitId);
+            Log.d(LOG_TAG, "savePlaceholderRecord; updating existing record with mVisitId = " + mVisitId);
 			mValues.put("LastChanged", mTimeFormat.format(new Date())); // update the last-changed time
 			mUri = ContentUris.withAppendedId(mVisitsUri, mVisitId);
 			numUpdated = rs.update(mUri, mValues, null, null);
-			Log.d(LOG_TAG, "Updated record in saveVisitRecord; numUpdated: " + numUpdated);
+			Log.d(LOG_TAG, "Updated record in savePlaceholderRecord; numUpdated: " + numUpdated);
 		}
 		if (numUpdated > 0) {
             try {
@@ -757,7 +736,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 			case R.id.txt_visit_azimuth:
 			case R.id.txt_visit_notes:
 				mValidationLevel = Validation.QUIET; // save if possible, but notify minimally
-				int numUpdated = saveVisitRecord();
+				int numUpdated = savePlaceholderRecord();
 				if (numUpdated == 0) {
 					Log.d(LOG_TAG, "Failed to save record in onFocusChange; mValues: " + mValues.toString());
 				} else {
@@ -775,26 +754,17 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getActivity().getMenuInflater();
 		switch (v.getId()) {
-		case R.id.txt_visit_name:
-			inflater.inflate(R.menu.context_visit_header_visname, menu);
+		case R.id.txt_placeholder_code:
+			inflater.inflate(R.menu.context_placeholder_code, menu);
 			break;
-		case R.id.sel_spp_namer_spinner:
-			inflater.inflate(R.menu.context_visit_header_namer, menu);
+		case R.id.txt_placeholder_description:
+			inflater.inflate(R.menu.context_placeholder_description, menu);
 			break;
-		case R.id.lbl_spp_namer_spinner_cover:
-			inflater.inflate(R.menu.context_visit_header_namer_cover, menu);
+		case R.id.txt_placeholder_habitat:
+			inflater.inflate(R.menu.context_placeholder_habitat, menu);
 			break;
-		case R.id.txt_visit_scribe:
-			inflater.inflate(R.menu.context_visit_header_scribe, menu);
-			break;
-		case R.id.txt_visit_location:
-			inflater.inflate(R.menu.context_visit_header_location, menu);
-			break;
-		case R.id.txt_visit_azimuth:
-			inflater.inflate(R.menu.context_visit_header_azimuth, menu);
-			break;
-		case R.id.txt_visit_notes:
-			inflater.inflate(R.menu.context_visit_header_notes, menu);
+		case R.id.txt_placeholder_labelnumber:
+			inflater.inflate(R.menu.context_placeholder_labelnumber, menu);
 			break;
 		}
 	}
@@ -817,218 +787,62 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 	Tracker headerContextTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
 
 	switch (item.getItemId()) {
-	case R.id.vis_hdr_visname_help:
-		Log.d(LOG_TAG, "'Visit Name Help' selected");
+	case R.id.placeholder_code_help:
+		Log.d(LOG_TAG, "'Placeholder Code Help' selected");
 		headerContextTracker.send(new HitBuilders.EventBuilder()
-				.setCategory("Visit Header Event")
+				.setCategory("Edit Placeholder Event")
 				.setAction("Context Menu")
-				.setLabel("Visit Name Help")
+				.setLabel("Placeholder Code Help")
 				.setValue(1)
 				.build());
 		// Visit Name help
-		helpTitle = c.getResources().getString(R.string.vis_hdr_help_visname_title);
-		helpMessage = c.getResources().getString(R.string.vis_hdr_help_visname_text);
+		helpTitle = c.getResources().getString(R.string.placeholder_help_code_title);
+		helpMessage = c.getResources().getString(R.string.placeholder_help_code_text);
 		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-		flexHlpDlg.show(getFragmentManager(), "frg_help_visname");
+		flexHlpDlg.show(getFragmentManager(), "frg_help_placeholder_code");
 		return true;
-	case R.id.vis_hdr_namer_edit:
-		Log.d(LOG_TAG, "'Edit Namer' selected");
+	case R.id.placeholder_description_help:
+		Log.d(LOG_TAG, "'Placeholder Description Help' selected");
 		headerContextTracker.send(new HitBuilders.EventBuilder()
-				.setCategory("Visit Header Event")
+				.setCategory("Edit Placeholder Event")
 				.setAction("Context Menu")
-				.setLabel("Edit Namer")
+				.setLabel("Placeholder Description Help")
 				.setValue(1)
 				.build());
-		// edit Namer
-		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-		long defaultNamerId = sharedPref.getLong(Prefs.DEFAULT_NAMER_ID, 0);
-		if (defaultNamerId == 0) {
-			return true;
-		}
-		EditNamerDialog editNmrDlg = EditNamerDialog.newInstance(defaultNamerId);
-		editNmrDlg.show(getFragmentManager(), "frg_edit_namer");
-		return true;
-	case R.id.vis_hdr_namer_delete:
-		Log.d(LOG_TAG, "'Delete Namer' selected");
-		headerContextTracker.send(new HitBuilders.EventBuilder()
-				.setCategory("Visit Header Event")
-				.setAction("Context Menu")
-				.setLabel("Delete Namer")
-				.setValue(1)
-				.build());
-		// delete Namer
-		DelNamerDialog delNamerDlg = new DelNamerDialog();
-		delNamerDlg.show(getFragmentManager(), "frg_del_namer");
-		return true;
-	case R.id.vis_hdr_namer_help:
-		// drop through to the same Help for the text view that covers the
-		//  Namer spinner to catch the first '(add new)' click
-	case R.id.vis_hdr_namer_cover_help:
-		Log.d(LOG_TAG, "'Namer Help' selected");
-		headerContextTracker.send(new HitBuilders.EventBuilder()
-				.setCategory("Visit Header Event")
-				.setAction("Context Menu")
-				.setLabel("Namer Help")
-				.setValue(1)
-				.build());
-		// Namer help
-		helpTitle = c.getResources().getString(R.string.vis_hdr_help_namer_title);
-		helpMessage = c.getResources().getString(R.string.vis_hdr_help_namer_text);
+		helpTitle = c.getResources().getString(R.string.placeholder_help_description_title);
+		helpMessage = c.getResources().getString(R.string.placeholder_help_description_text);
 		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-		flexHlpDlg.show(getFragmentManager(), "frg_help_namer");
+		flexHlpDlg.show(getFragmentManager(), "frg_help_placeholder_description");
 		return true;
-	case R.id.vis_hdr_scribe_help:
-		Log.d(LOG_TAG, "'Scribe Help' selected");
-		headerContextTracker.send(new HitBuilders.EventBuilder()
-				.setCategory("Visit Header Event")
-				.setAction("Context Menu")
-				.setLabel("Scribe Help")
-				.setValue(1)
-				.build());
-		// Scribe help
-		helpTitle = c.getResources().getString(R.string.vis_hdr_help_scribe_title);
-		helpMessage = c.getResources().getString(R.string.vis_hdr_help_scribe_text);
-		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-		flexHlpDlg.show(getFragmentManager(), "frg_help_scribe");
-		return true;
-	case R.id.vis_hdr_loc_restore_prev:
-		Log.d(LOG_TAG, "'Restore Previous' selected");
-		headerContextTracker.send(new HitBuilders.EventBuilder()
-				.setCategory("Visit Header Event")
-				.setAction("Context Menu")
-				.setLabel("Restore Previous Location")
-				.setValue(1)
-				.build());
-		// re-acquire location
-		notYetDlg.show(getFragmentManager(), null);
-		return true;
-	case R.id.vis_hdr_loc_reacquire:
-		headerContextTracker.send(new HitBuilders.EventBuilder()
-				.setCategory("Visit Header Event")
-				.setAction("Context Menu")
-				.setLabel("Re-acquire Location")
-				.setValue(1)
-				.build());
-		Log.d(LOG_TAG, "'Re-acquire' selected");
-		// re-acquire location
-		notYetDlg.show(getFragmentManager(), null);
-		return true;
-	case R.id.vis_hdr_loc_accept:
-		Log.d(LOG_TAG, "'Accept accuracy' selected");
-		if (mLocIsGood) { // message that accuracy is already OK
-			headerContextTracker.send(new HitBuilders.EventBuilder()
-					.setCategory("Visit Header Event")
-					.setAction("Context Menu")
-					.setLabel("Accept Location Accuracy, already good")
-					.setValue(1)
-					.build());
 
-			helpTitle = c.getResources().getString(R.string.vis_hdr_loc_good_ok_title);
-			if (mLocationSource == USER_OKD_ACCURACY) {
-				helpMessage = c.getResources().getString(R.string.vis_hdr_loc_good_prev_ok);
-			} else {
-				helpMessage = c.getResources().getString(R.string.vis_hdr_loc_good_ok_text_pre)
-					+ " " + mAccuracy
-					+ c.getResources().getString(R.string.vis_hdr_loc_good_ok_text_post);
-			}
-			flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-			flexHlpDlg.show(getFragmentManager(), "frg_loc_acc_already_ok");
-			return true;
-		}
-		if (mCurLocation == null) { // no location at all yet
-			headerContextTracker.send(new HitBuilders.EventBuilder()
-					.setCategory("Visit Header Event")
-					.setAction("Context Menu")
-					.setLabel("Accept Location Accuracy, but no location")
-					.setValue(1)
-					.build());
+	case R.id.placeholder_habitat_help:
+		Log.d(LOG_TAG, "'Placeholder Habitat Help' selected");
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Edit Placeholder Event")
+				.setAction("Context Menu")
+				.setLabel("Placeholder Habitat Help")
+				.setValue(1)
+				.build());
+		helpTitle = c.getResources().getString(R.string.placeholder_help_habitat_title);
+		helpMessage = c.getResources().getString(R.string.placeholder_help_habitat_text);
+		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+		flexHlpDlg.show(getFragmentManager(), "frg_help_placeholder_habitat");
+		return true;
 
-			helpTitle = c.getResources().getString(R.string.vis_hdr_validate_generic_title);
-			helpMessage = c.getResources().getString(R.string.vis_hdr_loc_none);
-			flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-			flexHlpDlg.show(getFragmentManager(), "frg_loc_err_none");
-			return true;
-		}
-		// accept location even with poor accuracy
+	case R.id.placeholder_labelnumber_help:
+		Log.d(LOG_TAG, "'Placeholder Label Number Help' selected");
 		headerContextTracker.send(new HitBuilders.EventBuilder()
-				.setCategory("Visit Header Event")
+				.setCategory("Edit Placeholder Event")
 				.setAction("Context Menu")
-				.setLabel("Accept Location Accuracy, accepted")
+				.setLabel("Placeholder Label Number Help")
 				.setValue(1)
 				.build());
-	    mLocationSource = USER_OKD_ACCURACY;
-	    finalizeLocation(); // depends on mCurLocation, tested above
-		helpTitle = c.getResources().getString(R.string.vis_hdr_loc_good_ack_title);
-		helpMessage = c.getResources().getString(R.string.vis_hdr_loc_good_ack_text_pre)
-				+ " " + mAccuracy
-				+ c.getResources().getString(R.string.vis_hdr_loc_good_ack_text_post);
+		helpTitle = c.getResources().getString(R.string.placeholder_help_labelnumber_title);
+		helpMessage = c.getResources().getString(R.string.placeholder_help_labelnumber_text);
 		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-		flexHlpDlg.show(getFragmentManager(), "frg_loc_acc_accept");
+		flexHlpDlg.show(getFragmentManager(), "frg_help_placeholder_labelnumber");
 		return true;
-	case R.id.vis_hdr_loc_manual:
-		Log.d(LOG_TAG, "'Enter manually' selected");
-		headerContextTracker.send(new HitBuilders.EventBuilder()
-				.setCategory("Visit Header Event")
-				.setAction("Context Menu")
-				.setLabel("Enter Location Manually")
-				.setValue(1)
-				.build());
-		// enter location manually
-		notYetDlg.show(getFragmentManager(), null);
-		return true;
-	case R.id.vis_hdr_loc_details:
-		Log.d(LOG_TAG, "'Details' selected");
-		headerContextTracker.send(new HitBuilders.EventBuilder()
-				.setCategory("Visit Header Event")
-				.setAction("Context Menu")
-				.setLabel("Show Location Details")
-				.setValue(1)
-				.build());
-		// show location details
-		notYetDlg.show(getFragmentManager(), null);
-		return true;
-	case R.id.vis_hdr_loc_help:
-		Log.d(LOG_TAG, "'Location Help' selected");
-		headerContextTracker.send(new HitBuilders.EventBuilder()
-				.setCategory("Visit Header Event")
-				.setAction("Context Menu")
-				.setLabel("Location Help Requested")
-				.setValue(1)
-				.build());
-		// Location help
-		helpTitle = c.getResources().getString(R.string.vis_hdr_help_loc_title);
-		helpMessage = c.getResources().getString(R.string.vis_hdr_help_loc_text);
-		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-		flexHlpDlg.show(getFragmentManager(), "frg_help_loc");
-		return true;
-	case R.id.vis_hdr_azimuth_help:
-		Log.d(LOG_TAG, "'Azimuth Help' selected");
-		headerContextTracker.send(new HitBuilders.EventBuilder()
-				.setCategory("Visit Header Event")
-				.setAction("Context Menu")
-				.setLabel("Azimuth Help Requested")
-				.setValue(1)
-				.build());
-		// Azimuth help
-		helpTitle = c.getResources().getString(R.string.vis_hdr_help_azimuth_title);
-		helpMessage = c.getResources().getString(R.string.vis_hdr_help_azimuth_text);
-		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-		flexHlpDlg.show(getFragmentManager(), "frg_help_azimuth");
-		return true;
-	case R.id.vis_hdr_notes_help:
-		Log.d(LOG_TAG, "'Notes Help' selected");
-		headerContextTracker.send(new HitBuilders.EventBuilder()
-				.setCategory("Visit Header Event")
-				.setAction("Context Menu")
-				.setLabel("Notes Help Requested")
-				.setValue(1)
-				.build());
-		// Notes help
-		helpTitle = c.getResources().getString(R.string.vis_hdr_help_notes_title);
-		helpMessage = c.getResources().getString(R.string.vis_hdr_help_notes_text);
-		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-		flexHlpDlg.show(getFragmentManager(), "frg_help_notes");
-		return true;
+
     default:
     	return super.onContextItemSelected(item);
 	   }

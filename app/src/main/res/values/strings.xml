@@ -230,6 +230,25 @@
     <string name="edit_placeholder_save_button_msg">Save</string>
     <string name="edit_placeholder_cancel_button_msg">Cancel</string>
 
-    
+    <string name="placeholder_menu_takephoto">Take photo</string>
+    <string name="placeholder_menu_details">Details</string>
+    <string name="placeholder_menu_help">Help</string>
+
+    <string name="placeholder_ctxmenu_code_help">Help</string>
+
+    <string name="placeholder_ctxmenu_description_help">Help</string>
+
+    <string name="placeholder_ctxmenu_habitat_help">Help</string>
+
+    <string name="placeholder_ctxmenu_labelnumber_help">Help</string>
+
+    <string name="placeholder_help_code_title">Placeholder Code</string>
+    <string name="placeholder_help_code_text">This is a code you make up, which you will be able to use just like a standard NRCS code. Codes can be up to 10 characters.</string>
+    <string name="placeholder_help_description_title">Placeholder Description</string>
+    <string name="placeholder_help_description_text">A thorough description will help you remember what you meant by the code. It will show in place of a plant species name.</string>
+    <string name="placeholder_help_habitat_title">Plant Habitat</string>
+    <string name="placeholder_help_habitat_text">Habitat, such as \"Desert\", \"Meadow\", "\Riparian\" will help identify this species later.</string>
+    <string name="placeholder_help_labelnumber_title">Label Number</string>
+    <string name="placeholder_help_labelnumber_text">Some rigorous studies require a numbered label attached to a voucher specimen, which is collected immediately when you input each Placeholder. If you are not doing this, you can leave \"Label Number\" blank, or use it for some other identifier.</string>
 
 </resources>
