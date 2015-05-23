@@ -78,88 +78,50 @@ import java.util.HashMap;
 import java.util.Locale;
 
 public class EditPlaceholderFragment extends Fragment implements OnClickListener,
-		AdapterView.OnItemSelectedListener,
 		View.OnFocusChangeListener,
-		LoaderManager.LoaderCallbacks<Cursor>,
-		ConnectionCallbacks, OnConnectionFailedListener, 
-        LocationListener {
+		LoaderManager.LoaderCallbacks<Cursor> {
 	
-	public interface EditVisitDialogListener {
-		public void onEditVisitComplete(EditPlaceholderFragment visitHeaderFragment);
+	public interface EditPlaceholderDialogListener {
+		public void onEditPlaceholderComplete(EditPlaceholderFragment visitHeaderFragment);
 	}
-	EditVisitDialogListener mEditVisitListener;	
+	EditPlaceholderDialogListener mEditPlaceholderListener;
 
 	private static final String LOG_TAG = EditPlaceholderFragment.class.getSimpleName();
-	private static final int MENU_HELP = 0;
-	private static final int MENU_ADD = 1;
-    private static final int MENU_EDIT = 2;
-    private static final int MENU_DELETE = 3;
+
     private int mValidationLevel = Validation.SILENT;
-    private static final int INTERNAL_GPS = 1;
-    private static final int NETWORK = 2;
-    private static final int MANUAL_ENTRY = 3;
-    private static final int USER_OKD_ACCURACY = 4;
-    private int mLocationSource = INTERNAL_GPS; // default till changed
-    protected GoogleApiClient mGoogleApiClient;
-    // track the state of Google API Client, to isolate errors
-    private static final int GAC_STATE_LOCATION = 1;
-    private static final int GAC_STATE_DRIVE = 2;
-    // we use LocationServices, and Drive, but not at the same time; start with LocationServices
-    private int mGACState = GAC_STATE_LOCATION;
-    private LocationRequest mLocationRequest;
-    private boolean mLocIsGood = false, mLocIsSaved = false; // default until retrieved or established true
+
     private double mLatitude, mLongitude;
-    private float mAccuracy, mAccuracyTargetForVisitLoc;
     private String mLocTime;
     private Location mCurLocation, mPrevLocation;
-    // Request code to use when launching the resolution activity
-    private static final int REQUEST_RESOLVE_ERROR = 1001;
+
     // Unique tag for the error dialog fragment
     private static final String DIALOG_ERROR = "dialog_error";
-    // Bool to track whether the app is already resolving an error
-    private boolean mResolvingError = false;
-    private static final String STATE_RESOLVING_ERROR = "resolving_error";
-    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-	long mVisitId = 0, mNamerId = 0, mLocId = 0; // zero default means new or not specified yet
+
+	long mPlaceholderId = 0, mVisitId = 0, mNamerId = 0, mLocId = 0; // zero default means new or not specified yet
 	Uri mUri;
 	Uri mVisitsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "visits");
 	Uri mLocationsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "locations");
 	ContentValues mValues = new ContentValues();
-	HashMap<Long, String> mExistingVisitNames = new HashMap<Long, String>();
-	private EditText mViewVisitName, mViewVisitDate, mViewVisitScribe, mViewVisitLocation, mViewAzimuth, mViewVisitNotes;
-	private Spinner mNamerSpinner;
-	private TextView mLblNewNamerSpinnerCover;
+
+	private EditText mViewPlaceholderCode, mViewPlaceholderDescription,
+			mViewPlaceholderHabitat, mViewPlaceholderIdentifier;
+
 	SimpleCursorAdapter mVisitAdapter, mNamerAdapter;
 	SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 	SimpleDateFormat mTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-	private Calendar mCalendar = Calendar.getInstance();
-	private DatePickerDialog.OnDateSetListener myDateListener = new DatePickerDialog.OnDateSetListener() {
-	    @Override
-	    public void onDateSet(DatePicker view, int year, int monthOfYear,
-	            int dayOfMonth) {
-	        mCalendar.set(Calendar.YEAR, year);
-	        mCalendar.set(Calendar.MONTH, monthOfYear);
-	        mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-	        mViewVisitDate.setText(mDateFormat.format(mCalendar.getTime()));
-	    }
-	};
+
 	int mRowCt;
-	final static String ARG_SUBPLOT = "subplot"; // dummy value, eventually get rid of this one
+	final static String ARG_PLACEHOLDER_ID = "placeholderId";
+	final static String ARG_PROJECT_ID = "projectId";
 	final static String ARG_VISIT_ID = "visitId";
-	final static String ARG_LOC_GOOD_FLAG = "locGood";
-	final static String ARG_CUR_LOCATION = "curLocation";
-	final static String ARG_PREV_LOCATION = "prevLocation";
-	final static String ARG_LOC_LATITUDE = "locLatitude";
-	final static String ARG_LOC_LONGITUDE = "locLongitude";
-	final static String ARG_LOC_ACCURACY = "locAccuracy";
-	final static String ARG_LOC_TIME = "locTimeStamp";
-	
-	int mCurrentSubplot = -1;
+	final static String ARG_NAMER_ID = "namerId";
+	final static String ARG_PLACEHOLDER_TIME = "phTimeStamp";
+
 	OnButtonListener mButtonCallback; // declare the interface
 	// declare that the container Activity must implement this interface
 	public interface OnButtonListener {
 		// methods that must be implemented in the container Activity
-		public void onVisitHeaderGoButtonClicked(long visitId);
+		public void onPlaceholderSaveButtonClicked(Bundle args);
 	}
 
     public static EditPlaceholderFragment newInstance(Bundle args) {
@@ -174,10 +136,10 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		//Get a Tracker (should auto-report)
 		((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
         try {
-        	mEditVisitListener = (EditVisitDialogListener) getActivity();
-        	Log.d(LOG_TAG, "(EditVisitDialogListener) getActivity()");
+        	mEditPlaceholderListener = (EditPlaceholderDialogListener) getActivity();
+        	Log.d(LOG_TAG, "(EditPlaceholderDialogListener) getActivity()");
         } catch (ClassCastException e) {
-            throw new ClassCastException("Main Activity must implement EditVisitDialogListener interface");
+            throw new ClassCastException("Main Activity must implement EditPlaceholderDialogListener interface");
         }
 	setHasOptionsMenu(true);
 	}
@@ -199,24 +161,24 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		switch (item.getItemId()) { // the Activity has first opportunity to handle these
 		// any not handled come here to this Fragment
 		case R.id.action_app_info:
-			Toast.makeText(getActivity(), "''App Info'' of Visit Header is not implemented yet", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getActivity(), "''App Info'' of Placeholder Header is not implemented yet", Toast.LENGTH_SHORT).show();
 			return true;
 		case R.id.action_visit_info:
-			Toast.makeText(getActivity(), "''Visit Details'' of Visit Header is not implemented yet", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getActivity(), "''Placeholder Details'' of Placeholder Header is not implemented yet", Toast.LENGTH_SHORT).show();
 			return true;
 		case R.id.action_export_visit:
-			exportVisit();
+			exportPlaceholder();
 			return true;
 		
 		case R.id.action_delete_visit:
-			Toast.makeText(getActivity(), "''Delete Visit'' is not fully implemented yet", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getActivity(), "''Delete Placeholder'' is not fully implemented yet", Toast.LENGTH_SHORT).show();
 			Fragment newVisFragment = fm.findFragmentByTag("new_visit");
 			if (newVisFragment == null) {
 				Log.d(LOG_TAG, "newVisFragment == null");
 			} else {
 				Log.d(LOG_TAG, "newVisFragment: " + newVisFragment.toString());
 				FragmentTransaction transaction = fm.beginTransaction();
-				// replace the fragment in the fragment container with the stored New Visit fragment
+				// replace the fragment in the fragment container with the stored New Placeholder fragment
 				transaction.replace(R.id.fragment_container, newVisFragment);
 				// we are deleting this record, so do not put the present fragment on the backstack
 				transaction.commit();		
@@ -226,10 +188,10 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 //			delProjDlg.show(fm, "frg_del_proj");
 			return true;
 		case R.id.action_visit_help:
-			Toast.makeText(getActivity(), "''Visit Help'' is not implemented yet", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getActivity(), "''Placeholder Help'' is not implemented yet", Toast.LENGTH_SHORT).show();
 			return true;
 		case R.id.action_settings:
-			Toast.makeText(getActivity(), "''Settings'' of Visit Header is not implemented yet", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getActivity(), "''Settings'' of Placeholder Header is not implemented yet", Toast.LENGTH_SHORT).show();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -242,82 +204,41 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		// restore the previous screen, remembered by onSaveInstanceState()
 		// This is mostly needed in fixed-pane layouts
 		if (savedInstanceState != null) {
-		    mResolvingError = savedInstanceState.getBoolean(STATE_RESOLVING_ERROR, false);
-			mCurrentSubplot = savedInstanceState.getInt(ARG_SUBPLOT, 0);
-			Log.d(LOG_TAG, "In onCreateView, about to retrieve mVisitId: " + mVisitId);
+			Log.d(LOG_TAG, "In onCreateView, about to retrieve mPlaceholderId: " + mPlaceholderId);
+			mPlaceholderId = savedInstanceState.getLong(ARG_PLACEHOLDER_ID, 0);
 			mVisitId = savedInstanceState.getLong(ARG_VISIT_ID, 0);
-			Log.d(LOG_TAG, "In onCreateView, retrieved mVisitId: " + mVisitId);
-			mLocIsGood = savedInstanceState.getBoolean(ARG_LOC_GOOD_FLAG, false);
-			mCurLocation = savedInstanceState.getParcelable(ARG_CUR_LOCATION);
-			mPrevLocation = savedInstanceState.getParcelable(ARG_PREV_LOCATION);
-			if (mLocIsGood) {
-				mLatitude = savedInstanceState.getDouble(ARG_LOC_LATITUDE);
-				mLongitude = savedInstanceState.getDouble(ARG_LOC_LONGITUDE);
-				mAccuracy = savedInstanceState.getFloat(ARG_LOC_ACCURACY);
-				mLocTime = savedInstanceState.getString(ARG_LOC_TIME);
-			}
+			Log.d(LOG_TAG, "In onCreateView, retrieved mPlaceholderId: " + mPlaceholderId);
+//			mCurLocation = savedInstanceState.getParcelable(ARG_CUR_LOCATION);
 		} else {
-			Log.d(LOG_TAG, "In onCreateView, savedInstanceState == null, mVisitId: " + mVisitId);
+			Log.d(LOG_TAG, "In onCreateView, savedInstanceState == null, mPlaceholderId: " + mPlaceholderId);
 		}
 		// inflate the layout for this fragment
-		View rootView = inflater.inflate(R.layout.fragment_visit_header, container, false);
-		mViewVisitName = (EditText) rootView.findViewById(R.id.txt_visit_name);
-		mViewVisitName.setOnFocusChangeListener(this);
-		registerForContextMenu(mViewVisitName); // enable long-press
-		mViewVisitDate = (EditText) rootView.findViewById(R.id.txt_visit_date);
-		mViewVisitDate.setText(mDateFormat.format(mCalendar.getTime()));
-		mViewVisitDate.setOnClickListener(this);
-		mViewVisitDate.setOnFocusChangeListener(this);
-		mNamerSpinner = (Spinner) rootView.findViewById(R.id.sel_spp_namer_spinner);
-		mNamerSpinner.setTag(Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
-		mNamerSpinner.setEnabled(false); // will enable when data ready		
-		mNamerAdapter = new SimpleCursorAdapter(getActivity(),
-				android.R.layout.simple_spinner_item, null,
-				new String[] {"NamerName"},
-				new int[] {android.R.id.text1}, 0);		
-		mNamerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		mNamerSpinner.setAdapter(mNamerAdapter);
-		mNamerSpinner.setOnItemSelectedListener(this);
-		registerForContextMenu(mNamerSpinner); // enable long-press
-		// also need click, if no names & therefore selection cannot be changed
-//		mNamerSpinner.setOnFocusChangeListener(this); // does not work
-		// use a TextView on top of the spinner, named "lbl_spp_namer_spinner_cover"
-		mLblNewNamerSpinnerCover = (TextView) rootView.findViewById(R.id.lbl_spp_namer_spinner_cover);
-		mLblNewNamerSpinnerCover.setOnClickListener(this);
-		registerForContextMenu(mLblNewNamerSpinnerCover); // enable long-press
+		View rootView = inflater.inflate(R.layout.fragment_edit_placeholder, container, false);
+		mViewPlaceholderCode = (EditText) rootView.findViewById(R.id.txt_placeholder_code);
+		mViewPlaceholderCode.setOnFocusChangeListener(this);
+		registerForContextMenu(mViewPlaceholderCode); // enable long-press
+
+		mViewPlaceholderDescription = (EditText) rootView.findViewById(R.id.txt_placeholder_description);
+		mViewPlaceholderDescription.setOnFocusChangeListener(this);
+		registerForContextMenu(mViewPlaceholderDescription); // enable long-press
+
+		mViewPlaceholderHabitat = (EditText) rootView.findViewById(R.id.txt_placeholder_habitat);
+		mViewPlaceholderHabitat.setOnFocusChangeListener(this);
+		registerForContextMenu(mViewPlaceholderHabitat); // enable long-press
+
+		mViewPlaceholderIdentifier = (EditText) rootView.findViewById(R.id.txt_placeholder_labelnumber);
+		mViewPlaceholderIdentifier.setOnFocusChangeListener(this);
+		registerForContextMenu(mViewPlaceholderIdentifier); // enable long-press
+
 		// Prepare the loader. Either re-connect with an existing one or start a new one
 		getLoaderManager().initLoader(Loaders.NAMERS, null, this);
-		// in layout, TextView is in front of Spinner and takes precedence
-		// for testing context menu, bring spinner to front so it receives clicks
-//		mNamerSpinner.bringToFront();		
-		mViewVisitScribe = (EditText) rootView.findViewById(R.id.txt_visit_scribe);
-		mViewVisitScribe.setOnFocusChangeListener(this);
-		registerForContextMenu(mViewVisitScribe); // enable long-press
-		// set up the visit Location
-		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-		mAccuracyTargetForVisitLoc = sharedPref.getFloat(Prefs.TARGET_ACCURACY_OF_VISIT_LOCATIONS, 7.0f);
-		mViewVisitLocation = (EditText) rootView.findViewById(R.id.txt_visit_location);
-		mViewVisitLocation.setOnFocusChangeListener(this);
-		registerForContextMenu(mViewVisitLocation); // enable long-press
-        // should the following go in onCreate() ?
-        Log.d(LOG_TAG, "in CreateView about to call 'buildGoogleApiClient()'");
-        buildGoogleApiClient();
-        Log.d(LOG_TAG, "in CreateView returned from call to 'buildGoogleApiClient()'");
-    	mLocationRequest = LocationRequest.create()
-            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-            .setInterval(10000)        // 10 seconds, in milliseconds
-            .setFastestInterval(1000); // 1 second, in milliseconds
 
-		mViewAzimuth = (EditText) rootView.findViewById(R.id.txt_visit_azimuth);
-		mViewAzimuth.setOnFocusChangeListener(this);
-		registerForContextMenu(mViewAzimuth); // enable long-press
-		mViewVisitNotes = (EditText) rootView.findViewById(R.id.txt_visit_notes);
-		mViewVisitNotes.setOnFocusChangeListener(this);
-		registerForContextMenu(mViewVisitNotes); // enable long-press
 		// set click listener for the button in the view
-		Button b = (Button) rootView.findViewById(R.id.visit_header_go_button);
-		b.setOnClickListener(this);
-		// if more, loop through all the child items of the ViewGroup rootView and 
+		Button s = (Button) rootView.findViewById(R.id.placeholder_save_button);
+		s.setOnClickListener(this);
+		Button c = (Button) rootView.findViewById(R.id.placeholder_cancel_button);
+		c.setOnClickListener(this);
+		// if more, loop through all the child items of the ViewGroup rootView and
 		// set the onclicklistener for all the Button instances found
 		return rootView;
 	}
@@ -329,51 +250,21 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         // check if arguments are passed to the fragment that will change the layout
 		Bundle args = getArguments();
 		if (args != null) {
-            if (mVisitId == 0) {
+            if (mPlaceholderId == 0) {
                 // On return from Subplots container, this method can re-run before
                 // SaveInstanceState and so retain arguments originally passed when created,
-                // such as VisitId=0.
-                // Do not allow that zero to overwrite a new (nonzero) Visit ID, or
-                // it will flag to create a second copy of the same header.
-                mVisitId = args.getLong(ARG_VISIT_ID, 0);
+                // such as mPlaceholderId=0.
+                // Do not allow that zero to overwrite a new (nonzero) mPlaceholderId, or
+                // it will flag to create a second copy of the same placeholder.
+				mPlaceholderId = args.getLong(ARG_PLACEHOLDER_ID, 0);
             }
         // also use for special arguments like screen layout
         }
         // fire off loaders that depend on layout being ready to receive results
-        getLoaderManager().initLoader(Loaders.VISIT_TO_EDIT, null, this);
-        getLoaderManager().initLoader(Loaders.EXISTING_VISITS, null, this);
-	}
-	
-	@Override
-	public void onResume() {
-	    super.onResume();
-//	    do other setup here if needed
-	    switch (mGACState) {
-	    case GAC_STATE_LOCATION:
-	    	if (!mLocIsGood) {
-	    		mGoogleApiClient.connect();
-	    	}
-	    	break;
-	    	
-	    case GAC_STATE_DRIVE:
-	    	mGoogleApiClient.connect();
-	    	break;	    
-	    }
-	}
-	
-	@Override
-	public void onPause() {
-	    super.onPause();
-	    if (mGoogleApiClient.isConnected()) {
-	    	LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-	        mGoogleApiClient.disconnect();
-	    }
+        getLoaderManager().initLoader(Loaders.PLACEHOLDER_TO_EDIT, null, this);
+        getLoaderManager().initLoader(Loaders.PLACEHOLDER_HABITATS, null, this);
 	}
 
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -390,40 +281,17 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		// save the current subplot arguments in case we need to re-create the fragment
-		outState.putBoolean(STATE_RESOLVING_ERROR, mResolvingError);
-		outState.putInt(ARG_SUBPLOT, mCurrentSubplot);
+		outState.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
 		outState.putLong(ARG_VISIT_ID, mVisitId);
-		outState.putBoolean(ARG_LOC_GOOD_FLAG, mLocIsGood);
-		outState.putParcelable(ARG_CUR_LOCATION, mCurLocation);
-		outState.putParcelable(ARG_PREV_LOCATION, mPrevLocation);
-		if (mLocIsGood) {
-			outState.putDouble(ARG_LOC_LATITUDE, mLatitude);
-			outState.putDouble(ARG_LOC_LONGITUDE, mLongitude);
-			outState.putFloat(ARG_LOC_ACCURACY, mAccuracy);
-			outState.putString(ARG_LOC_TIME, mLocTime);			
-		}
 	}
 
 	@Override
 	public void onClick(View v) {
 		int numUpdated;
 		switch (v.getId()) {
-		case R.id.txt_visit_date:
-			fireOffDatePicker();
-			break;
-//		case R.id.sel_spp_namer_spinner: // does not receive onClick
-		case R.id.lbl_spp_namer_spinner_cover:
-//			AddSpeciesNamerDialog addSppNamerDlg = AddSpeciesNamerDialog.newInstance();
-//			addSppNamerDlg.setTargetFragment(this, 0); // does not work
-//			FragmentManager fm = getActivity().getSupportFragmentManager();
-			Log.d(LOG_TAG, "Starting 'add new' for Namer from onClick of 'lbl_spp_namer_spinner_cover'");
-//			addSppNamerDlg.show(fm, "sppNamerDialog_TextClick");
-			EditNamerDialog newNmrDlg = EditNamerDialog.newInstance(0);
-			newNmrDlg.show(getFragmentManager(), "frg_new_namer_fromCover");
 
-			break;
-		case R.id.visit_header_go_button:
-			// create or update the Visit record in the database, if everything is valid
+		case R.id.placeholder_save_button:
+			// create or update the Placeholder record in the database, if everything is valid
 			mValidationLevel = Validation.CRITICAL; // save if possible, and announce anything invalid
 			numUpdated = saveVisitRecord();
 			if (numUpdated == 0) {
@@ -439,31 +307,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 			Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onVisitHeaderGoButtonClicked()'");
 			break;
 		}
-	}
-	
-	private void fireOffDatePicker() {
-		String s = mViewVisitDate.getText().toString();
-	    try { // if the EditText view contains a valid date
-	    	mCalendar.setTime(mDateFormat.parse(s)); // use it
-		} catch (java.text.ParseException e) { // otherwise
-			mCalendar = Calendar.getInstance(); // use today's date
-		}
-		new DatePickerDialog(getActivity(), myDateListener,
-				mCalendar.get(Calendar.YEAR),
-				mCalendar.get(Calendar.MONTH),
-				mCalendar.get(Calendar.DAY_OF_MONTH)).show();	
-	}
-	
-	public void saveDefaultNamerId(long id) {
-		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-		SharedPreferences.Editor prefEditor = sharedPref.edit();
-		prefEditor.putLong(Prefs.DEFAULT_NAMER_ID, id);
-		prefEditor.commit();
-	}
-	
-	public void refreshNamerSpinner() {
-		// when the referred Loader callback returns, will update the Namers spinner
-		getLoaderManager().restartLoader(Loaders.NAMERS, null, this);
 	}
 
 	@Override
@@ -579,32 +422,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 				mNamerSpinner.setEnabled(false);
 			}
 			break;
-		}
-	}
-
-	public void setNamerSpinnerSelectionFromDefaultNamer() {
-		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-		// if none yet, use _id = 0, generated in query as '(add new)'
-		mNamerId = sharedPref.getLong(Prefs.DEFAULT_NAMER_ID, 0);
-		setNamerSpinnerSelection();
-		if (mNamerId == 0) {
-			// user sees '(add new)', blank TextView receives click;
-			mLblNewNamerSpinnerCover.bringToFront();
-		} else {
-			// user can operate the spinner
-			mNamerSpinner.bringToFront();
-		}
-	}
-	
-	public void setNamerSpinnerSelection() {
-		// set the current Namer to show in its spinner
-		for (int i=0; i<mRowCt; i++) {
-			Log.d(LOG_TAG, "Setting mNamerSpinner; testing index " + i);
-			if (mNamerSpinner.getItemIdAtPosition(i) == mNamerId) {
-				Log.d(LOG_TAG, "Setting mNamerSpinner; found matching index " + i);
-				mNamerSpinner.setSelection(i);
-				break;
-			}
 		}
 	}
 	
@@ -929,53 +746,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		return numUpdated;
 	}	
 	
-	@Override
-	public void onItemSelected(AdapterView<?> parent, View view, int position,
-			long id) {
-		// 'parent' is the spinner
-		// 'view' is one of the internal Android constants (e.g. text1=16908307, text2=16908308)
-		//    in the item layout, unless set up otherwise
-		// 'position' is the zero-based index in the list
-		// 'id' is the (one-based) database record '_id' of the item
-		// get the text by:
-		//Cursor cur = (Cursor)mNamerAdapter.getItem(position);
-		//String strSel = cur.getString(cur.getColumnIndex("NamerName"));
-		//Log.d(LOG_TAG, strSel);
-		// if spinner is filled by Content Provider, can't get text by:
-		//String strSel = parent.getItemAtPosition(position).toString();
-		// that returns something like below, which there is no way to get text out of:
-		// "android.content.ContentResolver$CursorWrapperInner@42041b40"
-		
-		// sort out the spinners
-		// can't use switch because not constants
-		if (parent.getId() == mNamerSpinner.getId()) {
-			// workaround for spinner firing when first set
-			if(((String)parent.getTag()).equalsIgnoreCase(Tags.SPINNER_FIRST_USE)) {
-	            parent.setTag("");
-	            return;
-	        }
-			mNamerId = id;
-			if (mNamerId == 0) { // picked '(add new)'
-				Log.d(LOG_TAG, "Starting 'add new' for Namer from onItemSelect");
-//				AddSpeciesNamerDialog  addSppNamerDlg = AddSpeciesNamerDialog.newInstance();
-//				FragmentManager fm = getActivity().getSupportFragmentManager();
-//				addSppNamerDlg.show(fm, "sppNamerDialog_SpinnerSelect");
-				EditNamerDialog newNmrDlg = EditNamerDialog.newInstance(0);
-				newNmrDlg.show(getFragmentManager(), "frg_new_namer_fromSpinner");
-
-			} else { // (mNamerId != 0) 
-				// save in app Preferences as the default Namer
-				saveDefaultNamerId(mNamerId);
-			}
-			setNamerSpinnerSelectionFromDefaultNamer(); // in either case, reset selection
-		}
-		// write code for any other spinner(s) here
-	}
-
-	@Override
-	public void onNothingSelected(AdapterView<?> arg0) {
-		setNamerSpinnerSelectionFromDefaultNamer();
-	}
 
 	@Override
 	public void onFocusChange(View v, boolean hasFocus) {
@@ -1259,418 +1029,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
 		flexHlpDlg.show(getFragmentManager(), "frg_help_notes");
 		return true;
-	case MENU_EDIT:
-		Log.d(LOG_TAG, "MENU_EDIT selected");
-//	        mark_item(info.id);
-		return true;
-	case MENU_DELETE:
-	    Log.d(LOG_TAG, "MENU_DELETE selected");
-//	        delete_item(info.id);
-	    return true;
-	case MENU_HELP:
-		Log.d(LOG_TAG, "MENU_HELP selected");
-		hlpDlg.show(getFragmentManager(), null);
-		return true;
     default:
     	return super.onContextItemSelected(item);
 	   }
-	}
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
-        // onConnectionFailed.
-    	if (mResolvingError) { // already working on this
-    		return;
-    	} else  if (connectionResult.hasResolution()) {
-            try {
-            	mResolvingError = true;
-                // Start an Activity that tries to resolve the error
-                connectionResult.startResolutionForResult(getActivity(), REQUEST_RESOLVE_ERROR);
-            } catch (IntentSender.SendIntentException e) {
-                mGoogleApiClient.connect(); // error with resolution intent, try again
-            }
-        } else {
-        	GooglePlayServicesUtil.getErrorDialog(connectionResult.getErrorCode(),getActivity(),2000).show();
-        	// Show dialog using GooglePlayServicesUtil.getErrorDialog()
-//        	showErrorDialog(connectionResult.getErrorCode());
-            mResolvingError = true;
-            Log.d(LOG_TAG, "Connection failed with code " + connectionResult.getErrorCode());
-            switch (mGACState) {
-            case GAC_STATE_LOCATION:
-            	mViewVisitLocation.setText("Location services connection failed with code " + connectionResult.getErrorCode());
-            	break;
-            case GAC_STATE_DRIVE: // make this show somewhere else
-            	mViewVisitLocation.setText("Google Drive connection failed with code " + connectionResult.getErrorCode());
-            	break;
-            }            
-        }
-    }
-    
-    // next sections build the error dialog
-
-    // Creates a dialog for an error message
-    private void showErrorDialog(int errorCode) {
-        // Create a fragment for the error dialog
-        ErrorDialogFragment dialogFragment = new ErrorDialogFragment();
-        dialogFragment.setTargetFragment(this, -1);
-        // Pass the error that should be displayed
-        Bundle args = new Bundle();
-        args.putInt(DIALOG_ERROR, errorCode);
-        dialogFragment.setArguments(args);
-        dialogFragment.show(getActivity().getSupportFragmentManager(), "errordialog");
-    }
-
-    // Called from ErrorDialogFragment when the dialog is dismissed.
-    public void onDialogDismissed() {
-        mResolvingError = false;
-    }
-
-    // A fragment to display an error dialog
-    public static class ErrorDialogFragment extends DialogFragment {
-        public ErrorDialogFragment() { }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Get the error code and retrieve the appropriate dialog
-            int errorCode = this.getArguments().getInt(DIALOG_ERROR);
-            return GooglePlayServicesUtil.getErrorDialog(errorCode,
-                    this.getActivity(), REQUEST_RESOLVE_ERROR);
-        }
-
-        @Override
-        public void onDismiss(DialogInterface dialog) {
-        	try { // is this what occasionally crashes?, e.g. on pause while error dialog is displayed
-        		((EditPlaceholderFragment)getTargetFragment()).onDialogDismissed();
-        	} catch (Exception e) {
-        		Log.d(LOG_TAG, "onDismiss error: " + e);
-        	}
-        }
-        	
-        @Override
-        public void onSaveInstanceState(Bundle outState) {
-        	try { // is this what occasionally crashes?, e.g. on pause while error dialog is displayed
-        		super.onSaveInstanceState(outState);
-        	} catch (Exception e) {
-        		Log.d(LOG_TAG, "onSaveInstanceState error: " + e);
-        	}
-        }
-    }
-    // Runs when a GoogleApiClient object successfully connects.
-    @Override
-    public void onConnected(Bundle connectionHint) {
-    	switch (mGACState) {
-    	case GAC_STATE_LOCATION:
-    		if (!mLocIsGood) {
-    			LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-    		}
-    		break;
-    		
-    	case GAC_STATE_DRIVE: // this state is set by a menu action, for testing
-    		// test, create new contents resource
-    		Drive.DriveApi.newDriveContents(mGoogleApiClient).setResultCallback(driveContentsCallback);
-    		
-    		break;
-    	}
-    }
-    
-    private void exportVisit() {
-    	Toast.makeText(getActivity(), "''Export Visit'' of Visit Header is not fully implemented yet", Toast.LENGTH_SHORT).show();
-    	// test, create new contents resource
-    	try {
-    		LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-    	} catch (Exception e) {
-    		Log.d(LOG_TAG, "GoogleApiClient may not be connected yet, error code " + e);
-    	}
-    	mGACState = GAC_STATE_DRIVE;
-    	Log.d(LOG_TAG, "about to call 'buildGoogleApiClient()'");
-    	buildGoogleApiClient();
-    	Log.d(LOG_TAG, "about to do 'mGoogleApiClient.connect()'");
-    	mGoogleApiClient.connect();
-    	Log.d(LOG_TAG, "just after 'mGoogleApiClient.connect()'");
-    	// file is actually created by a callback, search in this code for:
-    	// ResultCallback<DriveContentsResult> driveContentsCallback
-    }
-
-    final private ResultCallback<DriveContentsResult> driveContentsCallback = new
-    		ResultCallback<DriveContentsResult>() {
-    	@Override
-    	public void onResult(DriveContentsResult result) {
-    		if (!result.getStatus().isSuccess()) {
-    			Log.d(LOG_TAG, "Error while trying to create new file contents");
-//    			showMessage("Error while trying to create new file contents");
-    			Toast.makeText(getActivity(), "Error while trying to create new file contents", Toast.LENGTH_LONG).show();
-    			return;
-    		}
-    		final DriveContents driveContents = result.getDriveContents();
-    		String visName = "" + mViewVisitName.getText().toString().trim();
-    		SimpleDateFormat fileNameFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
-    		final String fileName = "VegNab" + " " + ((visName == "" ? "" : visName + " ")) 
-    				+ fileNameFormat.format(new Date());
-    		final long visId = mVisitId;
-    		// perform i/o off the ui thread
-    		new Thread() {
-    			@SuppressLint("NewApi")
-				@Override
-    			public void run() {
-    				    			// write content to DriveContents
-	    			OutputStream outputStream = driveContents.getOutputStream();
-	    			Writer writer = new OutputStreamWriter(outputStream);
-	    			try {
-						// \n writes only a '0x0a' character to the file (newline)
-						// 'normal' text files contain '0x0d' '0x0a' (carriage return and then newline)
-	    				writer.write("This is the output of a Visit's data.\r\n");
-	    				// temporarily comment out the following
-//	    				if (visId == 0) {
-//	    					writer.write("\nNo data yet for this Visit.\n");
-//	    				} else {
-	    				if (true) { // for testing
-	    					writer.write("\r\nVisit ID = " + visId + "\r\n");
-	    					// test getting data from the database
-	    					VegNabDbHelper thdDb = new VegNabDbHelper(getActivity());
-//	    					ContentResolver thdRs = getActivity().getContentResolver();
-	    					Cursor thdCs, thdSb, thdVg;
-	    					String sSQL;
-	    					// get the Visit Header information
-	    					sSQL = "SELECT Visits.VisitName, Visits.VisitDate, Projects.ProjCode, " 
-	    							+ "PlotTypes.PlotTypeDescr, Visits.StartTime, Visits.LastChanged, " 
-	    							+ "Namers.NamerName, Visits.Scribe, Locations.LocName, " 
-	    							+ "Locations.VisitID, Locations.SubplotID, Locations.ListingOrder, " 
-	    							+ "Locations.Latitude, Locations.Longitude, Locations.TimeStamp, " 
-	    							+ "Locations.Accuracy, Locations.Altitude, LocationSources.LocationSource, " 
-	    							+ "Visits.Azimuth, Visits.VisitNotes, Visits.DeviceType, " 
-	    							+ "Visits.DeviceID, Visits.DeviceIDSource, Visits.IsComplete, " 
-	    							+ "Visits.ShowOnMobile, Visits.Include, Visits.IsDeleted, " 
-	    							+ "Visits.NumAdditionalLocations, Visits.AdditionalLocationsType, " 
-	    							+ "Visits.AdditionalLocationSelected " 
-	    							+ "FROM ((((Visits LEFT JOIN Projects " 
-	    							+ "ON Visits.ProjID = Projects._id) " 
-	    							+ "LEFT JOIN PlotTypes ON Visits.PlotTypeID = PlotTypes._id) " 
-	    							+ "LEFT JOIN Namers ON Visits.NamerID = Namers._id) " 
-	    							+ "LEFT JOIN Locations ON Visits.RefLocID = Locations._id) " 
-	    							+ "LEFT JOIN LocationSources ON Locations.SourceID = LocationSources._id " 
-	    							+ "WHERE Visits._id = " + visId + ";";
-	    					thdCs = thdDb.getReadableDatabase().rawQuery(sSQL, null);
-	    					int numCols = thdCs.getColumnCount();
-	    					while (thdCs.moveToNext()) {
-	    						for (int i=0; i<numCols; i++) {
-	    							writer.write(thdCs.getColumnName(i) + "\t");
-	    							try {
-//	    								writer.write(thdCs.getType(i) + "\r\n");
-	    								writer.write(thdCs.getString(i) + "\r\n");
-	    							} catch (Exception e) {
-	    								writer.write("\r\n");
-	    							}
-	    						}
-//	    						Log.d(LOG_TAG, "wrote a record");
-	    					}
-	    					Log.d(LOG_TAG, "cursor done");
-	    					thdCs.close();
-	    					Log.d(LOG_TAG, "cursor closed");
-	    					// get the Subplots for this Visit
-	    					long sbId;
-	    					String sbName, spCode, spDescr, spParams;
-	    					sSQL = "SELECT Visits._id, PlotTypes.PlotTypeDescr, PlotTypes.Code, " 
-	    							+ "SubplotTypes.[_id] AS SubplotTypeId, " 
-	    							+ "SubplotTypes.SubplotDescription, SubplotTypes.OrderDone, " 
-	    							+ "SubplotTypes.PresenceOnly, SubplotTypes.HasNested, " 
-	    							+ "SubplotTypes.SubPlotAngle, SubplotTypes.XOffset, SubplotTypes.YOffset, " 
-	    							+ "SubplotTypes.SbWidth, SubplotTypes.SbLength, SubplotTypes.SbShape, " 
-	    							+ "SubplotTypes.NestParam1, SubplotTypes.NestParam2, " 
-	    							+ "SubplotTypes.NestParam3, SubplotTypes.NestParam4 " 
-	    							+ "FROM (Visits LEFT JOIN PlotTypes ON Visits.PlotTypeID = PlotTypes._id) " 
-	    							+ "LEFT JOIN SubplotTypes ON PlotTypes._id = SubplotTypes.PlotTypeID " 
-	    							+ "WHERE (((Visits._id)=" + visId + ")) " 
-	    							+ "ORDER BY SubplotTypes.OrderDone;";
-	    					thdSb = thdDb.getReadableDatabase().rawQuery(sSQL, null);
-	    					while (thdSb.moveToNext()) {
-	    						sbName = thdSb.getString(thdSb.getColumnIndexOrThrow("SubplotDescription"));
-	    						sbId = thdSb.getLong(thdSb.getColumnIndexOrThrow("SubplotTypeId"));
-	    						writer.write("\r\n" + sbName + "\r\n");
-	    						// get the data for each subplot
-	    						sSQL = "SELECT VegItems._id, VegItems.VisitID, VegItems.SubPlotID, " 
-	    								+ "VegItems.OrigCode, VegItems.OrigDescr, VegItems.Height, VegItems.Cover, " 
-	    								+ "VegItems.Presence, VegItems.IdLevelID, " 
-	    								+ "VegItems.TimeCreated, VegItems.TimeLastChanged FROM VegItems " 
-	    								+ "WHERE (((VegItems.VisitID)=" + visId + ") " 
-	    								+ "AND ((VegItems.SubPlotID)=" + sbId + ")) " 
-	    								+ "ORDER BY VegItems.TimeLastChanged DESC;";
-	    						thdVg = thdDb.getReadableDatabase().rawQuery(sSQL, null);
-		    					while (thdVg.moveToNext()) {
-		    						spCode = thdVg.getString(thdVg.getColumnIndexOrThrow("OrigCode"));
-		    						spDescr = thdVg.getString(thdVg.getColumnIndexOrThrow("OrigDescr"));
-		    						if (thdVg.isNull(thdVg.getColumnIndexOrThrow("Presence"))) {
-		    							// we should have Height and Cover
-		    							spParams = "\t\t" + thdVg.getString(thdVg.getColumnIndexOrThrow("Height")) + "cm, "
-		    									+ thdVg.getString(thdVg.getColumnIndexOrThrow("Cover")) + "%";
-		    						} else {
-		    							// we should have Presence = 1 (true) or 0 (false)
-		    							spParams = "\t\t" 
-		    									+ ((thdVg.getInt(thdVg.getColumnIndexOrThrow("Presence")) == 0)
-		    									? "Absent" : "Present");
-		    						}
-		    						writer.write("\t" + spCode + ": " + spDescr + "\r\n");
-		    						writer.write(spParams + "\r\n");
-		    					}
-		    					thdVg.close();
-	    					}
-	    					thdSb.close();
-	    					thdDb.close();
-	    					Log.d(LOG_TAG, "database closed");
-	    				}
-	    				writer.close();
-	    			} catch (IOException e) {
-	    				Log.d(LOG_TAG, "Error writing file: " + e.getMessage());
-	    			}
-	    			MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
-	    				.setTitle(fileName + ".txt")
-	    				.setMimeType("text/plain")
-	    				.setStarred(true).build();
-	    			
-	    			// create file on root folder
-	    			Drive.DriveApi.getRootFolder(mGoogleApiClient)
-	    				.createFile(mGoogleApiClient, changeSet, driveContents)
-	    				.setResultCallback(fileCallback);
-    			}
-   		}.start();
-    	}
-    };
-    
-    final private ResultCallback<DriveFileResult> fileCallback = new
-    		ResultCallback<DriveFileResult> () {
-    	@Override
-    	public void onResult(DriveFileResult result) {
-    		if (!result.getStatus().isSuccess()) {
-    			Log.d(LOG_TAG, "Error trying to create the file");
-//    			showMessage("Error while trying to create new file contents");
-    			Toast.makeText(getActivity(), "Error trying to create the file", Toast.LENGTH_LONG).show();
-    			return;
-    		}
-    		Toast.makeText(getActivity(), "Created file, content: " + result.getDriveFile().getDriveId(), Toast.LENGTH_LONG).show();
-			mGACState = GAC_STATE_LOCATION;
-			Log.d(LOG_TAG, "about to call 'buildGoogleApiClient()' to change back to Location");
-			buildGoogleApiClient();
-			Log.d(LOG_TAG, "about to do 'mGoogleApiClient.connect()'");
-			mGoogleApiClient.connect();
-    	}
-
-    	
-    };
-
-    // Called by Google Play services if the connection to GoogleApiClient drops because of an error.
-
-    public void onDisconnected() {
-        Log.d(LOG_TAG, "Disconnected");
-    }
-
-    @Override
-    public void onConnectionSuspended(int cause) {
-        // The connection to Google Play services was lost for some reason. We call connect() to
-        // attempt to re-establish the connection.
-        Log.d(LOG_TAG, "Connection suspended");
-        mGoogleApiClient.connect();
-    }
-
-    // Builds a GoogleApiClient.
-    protected synchronized void buildGoogleApiClient() {
-    	try {
-    		mGoogleApiClient.disconnect();
-    	} catch (NullPointerException e) {
-    		Log.d(LOG_TAG, "'mGoogleApiClient' is still null");
-    	}
-    	if (servicesAvailable()) {
-    		// for testing, separate the states to isolate errors
-    		switch (mGACState) {
-    		case GAC_STATE_LOCATION:
-    			//  Uses the addApi() method to request the LocationServices API.
-    			// documented under FusedLocationProviderApi
-    			mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-		        	.addApi(LocationServices.API)
-		        	.addConnectionCallbacks(this)
-		        	.addOnConnectionFailedListener(this)
-		        	.build();
-    			break;
-    			
-    		case GAC_STATE_DRIVE: // testing this
-    			mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-		        	.addApi(Drive.API)
-		        	.addScope(Drive.SCOPE_FILE)
-		        	.addConnectionCallbacks(this)
-		        	.addOnConnectionFailedListener(this)
-		        	.build();
-    			break;
-    		}
-    	}
-    }
-    
-	private boolean servicesAvailable() {
-	    int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
-	
-	    if (ConnectionResult.SUCCESS == resultCode) {
-	        return true;
-	    }
-	    else {
-	        GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(), 0).show();
-	        return false;
-	    }
-	}
-
-	@Override
-	public void onLocationChanged(Location newLoc) {
-		handleLocation(newLoc);
-	}
-	
-	public void handleLocation(Location loc) {
-		String s;
-		mCurLocation = new Location(loc); // hold the latest value
-		mAccuracy = loc.getAccuracy();
-		if (mAccuracy <= mAccuracyTargetForVisitLoc) {
-			finalizeLocation();
-		} else {
-			long n = mCurLocation.getTime();
-			mLocTime = mTimeFormat.format(new Date(n));
-			mLatitude = loc.getLatitude();
-			mLongitude = loc.getLongitude();
-			s = "" + mLatitude + ", " + mLongitude
-				+ "\naccuracy " + mAccuracy + "m"
-				+ "\ntarget accuracy " + mAccuracyTargetForVisitLoc + "m"
-				+ "\ncontinuing to acquire";
-			mViewVisitLocation.setText(s);
-		}
-	}
-	
-	public void finalizeLocation() {
-		String s;
-		if (mCurLocation == null) {
-			return;
-		}
-		mLocIsGood = true;
-		mLatitude = mCurLocation.getLatitude();
-		mLongitude = mCurLocation.getLongitude();
-		mAccuracy = mCurLocation.getAccuracy();
-		long n = mCurLocation.getTime();
-		mLocTime = mTimeFormat.format(new Date(n));
-		Log.d(LOG_TAG, "Location time: " + mLocTime);
-		if (mGoogleApiClient.isConnected()) {
-	        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-	        mGoogleApiClient.disconnect();
-	        // overwrite the message
-			s = "" + mLatitude + ", " + mLongitude
-					+ "\naccuracy " + mAccuracy + "m";
-			mViewVisitLocation.setText(s);
-	    }
-	}
-	
-	// if Google Play Services not available, would Location Services be?
-	// requestSingleUpdate
-	
-	
-	// Checks if external storage is available for read and write
-	public boolean isExternalStorageWritable() {
-	    String state = Environment.getExternalStorageState();
-	    if (Environment.MEDIA_MOUNTED.equals(state)) {
-	        return true;
-	    }
-	    return false;
 	}
 }

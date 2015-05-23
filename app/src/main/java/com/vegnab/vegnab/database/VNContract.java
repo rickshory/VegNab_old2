@@ -71,6 +71,10 @@ public final class VNContract {
 		public static final int VEGITEM_TO_EDIT = 81; // The current veg item
 		public static final int VEG_ITEM_CONFIDENCE_LEVELS = 82; //
 		public static final int VEG_ITEM_DUP_CODES = 83; // codes duplicated on the subplot?
+
+		// in Edit Placeholder
+		public static final int PLACEHOLDER_TO_EDIT = 91; // The current placeholder
+		public static final int PLACEHOLDER_HABITATS = 92; // Recall these as options to re-select
 		
 	}
 
