@@ -97,7 +97,13 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     // Unique tag for the error dialog fragment
     private static final String DIALOG_ERROR = "dialog_error";
 
-	long mPlaceholderId = 0, mVisitId = 0, mNamerId = 0, mLocId = 0; // zero default means new or not specified yet
+	// explicitly handle all fields; some API versions have bugs that lose cursors on orientation change, etc.
+	// zero and null defaults means new or not specified yet
+	long mPlaceholderId = 0, mPhProjId = 0, mPhVisitId = 0, mPhLocId = 0, mPhNamerId = 0;
+	String mPlaceholderCode = null, mPlaceholderDescription = null, mPlaceholderHabitat = null,
+			mPlaceholderLabelNumber = null, mPhVisitName = null, mPhNamerName = null,
+			mPhScribe = null, mPhLocText = null;
+
 	Uri mUri;
 	Uri mVisitsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "visits");
 	Uri mLocationsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "locations");
@@ -111,10 +117,20 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 	SimpleDateFormat mTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
 	int mRowCt;
+	// explicitly save/retrieve all these through Bundles, some versions have bugs that lose cursor
 	final static String ARG_PLACEHOLDER_ID = "placeholderId";
-	final static String ARG_PROJECT_ID = "projectId";
-	final static String ARG_VISIT_ID = "visitId";
-	final static String ARG_NAMER_ID = "namerId";
+	final static String ARG_PLACEHOLDER_CODE = "placeholderCode";
+	final static String ARG_PLACEHOLDER_DESCRIPTION = "placeholderDescription";
+	final static String ARG_PLACEHOLDER_HABITAT = "placeholderHabitat";
+	final static String ARG_PLACEHOLDER_LABELNUMBER = "placeholderLabelnumber";
+	final static String ARG_PH_PROJID = "phProjId";
+	final static String ARG_PH_VISITID = "phVisitId";
+	final static String ARG_PH_VISIT_NAME = "phVisitName";
+	final static String ARG_PH_LOCID = "phLocId";
+	final static String ARG_PH_LOC_TEXT = "phLocText";
+	final static String ARG_PH_NAMERID = "phNamerId";
+	final static String ARG_PH_NAMER_NAME = "phNamerName";
+	final static String ARG_PH_SCRIBE = "phScribe";
 	final static String ARG_PLACEHOLDER_TIME = "phTimeStamp";
 
 	OnButtonListener mButtonCallback; // declare the interface
@@ -149,7 +165,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		inflater.inflate(R.menu.visit_header, menu);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
-	
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -184,8 +199,22 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		if (savedInstanceState != null) {
 			Log.d(LOG_TAG, "In onCreateView, about to retrieve mPlaceholderId: " + mPlaceholderId);
 			mPlaceholderId = savedInstanceState.getLong(ARG_PLACEHOLDER_ID, 0);
-			mVisitId = savedInstanceState.getLong(ARG_VISIT_ID, 0);
+			mPlaceholderCode = savedInstanceState.getString(ARG_PLACEHOLDER_CODE, null);
+			mPlaceholderDescription = savedInstanceState.getString(ARG_PLACEHOLDER_DESCRIPTION, null);
+			mPlaceholderHabitat = savedInstanceState.getString(ARG_PLACEHOLDER_HABITAT, null);
+			mPlaceholderLabelNumber = savedInstanceState.getString(ARG_PLACEHOLDER_LABELNUMBER, null);
+			mPhProjId = savedInstanceState.getLong(ARG_PH_PROJID, 0);
+			mPhVisitId = savedInstanceState.getLong(ARG_PH_VISITID, 0);
+			mPhLocId = savedInstanceState.getLong(ARG_PH_LOCID, 0);
+			mPhNamerId = savedInstanceState.getLong(ARG_PH_NAMERID, 0);
+			mPhVisitName = savedInstanceState.getString(ARG_PH_VISIT_NAME, null);
+			mPhLocText = savedInstanceState.getString(ARG_PH_LOC_TEXT, null);
+			mPhNamerName = savedInstanceState.getString(ARG_PH_NAMER_NAME, null);
+			mPhScribe = savedInstanceState.getString(ARG_PH_SCRIBE, null);
+
 			Log.d(LOG_TAG, "In onCreateView, retrieved mPlaceholderId: " + mPlaceholderId);
+			Log.d(LOG_TAG, "In onCreateView, retrieved mPlaceholderCode: " + mPlaceholderCode);
+			Log.d(LOG_TAG, "In onCreateView, retrieved mPhVisitId: " + mPhVisitId);
 //			mCurLocation = savedInstanceState.getParcelable(ARG_CUR_LOCATION);
 		} else {
 			Log.d(LOG_TAG, "In onCreateView, savedInstanceState == null, mPlaceholderId: " + mPlaceholderId);
@@ -209,8 +238,10 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		registerForContextMenu(mViewPlaceholderIdentifier); // enable long-press
 
 		// Prepare the loader. Either re-connect with an existing one or start a new one
-		getLoaderManager().initLoader(Loaders.NAMERS, null, this);
-
+		getLoaderManager().initLoader(Loaders.PLACEHOLDER_TO_EDIT, null, this); // The current placeholder
+		getLoaderManager().initLoader(Loaders.PLACEHOLDER_BACKSTORY, null, this); // project, location, namer, etc., automatically recorded for a placeholder
+		getLoaderManager().initLoader(Loaders.PLACEHOLDER_HABITATS, null, this); // Recall these as options to re-select
+/*		PLACEHOLDER_TO_EDIT, PLACEHOLDER_BACKSTORY, PLACEHOLDER_HABITATS */
 		// set click listener for the button in the view
 		Button s = (Button) rootView.findViewById(R.id.placeholder_save_button);
 		s.setOnClickListener(this);
@@ -296,35 +327,28 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		Uri baseUri;
 		String select = null; // default for all-columns, unless re-assigned or overridden by raw SQL
 		switch (id) {
-
-		case Loaders.VISIT_TO_EDIT:
-			Uri oneVisUri = ContentUris.withAppendedId(
+		case Loaders.PLACEHOLDER_TO_EDIT:
+			Uri onePlaceholderUri = ContentUris.withAppendedId(
 							Uri.withAppendedPath(
-							ContentProvider_VegNab.CONTENT_URI, "visits"), mVisitId);
-			cl = new CursorLoader(getActivity(), oneVisUri,
+							ContentProvider_VegNab.CONTENT_URI, "placeholders"), mPlaceholderId);
+			cl = new CursorLoader(getActivity(), onePlaceholderUri,
 					null, select, null, null);
 			break;
-		case Loaders.NAMERS:
+		case Loaders.PLACEHOLDER_BACKSTORY:
 			baseUri = ContentProvider_VegNab.SQL_URI;
-			select = "SELECT _id, NamerName FROM Namers "
-					+ "UNION SELECT 0, '(add new)' "
-					+ "ORDER BY _id;";
+			select = "SELECT Visits._id, Visits.VisitName, Visits.ProjID, Locations._id AS LocID, "
+					+ "Locations.Latitude, Locations.Longitude, Locations.Accuracy, "
+					+ "Visits.NamerID, Namers.NamerName, Visits.Scribe "
+					+ "FROM (Visits LEFT JOIN Namers ON Visits.NamerID = Namers._id) "
+					+ "LEFT JOIN Locations ON Visits.RefLocID = Locations._id "
+					+ "WHERE (((Visits._id)=?));";
 			cl = new CursorLoader(getActivity(), baseUri,
-					null, select, null, null);
+					null, select, new String[] { "" + mPhVisitId }, null);
 			break;
-		case Loaders.EXISTING_VISITS:
+		case Loaders.PLACEHOLDER_HABITATS:
 			baseUri = ContentProvider_VegNab.SQL_URI;
-			select = "SELECT _id, VisitName FROM Visits "
-					+ "WHERE IsDeleted = 0 AND _id != ?;";
+			select = "SELECT Habitat FROM PlaceHolders GROUP BY Habitat;";
 			cl = new CursorLoader(getActivity(), baseUri,
-					null, select, new String[] { "" + mVisitId }, null);
-			break;
-			
-		case Loaders.VISIT_REF_LOCATION:
-			Uri oneLocUri = ContentUris.withAppendedId(
-							Uri.withAppendedPath(
-							ContentProvider_VegNab.CONTENT_URI, "locations"), mLocId);
-			cl = new CursorLoader(getActivity(), oneLocUri,
 					null, select, null, null);
 			break;
 		}
@@ -336,6 +360,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		// there will be various loaders, switch them out here
 		mRowCt = c.getCount();
 		switch (loader.getId()) {
+/*		PLACEHOLDER_TO_EDIT, PLACEHOLDER_BACKSTORY, PLACEHOLDER_HABITATS */
 		case Loaders.EXISTING_VISITS:
 			mExistingVisitNames.clear();
 			while (c.moveToNext()) {
@@ -413,7 +438,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 			Log.d(LOG_TAG, "onLoaderReset, EXISTING_VISITS.");
 //			don't need to do anything here, no cursor adapter
 			break;
-		case Loaders.VISIT_TO_EDIT:
+			case Loaders.VISIT_TO_EDIT:
 			Log.d(LOG_TAG, "onLoaderReset, VISIT_TO_EDIT.");
 //			don't need to do anything here, no cursor adapter
 			break;

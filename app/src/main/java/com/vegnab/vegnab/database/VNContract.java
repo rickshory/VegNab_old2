@@ -74,8 +74,8 @@ public final class VNContract {
 
 		// in Edit Placeholder
 		public static final int PLACEHOLDER_TO_EDIT = 91; // The current placeholder
-		public static final int PLACEHOLDER_HABITATS = 92; // Recall these as options to re-select
-		
+		public static final int PLACEHOLDER_BACKSTORY = 92; // project, location, namer, etc., automatically recorded for a placeholder
+		public static final int PLACEHOLDER_HABITATS = 93; // Recall these as options to re-select
 	}
 
 	// inner class to define Tags
@@ -91,13 +91,14 @@ public final class VNContract {
 		public static final String DATA_SCREENS_CONTAINER = "DataScreensContainer";
 		public static final String VEG_SUBPLOT = "VegSubplot";
 		public static final String SELECT_SPECIES = "SelectSpecies";
+		public static final String EDIT_PLACEHOLDER = "EditPlaceholder";
 		
 	}
 	// inner class to define Veg Item record sources
 	// putting them all together here allows consistent usage throughout
 	public static abstract class VegcodeSources {
-		public static final int REGIONAL_LIST = 0; // standard NRCS codes from the entire regional list
-		public static final int PREVIOUSLY_FOUND = 1; // species previously entered, but still only standard NRCS
+		public static final int REGIONAL_LIST = 0; // standard NRCS codes from the regional list, first time entered
+		public static final int PREVIOUSLY_FOUND = 1; // NRCS code, species previously entered
 		public static final int PLACE_HOLDERS = 2; // user-created codes for species not known at the time
 		public static final int SPECIAL_CODES = 3; // e.g. "no veg" (no vegetation on this subplot)
 	}
