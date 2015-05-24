@@ -106,7 +106,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 	private EditText mViewPlaceholderCode, mViewPlaceholderDescription,
 			mViewPlaceholderHabitat, mViewPlaceholderIdentifier;
 
-	SimpleCursorAdapter mVisitAdapter, mNamerAdapter;
+//	SimpleCursorAdapter mVisitAdapter, mNamerAdapter;
 	SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 	SimpleDateFormat mTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
