@@ -104,6 +104,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 	String mPlaceholderCode = null, mPlaceholderDescription = null, mPlaceholderHabitat = null,
 			mPlaceholderLabelNumber = null, mPhVisitName = null, mPhNamerName = null,
 			mPhScribe = null, mPhLocText = null;
+	HashSet<String> mExistingPlaceholderCodes = new HashSet<String>();
 	HashSet<String> mPreviouslyEnteredHabitats = new HashSet<String>();
 
 	Uri mUri;
@@ -348,6 +349,14 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 					null, select, null, null);
 			break;
 
+		case Loaders.PLACEHOLDERS_EXISTING:
+			baseUri = ContentProvider_VegNab.SQL_URI;
+			select = "SELECT PlaceHolderCode FROM PlaceHolders "
+				+ "WHERE ProjID = ? AND NamerID = ? AND _id != ?";
+			cl = new CursorLoader(getActivity(), baseUri, null, select,
+					new String[] { "" + mPhProjId, "" + mPhNamerId, "" + mPlaceholderId}, null);
+			break;
+
 		case Loaders.PLACEHOLDER_PROJ_NAMER:
 			baseUri = ContentProvider_VegNab.SQL_URI;
 			select = "SELECT Visits.ProjID, Visits.NamerID "
@@ -401,6 +410,19 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 			// else // fire off another loader?
 			// getLoaderManager().initLoader(Loaders.XXX, null, this);
 			break;
+
+		case Loaders.PLACEHOLDERS_EXISTING:
+			mExistingPlaceholderCodes.clear();
+			while (c.moveToNext()) {
+				Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
+				mExistingPlaceholderCodes.add(c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
+			}
+			Log.d(LOG_TAG, "onLoadFinished, number of items in mExistingPlaceholderCodes: " + mExistingPlaceholderCodes.size());
+			Log.d(LOG_TAG, "onLoadFinished, items in mExistingPlaceholderCodes: " + mExistingPlaceholderCodes.toString());
+			break;
+
+
+
 /*		outState.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
 		outState.putString(ARG_PLACEHOLDER_CODE, mPlaceholderCode);
 		outState.putString(ARG_PLACEHOLDER_DESCRIPTION, mPlaceholderDescription);
@@ -475,7 +497,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
 		}
 	}
-	
+
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 		// This is called when the last Cursor provided to onLoadFinished()
@@ -483,6 +505,11 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		switch (loader.getId()) {
 			
 		case Loaders.PLACEHOLDER_TO_EDIT:
+			Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_TO_EDIT.");
+//			don't need to do anything here, no cursor adapter
+			break;
+
+		case Loaders.PLACEHOLDERS_EXISTING:
 			Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_TO_EDIT.");
 //			don't need to do anything here, no cursor adapter
 			break;
@@ -539,16 +566,16 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 				}
 				if (mValidationLevel == Validation.CRITICAL) {
 					flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
-					flexErrDlg.show(getFragmentManager(), "frg_err_visname_short");
+					flexErrDlg.show(getFragmentManager(), "frg_err_ph_code_short");
 					mViewPlaceholderCode.requestFocus();
 				}
 			}
 			return false;
 		}
-/* implement this
-		if (mExistingVisitNames.containsValue(stringVisitName)) {
+
+		if (mExistingPlaceholderCodes.contains(stringPlaceholderCode)) {
 			if (mValidationLevel > Validation.SILENT) {
-				stringProblem = c.getResources().getString(R.string.vis_hdr_validate_name_dup);
+				stringProblem = c.getResources().getString(R.string.placeholder_validate_code_dup);
 				if (mValidationLevel == Validation.QUIET) {
 					Toast.makeText(this.getActivity(),
 							stringProblem,
@@ -556,13 +583,13 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 				}
 				if (mValidationLevel == Validation.CRITICAL) {
 					flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
-					flexErrDlg.show(getFragmentManager(), "frg_err_visname_duplicate");
-					mViewVisitName.requestFocus();
+					flexErrDlg.show(getFragmentManager(), "frg_err_ph_code_duplicate");
+					mViewPlaceholderCode.requestFocus();
 				}
 			}
 			return false;
 		}
-*/
+
 		// PlaceHolderCode is OK, store it
 		mValues.put("PlaceHolderCode", stringPlaceholderCode);
 /*    <string name="placeholder_validate_generic_title">Critical Error</string>

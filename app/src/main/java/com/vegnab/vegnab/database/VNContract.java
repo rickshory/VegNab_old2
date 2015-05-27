@@ -74,9 +74,10 @@ public final class VNContract {
 
 		// in Edit Placeholder
 		public static final int PLACEHOLDER_TO_EDIT = 91; // The current placeholder
-		public static final int PLACEHOLDER_PROJ_NAMER = 92; // projectID and NamerID from the Visit
-		public static final int PLACEHOLDER_BACKSTORY = 93; // project, location, namer, etc., details for the placeholder
-		public static final int PLACEHOLDER_HABITATS = 94; // Recall these as options to re-select
+		public static final int PLACEHOLDERS_EXISTING = 92; // The current placeholder
+		public static final int PLACEHOLDER_PROJ_NAMER = 93; // projectID and NamerID from the Visit
+		public static final int PLACEHOLDER_BACKSTORY = 94; // project, location, namer, etc., details for the placeholder
+		public static final int PLACEHOLDER_HABITATS = 95; // Recall these as options to re-select
 	}
 
 	// inner class to define Tags
@@ -110,7 +111,13 @@ public final class VNContract {
 		public static final int QUIET = 1; // usually a Toast
 		public static final int CRITICAL = 2; // usually a message dialog
 	}
-	
+
+	// inner class to define regular expressions
+	// putting them all together here allows consistent usage throughout
+	public static abstract class Regex {
+		public static final String NRCS_CODE = "[a-zA-Z]{3,5}[0-9]*|2[a-zA-Z]{1,4}"; //
+	}
+
 	// inner classes to define tables
 	public static abstract class Project implements BaseColumns {
 		public static final String TABLE_NAME = "Projects";
