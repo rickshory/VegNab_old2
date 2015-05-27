@@ -384,7 +384,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		// there will be various loaders, switch them out here
 		mRowCt = c.getCount();
 		switch (loader.getId()) {
-/*		PLACEHOLDER_TO_EDIT, PLACEHOLDER_PROJ_NAMER, PLACEHOLDER_BACKSTORY, PLACEHOLDER_HABITATS */
 
 		case Loaders.PLACEHOLDER_TO_EDIT:
 			Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_TO_EDIT, records: " + c.getCount());
@@ -482,37 +481,41 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		// This is called when the last Cursor provided to onLoadFinished()
 		// is about to be closed. Need to make sure it is no longer is use.
 		switch (loader.getId()) {
-		case Loaders.EXISTING_VISITS:
-			Log.d(LOG_TAG, "onLoaderReset, EXISTING_VISITS.");
-//			don't need to do anything here, no cursor adapter
-			break;
-			case Loaders.VISIT_TO_EDIT:
-			Log.d(LOG_TAG, "onLoaderReset, VISIT_TO_EDIT.");
-//			don't need to do anything here, no cursor adapter
-			break;
 			
-		case Loaders.NAMERS:
-			mNamerAdapter.swapCursor(null);
-			break;
-			
-		case Loaders.VISIT_REF_LOCATION:
-			Log.d(LOG_TAG, "onLoaderReset, VISIT_REF_LOCATION.");
+		case Loaders.PLACEHOLDER_TO_EDIT:
+			Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_TO_EDIT.");
 //			don't need to do anything here, no cursor adapter
 			break;
+
+		case Loaders.PLACEHOLDER_PROJ_NAMER:
+			Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_PROJ_NAMER.");
+//			don't need to do anything here, no cursor adapter
+			break;
+
+		case Loaders.PLACEHOLDER_BACKSTORY:
+			Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_BACKSTORY.");
+//			don't need to do anything here, no cursor adapter
+			break;
+
+		case Loaders.PLACEHOLDER_HABITATS:
+			Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_HABITATS.");
+//			don't need to do anything here, no cursor adapter
+			break;
+		
 		}
 	}
 	
-	private boolean validateVisitHeader() {
+	private boolean validatePlaceholder() {
 		// validate all items on the screen the user can see
 		Context c = getActivity();
 		String stringProblem;
-		String errTitle = c.getResources().getString(R.string.vis_hdr_validate_generic_title);
+		String errTitle = c.getResources().getString(R.string.placeholder_validate_generic_title);
 		ConfigurableMsgDialog flexErrDlg = new ConfigurableMsgDialog();
 		mValues.clear(); // build up mValues while validating; if returns true all members are good
-		String stringVisitName = mViewVisitName.getText().toString().trim();
-		if (stringVisitName.length() == 0) {
+		String stringPlaceholderCode = mViewPlaceholderCode.getText().toString().trim();
+		if (stringPlaceholderCode.length() == 0) {
 			if (mValidationLevel > Validation.SILENT) {
-				stringProblem = c.getResources().getString(R.string.vis_hdr_validate_name_none);
+				stringProblem = c.getResources().getString(R.string.placeholder_validate_code_none);
 				if (mValidationLevel == Validation.QUIET) {
 					Toast.makeText(this.getActivity(),
 							stringProblem,
@@ -520,13 +523,13 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 				}
 				if (mValidationLevel == Validation.CRITICAL) {
 					flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
-					flexErrDlg.show(getFragmentManager(), "frg_err_visname_none");
-					mViewVisitName.requestFocus();
+					flexErrDlg.show(getFragmentManager(), "frg_err_ph_code_none");
+					mViewPlaceholderCode.requestFocus();
 				}
 			}
 			return false;
 		}
-		if (!(stringVisitName.length() >= 2)) {
+		if (!(stringPlaceholderCode.length() >= 2)) {
 			if (mValidationLevel > Validation.SILENT) {
 				stringProblem = c.getResources().getString(R.string.vis_hdr_validate_name_short);
 				if (mValidationLevel == Validation.QUIET) {
@@ -537,11 +540,12 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 				if (mValidationLevel == Validation.CRITICAL) {
 					flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
 					flexErrDlg.show(getFragmentManager(), "frg_err_visname_short");
-					mViewVisitName.requestFocus();
+					mViewPlaceholderCode.requestFocus();
 				}
 			}
 			return false;
 		}
+/* implement this
 		if (mExistingVisitNames.containsValue(stringVisitName)) {
 			if (mValidationLevel > Validation.SILENT) {
 				stringProblem = c.getResources().getString(R.string.vis_hdr_validate_name_dup);
@@ -558,13 +562,26 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 			}
 			return false;
 		}
-		// VisitName is OK, store it
-		mValues.put("VisitName", stringVisitName);
-		
-		String stringVisitDate = mViewVisitDate.getText().toString().trim();
-		if (stringVisitDate.length() == 0) {
+*/
+		// PlaceHolderCode is OK, store it
+		mValues.put("PlaceHolderCode", stringPlaceholderCode);
+/*    <string name="placeholder_validate_generic_title">Critical Error</string>
+    <string name="placeholder_validate_code_none">No Code for this Placeholder</string>
+    <string name="placeholder_validate_code_short">Code must be at least 2 characters</string>
+    <string name="placeholder_validate_code_bad">Code cannot be like an NRCS code</string>
+    <string name="placeholder_validate_code_dup">Duplicate Code for this Placeholder, already used.</string>
+    <string name="placeholder_validate_description_none">Need a Description for this Placeholder, long-press for more info</string>
+    <string name="placeholder_validate_habitat_none">Need a Description for this Placeholder, long-press for more info</string>
+				mViewPlaceholderCode.setText(c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
+				mViewPlaceholderDescription.setText(c.getString(c.getColumnIndexOrThrow("Description")));
+				mViewPlaceholderHabitat.setText(c.getString(c.getColumnIndexOrThrow("Habitat")));
+				mViewPlaceholderIdentifier.setText(c.getString(c.getColumnIndexOrThrow("LabelNum")));
+*/
+
+		String stringPlaceholderDescription = mViewPlaceholderDescription.getText().toString().trim();
+		if (stringPlaceholderDescription.length() == 0) {
 			if (mValidationLevel > Validation.SILENT) {
-				stringProblem = c.getResources().getString(R.string.vis_hdr_validate_date_none);
+				stringProblem = c.getResources().getString(R.string.placeholder_validate_description_none);
 				if (mValidationLevel == Validation.QUIET) {
 					Toast.makeText(this.getActivity(),
 							stringProblem,
@@ -572,33 +589,13 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 				}
 				if (mValidationLevel == Validation.CRITICAL) {
 					flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
-					flexErrDlg.show(getFragmentManager(), "frg_err_visdate_none");
-					mViewVisitDate.requestFocus();
+					flexErrDlg.show(getFragmentManager(), "frg_err_ph_description_none");
+					mViewPlaceholderDescription.requestFocus();
 				}
 			}
 			return false;
 		}
-		/*
-		try {
-			Date date = mDateFormat.parse(stringVisitDate);
-		} catch (ParseException e) {
-			Log.d(LOG_TAG, "Date error: " + e.toString());
-			if (mValidationLevel > Validation.SILENT) {
-				stringProblem = c.getResources().getString(R.string.vis_hdr_validate_date_bad);
-				if (mValidationLevel == Validation.QUIET) {
-					Toast.makeText(this.getActivity(),
-							stringProblem,
-							Toast.LENGTH_LONG).show();
-				}
-				if (mValidationLevel == Validation.CRITICAL) {
-					flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
-					flexErrDlg.show(getFragmentManager(), "frg_err_visdate_bad");
-					mViewVisitDate.requestFocus();
-				}
-			}
-			return false;
-		}
-		*/
+
 		mValues.put("VisitDate", stringVisitDate); // VisitDate is OK, store it
 		
 		if (mNamerId == 0) {
@@ -705,7 +702,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 	
 	private int savePlaceholderRecord() {
 		int numUpdated = 0;
-		if (!validateVisitHeader()) {
+		if (!validatePlaceholder()) {
 			Log.d(LOG_TAG, "Failed validation in savePlaceholderRecord; mValues: " + mValues.toString());
 			return numUpdated;
 		}

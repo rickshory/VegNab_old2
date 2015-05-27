@@ -251,4 +251,12 @@
     <string name="placeholder_help_labelnumber_title">Label Number</string>
     <string name="placeholder_help_labelnumber_text">Some rigorous studies require a numbered label attached to a voucher specimen, which is collected immediately when you input each Placeholder. If you are not doing this, you can leave \"Label Number\" blank, or use it for some other identifier.</string>
 
+    <string name="placeholder_validate_generic_title">Critical Error</string>
+    <string name="placeholder_validate_code_none">No Code for this Placeholder</string>
+    <string name="placeholder_validate_code_short">Code must be at least 2 characters</string>
+    <string name="placeholder_validate_code_bad">Code cannot be like an NRCS code</string>
+    <string name="placeholder_validate_code_dup">Duplicate Code for this Placeholder, already used.</string>
+    <string name="placeholder_validate_description_none">Need a Description for this Placeholder, long-press for more info</string>
+    <string name="placeholder_validate_habitat_none">Need a Description for this Placeholder, long-press for more info</string>
+
 </resources>
