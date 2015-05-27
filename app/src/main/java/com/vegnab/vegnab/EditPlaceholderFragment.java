@@ -65,6 +65,7 @@ import com.vegnab.vegnab.database.VNContract.Loaders;
 import com.vegnab.vegnab.database.VNContract.Prefs;
 import com.vegnab.vegnab.database.VNContract.Tags;
 import com.vegnab.vegnab.database.VNContract.Validation;
+import com.vegnab.vegnab.database.VNContract.VNRegex;
 import com.vegnab.vegnab.database.VegNabDbHelper;
 
 import java.io.IOException;
@@ -108,7 +109,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 	HashSet<String> mPreviouslyEnteredHabitats = new HashSet<String>();
 
 	Uri mUri;
-	Uri mVisitsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "visits");
+	Uri mPlaceholdersUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "placeholders");
 	Uri mLocationsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "locations");
 	ContentValues mValues = new ContentValues();
 
@@ -421,48 +422,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 			Log.d(LOG_TAG, "onLoadFinished, items in mExistingPlaceholderCodes: " + mExistingPlaceholderCodes.toString());
 			break;
 
-
-
-/*		outState.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
-		outState.putString(ARG_PLACEHOLDER_CODE, mPlaceholderCode);
-		outState.putString(ARG_PLACEHOLDER_DESCRIPTION, mPlaceholderDescription);
-		outState.putString(ARG_PLACEHOLDER_HABITAT, mPlaceholderHabitat);
-		outState.putString(ARG_PLACEHOLDER_LABELNUMBER, mPlaceholderLabelNumber);
-		outState.putLong(ARG_PH_PROJID, mPhProjId);
-		outState.putLong(ARG_PH_VISITID, mPhVisitId);
-		outState.putLong(ARG_PH_LOCID, mPhLocId);
-		outState.putLong(ARG_PH_NAMERID, mPhNamerId);
-		outState.putString(ARG_PH_VISIT_NAME, mPhVisitName);
-		outState.putString(ARG_PH_LOC_TEXT, mPhLocText);
-		outState.putString(ARG_PH_NAMER_NAME, mPhNamerName);
-		outState.putString(ARG_PH_SCRIBE, mPhScribe);
-	long mPlaceholderId = 0, mPhProjId = 0, mPhVisitId = 0, mPhLocId = 0, mPhNamerId = 0;
-	String mPlaceholderCode = null, mPlaceholderDescription = null, mPlaceholderHabitat = null,
-			mPlaceholderLabelNumber = null, mPhVisitName = null, mPhNamerName = null,
-			mPhScribe = null, mPhLocText = null;
-			select = "SELECT Visits._id, Visits.VisitName, Visits.ProjID, Locations._id AS LocID, "
-					+ "Locations.Latitude, Locations.Longitude, Locations.Accuracy, "
-					+ "Visits.NamerID, Namers.NamerName, Visits.Scribe "
-					+ "FROM (Visits LEFT JOIN Namers ON Visits.NamerID = Namers._id) "
-					+ "LEFT JOIN Locations ON Visits.RefLocID = Locations._id "
-					+ "WHERE (((Visits._id)=?));";
-*/
-			/*	long mPlaceholderId = 0, mPhProjId = 0, mPhVisitId = 0, mPhLocId = 0, mPhNamerId = 0;
-	String mPlaceholderCode = null, mPlaceholderDescription = null, mPlaceholderHabitat = null,
-			mPlaceholderLabelNumber = null, mPhVisitName = null, mPhNamerName = null,
-			mPhScribe = null, mPhLocText = null;
-			select = "SELECT Visits._id, Visits.VisitName, Visits.ProjID, Locations._id AS LocID, "
-					+ "Locations.Latitude, Locations.Longitude, Locations.Accuracy, "
-					+ "Visits.NamerID, Namers.NamerName, Visits.Scribe "
-					+ "FROM (Visits LEFT JOIN Namers ON Visits.NamerID = Namers._id) "
-					+ "LEFT JOIN Locations ON Visits.RefLocID = Locations._id "
-					+ "WHERE (((Visits._id)=?));";
-*/
-			// 				mViewVisitLocation.setText("" + mLatitude + ", " + mLongitude
-//			+ "\naccuracy " + mAccuracy + "m");
-
-
-			case Loaders.PLACEHOLDER_PROJ_NAMER:
+		case Loaders.PLACEHOLDER_PROJ_NAMER:
 			Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PROJ_NAMER, records: " + c.getCount());
 			if (c.moveToFirst()) {
 				mPhProjId = c.getLong(c.getColumnIndexOrThrow("ProjID"));
@@ -573,6 +533,23 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 			return false;
 		}
 
+		if (stringPlaceholderCode.matches(VNRegex.NRCS_CODE)) {
+			if (mValidationLevel > Validation.SILENT) {
+				stringProblem = c.getResources().getString(R.string.placeholder_validate_code_bad);
+				if (mValidationLevel == Validation.QUIET) {
+					Toast.makeText(this.getActivity(),
+							stringProblem,
+							Toast.LENGTH_LONG).show();
+				}
+				if (mValidationLevel == Validation.CRITICAL) {
+					flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
+					flexErrDlg.show(getFragmentManager(), "frg_err_ph_code_bad");
+					mViewPlaceholderCode.requestFocus();
+				}
+			}
+			return false;
+		}
+
 		if (mExistingPlaceholderCodes.contains(stringPlaceholderCode)) {
 			if (mValidationLevel > Validation.SILENT) {
 				stringProblem = c.getResources().getString(R.string.placeholder_validate_code_dup);
@@ -592,18 +569,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
 		// PlaceHolderCode is OK, store it
 		mValues.put("PlaceHolderCode", stringPlaceholderCode);
-/*    <string name="placeholder_validate_generic_title">Critical Error</string>
-    <string name="placeholder_validate_code_none">No Code for this Placeholder</string>
-    <string name="placeholder_validate_code_short">Code must be at least 2 characters</string>
-    <string name="placeholder_validate_code_bad">Code cannot be like an NRCS code</string>
-    <string name="placeholder_validate_code_dup">Duplicate Code for this Placeholder, already used.</string>
-    <string name="placeholder_validate_description_none">Need a Description for this Placeholder, long-press for more info</string>
-    <string name="placeholder_validate_habitat_none">Need a Description for this Placeholder, long-press for more info</string>
-				mViewPlaceholderCode.setText(c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
-				mViewPlaceholderDescription.setText(c.getString(c.getColumnIndexOrThrow("Description")));
-				mViewPlaceholderHabitat.setText(c.getString(c.getColumnIndexOrThrow("Habitat")));
-				mViewPlaceholderIdentifier.setText(c.getString(c.getColumnIndexOrThrow("LabelNum")));
-*/
 
 		String stringPlaceholderDescription = mViewPlaceholderDescription.getText().toString().trim();
 		if (stringPlaceholderDescription.length() == 0) {
@@ -623,110 +588,27 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 			return false;
 		}
 
-		mValues.put("VisitDate", stringVisitDate); // VisitDate is OK, store it
-		
-		if (mNamerId == 0) {
-			if (mValidationLevel > Validation.SILENT) {
-				stringProblem = c.getResources().getString(R.string.vis_hdr_validate_namer_none);
-				if (mValidationLevel == Validation.QUIET) {
-					Toast.makeText(this.getActivity(),
-							stringProblem,
-							Toast.LENGTH_LONG).show();
-				}
-				if (mValidationLevel == Validation.CRITICAL) {
-					flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
-					flexErrDlg.show(getFragmentManager(), "frg_err_namer_none");
-					mViewVisitDate.requestFocus();
-				}
-			}
-			return false;
-		}
-		mValues.put("NamerID", mNamerId); // NamerID is OK, store it
-		
-		// Scribe is optional, put as-is or Null if missing
-		String stringScribe = mViewVisitScribe.getText().toString().trim();
-		if (stringScribe.length() == 0) {
-			mValues.putNull("Scribe");
-		} else {
-			mValues.put("Scribe", stringScribe);
-		}
-		
-		if (!mLocIsGood) {
-			if (mValidationLevel > Validation.SILENT) {
-				stringProblem = c.getResources().getString(R.string.vis_hdr_validate_loc_not_ready);
-				if (mValidationLevel == Validation.QUIET) {
-					Toast.makeText(this.getActivity(),
-							stringProblem,
-							Toast.LENGTH_LONG).show();
-				}
-				if (mValidationLevel == Validation.CRITICAL) {
-					flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
-					flexErrDlg.show(getFragmentManager(), "frg_err_loc_not_ready");
-				}
-			}
-			return false;
-		}
-		// location is good, flag it
-		mValues.put("RefLocIsGood", 1);
+		mValues.put("Description", stringPlaceholderDescription); // Description is OK, store it
 
-
-		// validate Azimuth
-		String stringAz = mViewAzimuth.getText().toString().trim();
-		if (stringAz.length() == 0) {
-			mValues.putNull("Azimuth"); // null is valid
+		// Habitat is optional, put as-is or Null if missing
+		String stringHabitat = mViewPlaceholderHabitat.getText().toString().trim();
+		if (stringHabitat.length() == 0) {
+			mValues.putNull("Habitat");
 		} else {
-			Log.d(LOG_TAG, "Azimuth is length " + stringAz.length());
-			int Az = 0;
-			try {
-				Az = Integer.parseInt(stringAz);
-				if ((Az < 0) || (Az > 360)) {
-					if (mValidationLevel > Validation.SILENT) {
-						stringProblem = c.getResources().getString(R.string.vis_hdr_validate_azimuth_bad);
-						if (mValidationLevel == Validation.QUIET) {
-							Toast.makeText(this.getActivity(),
-									stringProblem,
-									Toast.LENGTH_LONG).show();
-						}
-						if (mValidationLevel == Validation.CRITICAL) {
-							flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
-							flexErrDlg.show(getFragmentManager(), "frg_err_azimuth_out_of_range");
-							mViewAzimuth.requestFocus();
-						}
-					}
-					return false;
-				} else {
-					mValues.put("Azimuth", Az);
-				}
-			} catch(NumberFormatException e) {
-				if (mValidationLevel > Validation.SILENT) {
-					stringProblem = c.getResources().getString(R.string.vis_hdr_validate_azimuth_bad);
-					if (mValidationLevel == Validation.QUIET) {
-						Toast.makeText(this.getActivity(),
-								stringProblem,
-								Toast.LENGTH_LONG).show();
-					}
-					if (mValidationLevel == Validation.CRITICAL) {
-						flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
-						flexErrDlg.show(getFragmentManager(), "frg_err_azimuth_bad_number");
-						mViewAzimuth.requestFocus();
-					}
-				}
-				return false;
-			}
+			mValues.put("Habitat", stringHabitat);
 		}
-		
-		// Notes is optional, put as-is or Null if missing
-		String stringNotes = mViewVisitNotes.getText().toString().trim();
-		if (stringNotes.length() == 0) {
-			mValues.putNull("VisitNotes");
+
+		// LabelNum is optional, put as-is or Null if missing
+		String stringLabelNum = mViewPlaceholderIdentifier.getText().toString().trim();
+		if (stringLabelNum.length() == 0) {
+			mValues.putNull("LabelNum");
 		} else {
-			mValues.put("VisitNotes", stringNotes);
+			mValues.put("LabelNum", stringLabelNum);
 		}
 
 		return true;
 	}
 
-	
 	private int savePlaceholderRecord() {
 		int numUpdated = 0;
 		if (!validatePlaceholder()) {
@@ -735,89 +617,93 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		}
 		ContentResolver rs = getActivity().getContentResolver();
 		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-		if (mVisitId == 0) { // new record
-            Log.d(LOG_TAG, "savePlaceholderRecord; creating new record with mVisitId = " + mVisitId);
+/*		outState.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
+		outState.putString(ARG_PLACEHOLDER_CODE, mPlaceholderCode);
+		outState.putString(ARG_PLACEHOLDER_DESCRIPTION, mPlaceholderDescription);
+		outState.putString(ARG_PLACEHOLDER_HABITAT, mPlaceholderHabitat);
+		outState.putString(ARG_PLACEHOLDER_LABELNUMBER, mPlaceholderLabelNumber);
+		outState.putLong(ARG_PH_PROJID, mPhProjId);
+		outState.putLong(ARG_PH_VISITID, mPhVisitId);
+		outState.putLong(ARG_PH_LOCID, mPhLocId);
+		outState.putLong(ARG_PH_NAMERID, mPhNamerId);
+		outState.putString(ARG_PH_VISIT_NAME, mPhVisitName);
+		outState.putString(ARG_PH_LOC_TEXT, mPhLocText);
+		outState.putString(ARG_PH_NAMER_NAME, mPhNamerName);
+		outState.putString(ARG_PH_SCRIBE, mPhScribe);
+	long mPlaceholderId = 0, mPhProjId = 0, mPhVisitId = 0, mPhLocId = 0, mPhNamerId = 0;
+	String mPlaceholderCode = null, mPlaceholderDescription = null, mPlaceholderHabitat = null,
+			mPlaceholderLabelNumber = null, mPhVisitName = null, mPhNamerName = null,
+			mPhScribe = null, mPhLocText = null;
+			select = "SELECT Visits._id, Visits.VisitName, Visits.ProjID, Locations._id AS LocID, "
+					+ "Locations.Latitude, Locations.Longitude, Locations.Accuracy, "
+					+ "Visits.NamerID, Namers.NamerName, Visits.Scribe "
+					+ "FROM (Visits LEFT JOIN Namers ON Visits.NamerID = Namers._id) "
+					+ "LEFT JOIN Locations ON Visits.RefLocID = Locations._id "
+					+ "WHERE (((Visits._id)=?));";
+*/
+			/*	long mPlaceholderId = 0, mPhProjId = 0, mPhVisitId = 0, mPhLocId = 0, mPhNamerId = 0;
+	String mPlaceholderCode = null, mPlaceholderDescription = null, mPlaceholderHabitat = null,
+			mPlaceholderLabelNumber = null, mPhVisitName = null, mPhNamerName = null,
+			mPhScribe = null, mPhLocText = null;
+			select = "SELECT Visits._id, Visits.VisitName, Visits.ProjID, Locations._id AS LocID, "
+					+ "Locations.Latitude, Locations.Longitude, Locations.Accuracy, "
+					+ "Visits.NamerID, Namers.NamerName, Visits.Scribe "
+					+ "FROM (Visits LEFT JOIN Namers ON Visits.NamerID = Namers._id) "
+					+ "LEFT JOIN Locations ON Visits.RefLocID = Locations._id "
+					+ "WHERE (((Visits._id)=?));";
+*/
+/*    			mViewPlaceholderCode.setText(c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
+				mViewPlaceholderDescription.setText(c.getString(c.getColumnIndexOrThrow("Description")));
+				mViewPlaceholderHabitat.setText(c.getString(c.getColumnIndexOrThrow("Habitat")));
+				mViewPlaceholderIdentifier.setText(c.getString(c.getColumnIndexOrThrow("LabelNum")));
+"PlaceHolderCode" VARCHAR(10) NOT NULL
+CHECK (LENGTH(PlaceHolderCode)>=3),
+"Description" VARCHAR(255) NOT NULL
+CHECK (LENGTH(Description)>=3),
+"Habitat" VARCHAR(255),
+"LabelNum" VARCHAR(10), -- optional, if specimens are field labeled
+"TimeFirstInput" TIMESTAMP NOT NULL DEFAULT (DATETIME('now')), -- internally maintained
+"TimeLastEdited" TIMESTAMP NOT NULL DEFAULT (DATETIME('now')), -- internally maintained
+"VisitIdWhereFirstFound" INTEGER, -- ref for Project, Namer, Location, etc
+"ProjID" INTEGER NOT NULL, -- this and following field redundant, since available from
+"NamerID" INTEGER NOT NULL, --  Visit, but makes querying simpler, and allows unique index*/
+		if (mPlaceholderId == 0) { // new record
+			Log.d(LOG_TAG, "savePlaceholderRecord; creating new record with mPlaceholderId = " + mPlaceholderId);
 			// fill in fields the user never sees
+			mValues.put("TimeFirstInput", mTimeFormat.format(new Date()));
+			mValues.put("TimeLastEdited", mTimeFormat.format(new Date()));
+			mValues.put("VisitIdWhereFirstFound", sharedPref.getLong(Prefs.CURRENT_VISIT_ID, 0));
 			mValues.put("ProjID", sharedPref.getLong(Prefs.DEFAULT_PROJECT_ID, 0));
-			mValues.put("PlotTypeID", sharedPref.getLong(Prefs.DEFAULT_PLOTTYPE_ID, 0));
-			mValues.put("StartTime", mTimeFormat.format(new Date()));
-			mValues.put("LastChanged", mTimeFormat.format(new Date()));
-//			mValues.put("NamerID", mNamerId);
-			// wait on 'RefLocID', location record cannot be created until the Visit record has an ID assigned
-//			mValues.put("RefLocID", ); // save the Location to get this ID
-//			mValues.put("RefLocIsGood", mLocIsGood ? 1 : 0);
-			mValues.put("DeviceType", 2); // 1='unknown', 2='Android', this may be redundant, but flags that this was explicitly set
-			mValues.put("DeviceID", sharedPref.getString(Prefs.UNIQUE_DEVICE_ID, "")); // set on first app start
-			mValues.put("DeviceIDSource", sharedPref.getString(Prefs.DEVICE_ID_SOURCE, ""));
-			// don't actually need the following 6 as the fields have default values
-			mValues.put("IsComplete", 0); // flag to sync to cloud storage, if subscribed; option to automatically set following flag to 0 after sync
-			mValues.put("ShowOnMobile", 1); // allow masking out, to reduce clutter
-			mValues.put("Include", 1); // include in analysis, not used on mobile but here for completeness
-			mValues.put("IsDeleted", 0); // don't allow user to actually delete a visit, just flag it; this by hard experience
-			mValues.put("NumAdditionalLocations", 0); // if additional locations are mapped, maintain the count
-			mValues.put("AdditionalLocationsType", 1); // 1=points, 2=line, 3=polygon			
-			mUri = rs.insert(mVisitsUri, mValues);
+			mValues.put("NamerID", sharedPref.getLong(Prefs.DEFAULT_NAMER_ID, 0));
+
+			mUri = rs.insert(mPlaceholdersUri, mValues);
 			Log.d(LOG_TAG, "new record in savePlaceholderRecord; returned URI: " + mUri.toString());
 			long newRecId = Long.parseLong(mUri.getLastPathSegment());
 			if (newRecId < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
 				Log.d(LOG_TAG, "new record in savePlaceholderRecord has Id == " + newRecId + "); canceled");
 				return 0;
 			}
-			mVisitId = newRecId;
-			getLoaderManager().restartLoader(Loaders.EXISTING_VISITS, null, this);
+			mPlaceholderId = newRecId;
+			getLoaderManager().restartLoader(Loaders.PLACEHOLDERS_EXISTING, null, this);
 			
-			mUri = ContentUris.withAppendedId(mVisitsUri, mVisitId);
+			mUri = ContentUris.withAppendedId(mPlaceholdersUri, mPlaceholderId);
 			Log.d(LOG_TAG, "new record in savePlaceholderRecord; URI re-parsed: " + mUri.toString());
-			SharedPreferences.Editor prefEditor = sharedPref.edit();
-			prefEditor.putLong(Prefs.CURRENT_VISIT_ID, mVisitId);
-			prefEditor.commit();
-			if (mLocIsGood) { // add the location record
-				mValues.clear();
-				mValues.put("LocName", "Reference Location");
-				mValues.put("SourceID", mLocationSource);
-				mValues.put("VisitID", mVisitId);
-				//mValues.put("SubplotID", 0); // N/A, for the whole site, not any subplot
-				//mValues.put("ListingOrder", 0); // use the default=0
-				mValues.put("Latitude", mLatitude);
-				mValues.put("Longitude", mLongitude);
-				mValues.put("TimeStamp", mLocTime);
-				mValues.put("Accuracy", mAccuracy);
-				mUri = rs.insert(mLocationsUri, mValues);
-				long newLocID = Long.parseLong(mUri.getLastPathSegment());
-				if (newLocID < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
-					Log.d(LOG_TAG, "new Location record in savePlaceholderRecord has Id == " + newLocID + "); canceled");
-				} else {
-					mLocId = newLocID;
-					Log.d(LOG_TAG, "savePlaceholderRecord; new Location record created, locID = " + mLocId);
-					// update the Visit record to include the Location
-					mValues.clear();
-					mValues.put("RefLocID", mLocId);
-					mUri = ContentUris.withAppendedId(mVisitsUri, mVisitId);
-					numUpdated = rs.update(mUri, mValues, null, null);
-					if (numUpdated == 0) {
-						Log.d(LOG_TAG, "savePlaceholderRecord; new Visit record NOT updated with locID = " + mLocId);
-					} else {
-						Log.d(LOG_TAG, "savePlaceholderRecord; new Visit record updated with locID = " + mLocId);
-					}
-				}
-			}
 			numUpdated = 1;
 		} else { // update the existing record
-            Log.d(LOG_TAG, "savePlaceholderRecord; updating existing record with mVisitId = " + mVisitId);
-			mValues.put("LastChanged", mTimeFormat.format(new Date())); // update the last-changed time
-			mUri = ContentUris.withAppendedId(mVisitsUri, mVisitId);
+            Log.d(LOG_TAG, "savePlaceholderRecord; updating existing record with mVisitId = " + mPlaceholderId);
+			mValues.put("TimeLastEdited", mTimeFormat.format(new Date())); // update the last-changed time
+			mUri = ContentUris.withAppendedId(mPlaceholdersUri, mPlaceholderId);
 			numUpdated = rs.update(mUri, mValues, null, null);
 			Log.d(LOG_TAG, "Updated record in savePlaceholderRecord; numUpdated: " + numUpdated);
 		}
 		if (numUpdated > 0) {
-            try {
-                mEditVisitListener.onEditVisitComplete(EditPlaceholderFragment.this);
-                // sometimes this fails with null pointer exception because fragment is gone
-            } catch (Exception e) {
-                // ignore; fn is just to refresh the screen and that will happen on fragment rebuild
-            }
-
-
+			// may not need this
+//            try {
+//                mEditVisitListener.onEditVisitComplete(EditPlaceholderFragment.this);
+//                // sometimes this fails with null pointer exception because fragment is gone
+//            } catch (Exception e) {
+//                // ignore; fn is just to refresh the screen and that will happen on fragment rebuild
+//            }
 		}
 		return numUpdated;
 	}	

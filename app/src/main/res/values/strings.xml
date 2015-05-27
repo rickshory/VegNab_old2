@@ -253,10 +253,10 @@
 
     <string name="placeholder_validate_generic_title">Critical Error</string>
     <string name="placeholder_validate_code_none">No Code for this Placeholder</string>
-    <string name="placeholder_validate_code_short">Code must be at least 2 characters</string>
+    <string name="placeholder_validate_code_short">Code must be at least 3 characters</string>
     <string name="placeholder_validate_code_bad">Code cannot be like an NRCS code</string>
     <string name="placeholder_validate_code_dup">Duplicate Code for this Placeholder, already used.</string>
     <string name="placeholder_validate_description_none">Need a Description for this Placeholder, long-press for more info</string>
-    <string name="placeholder_validate_habitat_none">Need a Description for this Placeholder, long-press for more info</string>
+    <string name="placeholder_validate_habitat_none">Need a Habitat for this Placeholder, long-press for more info</string>
 
 </resources>

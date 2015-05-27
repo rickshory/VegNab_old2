@@ -8,6 +8,7 @@ import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract.Loaders;
 import com.vegnab.vegnab.database.VNContract.VegcodeSources;
+import com.vegnab.vegnab.database.VNContract.VNRegex;
 
 import android.app.Activity;
 import android.content.Context;
@@ -340,7 +341,7 @@ public class SelectSpeciesFragment extends ListFragment
 		// disallow 3 to 5 letters, alone or followed by numbers
 		// disallow any with numerals trailing 3-5 letters, though never saw real codes with more than 2 digits here
 		// also disallow codes like "2FDA" (forb dicot annual) some agencies use for general ids
-		if (phCode.matches(nrcsCodePattern)) {
+		if (phCode.matches(VNRegex.NRCS_CODE)) {
 			Toast.makeText(this.getActivity(), "Placeholder can\'t be like an NRCS code.", Toast.LENGTH_SHORT).show();
 			return true;
 		}

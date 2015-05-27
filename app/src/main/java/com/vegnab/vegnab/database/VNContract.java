@@ -114,8 +114,12 @@ public final class VNContract {
 
 	// inner class to define regular expressions
 	// putting them all together here allows consistent usage throughout
-	public static abstract class Regex {
-		public static final String NRCS_CODE = "[a-zA-Z]{3,5}[0-9]*|2[a-zA-Z]{1,4}"; //
+	public static abstract class VNRegex {
+		public static final String NRCS_CODE = "[a-zA-Z]{3,5}[0-9]*|2[a-zA-Z]{1,4}";
+		// disallow 3 to 5 letters, alone or followed by numbers
+		// disallow any with numerals trailing 3-5 letters, though never saw real codes with more than 2 digits here
+		// also disallow codes like "2FDA" (forb dicot annual) some agencies use for general ids
+
 	}
 
 	// inner classes to define tables
