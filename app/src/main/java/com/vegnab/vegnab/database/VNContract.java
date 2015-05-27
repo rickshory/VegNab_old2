@@ -74,8 +74,9 @@ public final class VNContract {
 
 		// in Edit Placeholder
 		public static final int PLACEHOLDER_TO_EDIT = 91; // The current placeholder
-		public static final int PLACEHOLDER_BACKSTORY = 92; // project, location, namer, etc., automatically recorded for a placeholder
-		public static final int PLACEHOLDER_HABITATS = 93; // Recall these as options to re-select
+		public static final int PLACEHOLDER_PROJ_NAMER = 92; // projectID and NamerID from the Visit
+		public static final int PLACEHOLDER_BACKSTORY = 93; // project, location, namer, etc., details for the placeholder
+		public static final int PLACEHOLDER_HABITATS = 94; // Recall these as options to re-select
 	}
 
 	// inner class to define Tags

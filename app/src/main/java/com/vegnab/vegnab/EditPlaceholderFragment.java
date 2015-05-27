@@ -75,6 +75,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 
 public class EditPlaceholderFragment extends Fragment implements OnClickListener,
@@ -103,6 +104,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 	String mPlaceholderCode = null, mPlaceholderDescription = null, mPlaceholderHabitat = null,
 			mPlaceholderLabelNumber = null, mPhVisitName = null, mPhNamerName = null,
 			mPhScribe = null, mPhLocText = null;
+	HashSet<String> mPreviouslyEnteredHabitats = new HashSet<String>();
 
 	Uri mUri;
 	Uri mVisitsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "visits");
@@ -291,7 +293,18 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		super.onSaveInstanceState(outState);
 		// save the current subplot arguments in case we need to re-create the fragment
 		outState.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
-		outState.putLong(ARG_VISIT_ID, mVisitId);
+		outState.putString(ARG_PLACEHOLDER_CODE, mPlaceholderCode);
+		outState.putString(ARG_PLACEHOLDER_DESCRIPTION, mPlaceholderDescription);
+		outState.putString(ARG_PLACEHOLDER_HABITAT, mPlaceholderHabitat);
+		outState.putString(ARG_PLACEHOLDER_LABELNUMBER, mPlaceholderLabelNumber);
+		outState.putLong(ARG_PH_PROJID, mPhProjId);
+		outState.putLong(ARG_PH_VISITID, mPhVisitId);
+		outState.putLong(ARG_PH_LOCID, mPhLocId);
+		outState.putLong(ARG_PH_NAMERID, mPhNamerId);
+		outState.putString(ARG_PH_VISIT_NAME, mPhVisitName);
+		outState.putString(ARG_PH_LOC_TEXT, mPhLocText);
+		outState.putString(ARG_PH_NAMER_NAME, mPhNamerName);
+		outState.putString(ARG_PH_SCRIBE, mPhScribe);
 	}
 
 	@Override
@@ -334,6 +347,16 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 			cl = new CursorLoader(getActivity(), onePlaceholderUri,
 					null, select, null, null);
 			break;
+
+		case Loaders.PLACEHOLDER_PROJ_NAMER:
+			baseUri = ContentProvider_VegNab.SQL_URI;
+			select = "SELECT Visits.ProjID, Visits.NamerID "
+					+ "FROM Visits "
+					+ "WHERE Visits._id=?;";
+			cl = new CursorLoader(getActivity(), baseUri,
+					null, select, new String[] { "" + mPhVisitId }, null);
+			break;
+
 		case Loaders.PLACEHOLDER_BACKSTORY:
 			baseUri = ContentProvider_VegNab.SQL_URI;
 			select = "SELECT Visits._id, Visits.VisitName, Visits.ProjID, Locations._id AS LocID, "
@@ -345,6 +368,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 			cl = new CursorLoader(getActivity(), baseUri,
 					null, select, new String[] { "" + mPhVisitId }, null);
 			break;
+
 		case Loaders.PLACEHOLDER_HABITATS:
 			baseUri = ContentProvider_VegNab.SQL_URI;
 			select = "SELECT Habitat FROM PlaceHolders GROUP BY Habitat;";
@@ -360,72 +384,96 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		// there will be various loaders, switch them out here
 		mRowCt = c.getCount();
 		switch (loader.getId()) {
-/*		PLACEHOLDER_TO_EDIT, PLACEHOLDER_BACKSTORY, PLACEHOLDER_HABITATS */
-		case Loaders.EXISTING_VISITS:
-			mExistingVisitNames.clear();
-			while (c.moveToNext()) {
-				Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("VisitName")));
-				mExistingVisitNames.put(c.getLong(c.getColumnIndexOrThrow("_id")), 
-						c.getString(c.getColumnIndexOrThrow("VisitName")));
-			}
-			Log.d(LOG_TAG, "onLoadFinished, number of items in mExistingProjCodes: " + mExistingVisitNames.size());
-			Log.d(LOG_TAG, "onLoadFinished, items in mExistingProjCodes: " + mExistingVisitNames.toString());
-			break;
-		case Loaders.VISIT_TO_EDIT:
-			Log.d(LOG_TAG, "onLoadFinished, VISIT_TO_EDIT, records: " + c.getCount());
+/*		PLACEHOLDER_TO_EDIT, PLACEHOLDER_PROJ_NAMER, PLACEHOLDER_BACKSTORY, PLACEHOLDER_HABITATS */
+
+		case Loaders.PLACEHOLDER_TO_EDIT:
+			Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_TO_EDIT, records: " + c.getCount());
 			if (c.moveToFirst()) {
-				mViewVisitName.setText(c.getString(c.getColumnIndexOrThrow("VisitName")));
-				mViewVisitDate.setText(c.getString(c.getColumnIndexOrThrow("VisitDate")));
-				mNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
-				// set the retrieved Namer as the default, will usually be who
-				saveDefaultNamerId(mNamerId);
-				setNamerSpinnerSelectionFromDefaultNamer();
-				mViewVisitScribe.setText(c.getString(c.getColumnIndexOrThrow("Scribe")));
-				// write code to save/retrieve Locations
-				mLocIsGood = (c.getInt(c.getColumnIndexOrThrow("RefLocIsGood")) != 0);
-				mLocId = c.getLong(c.getColumnIndexOrThrow("RefLocID"));
-				if (mLocIsGood) {
-					if (mGoogleApiClient.isConnected()) {
-						LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-						mGoogleApiClient.disconnect();
-					}
-					// set a temporary "retrieving..." message
-					String msg = getActivity().getResources().getString(R.string.vis_hdr_loc_retrieving);
-					mViewVisitLocation.setText(msg);
-					// fetch the stored location
-					getLoaderManager().initLoader(Loaders.VISIT_REF_LOCATION, null, this);
-				}
-				// explicitly test null, to avoid spurious zeroes
-				if (!(c.isNull(c.getColumnIndexOrThrow("Azimuth")))) {
-					mViewAzimuth.setText("" + c.getInt(c.getColumnIndexOrThrow("Azimuth")));
-				}
-				mViewVisitNotes.setText(c.getString(c.getColumnIndexOrThrow("VisitNotes")));
+//				mPlaceholderId = c.getLong(c.getColumnIndexOrThrow("_id"));
+				mViewPlaceholderCode.setText(c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
+				mViewPlaceholderDescription.setText(c.getString(c.getColumnIndexOrThrow("Description")));
+				mViewPlaceholderHabitat.setText(c.getString(c.getColumnIndexOrThrow("Habitat")));
+				mViewPlaceholderIdentifier.setText(c.getString(c.getColumnIndexOrThrow("LabelNum")));
+				mPhVisitId = c.getLong(c.getColumnIndexOrThrow("VisitIdWhereFirstFound"));
+				mPhProjId = c.getLong(c.getColumnIndexOrThrow("ProjID"));
+				mPhNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
+				
 			}
+			// else // fire off another loader?
+			// getLoaderManager().initLoader(Loaders.XXX, null, this);
 			break;
-			
-		case Loaders.VISIT_REF_LOCATION:
-			Log.d(LOG_TAG, "onLoadFinished, VISIT_REF_LOCATION, records: " + c.getCount());
+/*		outState.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
+		outState.putString(ARG_PLACEHOLDER_CODE, mPlaceholderCode);
+		outState.putString(ARG_PLACEHOLDER_DESCRIPTION, mPlaceholderDescription);
+		outState.putString(ARG_PLACEHOLDER_HABITAT, mPlaceholderHabitat);
+		outState.putString(ARG_PLACEHOLDER_LABELNUMBER, mPlaceholderLabelNumber);
+		outState.putLong(ARG_PH_PROJID, mPhProjId);
+		outState.putLong(ARG_PH_VISITID, mPhVisitId);
+		outState.putLong(ARG_PH_LOCID, mPhLocId);
+		outState.putLong(ARG_PH_NAMERID, mPhNamerId);
+		outState.putString(ARG_PH_VISIT_NAME, mPhVisitName);
+		outState.putString(ARG_PH_LOC_TEXT, mPhLocText);
+		outState.putString(ARG_PH_NAMER_NAME, mPhNamerName);
+		outState.putString(ARG_PH_SCRIBE, mPhScribe);
+	long mPlaceholderId = 0, mPhProjId = 0, mPhVisitId = 0, mPhLocId = 0, mPhNamerId = 0;
+	String mPlaceholderCode = null, mPlaceholderDescription = null, mPlaceholderHabitat = null,
+			mPlaceholderLabelNumber = null, mPhVisitName = null, mPhNamerName = null,
+			mPhScribe = null, mPhLocText = null;
+			select = "SELECT Visits._id, Visits.VisitName, Visits.ProjID, Locations._id AS LocID, "
+					+ "Locations.Latitude, Locations.Longitude, Locations.Accuracy, "
+					+ "Visits.NamerID, Namers.NamerName, Visits.Scribe "
+					+ "FROM (Visits LEFT JOIN Namers ON Visits.NamerID = Namers._id) "
+					+ "LEFT JOIN Locations ON Visits.RefLocID = Locations._id "
+					+ "WHERE (((Visits._id)=?));";
+*/
+			/*	long mPlaceholderId = 0, mPhProjId = 0, mPhVisitId = 0, mPhLocId = 0, mPhNamerId = 0;
+	String mPlaceholderCode = null, mPlaceholderDescription = null, mPlaceholderHabitat = null,
+			mPlaceholderLabelNumber = null, mPhVisitName = null, mPhNamerName = null,
+			mPhScribe = null, mPhLocText = null;
+			select = "SELECT Visits._id, Visits.VisitName, Visits.ProjID, Locations._id AS LocID, "
+					+ "Locations.Latitude, Locations.Longitude, Locations.Accuracy, "
+					+ "Visits.NamerID, Namers.NamerName, Visits.Scribe "
+					+ "FROM (Visits LEFT JOIN Namers ON Visits.NamerID = Namers._id) "
+					+ "LEFT JOIN Locations ON Visits.RefLocID = Locations._id "
+					+ "WHERE (((Visits._id)=?));";
+*/
+			// 				mViewVisitLocation.setText("" + mLatitude + ", " + mLongitude
+//			+ "\naccuracy " + mAccuracy + "m");
+
+
+			case Loaders.PLACEHOLDER_PROJ_NAMER:
+			Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PROJ_NAMER, records: " + c.getCount());
 			if (c.moveToFirst()) {
-				mLatitude = c.getDouble(c.getColumnIndexOrThrow("Latitude"));
-				mLongitude = c.getDouble(c.getColumnIndexOrThrow("Longitude"));
-				mAccuracy = c.getFloat(c.getColumnIndexOrThrow("Accuracy"));
-				mViewVisitLocation.setText("" + mLatitude + ", " + mLongitude
-					+ "\naccuracy " + mAccuracy + "m");
+				mPhProjId = c.getLong(c.getColumnIndexOrThrow("ProjID"));
+				mPhNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
 			}
-			
 			break;
 		
-		case Loaders.NAMERS:
-			// Swap the new cursor in.
-			// The framework will take care of closing the old cursor once we return.
-			mNamerAdapter.swapCursor(c);
-			if (mRowCt > 0) {
-				setNamerSpinnerSelectionFromDefaultNamer(); // internally sets mNamerId
-				mNamerSpinner.setEnabled(true);
-			} else {
-				mNamerSpinner.setEnabled(false);
+		case Loaders.PLACEHOLDER_BACKSTORY:
+			Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_BACKSTORY, records: " + c.getCount());
+			if (c.moveToFirst()) {
+				mPhVisitName = c.getString(c.getColumnIndexOrThrow("VisitName"));
+				mPhProjId = c.getLong(c.getColumnIndexOrThrow("ProjID"));
+				mPhLocId = c.getLong(c.getColumnIndexOrThrow("LocID"));
+				mPhLocText = "" + c.getString(c.getColumnIndexOrThrow("Latitude"))
+					+ "," + c.getString(c.getColumnIndexOrThrow("Longitude"))
+					+ "\naccuracy " + c.getString(c.getColumnIndexOrThrow("Accuracy")) + "m";
+				mPhNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
+				mPhNamerName = c.getString(c.getColumnIndexOrThrow("NamerName"));
+				mPhScribe = c.getString(c.getColumnIndexOrThrow("Scribe"));
 			}
 			break;
+
+		case Loaders.PLACEHOLDER_HABITATS:
+			mPreviouslyEnteredHabitats.clear();
+			while (c.moveToNext()) {
+				Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("Habitat")));
+				mPreviouslyEnteredHabitats.add(c.getString(c.getColumnIndexOrThrow("Habitat")));
+			}
+			Log.d(LOG_TAG, "onLoadFinished, number of items in mPreviouslyEnteredHabitats: " + mPreviouslyEnteredHabitats.size());
+			Log.d(LOG_TAG, "onLoadFinished, items in mPreviouslyEnteredHabitats: " + mPreviouslyEnteredHabitats.toString());
+			break;
+
 		}
 	}
 	
