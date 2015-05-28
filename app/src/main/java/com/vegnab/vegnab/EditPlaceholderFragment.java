@@ -197,6 +197,11 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, 
 			Bundle savedInstanceState) {
+		// any Placeholder worked on here will always belong to the default project, namer, and visit
+		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+		mPhProjId = sharedPref.getLong(Prefs.DEFAULT_PROJECT_ID, 0);
+		mPhNamerId = sharedPref.getLong(Prefs.DEFAULT_NAMER_ID, 0);
+		mPhVisitId = sharedPref.getLong(Prefs.CURRENT_VISIT_ID, 0);
 		// if the activity was re-created (e.g. from a screen rotate)
 		// restore the previous screen, remembered by onSaveInstanceState()
 		// This is mostly needed in fixed-pane layouts
@@ -207,10 +212,10 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 			mPlaceholderDescription = savedInstanceState.getString(ARG_PLACEHOLDER_DESCRIPTION, null);
 			mPlaceholderHabitat = savedInstanceState.getString(ARG_PLACEHOLDER_HABITAT, null);
 			mPlaceholderLabelNumber = savedInstanceState.getString(ARG_PLACEHOLDER_LABELNUMBER, null);
-			mPhProjId = savedInstanceState.getLong(ARG_PH_PROJID, 0);
-			mPhVisitId = savedInstanceState.getLong(ARG_PH_VISITID, 0);
+//			mPhProjId = savedInstanceState.getLong(ARG_PH_PROJID, 0);
+//			mPhVisitId = savedInstanceState.getLong(ARG_PH_VISITID, 0);
 			mPhLocId = savedInstanceState.getLong(ARG_PH_LOCID, 0);
-			mPhNamerId = savedInstanceState.getLong(ARG_PH_NAMERID, 0);
+//			mPhNamerId = savedInstanceState.getLong(ARG_PH_NAMERID, 0);
 			mPhVisitName = savedInstanceState.getString(ARG_PH_VISIT_NAME, null);
 			mPhLocText = savedInstanceState.getString(ARG_PH_LOC_TEXT, null);
 			mPhNamerName = savedInstanceState.getString(ARG_PH_NAMER_NAME, null);
@@ -242,10 +247,11 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		registerForContextMenu(mViewPlaceholderIdentifier); // enable long-press
 
 		// Prepare the loader. Either re-connect with an existing one or start a new one
-		getLoaderManager().initLoader(Loaders.PLACEHOLDER_TO_EDIT, null, this); // The current placeholder
-		getLoaderManager().initLoader(Loaders.PLACEHOLDER_BACKSTORY, null, this); // project, location, namer, etc., automatically recorded for a placeholder
+//		getLoaderManager().initLoader(Loaders.PLACEHOLDER_TO_EDIT, null, this); // The current placeholder
+		getLoaderManager().initLoader(Loaders.PLACEHOLDERS_EXISTING, null, this); // Any existing placeholders
+//		getLoaderManager().initLoader(Loaders.PLACEHOLDER_BACKSTORY, null, this); // project, location, namer, etc., automatically recorded for a placeholder
 		getLoaderManager().initLoader(Loaders.PLACEHOLDER_HABITATS, null, this); // Recall these as options to re-select
-/*		PLACEHOLDER_TO_EDIT, PLACEHOLDER_BACKSTORY, PLACEHOLDER_HABITATS */
+
 		// set click listener for the button in the view
 		Button s = (Button) rootView.findViewById(R.id.placeholder_save_button);
 		s.setOnClickListener(this);
@@ -264,7 +270,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		Bundle args = getArguments();
 		if (args != null) {
             if (mPlaceholderId == 0) {
-                // On return from Subplots container, this method can re-run before
+                // On return, this method can re-run before
                 // SaveInstanceState and so retain arguments originally passed when created,
                 // such as mPlaceholderId=0.
                 // Do not allow that zero to overwrite a new (nonzero) mPlaceholderId, or
@@ -275,8 +281,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         }
         // fire off loaders that depend on layout being ready to receive results
         getLoaderManager().initLoader(Loaders.PLACEHOLDER_TO_EDIT, null, this);
-        getLoaderManager().initLoader(Loaders.PLACEHOLDER_HABITATS, null, this);
-	}
+		getLoaderManager().initLoader(Loaders.PLACEHOLDER_BACKSTORY, null, this); // text of other fields
+ 	}
 
 
 	@Override
@@ -299,10 +305,10 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		outState.putString(ARG_PLACEHOLDER_DESCRIPTION, mPlaceholderDescription);
 		outState.putString(ARG_PLACEHOLDER_HABITAT, mPlaceholderHabitat);
 		outState.putString(ARG_PLACEHOLDER_LABELNUMBER, mPlaceholderLabelNumber);
-		outState.putLong(ARG_PH_PROJID, mPhProjId);
-		outState.putLong(ARG_PH_VISITID, mPhVisitId);
+//		outState.putLong(ARG_PH_PROJID, mPhProjId);
+//		outState.putLong(ARG_PH_VISITID, mPhVisitId);
 		outState.putLong(ARG_PH_LOCID, mPhLocId);
-		outState.putLong(ARG_PH_NAMERID, mPhNamerId);
+//		outState.putLong(ARG_PH_NAMERID, mPhNamerId);
 		outState.putString(ARG_PH_VISIT_NAME, mPhVisitName);
 		outState.putString(ARG_PH_LOC_TEXT, mPhLocText);
 		outState.putString(ARG_PH_NAMER_NAME, mPhNamerName);
@@ -358,14 +364,14 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 					new String[] { "" + mPhProjId, "" + mPhNamerId, "" + mPlaceholderId}, null);
 			break;
 
-		case Loaders.PLACEHOLDER_PROJ_NAMER:
-			baseUri = ContentProvider_VegNab.SQL_URI;
-			select = "SELECT Visits.ProjID, Visits.NamerID "
-					+ "FROM Visits "
-					+ "WHERE Visits._id=?;";
-			cl = new CursorLoader(getActivity(), baseUri,
-					null, select, new String[] { "" + mPhVisitId }, null);
-			break;
+//		case Loaders.PLACEHOLDER_PROJ_NAMER:
+//			baseUri = ContentProvider_VegNab.SQL_URI;
+//			select = "SELECT Visits.ProjID, Visits.NamerID "
+//					+ "FROM Visits "
+//					+ "WHERE Visits._id=?;";
+//			cl = new CursorLoader(getActivity(), baseUri,
+//					null, select, new String[] { "" + mPhVisitId }, null);
+//			break;
 
 		case Loaders.PLACEHOLDER_BACKSTORY:
 			baseUri = ContentProvider_VegNab.SQL_URI;
@@ -403,9 +409,9 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 				mViewPlaceholderDescription.setText(c.getString(c.getColumnIndexOrThrow("Description")));
 				mViewPlaceholderHabitat.setText(c.getString(c.getColumnIndexOrThrow("Habitat")));
 				mViewPlaceholderIdentifier.setText(c.getString(c.getColumnIndexOrThrow("LabelNum")));
-				mPhVisitId = c.getLong(c.getColumnIndexOrThrow("VisitIdWhereFirstFound"));
-				mPhProjId = c.getLong(c.getColumnIndexOrThrow("ProjID"));
-				mPhNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
+//				mPhVisitId = c.getLong(c.getColumnIndexOrThrow("VisitIdWhereFirstFound"));
+//				mPhProjId = c.getLong(c.getColumnIndexOrThrow("ProjID"));
+//				mPhNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
 				
 			}
 			// else // fire off another loader?
@@ -422,13 +428,13 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 			Log.d(LOG_TAG, "onLoadFinished, items in mExistingPlaceholderCodes: " + mExistingPlaceholderCodes.toString());
 			break;
 
-		case Loaders.PLACEHOLDER_PROJ_NAMER:
-			Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PROJ_NAMER, records: " + c.getCount());
-			if (c.moveToFirst()) {
-				mPhProjId = c.getLong(c.getColumnIndexOrThrow("ProjID"));
-				mPhNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
-			}
-			break;
+//		case Loaders.PLACEHOLDER_PROJ_NAMER:
+//			Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PROJ_NAMER, records: " + c.getCount());
+//			if (c.moveToFirst()) {
+//				mPhProjId = c.getLong(c.getColumnIndexOrThrow("ProjID"));
+//				mPhNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
+//			}
+//			break;
 		
 		case Loaders.PLACEHOLDER_BACKSTORY:
 			Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_BACKSTORY, records: " + c.getCount());
@@ -470,14 +476,14 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 			break;
 
 		case Loaders.PLACEHOLDERS_EXISTING:
-			Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_TO_EDIT.");
+			Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDERS_EXISTING.");
 //			don't need to do anything here, no cursor adapter
 			break;
 
-		case Loaders.PLACEHOLDER_PROJ_NAMER:
-			Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_PROJ_NAMER.");
-//			don't need to do anything here, no cursor adapter
-			break;
+//		case Loaders.PLACEHOLDER_PROJ_NAMER:
+//			Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_PROJ_NAMER.");
+////			don't need to do anything here, no cursor adapter
+//			break;
 
 		case Loaders.PLACEHOLDER_BACKSTORY:
 			Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_BACKSTORY.");
@@ -617,56 +623,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		}
 		ContentResolver rs = getActivity().getContentResolver();
 		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-/*		outState.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
-		outState.putString(ARG_PLACEHOLDER_CODE, mPlaceholderCode);
-		outState.putString(ARG_PLACEHOLDER_DESCRIPTION, mPlaceholderDescription);
-		outState.putString(ARG_PLACEHOLDER_HABITAT, mPlaceholderHabitat);
-		outState.putString(ARG_PLACEHOLDER_LABELNUMBER, mPlaceholderLabelNumber);
-		outState.putLong(ARG_PH_PROJID, mPhProjId);
-		outState.putLong(ARG_PH_VISITID, mPhVisitId);
-		outState.putLong(ARG_PH_LOCID, mPhLocId);
-		outState.putLong(ARG_PH_NAMERID, mPhNamerId);
-		outState.putString(ARG_PH_VISIT_NAME, mPhVisitName);
-		outState.putString(ARG_PH_LOC_TEXT, mPhLocText);
-		outState.putString(ARG_PH_NAMER_NAME, mPhNamerName);
-		outState.putString(ARG_PH_SCRIBE, mPhScribe);
-	long mPlaceholderId = 0, mPhProjId = 0, mPhVisitId = 0, mPhLocId = 0, mPhNamerId = 0;
-	String mPlaceholderCode = null, mPlaceholderDescription = null, mPlaceholderHabitat = null,
-			mPlaceholderLabelNumber = null, mPhVisitName = null, mPhNamerName = null,
-			mPhScribe = null, mPhLocText = null;
-			select = "SELECT Visits._id, Visits.VisitName, Visits.ProjID, Locations._id AS LocID, "
-					+ "Locations.Latitude, Locations.Longitude, Locations.Accuracy, "
-					+ "Visits.NamerID, Namers.NamerName, Visits.Scribe "
-					+ "FROM (Visits LEFT JOIN Namers ON Visits.NamerID = Namers._id) "
-					+ "LEFT JOIN Locations ON Visits.RefLocID = Locations._id "
-					+ "WHERE (((Visits._id)=?));";
-*/
-			/*	long mPlaceholderId = 0, mPhProjId = 0, mPhVisitId = 0, mPhLocId = 0, mPhNamerId = 0;
-	String mPlaceholderCode = null, mPlaceholderDescription = null, mPlaceholderHabitat = null,
-			mPlaceholderLabelNumber = null, mPhVisitName = null, mPhNamerName = null,
-			mPhScribe = null, mPhLocText = null;
-			select = "SELECT Visits._id, Visits.VisitName, Visits.ProjID, Locations._id AS LocID, "
-					+ "Locations.Latitude, Locations.Longitude, Locations.Accuracy, "
-					+ "Visits.NamerID, Namers.NamerName, Visits.Scribe "
-					+ "FROM (Visits LEFT JOIN Namers ON Visits.NamerID = Namers._id) "
-					+ "LEFT JOIN Locations ON Visits.RefLocID = Locations._id "
-					+ "WHERE (((Visits._id)=?));";
-*/
-/*    			mViewPlaceholderCode.setText(c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
-				mViewPlaceholderDescription.setText(c.getString(c.getColumnIndexOrThrow("Description")));
-				mViewPlaceholderHabitat.setText(c.getString(c.getColumnIndexOrThrow("Habitat")));
-				mViewPlaceholderIdentifier.setText(c.getString(c.getColumnIndexOrThrow("LabelNum")));
-"PlaceHolderCode" VARCHAR(10) NOT NULL
-CHECK (LENGTH(PlaceHolderCode)>=3),
-"Description" VARCHAR(255) NOT NULL
-CHECK (LENGTH(Description)>=3),
-"Habitat" VARCHAR(255),
-"LabelNum" VARCHAR(10), -- optional, if specimens are field labeled
-"TimeFirstInput" TIMESTAMP NOT NULL DEFAULT (DATETIME('now')), -- internally maintained
-"TimeLastEdited" TIMESTAMP NOT NULL DEFAULT (DATETIME('now')), -- internally maintained
-"VisitIdWhereFirstFound" INTEGER, -- ref for Project, Namer, Location, etc
-"ProjID" INTEGER NOT NULL, -- this and following field redundant, since available from
-"NamerID" INTEGER NOT NULL, --  Visit, but makes querying simpler, and allows unique index*/
 		if (mPlaceholderId == 0) { // new record
 			Log.d(LOG_TAG, "savePlaceholderRecord; creating new record with mPlaceholderId = " + mPlaceholderId);
 			// fill in fields the user never sees
