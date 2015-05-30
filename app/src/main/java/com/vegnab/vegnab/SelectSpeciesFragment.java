@@ -353,7 +353,7 @@ public class SelectSpeciesFragment extends ListFragment
 						+ "Description AS MatchTxt, 1 AS SubListOrder, 1 AS IsPlaceholder "
 						+ "FROM PlaceHolders "
 						+ "WHERE Code Like ? "
-						+ "AND ProjID=" + mProjectId + " AND PlaceHolders.NamerID=" + mNamerId + " "
+						+ "AND ProjID=? AND PlaceHolders.NamerID=? "
 						+ "UNION SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, "
 						+ "Code || ': ' || Genus || "
 						+ "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
@@ -366,7 +366,7 @@ public class SelectSpeciesFragment extends ListFragment
 						+ "Description AS MatchTxt, 2 AS SubListOrder, 1 AS IsPlaceholder "
 						+ "FROM PlaceHolders "
 						+ "WHERE MatchTxt Like ? "
-						+ "AND ProjID=" + mProjectId + " AND PlaceHolders.NamerID=" + mNamerId + " "
+						+ "AND ProjID=? AND PlaceHolders.NamerID=? "
 						+ "UNION SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, "
 						+ "Code || ': ' || Genus || "
 						+ "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
@@ -382,11 +382,9 @@ public class SelectSpeciesFragment extends ListFragment
 						+ "AS MatchTxt, 4 AS SubListOrder, 0 AS IsPlaceholder FROM RegionalSpeciesList "
 						+ "WHERE MatchTxt LIKE ? AND Local = 1 AND HasBeenFound = 0 "
 						+ "ORDER BY SubListOrder, Code;";
-				params = new String[] {mStSearch + "%", mStSearch + "%",
-						"%" + mStSearch + "%", "%" + mStSearch + "%",
+				params = new String[] {mStSearch + "%", mStSearch + "%", "" + mProjectId, "" + mNamerId,
+						"%" + mStSearch + "%", "%" + mStSearch + "%", "" + mProjectId, "" + mNamerId,
 						mStSearch + "%", "%" + mStSearch + "%" };
-				/*params = new String[] {mStSearch, mStSearch, "" + mProjectId, "" + mNamerId,
-						mStSearch, mStSearch, "" + mProjectId, "" + mNamerId, mStSearch, mStSearch };*/
 			}
 
 			select = mStSQL;
