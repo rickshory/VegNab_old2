@@ -398,8 +398,8 @@ public class SelectSpeciesFragment extends ListFragment
 
 			case Loaders.EXISTING_PLACEHOLDER_CODES:
 				baseUri = ContentProvider_VegNab.SQL_URI;
-				select = "SELECT _id, PlaceHolderCode "
-					+ "FROM PlaceHolders LEFT JOIN Visits ON PlaceHolders.VisitID = Visits._id "
+				select = "SELECT PlaceHolders._id, PlaceHolders.PlaceHolderCode "
+					+ "FROM PlaceHolders LEFT JOIN Visits ON PlaceHolders.VisitIdWhereFirstFound = Visits._id "
 					+ "WHERE Visits.ProjID = ? "
 					+ "AND Visits.NamerID = ?;";
 				cl = new CursorLoader(getActivity(), baseUri, null, select,
