@@ -330,6 +330,7 @@ public class SelectSpeciesFragment extends ListFragment
 		CursorLoader cl = null;
 		Uri baseUri;
 		String select = null; // default for all-columns, unless re-assigned or overridden by raw SQL
+		String[] params = null;
 		switch (id) {
 
 		case Loaders.SPP_MATCHES:
@@ -338,17 +339,18 @@ public class SelectSpeciesFragment extends ListFragment
 				mStSQL = "SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, "
 						+ "Code || ': ' || Genus AS MatchTxt FROM RegionalSpeciesList "
 						+ "WHERE Code LIKE '';";  // dummy query that gets no records
+				// leave params = null;
 			} else {
 				mStSQL = "SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, "
 						+ "Code || ': ' || Genus || "
 						+ "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
 						+ "(CASE WHEN LENGTH(SubsppVar)>0 THEN (' ' || SubsppVar) ELSE '' END) || "
 						+ "(CASE WHEN LENGTH(Vernacular)>0 THEN (', ' || Vernacular) ELSE '' END) "
-						+ "AS MatchTxt, 1 AS SubListOrder FROM RegionalSpeciesList "
+						+ "AS MatchTxt, 1 AS SubListOrder, 0 AS IsPlaceholder FROM RegionalSpeciesList "
 						+ "WHERE Code LIKE '" + mStSearch + "%' AND Local = 1 AND HasBeenFound = 1 "
 						+ "UNION SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
 						+ "'' AS SubsppVar, '' AS Vernacular, "
-						+ "Description AS MatchTxt, 1 AS SubListOrder "
+						+ "Description AS MatchTxt, 1 AS SubListOrder, 1 AS IsPlaceholder "
 						+ "FROM PlaceHolders "
 						+ "WHERE Code Like '" + mStSearch + "%' "
 						+ "AND ProjID=" + mProjectId + " AND PlaceHolders.NamerID=" + mNamerId + " "
@@ -357,11 +359,11 @@ public class SelectSpeciesFragment extends ListFragment
 						+ "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
 						+ "(CASE WHEN LENGTH(SubsppVar)>0 THEN (' ' || SubsppVar) ELSE '' END) || "
 						+ "(CASE WHEN LENGTH(Vernacular)>0 THEN (', ' || Vernacular) ELSE '' END) "
-						+ "AS MatchTxt, 2 AS SubListOrder FROM RegionalSpeciesList "
+						+ "AS MatchTxt, 2 AS SubListOrder, 0 AS IsPlaceholder FROM RegionalSpeciesList "
 						+ "WHERE MatchTxt LIKE '%" + mStSearch + "%' AND Local = 1 AND HasBeenFound = 1 "
 						+ "UNION SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
 						+ "'' AS SubsppVar, '' AS Vernacular, "
-						+ "Description AS MatchTxt, 2 AS SubListOrder "
+						+ "Description AS MatchTxt, 2 AS SubListOrder, 1 AS IsPlaceholder "
 						+ "FROM PlaceHolders "
 						+ "WHERE MatchTxt Like '%" + mStSearch + "%' "
 						+ "AND ProjID=" + mProjectId + " AND PlaceHolders.NamerID=" + mNamerId + " "
@@ -370,21 +372,21 @@ public class SelectSpeciesFragment extends ListFragment
 						+ "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
 						+ "(CASE WHEN LENGTH(SubsppVar)>0 THEN (' ' || SubsppVar) ELSE '' END) || "
 						+ "(CASE WHEN LENGTH(Vernacular)>0 THEN (', ' || Vernacular) ELSE '' END) "
-						+ "AS MatchTxt, 3 AS SubListOrder FROM RegionalSpeciesList "
+						+ "AS MatchTxt, 3 AS SubListOrder, 0 AS IsPlaceholder FROM RegionalSpeciesList "
 						+ "WHERE Code LIKE '" + mStSearch + "%' AND Local = 1 AND HasBeenFound = 0 "
 						+ "UNION SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, "
 						+ "Code || ': ' || Genus || "
 						+ "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
 						+ "(CASE WHEN LENGTH(SubsppVar)>0 THEN (' ' || SubsppVar) ELSE '' END) || "
 						+ "(CASE WHEN LENGTH(Vernacular)>0 THEN (', ' || Vernacular) ELSE '' END) "
-						+ "AS MatchTxt, 4 AS SubListOrder FROM RegionalSpeciesList "
+						+ "AS MatchTxt, 4 AS SubListOrder, 0 AS IsPlaceholder FROM RegionalSpeciesList "
 						+ "WHERE MatchTxt LIKE '%" + mStSearch + "%' AND Local = 1 AND HasBeenFound = 0 "
 						+ "ORDER BY SubListOrder, Code;";
 			}
 
 			select = mStSQL;
 			cl = new CursorLoader(getActivity(), baseUri,
-					null, select, null, null);
+					null, select, params, null);
 			break;
 
 			case Loaders.EXISTING_PLACEHOLDER_CODES:
