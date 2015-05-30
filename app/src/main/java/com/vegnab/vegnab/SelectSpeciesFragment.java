@@ -69,11 +69,6 @@ public class SelectSpeciesFragment extends ListFragment
 	String mStSearch = "", mStSQL = "SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, " 
 			+ "Code || ': ' || Genus AS MatchTxt FROM RegionalSpeciesList " 
 			+ "WHERE Code LIKE '';";  // dummy query that gets no records
-	// mSearchFullList false = search only species previously found, plus Placeholders
-	// mSearchFullList true = search the entire big regional list of species
-	// mUseFullText false = search only the codes (species plus Placeholders), matching the start of the code
-	// mUseFullText true = search all positions of the concatenated code + description
-	Boolean mSearchFullList = false, mUseFullText = false; // defaults
 	// add option checkboxes or radio buttons to set the above; or do from menu items
 	EditText mViewSearchChars;
 	TextWatcher sppCodeTextWatcher = new TextWatcher() {
@@ -173,8 +168,6 @@ public class SelectSpeciesFragment extends ListFragment
 			// restore search text and any search options
 			mStSearch = savedInstanceState.getString(ARG_SEARCH_TEXT);
 			mStSQL = savedInstanceState.getString(ARG_SQL_TEXT);
-			mSearchFullList = savedInstanceState.getBoolean(ARG_SEARCH_FULL_LIST);
-			mUseFullText = savedInstanceState.getBoolean(ARG_USE_FULLTEXT_SEARCH);
 		} /*SELECT _id, Code || ': ' || SppDescr AS MatchTxt FROM SpeciesFound WHERE Code LIKE '' ;*/
 		// inflate the layout for this fragment
 		View rootView = inflater.inflate(R.layout.fragment_sel_species, container, false);
@@ -238,8 +231,6 @@ public class SelectSpeciesFragment extends ListFragment
 		// save the current search text and any options
 		outState.putString(ARG_SEARCH_TEXT, mStSearch);
 		outState.putString(ARG_SQL_TEXT, mStSQL);
-		outState.putBoolean(ARG_SEARCH_FULL_LIST, mSearchFullList);
-		outState.putBoolean(ARG_USE_FULLTEXT_SEARCH, mUseFullText);
 
 		outState.putLong(ARG_VISIT_ID, mCurVisitRecId);
 		outState.putLong(ARG_SUBPLOT_TYPE_ID, mCurSubplotTypeRecId);
