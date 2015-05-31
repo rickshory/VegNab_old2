@@ -66,10 +66,7 @@ public class SelectSpeciesFragment extends ListFragment
 	}
 	OnSppResultClickListener mListClickCallback;
 	long mRowCt;
-	String mStSearch = "", mStSQL = "SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, " 
-			+ "Code || ': ' || Genus AS MatchTxt FROM RegionalSpeciesList " 
-			+ "WHERE Code LIKE '';";  // dummy query that gets no records
-	// add option checkboxes or radio buttons to set the above; or do from menu items
+	String mStSearch = "";
 	EditText mViewSearchChars;
 	TextWatcher sppCodeTextWatcher = new TextWatcher() {
 		@Override
@@ -119,7 +116,6 @@ public class SelectSpeciesFragment extends ListFragment
 		if (savedInstanceState != null) {
 			// restore search text and any search options
 			mStSearch = savedInstanceState.getString(ARG_SEARCH_TEXT);
-			mStSQL = savedInstanceState.getString(ARG_SQL_TEXT);
 		}
 		// inflate the layout for this fragment
 		View rootView = inflater.inflate(R.layout.fragment_sel_species, container, false);
@@ -182,8 +178,6 @@ public class SelectSpeciesFragment extends ListFragment
 		super.onSaveInstanceState(outState);
 		// save the current search text and any options
 		outState.putString(ARG_SEARCH_TEXT, mStSearch);
-		outState.putString(ARG_SQL_TEXT, mStSQL);
-
 		outState.putLong(ARG_VISIT_ID, mCurVisitRecId);
 		outState.putLong(ARG_SUBPLOT_TYPE_ID, mCurSubplotTypeRecId);
 		outState.putBoolean(ARG_PRESENCE_ONLY_SUBPLOT, mPresenceOnly);
@@ -336,12 +330,12 @@ public class SelectSpeciesFragment extends ListFragment
 		case Loaders.SPP_MATCHES:
 			baseUri = ContentProvider_VegNab.SQL_URI;
 			if (mStSearch.trim().length() == 0) {
-				mStSQL = "SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, "
+				select = "SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, "
 						+ "Code || ': ' || Genus AS MatchTxt FROM RegionalSpeciesList "
 						+ "WHERE Code LIKE '';";  // dummy query that gets no records
 				// leave params = null;
 			} else {
-				mStSQL = "SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, "
+				select = "SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, "
 						+ "Code || ': ' || Genus || "
 						+ "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
 						+ "(CASE WHEN LENGTH(SubsppVar)>0 THEN (' ' || SubsppVar) ELSE '' END) || "
@@ -387,7 +381,6 @@ public class SelectSpeciesFragment extends ListFragment
 						mStSearch + "%", "%" + mStSearch + "%" };
 			}
 
-			select = mStSQL;
 			cl = new CursorLoader(getActivity(), baseUri,
 					null, select, params, null);
 			break;
