@@ -259,4 +259,11 @@
     <string name="placeholder_validate_description_none">Need a Description for this Placeholder, long-press for more info</string>
     <string name="placeholder_validate_habitat_none">Need a Habitat for this Placeholder, long-press for more info</string>
 
+    <string name="sel_spp_list_ctxmenu_item_edit">Edit</string>
+    <string name="sel_spp_list_ctxmenu_item_delete">Delete</string>
+    <string name="sel_spp_list_ctxmenu_item_help">Help</string>
+
+    <string name="sel_spp_help_list_item_title">\"Species Item\" Help</string>
+    <string name="sel_spp_help_list_item_text">Choose \"Edit\" to change an item, \"Delete\" to remove it. You can also edit by just tapping an idtem.</string>
+
 </resources>

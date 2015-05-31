@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <item android:id="@+id/sel_spp_list_item_edit"
+        android:title="@string/sel_spp_list_ctxmenu_item_edit" />
+    <item android:id="@+id/sel_spp_list_item_delete"
+        android:title="@string/sel_spp_list_ctxmenu_item_delete" />
+    <item android:id="@+id/sel_spp_list_item_help"
+          android:title="@string/sel_spp_list_ctxmenu_item_help" />
+</menu>

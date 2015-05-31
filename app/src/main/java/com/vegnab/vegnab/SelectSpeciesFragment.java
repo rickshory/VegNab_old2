@@ -30,12 +30,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 public class SelectSpeciesFragment extends ListFragment 
-		implements LoaderManager.LoaderCallbacks<Cursor>{
+		implements LoaderManager.LoaderCallbacks<Cursor> {
 	private static final String LOG_TAG = SelectSpeciesFragment.class.getSimpleName();
 	final static String ARG_VISIT_ID = "visId";
 	final static String ARG_SUBPLOT_TYPE_ID = "sbpId";
@@ -43,10 +44,7 @@ public class SelectSpeciesFragment extends ListFragment
 	final static String ARG_PROJECT_ID = "projectId";
 	final static String ARG_NAMER_ID = "namerId";
 	final static String ARG_SEARCH_TEXT = "search_text";
-	final static String ARG_SQL_TEXT = "sql_text";
-	final static String ARG_SEARCH_FULL_LIST = "regional_list";
-	final static String ARG_USE_FULLTEXT_SEARCH = "fulltext_search";
-	
+
 	long mCurVisitRecId = 0;
 	long mCurSubplotTypeRecId = 0;
 	boolean mPresenceOnly = true;
@@ -68,6 +66,7 @@ public class SelectSpeciesFragment extends ListFragment
 	long mRowCt;
 	String mStSearch = "";
 	EditText mViewSearchChars;
+	ListView mSppItemsList;
 	TextWatcher sppCodeTextWatcher = new TextWatcher() {
 		@Override
 		public void afterTextChanged(Editable s) {
@@ -131,6 +130,11 @@ public class SelectSpeciesFragment extends ListFragment
 				new int[] {android.R.id.text1}, 0);
 		setListAdapter(mSppResultsAdapter);
 		getLoaderManager().initLoader(Loaders.SPP_MATCHES, null, this);
+
+		mSppItemsList = (ListView) rootView.findViewById(android.R.id.list);
+		registerForContextMenu(mSppItemsList);
+//		mSppItemsList.setOnItemClickListener(this);
+
 
 		return rootView;
 	}
@@ -237,6 +241,9 @@ public class SelectSpeciesFragment extends ListFragment
 		case R.id.txt_search_chars:
 			inflater.inflate(R.menu.context_sel_spp_search_chars, menu);
 			break;
+		case android.R.id.list:
+			inflater.inflate(R.menu.context_sel_spp_list_items, menu);
+			break;
 		}
 	}
 
@@ -274,11 +281,8 @@ public class SelectSpeciesFragment extends ListFragment
 			Toast.makeText(this.getActivity(), "Placeholder codes must be at least 3 characters long.", Toast.LENGTH_SHORT).show();
 			return true;
 		}
-		String nrcsCodePattern = "[a-zA-Z]{3,5}[0-9]*|2[a-zA-Z]{1,4}";
-		// disallow 3 to 5 letters, alone or followed by numbers
-		// disallow any with numerals trailing 3-5 letters, though never saw real codes with more than 2 digits here
-		// also disallow codes like "2FDA" (forb dicot annual) some agencies use for general ids
-		if (phCode.matches(VNRegex.NRCS_CODE)) {
+
+		if (phCode.matches(VNRegex.NRCS_CODE)) { // see VNContract for details
 			Toast.makeText(this.getActivity(), "Placeholder can\'t be like an NRCS code.", Toast.LENGTH_SHORT).show();
 			return true;
 		}
@@ -312,6 +316,52 @@ public class SelectSpeciesFragment extends ListFragment
 		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
 		flexHlpDlg.show(getFragmentManager(), "frg_help_search_chars");
 		return true;
+
+	case R.id.sel_spp_list_item_edit:
+		Log.d(LOG_TAG, "Spp list item 'Edit' selected");
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Species Select Event")
+				.setAction("Context Menu")
+				.setLabel("List Item Edit")
+				.setValue(1)
+				.build());
+		// Search Characters help
+		helpTitle = "Edit";
+		helpMessage = "Edit tapped";
+		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+		flexHlpDlg.show(getFragmentManager(), "frg_spp_item_edit");
+		return true;
+
+	case R.id.sel_spp_list_item_delete:
+		Log.d(LOG_TAG, "Spp list item 'Delete' selected");
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Species Select Event")
+				.setAction("Context Menu")
+				.setLabel("List Item Delete")
+				.setValue(1)
+				.build());
+		// Search Characters help
+		helpTitle = "Delete";
+		helpMessage = "Delete tapped";
+		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+		flexHlpDlg.show(getFragmentManager(), "frg_spp_item_delete");
+		return true;
+
+	case R.id.sel_spp_list_item_help:
+		Log.d(LOG_TAG, "Spp list item 'Help' selected");
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Species Select Event")
+				.setAction("Context Menu")
+				.setLabel("List Item Help")
+				.setValue(1)
+				.build());
+		// Search Characters help
+		helpTitle = c.getResources().getString(R.string.sel_spp_help_list_item_title);
+		helpMessage = c.getResources().getString(R.string.sel_spp_help_list_item_text);
+		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+		flexHlpDlg.show(getFragmentManager(), "frg_spp_item_help");
+		return true;
+	
     default:
     	return super.onContextItemSelected(item);
 	   }
