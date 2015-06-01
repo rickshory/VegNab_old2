@@ -1,8 +1,11 @@
 package com.vegnab.vegnab;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract.Loaders;
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,11 +13,16 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.internal.widget.AdapterViewCompat;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class VegSubplotFragment extends ListFragment 
@@ -50,6 +58,7 @@ public class VegSubplotFragment extends ListFragment
 		public void onNewItemButtonClicked(int screenToReturnTo, long visitId, long subplotId, boolean presenceOnly);
 	}
 	VegItemAdapter mVegSubplotSppAdapter;
+	ListView mVegItemsList;
 	
 	static VegSubplotFragment newInstance(Bundle args) {
 		VegSubplotFragment f = new VegSubplotFragment();
@@ -140,6 +149,10 @@ public class VegSubplotFragment extends ListFragment
 		mVegSubplotSppAdapter = new VegItemAdapter(getActivity(),
 				R.layout.list_veg_item, null, 0);
 		setListAdapter(mVegSubplotSppAdapter);
+		mVegItemsList = (ListView) rootView.findViewById(android.R.id.list);
+		registerForContextMenu(mVegItemsList);
+//		mVegItemsList.setOnItemClickListener(this);
+
 		Log.d(LOG_TAG, "onCreateView, position = " + mPosition);
 		return rootView;
 	}
@@ -174,6 +187,89 @@ public class VegSubplotFragment extends ListFragment
 		outState.putLong(VISIT_ID, mVisitId);
 		outState.putLong(SUBPLOT_TYPE_ID, mSubplotTypeId);
 	}
+
+	// create context menus
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+	   ContextMenu.ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		MenuInflater inflater = getActivity().getMenuInflater();
+		switch (v.getId()) {
+		case android.R.id.list:
+			inflater.inflate(R.menu.context_veg_sbpl_list_item, menu);
+			break;
+		}
+	}
+
+	// This is executed when the user selects an option
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+	AdapterViewCompat.AdapterContextMenuInfo info = (AdapterViewCompat.AdapterContextMenuInfo) item.getMenuInfo();
+	if (info == null) {
+		Log.d(LOG_TAG, "onContextItemSelected info is null");
+	} else {
+		Log.d(LOG_TAG, "onContextItemSelected info: " + info.toString());
+	}
+	Context c = getActivity();
+	UnderConstrDialog notYetDlg = new UnderConstrDialog();
+	HelpUnderConstrDialog hlpDlg = new HelpUnderConstrDialog();
+	ConfigurableMsgDialog flexHlpDlg = new ConfigurableMsgDialog();
+	String helpTitle, helpMessage;
+		// get an Analytics event tracker
+	Tracker headerContextTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+
+	switch (item.getItemId()) {
+
+	case R.id.veg_subl_list_item_edit:
+		Log.d(LOG_TAG, "Veg item 'Edit' selected");
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Veg Subplot Event")
+				.setAction("Context Menu")
+				.setLabel("Veg Item Edit")
+				.setValue(1)
+				.build());
+		// Search Characters help
+		helpTitle = "Edit";
+		helpMessage = "Edit tapped";
+		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+		flexHlpDlg.show(getFragmentManager(), "frg_veg_item_edit");
+		return true;
+
+	case R.id.veg_subl_list_item_delete:
+		Log.d(LOG_TAG, "Veg item 'Delete' selected");
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Veg Subplot Event")
+				.setAction("Context Menu")
+				.setLabel("Veg Item Delete")
+				.setValue(1)
+				.build());
+		// Search Characters help
+		helpTitle = "Delete";
+		helpMessage = "Delete tapped";
+		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+		flexHlpDlg.show(getFragmentManager(), "frg_veg_item_delete");
+		return true;
+
+	case R.id.veg_subl_list_item_help:
+		Log.d(LOG_TAG, "Veg item 'Help' selected");
+		headerContextTracker.send(new HitBuilders.EventBuilder()
+				.setCategory("Veg Subplot Event")
+				.setAction("Context Menu")
+				.setLabel("Veg Item Help")
+				.setValue(1)
+				.build());
+		// Search Characters help
+		helpTitle = c.getResources().getString(R.string.veg_subpl_help_list_item_title);
+		helpMessage = c.getResources().getString(R.string.veg_subpl_help_list_item_text);
+		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+		flexHlpDlg.show(getFragmentManager(), "frg_veg_item_help");
+		return true;
+
+    default:
+    	return super.onContextItemSelected(item);
+	   }
+	}
+
 
 	@Override
 	public void onStop() {

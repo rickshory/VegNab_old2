@@ -361,7 +361,7 @@ public class SelectSpeciesFragment extends ListFragment
 		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
 		flexHlpDlg.show(getFragmentManager(), "frg_spp_item_help");
 		return true;
-	
+
     default:
     	return super.onContextItemSelected(item);
 	   }

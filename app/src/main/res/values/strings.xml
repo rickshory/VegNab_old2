@@ -266,4 +266,11 @@
     <string name="sel_spp_help_list_item_title">\"Species Item\" Help</string>
     <string name="sel_spp_help_list_item_text">Choose \"Edit\" to change an item, \"Delete\" to remove it. You can also edit by just tapping an idtem.</string>
 
+    <string name="veg_subpl_list_ctxmenu_item_edit">Edit</string>
+    <string name="veg_subpl_list_ctxmenu_item_delete">Delete</string>
+    <string name="veg_subpl_list_ctxmenu_item_help">Help</string>
+
+    <string name="veg_subpl_help_list_item_title">\"Species Item\" Help</string>
+    <string name="veg_subpl_help_list_item_text">Choose \"Edit\" to change an item, \"Delete\" to remove it. You can also edit by just tapping an idtem.</string>
+
 </resources>
