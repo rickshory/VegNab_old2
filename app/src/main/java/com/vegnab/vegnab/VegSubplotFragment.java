@@ -3,6 +3,7 @@ package com.vegnab.vegnab;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
+import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.Loaders;
 import android.app.Activity;
 import android.content.Context;
@@ -24,6 +25,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class VegSubplotFragment extends ListFragment 
 		implements OnClickListener,
@@ -58,6 +60,7 @@ public class VegSubplotFragment extends ListFragment
 		public void onNewItemButtonClicked(int screenToReturnTo, long visitId, long subplotId, boolean presenceOnly);
 	}
 	VegItemAdapter mVegSubplotSppAdapter;
+	Cursor mVegItemsCursor;
 	ListView mVegItemsList;
 	
 	static VegSubplotFragment newInstance(Bundle args) {
@@ -149,8 +152,11 @@ public class VegSubplotFragment extends ListFragment
 		mVegSubplotSppAdapter = new VegItemAdapter(getActivity(),
 				R.layout.list_veg_item, null, 0);
 		setListAdapter(mVegSubplotSppAdapter);
-		mVegItemsList = (ListView) rootView.findViewById(android.R.id.list);
-		registerForContextMenu(mVegItemsList);
+//		mVegItemsList = (ListView) rootView.findViewById(android.R.id.list);
+//		registerForContextMenu(mVegItemsList);
+// following line may be causing crash, ref before exists
+//		registerForContextMenu(getListView());
+
 //		mVegItemsList.setOnItemClickListener(this);
 
 		Log.d(LOG_TAG, "onCreateView, position = " + mPosition);
@@ -186,6 +192,50 @@ public class VegSubplotFragment extends ListFragment
 		// save the current subplot arguments in case we need to re-create the fragment
 		outState.putLong(VISIT_ID, mVisitId);
 		outState.putLong(SUBPLOT_TYPE_ID, mSubplotTypeId);
+	}
+
+	@Override
+	public void onListItemClick(ListView l, View v, int pos, long id) {
+        Toast.makeText(this.getActivity(), "Clicked position " + pos + ", id " + id, Toast.LENGTH_SHORT).show();
+		// check if selected code is in mVegCodesAlreadyOnSubplot
+//    	getListView().getItemAtPosition(pos).toString(); // not useful, gets cursor wrapper
+		mVegItemsCursor.moveToPosition(pos);
+/*
+// available fields: _id, Code, Genus, Species, SubsppVar, Vernacular, MatchTxt
+		String vegCode = mVegItemsCursor.getString(
+				mVegItemsCursor.getColumnIndexOrThrow("Code"));
+		Log.d(LOG_TAG, "mVegItemsCursor, pos = " + pos + " SppCode: " + vegCode);
+		String vegDescr = mVegItemsCursor.getString(
+				mVegItemsCursor.getColumnIndexOrThrow("MatchTxt"));
+		String vegGenus = mVegItemsCursor.getString(
+				mVegItemsCursor.getColumnIndexOrThrow("Genus"));
+		String vegSpecies = mVegItemsCursor.getString(
+				mVegItemsCursor.getColumnIndexOrThrow("Species"));
+		String vegSubsppVar = mVegItemsCursor.getString(
+				mVegItemsCursor.getColumnIndexOrThrow("SubsppVar"));
+		String vegVernacular = mVegItemsCursor.getString(
+				mVegItemsCursor.getColumnIndexOrThrow("Vernacular"));
+
+		Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to create new record");
+		Bundle args = new Bundle();
+		args.putLong(EditSppItemDialog.VEG_ITEM_REC_ID, 0); // don't need this, default is in class
+		args.putLong(EditSppItemDialog.CUR_VISIT_REC_ID, mCurVisitRecId);
+		args.putLong(EditSppItemDialog.CUR_SUBPLOT_REC_ID, mCurSubplotTypeRecId);
+		args.putInt(EditSppItemDialog.REC_SOURCE, VNContract.VegcodeSources.REGIONAL_LIST);
+		args.putLong(EditSppItemDialog.SOURCE_REC_ID, id);
+		args.putBoolean(EditSppItemDialog.PRESENCE_ONLY, mPresenceOnly);
+		// streamline this, get directly from cursor
+		args.putString(EditSppItemDialog.VEG_CODE, vegCode);
+		args.putString(EditSppItemDialog.VEG_DESCR, vegDescr);
+		args.putString(EditSppItemDialog.VEG_GENUS, vegGenus);
+		args.putString(EditSppItemDialog.VEG_SPECIES, vegSpecies);
+		args.putString(EditSppItemDialog.VEG_SUBSPP_VAR, vegSubsppVar);
+		args.putString(EditSppItemDialog.VEG_VERNACULAR, vegVernacular);
+
+		EditSppItemDialog newVegItemDlg = EditSppItemDialog.newInstance(args);
+
+		newVegItemDlg.show(getFragmentManager(), "frg_edit_veg_item");
+*/
 	}
 
 	// create context menus
@@ -375,8 +425,10 @@ public class VegSubplotFragment extends ListFragment
 //				mPresenceOnly = ((c.getInt(c.getColumnIndexOrThrow("PresenceOnly")) == 1) ? true : false);
 //			}
 //		}
+
 		if (loaderId == mSppLoaderId) {
 			Log.d(LOG_TAG, "onLoadFinished CURRENT_SUBPLOT_SPP, number of rows returned: " + c.getCount());
+			mVegItemsCursor = c;
 			mVegSubplotSppAdapter.swapCursor(c);
 		}
 	}

@@ -173,7 +173,7 @@ public class SelectSpeciesFragment extends ListFragment
 		try {
 			mListClickCallback = (OnSppResultClickListener) activity;
 		} catch (ClassCastException e) {
-			throw new ClassCastException (activity.toString() + " must implement OnVisitClickListener");
+			throw new ClassCastException (activity.toString() + " must implement OnSppResultClickListener");
 		}
 	}
 	
