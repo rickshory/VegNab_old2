@@ -243,12 +243,12 @@ public class VegSubplotFragment extends ListFragment
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	   ContextMenu.ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-		MenuInflater inflater = getActivity().getMenuInflater();
-		switch (v.getId()) {
-		case android.R.id.list:
-			inflater.inflate(R.menu.context_veg_sbpl_list_item, menu);
-			break;
+			super.onCreateContextMenu(menu, v, menuInfo);
+			MenuInflater inflater = getActivity().getMenuInflater();
+			switch (v.getId()) {
+				case android.R.id.list:
+				inflater.inflate(R.menu.context_veg_sbpl_list_item, menu);
+				break;
 		}
 	}
 
@@ -256,69 +256,69 @@ public class VegSubplotFragment extends ListFragment
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		Log.d(LOG_TAG, "onContextItemSelected: item.getGroupId() = " + item.getGroupId());
-	AdapterViewCompat.AdapterContextMenuInfo info = (AdapterViewCompat.AdapterContextMenuInfo) item.getMenuInfo();
-	if (info == null) {
-		Log.d(LOG_TAG, "onContextItemSelected info is null");
-	} else {
-		Log.d(LOG_TAG, "onContextItemSelected info: " + info.toString());
-	}
-	Context c = getActivity();
-	UnderConstrDialog notYetDlg = new UnderConstrDialog();
-	HelpUnderConstrDialog hlpDlg = new HelpUnderConstrDialog();
-	ConfigurableMsgDialog flexHlpDlg = new ConfigurableMsgDialog();
-	String helpTitle, helpMessage;
-		// get an Analytics event tracker
-	Tracker headerContextTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+		AdapterViewCompat.AdapterContextMenuInfo info = (AdapterViewCompat.AdapterContextMenuInfo) item.getMenuInfo();
+		if (info == null) {
+			Log.d(LOG_TAG, "onContextItemSelected info is null");
+		} else {
+			Log.d(LOG_TAG, "onContextItemSelected info: " + info.toString());
+		}
+		Context c = getActivity();
+		UnderConstrDialog notYetDlg = new UnderConstrDialog();
+		HelpUnderConstrDialog hlpDlg = new HelpUnderConstrDialog();
+		ConfigurableMsgDialog flexHlpDlg = new ConfigurableMsgDialog();
+		String helpTitle, helpMessage;
+			// get an Analytics event tracker
+		Tracker headerContextTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
 
-	switch (item.getItemId()) {
+		switch (item.getItemId()) {
 
-	case R.id.veg_subl_list_item_edit:
-		Log.d(LOG_TAG, "Veg item 'Edit' selected");
-		headerContextTracker.send(new HitBuilders.EventBuilder()
-				.setCategory("Veg Subplot Event")
-				.setAction("Context Menu")
-				.setLabel("Veg Item Edit")
-				.setValue(1)
-				.build());
-		// Search Characters help
-		helpTitle = "Edit";
-		helpMessage = "Edit tapped";
-		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-		flexHlpDlg.show(getFragmentManager(), "frg_veg_item_edit");
-		return true;
+		case R.id.veg_subl_list_item_edit:
+			Log.d(LOG_TAG, "Veg item 'Edit' selected");
+			headerContextTracker.send(new HitBuilders.EventBuilder()
+					.setCategory("Veg Subplot Event")
+					.setAction("Context Menu")
+					.setLabel("Veg Item Edit")
+					.setValue(1)
+					.build());
+			// Search Characters help
+			helpTitle = "Edit";
+			helpMessage = "Edit tapped";
+			flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+			flexHlpDlg.show(getFragmentManager(), "frg_veg_item_edit");
+			return true;
 
-	case R.id.veg_subl_list_item_delete:
-		Log.d(LOG_TAG, "Veg item 'Delete' selected");
-		headerContextTracker.send(new HitBuilders.EventBuilder()
-				.setCategory("Veg Subplot Event")
-				.setAction("Context Menu")
-				.setLabel("Veg Item Delete")
-				.setValue(1)
-				.build());
-		// Search Characters help
-		helpTitle = "Delete";
-		helpMessage = "Delete tapped";
-		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-		flexHlpDlg.show(getFragmentManager(), "frg_veg_item_delete");
-		return true;
+		case R.id.veg_subl_list_item_delete:
+			Log.d(LOG_TAG, "Veg item 'Delete' selected");
+			headerContextTracker.send(new HitBuilders.EventBuilder()
+					.setCategory("Veg Subplot Event")
+					.setAction("Context Menu")
+					.setLabel("Veg Item Delete")
+					.setValue(1)
+					.build());
+			// Search Characters help
+			helpTitle = "Delete";
+			helpMessage = "Delete tapped";
+			flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+			flexHlpDlg.show(getFragmentManager(), "frg_veg_item_delete");
+			return true;
 
-	case R.id.veg_subl_list_item_help:
-		Log.d(LOG_TAG, "Veg item 'Help' selected");
-		headerContextTracker.send(new HitBuilders.EventBuilder()
-				.setCategory("Veg Subplot Event")
-				.setAction("Context Menu")
-				.setLabel("Veg Item Help")
-				.setValue(1)
-				.build());
-		// Search Characters help
-		helpTitle = c.getResources().getString(R.string.veg_subpl_help_list_item_title);
-		helpMessage = c.getResources().getString(R.string.veg_subpl_help_list_item_text);
-		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-		flexHlpDlg.show(getFragmentManager(), "frg_veg_item_help");
-		return true;
+		case R.id.veg_subl_list_item_help:
+			Log.d(LOG_TAG, "Veg item 'Help' selected");
+			headerContextTracker.send(new HitBuilders.EventBuilder()
+					.setCategory("Veg Subplot Event")
+					.setAction("Context Menu")
+					.setLabel("Veg Item Help")
+					.setValue(1)
+					.build());
+			// Search Characters help
+			helpTitle = c.getResources().getString(R.string.veg_subpl_help_list_item_title);
+			helpMessage = c.getResources().getString(R.string.veg_subpl_help_list_item_text);
+			flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+			flexHlpDlg.show(getFragmentManager(), "frg_veg_item_help");
+			return true;
 
-    default:
-    	return super.onContextItemSelected(item);
+		default:
+			return super.onContextItemSelected(item);
 	   }
 	}
 
