@@ -66,7 +66,7 @@ public class SelectSpeciesFragment extends ListFragment
 	long mRowCt;
 	String mStSearch = "";
 	EditText mViewSearchChars;
-	ListView mSppItemsList;
+//	ListView mSppItemsList;
 	TextWatcher sppCodeTextWatcher = new TextWatcher() {
 		@Override
 		public void afterTextChanged(Editable s) {
@@ -131,8 +131,8 @@ public class SelectSpeciesFragment extends ListFragment
 		setListAdapter(mSppResultsAdapter);
 		getLoaderManager().initLoader(Loaders.SPP_MATCHES, null, this);
 
-		mSppItemsList = (ListView) rootView.findViewById(android.R.id.list);
-		registerForContextMenu(mSppItemsList);
+//		mSppItemsList = (ListView) rootView.findViewById(android.R.id.list);
+//		registerForContextMenu(mSppItemsList);
 //		mSppItemsList.setOnItemClickListener(this);
 
 
@@ -241,9 +241,9 @@ public class SelectSpeciesFragment extends ListFragment
 		case R.id.txt_search_chars:
 			inflater.inflate(R.menu.context_sel_spp_search_chars, menu);
 			break;
-		case android.R.id.list:
-			inflater.inflate(R.menu.context_sel_spp_list_items, menu);
-			break;
+//		case android.R.id.list:
+//			inflater.inflate(R.menu.context_sel_spp_list_items, menu);
+//			break;
 		}
 	}
 
