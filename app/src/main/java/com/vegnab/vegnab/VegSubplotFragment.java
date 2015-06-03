@@ -23,6 +23,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -256,7 +258,8 @@ public class VegSubplotFragment extends ListFragment
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		Log.d(LOG_TAG, "onContextItemSelected: item.getGroupId() = " + item.getGroupId());
-		AdapterViewCompat.AdapterContextMenuInfo info = (AdapterViewCompat.AdapterContextMenuInfo) item.getMenuInfo();
+//		AdapterViewCompat.AdapterContextMenuInfo info = (AdapterViewCompat.AdapterContextMenuInfo) item.getMenuInfo();
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		if (info == null) {
 			Log.d(LOG_TAG, "onContextItemSelected info is null");
 		} else {
