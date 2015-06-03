@@ -171,6 +171,7 @@ public class VegSubplotFragment extends ListFragment
 //		getLoaderManager().initLoader(mSubplotLoaderId, null, this);
 		mSppLoaderId = Loaders.BASE_SUBPLOT_SPP + (int) mSubplotTypeId;
 		getLoaderManager().initLoader(mSppLoaderId, null, this);
+		registerForContextMenu(getListView());
 	}
 
 	@Override
@@ -254,6 +255,7 @@ public class VegSubplotFragment extends ListFragment
 	// This is executed when the user selects an option
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
+		Log.d(LOG_TAG, "onContextItemSelected: item.getGroupId() = " + item.getGroupId());
 	AdapterViewCompat.AdapterContextMenuInfo info = (AdapterViewCompat.AdapterContextMenuInfo) item.getMenuInfo();
 	if (info == null) {
 		Log.d(LOG_TAG, "onContextItemSelected info is null");
