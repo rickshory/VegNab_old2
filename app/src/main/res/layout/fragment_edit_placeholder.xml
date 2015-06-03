@@ -37,7 +37,7 @@
 		android:layout_below="@id/lbl_placeholder_code"
 		android:hint="@string/edit_placeholder_hint_code"
 		android:inputType="text"
-		android:maxLength="16" />
+		android:maxLength="10" />
 
 	<TextView
 		android:id="@+id/lbl_placeholder_description"

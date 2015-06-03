@@ -292,15 +292,15 @@ public class SelectSpeciesFragment extends ListFragment
 			return true;
 		}
 
-// replace following with Placeholder dialog
-//		EditPlaceholderDialog editPhDlg = EditPlaceholderDialog.newInstance(phCode);
-//		editPhDlg.show(getFragmentManager(), "frg_edit_placeholder");
 // for menu testing, pop us some Help
 		helpTitle = "New Placeholder";
 		helpMessage = "This will open the Placeholder dialog";
 		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
 		flexHlpDlg.show(getFragmentManager(), "frg_help_phld_dlg");
 		return true;
+// replace following with Placeholder dialog
+//		EditPlaceholderDialog editPhDlg = EditPlaceholderDialog.newInstance(phCode);
+//		editPhDlg.show(getFragmentManager(), "frg_edit_placeholder");
 
 	case R.id.sel_spp_search_help:
 		Log.d(LOG_TAG, "'Search Chars Help' selected");

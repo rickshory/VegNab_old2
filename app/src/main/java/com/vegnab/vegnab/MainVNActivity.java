@@ -340,6 +340,37 @@ public class MainVNActivity extends ActionBarActivity
 		transaction.commit();
 	}
 
+	public void goToEditPlaceholderScreen(Bundle enteredArgs) {
+		// swap EditPlaceholderFragment in place of existing fragment
+		Log.d(LOG_TAG, "About to go to EditPlaceholder");
+		Bundle args = new Bundle();
+		// fn structure, but not functional yet
+/*available args	final static String ARG_PLACEHOLDER_ID = "placeholderId";
+	final static String ARG_PLACEHOLDER_CODE = "placeholderCode";
+	final static String ARG_PLACEHOLDER_DESCRIPTION = "placeholderDescription";
+	final static String ARG_PLACEHOLDER_HABITAT = "placeholderHabitat";
+	final static String ARG_PLACEHOLDER_LABELNUMBER = "placeholderLabelnumber";
+	final static String ARG_PH_PROJID = "phProjId";
+	final static String ARG_PH_VISITID = "phVisitId";
+	final static String ARG_PH_VISIT_NAME = "phVisitName";
+	final static String ARG_PH_LOCID = "phLocId";
+	final static String ARG_PH_LOC_TEXT = "phLocText";
+	final static String ARG_PH_NAMERID = "phNamerId";
+	final static String ARG_PH_NAMER_NAME = "phNamerName";
+	final static String ARG_PH_SCRIBE = "phScribe";
+	final static String ARG_PLACEHOLDER_TIME = "phTimeStamp";
+*/		args.putLong(EditPlaceholderFragment.ARG_PLACEHOLDER_ID, 0); // fix this
+		args.putString(EditPlaceholderFragment.ARG_PLACEHOLDER_CODE, ""); // fix this
+		EditPlaceholderFragment editPhFrag = EditPlaceholderFragment.newInstance(args);
+		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+		// put the present fragment on the backstack so the user can navigate back to it
+		// the tag is for the fragment now being added, not the one replaced
+		transaction.replace(R.id.fragment_container, editPhFrag, Tags.EDIT_PLACEHOLDER);
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
+
+
 	public void showWebViewScreen(String screenTag) {
 		ConfigurableWebviewFragment webVwFrag = new ConfigurableWebviewFragment();
 		Bundle args = new Bundle();
