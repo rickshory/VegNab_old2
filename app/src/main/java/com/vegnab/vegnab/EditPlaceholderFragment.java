@@ -166,7 +166,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 	
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.visit_header, menu);
+		inflater.inflate(R.menu.placeholder, menu);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
@@ -524,7 +524,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		}
 		if (!(stringPlaceholderCode.length() >= 2)) {
 			if (mValidationLevel > Validation.SILENT) {
-				stringProblem = c.getResources().getString(R.string.vis_hdr_validate_name_short);
+				stringProblem = c.getResources().getString(R.string.placeholder_validate_code_short);
 				if (mValidationLevel == Validation.QUIET) {
 					Toast.makeText(this.getActivity(),
 							stringProblem,
@@ -670,10 +670,10 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		if(!hasFocus) { // something lost focus
 			mValues.clear();
 			switch (v.getId()) {
-			case R.id.txt_visit_name:
-			case R.id.txt_visit_scribe:
-			case R.id.txt_visit_azimuth:
-			case R.id.txt_visit_notes:
+			case R.id.txt_placeholder_code:
+			case R.id.txt_placeholder_description:
+			case R.id.txt_placeholder_habitat:
+			case R.id.txt_placeholder_labelnumber:
 				mValidationLevel = Validation.QUIET; // save if possible, but notify minimally
 				int numUpdated = savePlaceholderRecord();
 				if (numUpdated == 0) {
