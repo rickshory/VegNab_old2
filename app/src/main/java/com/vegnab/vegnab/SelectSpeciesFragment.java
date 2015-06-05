@@ -30,6 +30,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -164,6 +166,15 @@ public class SelectSpeciesFragment extends ListFragment
 		}
 		// get following to disallow duplicate Placeholder definitions
 		getLoaderManager().initLoader(Loaders.EXISTING_PLACEHOLDER_CODES, null, this);
+		mViewSearchChars.requestFocus();
+
+		mViewSearchChars.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				InputMethodManager keyboard = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+				keyboard.showSoftInput(mViewSearchChars, 0);
+			}
+		},50);
 	}
 	
 	@Override
