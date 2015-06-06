@@ -6,24 +6,24 @@
 
   <style name="_VN" parent="Theme.AppCompat.Light">
 <!-- 
-	<item name="android:editTextStyle">@style/EditTextVN</item>
-	<item name="android:textColorHighlight">#997744cc</item>
-	<item name="android:autoCompleteTextViewStyle">@style/AutoCompleteTextViewVN</item>
-	<item name="android:checkboxStyle">@style/CheckBoxVN</item>
-	<item name="android:radioButtonStyle">@style/RadioButtonVN</item>
-	<item name="android:buttonStyle">@style/ButtonVN</item>
-	<item name="android:imageButtonStyle">@style/ImageButtonVN</item>
-	<item name="android:spinnerStyle">@style/SpinnerVN</item>
-	<item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItemVN</item>
-	<item name="android:progressBarStyleHorizontal">@style/ProgressBarVN</item>
-	<item name="android:seekBarStyle">@style/SeekBarVN</item>
-	<item name="android:ratingBarStyle">@style/RatingBarVN</item>
-	<item name="android:ratingBarStyleIndicator">@style/RatingBarBigVN</item>
-	<item name="android:ratingBarStyleSmall">@style/RatingBarSmallVN</item>
-	<item name="android:buttonStyleToggle">@style/ToggleVN</item>
-	<item name="android:listViewStyle">@style/ListViewVN</item>
-	<item name="android:listViewWhiteStyle">@style/ListViewVN.White</item>
-	<item name="android:spinnerItemStyle">@style/SpinnerItemVN</item>
+    <item name="android:editTextStyle">@style/EditTextVN</item>
+    <item name="android:textColorHighlight">#997744cc</item>
+    <item name="android:autoCompleteTextViewStyle">@style/AutoCompleteTextViewVN</item>
+    <item name="android:checkboxStyle">@style/CheckBoxVN</item>
+    <item name="android:radioButtonStyle">@style/RadioButtonVN</item>
+    <item name="android:buttonStyle">@style/ButtonVN</item>
+    <item name="android:imageButtonStyle">@style/ImageButtonVN</item>
+    <item name="android:spinnerStyle">@style/SpinnerVN</item>
+    <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItemVN</item>
+    <item name="android:progressBarStyleHorizontal">@style/ProgressBarVN</item>
+    <item name="android:seekBarStyle">@style/SeekBarVN</item>
+    <item name="android:ratingBarStyle">@style/RatingBarVN</item>
+    <item name="android:ratingBarStyleIndicator">@style/RatingBarBigVN</item>
+    <item name="android:ratingBarStyleSmall">@style/RatingBarSmallVN</item>
+    <item name="android:buttonStyleToggle">@style/ToggleVN</item>
+    <item name="android:listViewStyle">@style/ListViewVN</item>
+    <item name="android:listViewWhiteStyle">@style/ListViewVN.White</item>
+    <item name="android:spinnerItemStyle">@style/SpinnerItemVN</item>
  -->
   </style>
 
