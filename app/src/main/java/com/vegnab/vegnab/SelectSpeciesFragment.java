@@ -6,9 +6,11 @@ import java.util.HashSet;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
+import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.Loaders;
 import com.vegnab.vegnab.database.VNContract.VegcodeSources;
 import com.vegnab.vegnab.database.VNContract.VNRegex;
+import com.vegnab.vegnab.database.VNContract.VNConstraints;
 
 import android.app.Activity;
 import android.content.Context;
@@ -286,7 +288,16 @@ public class SelectSpeciesFragment extends ListFragment
 				.setValue(1)
 				.build());
 		// add or edit Placeholder
-		String phCode = mStSearch.trim();
+		String phCode, wholeContents = mStSearch.trim();
+		Boolean wasShortened;
+		if (wholeContents.length() <= VNConstraints.PLACEHOLDER_MAX_LENGTH) {
+			phCode = wholeContents;
+			wasShortened = false;
+		} else {
+			phCode = wholeContents.substring(0, VNConstraints.PLACEHOLDER_MAX_LENGTH);
+			wasShortened = true;
+		}
+
 		Toast.makeText(this.getActivity(), "Placeholder code '" + phCode + "'", Toast.LENGTH_SHORT).show();
 		if (phCode.length() < 3) {
 			Toast.makeText(this.getActivity(), "Placeholder codes must be at least 3 characters long.", Toast.LENGTH_SHORT).show();

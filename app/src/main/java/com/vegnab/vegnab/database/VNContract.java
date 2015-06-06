@@ -122,6 +122,10 @@ public final class VNContract {
 
 	}
 
+	public static abstract class VNConstraints {
+		public static final int PLACEHOLDER_MAX_LENGTH = 10; // maximum allowed length for a Placeholder code
+	}
+
 	// inner classes to define tables
 	public static abstract class Project implements BaseColumns {
 		public static final String TABLE_NAME = "Projects";
