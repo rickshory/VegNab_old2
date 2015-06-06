@@ -105,6 +105,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 	String mPlaceholderCode = null, mPlaceholderDescription = null, mPlaceholderHabitat = null,
 			mPlaceholderLabelNumber = null, mPhVisitName = null, mPhNamerName = null,
 			mPhScribe = null, mPhLocText = null;
+	Boolean mCodeWasShortened = false;
 	HashSet<String> mExistingPlaceholderCodes = new HashSet<String>();
 	HashSet<String> mPreviouslyEnteredHabitats = new HashSet<String>();
 
@@ -124,6 +125,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 	// explicitly save/retrieve all these through Bundles, some versions have bugs that lose cursor
 	final static String ARG_PLACEHOLDER_ID = "placeholderId";
 	final static String ARG_PLACEHOLDER_CODE = "placeholderCode";
+	final static String ARG_CODE_WAS_SHORTENED = "phCodeShortened";
 	final static String ARG_PLACEHOLDER_DESCRIPTION = "placeholderDescription";
 	final static String ARG_PLACEHOLDER_HABITAT = "placeholderHabitat";
 	final static String ARG_PLACEHOLDER_LABELNUMBER = "placeholderLabelnumber";
@@ -209,6 +211,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 			Log.d(LOG_TAG, "In onCreateView, about to retrieve mPlaceholderId: " + mPlaceholderId);
 			mPlaceholderId = savedInstanceState.getLong(ARG_PLACEHOLDER_ID, 0);
 			mPlaceholderCode = savedInstanceState.getString(ARG_PLACEHOLDER_CODE, null);
+			mCodeWasShortened = savedInstanceState.getBoolean(ARG_CODE_WAS_SHORTENED, false);
 			mPlaceholderDescription = savedInstanceState.getString(ARG_PLACEHOLDER_DESCRIPTION, null);
 			mPlaceholderHabitat = savedInstanceState.getString(ARG_PLACEHOLDER_HABITAT, null);
 			mPlaceholderLabelNumber = savedInstanceState.getString(ARG_PLACEHOLDER_LABELNUMBER, null);
@@ -302,6 +305,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 		// save the current subplot arguments in case we need to re-create the fragment
 		outState.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
 		outState.putString(ARG_PLACEHOLDER_CODE, mPlaceholderCode);
+		outState.putBoolean(ARG_CODE_WAS_SHORTENED, mCodeWasShortened);
 		outState.putString(ARG_PLACEHOLDER_DESCRIPTION, mPlaceholderDescription);
 		outState.putString(ARG_PLACEHOLDER_HABITAT, mPlaceholderHabitat);
 		outState.putString(ARG_PLACEHOLDER_LABELNUMBER, mPlaceholderLabelNumber);

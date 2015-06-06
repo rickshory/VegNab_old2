@@ -316,7 +316,8 @@ public class SelectSpeciesFragment extends ListFragment
 
 // for menu testing, pop us some Help
 		helpTitle = "New Placeholder";
-		helpMessage = "This will open the Placeholder dialog";
+		helpMessage = "This will open the Placeholder dialog for code\"" + phCode
+			+"\"" + (wasShortened ? ", which was shortened from \"" + wholeContents + "\"" : "");
 		flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
 		flexHlpDlg.show(getFragmentManager(), "frg_help_phld_dlg");
 		return true;
