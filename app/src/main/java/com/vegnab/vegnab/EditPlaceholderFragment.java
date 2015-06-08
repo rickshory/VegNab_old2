@@ -210,19 +210,19 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         if (savedInstanceState != null) {
             Log.d(LOG_TAG, "In onCreateView, about to retrieve mPlaceholderId: " + mPlaceholderId);
             mPlaceholderId = savedInstanceState.getLong(ARG_PLACEHOLDER_ID, 0);
-            mPlaceholderCode = savedInstanceState.getString(ARG_PLACEHOLDER_CODE, null);
+            mPlaceholderCode = savedInstanceState.getString(ARG_PLACEHOLDER_CODE);
             mCodeWasShortened = savedInstanceState.getBoolean(ARG_CODE_WAS_SHORTENED, false);
-            mPlaceholderDescription = savedInstanceState.getString(ARG_PLACEHOLDER_DESCRIPTION, null);
-            mPlaceholderHabitat = savedInstanceState.getString(ARG_PLACEHOLDER_HABITAT, null);
-            mPlaceholderLabelNumber = savedInstanceState.getString(ARG_PLACEHOLDER_LABELNUMBER, null);
+            mPlaceholderDescription = savedInstanceState.getString(ARG_PLACEHOLDER_DESCRIPTION);
+            mPlaceholderHabitat = savedInstanceState.getString(ARG_PLACEHOLDER_HABITAT);
+            mPlaceholderLabelNumber = savedInstanceState.getString(ARG_PLACEHOLDER_LABELNUMBER);
 //			mPhProjId = savedInstanceState.getLong(ARG_PH_PROJID, 0);
 //			mPhVisitId = savedInstanceState.getLong(ARG_PH_VISITID, 0);
             mPhLocId = savedInstanceState.getLong(ARG_PH_LOCID, 0);
 //			mPhNamerId = savedInstanceState.getLong(ARG_PH_NAMERID, 0);
-            mPhVisitName = savedInstanceState.getString(ARG_PH_VISIT_NAME, null);
-            mPhLocText = savedInstanceState.getString(ARG_PH_LOC_TEXT, null);
-            mPhNamerName = savedInstanceState.getString(ARG_PH_NAMER_NAME, null);
-            mPhScribe = savedInstanceState.getString(ARG_PH_SCRIBE, null);
+            mPhVisitName = savedInstanceState.getString(ARG_PH_VISIT_NAME);
+            mPhLocText = savedInstanceState.getString(ARG_PH_LOC_TEXT);
+            mPhNamerName = savedInstanceState.getString(ARG_PH_NAMER_NAME);
+            mPhScribe = savedInstanceState.getString(ARG_PH_SCRIBE);
 
             Log.d(LOG_TAG, "In onCreateView, retrieved mPlaceholderId: " + mPlaceholderId);
             Log.d(LOG_TAG, "In onCreateView, retrieved mPlaceholderCode: " + mPlaceholderCode);
@@ -279,6 +279,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 // Do not allow that zero to overwrite a new (nonzero) mPlaceholderId, or
                 // it will flag to create a second copy of the same placeholder.
                 mPlaceholderId = args.getLong(ARG_PLACEHOLDER_ID, 0);
+                mPlaceholderCode = args.getString(ARG_PLACEHOLDER_CODE);
             }
         // also use for special arguments like screen layout
         }
@@ -286,7 +287,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         getLoaderManager().initLoader(Loaders.PLACEHOLDER_TO_EDIT, null, this);
         getLoaderManager().initLoader(Loaders.PLACEHOLDER_BACKSTORY, null, this); // text of other fields
     }
-
 
     @Override
     public void onAttach(Activity activity) {
