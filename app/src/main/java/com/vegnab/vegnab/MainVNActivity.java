@@ -48,7 +48,7 @@ public class MainVNActivity extends ActionBarActivity
         VegSubplotFragment.OnButtonListener,
         EditNamerDialog.EditNamerDialogListener,
         ConfirmDelNamerDialog.EditNamerDialogListener,
-        SelectSpeciesFragment.OnSppResultClickListener,
+        SelectSpeciesFragment.OnEditPlaceholderListener,
         EditSppItemDialog.EditSppItemDialogListener {
 
     private static final String LOG_TAG = MainVNActivity.class.getSimpleName();
@@ -526,14 +526,21 @@ public class MainVNActivity extends ActionBarActivity
         }
     }
 
-    @Override
-    public void onSppMatchListClicked(int sourceId, long recId, String sppCode, String sppDescr,
-            String vegGenus, String vegSpecies, String vegSubsppVar, String vegVernacular) {
-        Log.d(LOG_TAG, "OnSppResultClickListener, sourceId=" + sourceId + ", recId=" + recId
-                + ", sppCode: '" + sppCode +"', sppDescr: '" + sppDescr + "'");
-        // if from Regional List, save in Found List, change Source and substitute that new record's ID
-        // for testing, try to save via dialog
-    }
+	@Override
+	public void onEditPlaceholder(Bundle argsIn) {
+		// swap EditPlaceholderFragment in place of existing fragment
+		Log.d(LOG_TAG, "About to go to Placeholder");
+		Bundle argsOut = new Bundle();
+		argsOut.putAll(argsIn); // if the bundle info can be passed right through
+		EditPlaceholderFragment phFrag = EditPlaceholderFragment.newInstance(argsOut);
+		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+		// put the present fragment on the backstack so the user can navigate back to it
+		// the tag is for the fragment now being added, not the one replaced
+		transaction.replace(R.id.fragment_container, phFrag, Tags.EDIT_PLACEHOLDER);
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
+	
 /*
     @Override
     public void onSelSppDone() {

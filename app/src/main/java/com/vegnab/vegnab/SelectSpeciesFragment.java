@@ -326,7 +326,7 @@ public class SelectSpeciesFragment extends ListFragment
         phArgs.putLong(EditPlaceholderFragment.ARG_PLACEHOLDER_ID, 0); // new, may not be needed
         phArgs.putString(EditPlaceholderFragment.ARG_PLACEHOLDER_CODE, phCode);
         phArgs.putBoolean(EditPlaceholderFragment.ARG_CODE_WAS_SHORTENED, wasShortened);
-        
+
         mEditPlaceholderCallback.onEditPlaceholder(phArgs);
 
         return true;
