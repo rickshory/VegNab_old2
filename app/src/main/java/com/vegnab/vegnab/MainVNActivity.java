@@ -526,47 +526,21 @@ public class MainVNActivity extends ActionBarActivity
         }
     }
 
-	@Override
-	public void onEditPlaceholder(Bundle argsIn) {
-		// swap EditPlaceholderFragment in place of existing fragment
-		Log.d(LOG_TAG, "About to go to Placeholder");
-		Bundle argsOut = new Bundle();
-		argsOut.putAll(argsIn); // if the bundle info can be passed right through
-		EditPlaceholderFragment phFrag = EditPlaceholderFragment.newInstance(argsOut);
-		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-		// put the present fragment on the backstack so the user can navigate back to it
-		// the tag is for the fragment now being added, not the one replaced
-		transaction.replace(R.id.fragment_container, phFrag, Tags.EDIT_PLACEHOLDER);
-		transaction.addToBackStack(null);
-		transaction.commit();
-	}
-	
-/*
     @Override
-    public void onSelSppDone() {
-        FragmentManager fm = getSupportFragmentManager();
-        Fragment vegSubpFragment = fm.findFragmentByTag(Tags.VEG_SUBPLOT);
-        if (vegSubpFragment == null) {
-            Log.d(LOG_TAG, "vegSubpFragment == null");
-        } else {
+    public void onEditPlaceholder(Bundle argsIn) {
+        // swap EditPlaceholderFragment in place of existing fragment
+        Log.d(LOG_TAG, "About to go to Placeholder");
+        Bundle argsOut = new Bundle();
+        argsOut.putAll(argsIn); // if the bundle info can be passed right through
+        EditPlaceholderFragment phFrag = EditPlaceholderFragment.newInstance(argsOut);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        // put the present fragment on the backstack so the user can navigate back to it
+        // the tag is for the fragment now being added, not the one replaced
+        transaction.replace(R.id.fragment_container, phFrag, Tags.EDIT_PLACEHOLDER);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 
-            FragmentTransaction transaction = fm.beginTransaction();
-            // replace the fragment in the fragment container with the stored Veg Subplot fragment
-            transaction.replace(R.id.fragment_container, vegSubpFragment);
-            // spp search starts fresh each time, so do not put the present fragment on the backstack
-            transaction.commit();
-        }
-    }
-    */
-/*	
-        @Override
-    public void onEditSppComplete(VisitHeaderFragment visitHeaderFragment) {
-        Log.d(LOG_TAG, "onEditVisitComplete(VisitHeaderFragment visitHeaderFragment)");
-        NewVisitFragment newVisFragment = (NewVisitFragment)
-                getSupportFragmentManager().findFragmentByTag(Tags.NEW_VISIT);
-        newVisFragment.refreshVisitsList();
-    }
-*/
     private static final String DATABASE_NAME = "VegNab.db";
     String saveFolderName = BuildConfig.PUBLIC_DB_FOLDER;
 
