@@ -58,15 +58,14 @@ public class SelectSpeciesFragment extends ListFragment
     Cursor mSppMatchCursor;
 
     SimpleCursorAdapter mSppResultsAdapter;
-    // declare that the container Activity must implement this interface
 
-    public interface OnSppResultClickListener {
+    // declare an interface the container Activity must implement
+    public interface OnEditPlaceholderListener {
         // methods that must be implemented in the container Activity
-        public void onSppMatchListClicked(int sourceId, long recId, String vegCode, String vegDescr,
-                String vegGenus, String vegSpecies, String vegSubsppVar, String vegVernacular);
-//		public void onSelSppDone();
+        public void onEditPlaceholder(Bundle args);
     }
-    OnSppResultClickListener mListClickCallback;
+    OnEditPlaceholderListener mEditPlaceholderCallback; // declare the interface
+
     long mRowCt;
     String mStSearch = "";
     EditText mViewSearchChars;
@@ -184,9 +183,9 @@ public class SelectSpeciesFragment extends ListFragment
         super.onAttach(activity);
         // assure the container activity has implemented the callback interface
         try {
-            mListClickCallback = (OnSppResultClickListener) activity;
+            mEditPlaceholderCallback = (OnEditPlaceholderListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException (activity.toString() + " must implement OnSppResultClickListener");
+            throw new ClassCastException (activity.toString() + " must implement OnEditPlaceholderListener");
         }
     }
 
@@ -274,7 +273,10 @@ public class SelectSpeciesFragment extends ListFragment
     HelpUnderConstrDialog hlpDlg = new HelpUnderConstrDialog();
     ConfigurableMsgDialog flexHlpDlg = new ConfigurableMsgDialog();
     String helpTitle, helpMessage;
-        // get an Analytics event tracker
+    Bundle phArgs = new Bundle();
+
+
+    // get an Analytics event tracker
     Tracker headerContextTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
 
     switch (item.getItemId()) {
@@ -314,12 +316,19 @@ public class SelectSpeciesFragment extends ListFragment
             return true;
         }
 
-// for menu testing, pop us some Help
-        helpTitle = "New Placeholder";
-        helpMessage = "This will open the Placeholder dialog for code\"" + phCode
-            +"\"" + (wasShortened ? ", which was shortened from \"" + wholeContents + "\"" : "");
-        flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-        flexHlpDlg.show(getFragmentManager(), "frg_help_phld_dlg");
+//// for menu testing, pop us some Help
+//        helpTitle = "New Placeholder";
+//        helpMessage = "This will open the Placeholder dialog for code\"" + phCode
+//            +"\"" + (wasShortened ? ", which was shortened from \"" + wholeContents + "\"" : "");
+//        flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+//        flexHlpDlg.show(getFragmentManager(), "frg_help_phld_dlg");
+
+        phArgs.putLong(EditPlaceholderFragment.ARG_PLACEHOLDER_ID, 0); // new, may not be needed
+        phArgs.putString(EditPlaceholderFragment.ARG_PLACEHOLDER_CODE, phCode);
+        phArgs.putBoolean(EditPlaceholderFragment.ARG_CODE_WAS_SHORTENED, wasShortened);
+        
+        mEditPlaceholderCallback.onEditPlaceholder(phArgs);
+
         return true;
 // replace following with Placeholder dialog
 //		EditPlaceholderDialog editPhDlg = EditPlaceholderDialog.newInstance(phCode);
