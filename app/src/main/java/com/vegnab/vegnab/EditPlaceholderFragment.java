@@ -83,10 +83,10 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         View.OnFocusChangeListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
-    public interface EditPlaceholderDialogListener {
-        public void onEditPlaceholderComplete(EditPlaceholderFragment visitHeaderFragment);
-    }
-    EditPlaceholderDialogListener mEditPlaceholderListener;
+//    public interface EditPlaceholderDialogListener {
+//        public void onEditPlaceholderComplete(EditPlaceholderFragment visitHeaderFragment);
+//    }
+//    EditPlaceholderDialogListener mEditPlaceholderListener;
 
     private static final String LOG_TAG = EditPlaceholderFragment.class.getSimpleName();
 
@@ -157,13 +157,13 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         super.onCreate(savedInstanceState);
         //Get a Tracker (should auto-report)
         ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
-        try {
-            mEditPlaceholderListener = (EditPlaceholderDialogListener) getActivity();
-            Log.d(LOG_TAG, "(EditPlaceholderDialogListener) getActivity()");
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Main Activity must implement EditPlaceholderDialogListener interface");
-        }
-    setHasOptionsMenu(true);
+//        try {
+//            mEditPlaceholderListener = (EditPlaceholderDialogListener) getActivity();
+//            Log.d(LOG_TAG, "(EditPlaceholderDialogListener) getActivity()");
+//        } catch (ClassCastException e) {
+//            throw new ClassCastException("Main Activity must implement EditPlaceholderDialogListener interface");
+//        }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -321,7 +321,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
     @Override
     public void onClick(View v) {
-        Bundle args;
+        Bundle args= new Bundle();
         int numUpdated;
         switch (v.getId()) {
 
@@ -338,7 +338,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 break;
             }
             Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onVisitHeaderGoButtonClicked()'");
-//			mButtonCallback.onPlaceholderSaveButtonClicked(args);
+			mButtonCallback.onPlaceholderSaveButtonClicked(args);
             Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onVisitHeaderGoButtonClicked()'");
             break;
         }

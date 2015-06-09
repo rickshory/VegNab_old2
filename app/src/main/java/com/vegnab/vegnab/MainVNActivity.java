@@ -49,7 +49,8 @@ public class MainVNActivity extends ActionBarActivity
         EditNamerDialog.EditNamerDialogListener,
         ConfirmDelNamerDialog.EditNamerDialogListener,
         SelectSpeciesFragment.OnEditPlaceholderListener,
-        EditSppItemDialog.EditSppItemDialogListener {
+        EditSppItemDialog.EditSppItemDialogListener,
+        EditPlaceholderFragment.OnButtonListener{
 
     private static final String LOG_TAG = MainVNActivity.class.getSimpleName();
     static String mUniqueDeviceId, mDeviceIdSource;
@@ -384,6 +385,10 @@ public class MainVNActivity extends ActionBarActivity
         transaction.replace(R.id.fragment_container, webVwFrag, screenTag);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    public void onPlaceholderSaveButtonClicked(Bundle args) {
+        Log.d(LOG_TAG, "In onPlaceholderSaveButtonClicked");
     }
 
     @Override
