@@ -308,6 +308,11 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 			mButtonCallback.onPlaceholderSaveButtonClicked(args);
             Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onVisitHeaderGoButtonClicked()'");
             break;
+
+            case R.id.placeholder_cancel_button:
+                Log.d(LOG_TAG, "in onClick, placeholder_cancel_button");
+//                super.onBackPressed();
+                break;
         }
     }
 
@@ -756,4 +761,11 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         return super.onContextItemSelected(item);
        }
     }
+
+//    // no Override
+//    public static void onBackPressed() {
+//        Log.d(LOG_TAG, "Placeholder, caught 'onBackPressed'");
+//    return;
+//    }
+
 }
