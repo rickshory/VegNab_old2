@@ -6,14 +6,15 @@ import java.util.HashSet;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
-import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.Loaders;
+import com.vegnab.vegnab.database.VNContract.Prefs;
 import com.vegnab.vegnab.database.VNContract.VegcodeSources;
 import com.vegnab.vegnab.database.VNContract.VNRegex;
 import com.vegnab.vegnab.database.VNContract.VNConstraints;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -132,6 +133,12 @@ public class SelectSpeciesFragment extends ListFragment
                 new String[] {"MatchTxt"},
                 new int[] {android.R.id.text1}, 0);
         setListAdapter(mSppResultsAdapter);
+
+        // get current Project and Namer Id's from preferences
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        mProjectId = sharedPref.getLong(Prefs.DEFAULT_PROJECT_ID, 0);
+        mNamerId = sharedPref.getLong(Prefs.DEFAULT_NAMER_ID, 0);
+
         getLoaderManager().initLoader(Loaders.SPP_MATCHES, null, this);
 
 //		mSppItemsList = (ListView) rootView.findViewById(android.R.id.list);
@@ -154,8 +161,11 @@ public class SelectSpeciesFragment extends ListFragment
             mCurVisitRecId = args.getLong(ARG_VISIT_ID);
             mCurSubplotTypeRecId = args.getLong(ARG_SUBPLOT_TYPE_ID);
             mPresenceOnly = args.getBoolean(ARG_PRESENCE_ONLY_SUBPLOT);
-            mProjectId = args.getLong(ARG_PROJECT_ID);
-            mNamerId = args.getLong(ARG_NAMER_ID);
+//            mProjectId = args.getLong(ARG_PROJECT_ID);
+//            mNamerId = args.getLong(ARG_NAMER_ID);
+            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+            mProjectId = sharedPref.getLong(Prefs.DEFAULT_PROJECT_ID, 0);
+            mNamerId = sharedPref.getLong(Prefs.DEFAULT_NAMER_ID, 0);
             /*	final static String ARG_VISIT_ID = "visId";
     final static String ARG_SUBPLOT_TYPE_ID = "sbpId";
     final static String ARG_PRESENCE_ONLY_SUBPLOT = "presenceOnly";
