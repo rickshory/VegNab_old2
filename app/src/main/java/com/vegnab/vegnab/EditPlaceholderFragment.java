@@ -1,29 +1,20 @@
 package com.vegnab.vegnab;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.internal.widget.AdapterViewCompat.AdapterContextMenuInfo;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -35,47 +26,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.drive.Drive;
-import com.google.android.gms.drive.DriveApi.DriveContentsResult;
-import com.google.android.gms.drive.DriveContents;
-import com.google.android.gms.drive.DriveFolder.DriveFileResult;
-import com.google.android.gms.drive.MetadataChangeSet;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
+
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract.Loaders;
 import com.vegnab.vegnab.database.VNContract.Prefs;
-import com.vegnab.vegnab.database.VNContract.Tags;
 import com.vegnab.vegnab.database.VNContract.Validation;
 import com.vegnab.vegnab.database.VNContract.VNRegex;
-import com.vegnab.vegnab.database.VegNabDbHelper;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
+
 import java.util.HashSet;
 import java.util.Locale;
 
@@ -416,10 +383,9 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 //				mPhVisitId = c.getLong(c.getColumnIndexOrThrow("VisitIdWhereFirstFound"));
 //				mPhProjId = c.getLong(c.getColumnIndexOrThrow("ProjID"));
 //				mPhNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
-
+            } else { // no record to edit yet, set up new record
+                mViewPlaceholderCode.setText(mPlaceholderCode);
             }
-            // else // fire off another loader?
-            // getLoaderManager().initLoader(Loaders.XXX, null, this);
             break;
 
         case Loaders.PLACEHOLDERS_EXISTING:
