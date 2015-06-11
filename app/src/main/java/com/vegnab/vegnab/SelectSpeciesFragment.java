@@ -217,7 +217,7 @@ public class SelectSpeciesFragment extends ListFragment
         // check if selected code is in mVegCodesAlreadyOnSubplot
 //    	getListView().getItemAtPosition(pos).toString(); // not useful, gets cursor wrapper
         mSppMatchCursor.moveToPosition(pos);
-// available fields: _id, Code, Genus, Species, SubsppVar, Vernacular, MatchTxt
+// available fields: _id, Code, Genus, Species, SubsppVar, Vernacular, MatchTxt, SubListOrder, IsPlaceholder
         String vegCode = mSppMatchCursor.getString(
                 mSppMatchCursor.getColumnIndexOrThrow("Code"));
         Log.d(LOG_TAG, "mSppMatchCursor, pos = " + pos + " SppCode: " + vegCode);
@@ -231,13 +231,21 @@ public class SelectSpeciesFragment extends ListFragment
                 mSppMatchCursor.getColumnIndexOrThrow("SubsppVar"));
         String vegVernacular = mSppMatchCursor.getString(
                 mSppMatchCursor.getColumnIndexOrThrow("Vernacular"));
+        int vegSubListOrder = mSppMatchCursor.getInt(
+                mSppMatchCursor.getColumnIndexOrThrow("SubListOrder"));
+        int vegIsPlaceholder = mSppMatchCursor.getInt(
+                mSppMatchCursor.getColumnIndexOrThrow("IsPlaceholder"));
 
         Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to create new record");
         Bundle args = new Bundle();
         args.putLong(EditSppItemDialog.VEG_ITEM_REC_ID, 0); // don't need this, default is in class
         args.putLong(EditSppItemDialog.CUR_VISIT_REC_ID, mCurVisitRecId);
         args.putLong(EditSppItemDialog.CUR_SUBPLOT_REC_ID, mCurSubplotTypeRecId);
-        args.putInt(EditSppItemDialog.REC_SOURCE, VegcodeSources.REGIONAL_LIST);
+        if (vegIsPlaceholder == 1) {
+            args.putInt(EditSppItemDialog.REC_SOURCE, VegcodeSources.PLACE_HOLDERS);
+        } else {
+            args.putInt(EditSppItemDialog.REC_SOURCE, VegcodeSources.REGIONAL_LIST);
+        }
         args.putLong(EditSppItemDialog.SOURCE_REC_ID, id);
         args.putBoolean(EditSppItemDialog.PRESENCE_ONLY, mPresenceOnly);
         // streamline this, get directly from cursor
@@ -247,6 +255,8 @@ public class SelectSpeciesFragment extends ListFragment
         args.putString(EditSppItemDialog.VEG_SPECIES, vegSpecies);
         args.putString(EditSppItemDialog.VEG_SUBSPP_VAR, vegSubsppVar);
         args.putString(EditSppItemDialog.VEG_VERNACULAR, vegVernacular);
+        args.putInt(EditSppItemDialog.VEG_SUB_LIST_ORDER, vegSubListOrder);
+        args.putInt(EditSppItemDialog.VEG_IS_PLACEHOLDER, vegIsPlaceholder);
 
         EditSppItemDialog newVegItemDlg = EditSppItemDialog.newInstance(args);
 
