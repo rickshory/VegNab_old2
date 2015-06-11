@@ -328,7 +328,7 @@ public class SelectSpeciesFragment extends ListFragment
 
 //// for menu testing, pop us some Help
 //        helpTitle = "New Placeholder";
-//        helpMessage = "This will open the Placeholder dialog for code\"" + phCode
+//        helpMessage = "This will open the Placeholder screem for code\"" + phCode
 //            +"\"" + (wasShortened ? ", which was shortened from \"" + wholeContents + "\"" : "");
 //        flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
 //        flexHlpDlg.show(getFragmentManager(), "frg_help_phld_dlg");
@@ -336,13 +336,8 @@ public class SelectSpeciesFragment extends ListFragment
         phArgs.putLong(EditPlaceholderFragment.ARG_PLACEHOLDER_ID, 0); // new, may not be needed
         phArgs.putString(EditPlaceholderFragment.ARG_PLACEHOLDER_CODE, phCode);
         phArgs.putBoolean(EditPlaceholderFragment.ARG_CODE_WAS_SHORTENED, wasShortened);
-
         mEditPlaceholderCallback.onEditPlaceholder(phArgs);
-
         return true;
-// replace following with Placeholder dialog
-//		EditPlaceholderDialog editPhDlg = EditPlaceholderDialog.newInstance(phCode);
-//		editPhDlg.show(getFragmentManager(), "frg_edit_placeholder");
 
     case R.id.sel_spp_search_help:
         Log.d(LOG_TAG, "'Search Chars Help' selected");
