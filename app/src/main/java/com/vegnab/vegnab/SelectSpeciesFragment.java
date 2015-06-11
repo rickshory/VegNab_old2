@@ -441,7 +441,11 @@ public class SelectSpeciesFragment extends ListFragment
                         + "(CASE WHEN LENGTH(SubsppVar)>0 THEN (' ' || SubsppVar) ELSE '' END) || "
                         + "(CASE WHEN LENGTH(Vernacular)>0 THEN (', ' || Vernacular) ELSE '' END) "
                         + "AS MatchTxt, 2 AS SubListOrder, 0 AS IsPlaceholder FROM RegionalSpeciesList "
-                        + "WHERE MatchTxt LIKE ? AND Local = 1 AND HasBeenFound = 1 "
+                        + "WHERE (Genus || "
+                        + "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
+                        + "(CASE WHEN LENGTH(SubsppVar)>0 THEN (' ' || SubsppVar) ELSE '' END) || "
+                        + "(CASE WHEN LENGTH(Vernacular)>0 THEN (', ' || Vernacular) ELSE '' END)) LIKE ? "
+                        + "AND Local = 1 AND HasBeenFound = 1 "
                         + "UNION SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
                         + "'' AS SubsppVar, '' AS Vernacular, "
                         + "PlaceHolderCode || ': ' || Description AS MatchTxt, 2 AS SubListOrder, 1 AS IsPlaceholder "
@@ -461,7 +465,11 @@ public class SelectSpeciesFragment extends ListFragment
                         + "(CASE WHEN LENGTH(SubsppVar)>0 THEN (' ' || SubsppVar) ELSE '' END) || "
                         + "(CASE WHEN LENGTH(Vernacular)>0 THEN (', ' || Vernacular) ELSE '' END) "
                         + "AS MatchTxt, 4 AS SubListOrder, 0 AS IsPlaceholder FROM RegionalSpeciesList "
-                        + "WHERE MatchTxt LIKE ? AND Local = 1 AND HasBeenFound = 0 "
+                        + "WHERE (Genus || "
+                        + "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
+                        + "(CASE WHEN LENGTH(SubsppVar)>0 THEN (' ' || SubsppVar) ELSE '' END) || "
+                        + "(CASE WHEN LENGTH(Vernacular)>0 THEN (', ' || Vernacular) ELSE '' END)) LIKE ? "
+                        + "AND Local = 1 AND HasBeenFound = 0 "
                         + "ORDER BY SubListOrder, Code;";
                 params = new String[] {mStSearch + "%", mStSearch + "%", "" + mProjectId, "" + mNamerId,
                         "%" + mStSearch + "%", "%" + mStSearch + "%", "" + mProjectId, "" + mNamerId,
