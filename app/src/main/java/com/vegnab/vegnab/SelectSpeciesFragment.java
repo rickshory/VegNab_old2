@@ -58,7 +58,7 @@ public class SelectSpeciesFragment extends ListFragment
     HashMap<String, Long> mPlaceholderCodesForThisNamer = new HashMap<String, Long>();
     Cursor mSppMatchCursor;
 
-    SimpleCursorAdapter mSppResultsAdapter;
+    SelSppItemAdapter mSppResultsAdapter;
 
     // declare an interface the container Activity must implement
     public interface OnEditPlaceholderListener {
@@ -128,10 +128,8 @@ public class SelectSpeciesFragment extends ListFragment
         registerForContextMenu(mViewSearchChars); // enable long-press
 
         // use query to return 'MatchTxt', concatenated from code and description; more reading room
-        mSppResultsAdapter = new SimpleCursorAdapter(getActivity(),
-                android.R.layout.simple_list_item_1, null,
-                new String[] {"MatchTxt"},
-                new int[] {android.R.id.text1}, 0);
+        mSppResultsAdapter = new SelSppItemAdapter(getActivity(),
+                R.layout.list_spp_search_item, null, 0);
         setListAdapter(mSppResultsAdapter);
 
         // get current Project and Namer Id's from preferences

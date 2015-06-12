@@ -25,38 +25,8 @@ public class SelSppItemAdapter extends ResourceCursorAdapter {
 //		} else {
 //			view.setBackgroundColor(ctx.getResources().getColor(R.color.background_even));
 //		}
-        int cfCode = c.getInt(c.getColumnIndexOrThrow("IdLevelID")); // not used yet
-        String sppLine = ""; // not used yet
-        TextView vegText = (TextView) v.findViewById(R.id.veg_descr_text);
-        vegText.setText(c.getString(c.getColumnIndexOrThrow("SppLine")));
+        TextView sppText = (TextView) v.findViewById(R.id.spp_descr_text);
+        sppText.setText(c.getString(c.getColumnIndexOrThrow("MatchTxt")));
 
-        TextView vegHt = (TextView) v.findViewById(R.id.veg_height_text);
-        String ht = c.getString(c.getColumnIndexOrThrow("Height"));
-        if (ht == null) {
-            vegHt.setVisibility(View.GONE);
-        } else {
-            vegHt.setText(ht + "cm");
-        }
-
-        TextView vegCov = (TextView) v.findViewById(R.id.veg_cover_text);
-        String cv = c.getString(c.getColumnIndexOrThrow("Cover"));
-        if (cv == null) {
-            vegCov.setVisibility(View.GONE);
-        } else {
-            vegCov.setText(cv + "%");
-        }
-
-        CheckBox vegPresence = (CheckBox) v.findViewById(R.id.veg_presence_ck);
-        // explicitly test Presence for null
-        if (c.isNull(c.getColumnIndexOrThrow("Presence"))) {
-            vegPresence.setVisibility(View.GONE);
-        } else {
-            int presence = c.getInt(c.getColumnIndexOrThrow("Presence"));
-            if (presence != 0) {
-                vegPresence.setChecked(true);
-            } else {
-                vegPresence.setChecked(false);
-            }
-        }
     }
 }

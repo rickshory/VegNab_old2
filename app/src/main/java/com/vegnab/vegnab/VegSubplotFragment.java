@@ -63,7 +63,6 @@ public class VegSubplotFragment extends ListFragment
     }
     VegItemAdapter mVegSubplotSppAdapter;
     Cursor mVegItemsCursor;
-    ListView mVegItemsList;
 
     static VegSubplotFragment newInstance(Bundle args) {
         VegSubplotFragment f = new VegSubplotFragment();
@@ -150,7 +149,6 @@ public class VegSubplotFragment extends ListFragment
         // if more, loop through all the child items of the ViewGroup rootView and
         // set the onclicklistener for all the Button instances found
 
-        // use query to return 'SppLine', concatenated from code and description; more reading room
         mVegSubplotSppAdapter = new VegItemAdapter(getActivity(),
                 R.layout.list_veg_item, null, 0);
         setListAdapter(mVegSubplotSppAdapter);
