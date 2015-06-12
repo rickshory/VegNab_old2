@@ -3,5 +3,12 @@
 
     <color name="transparent">#00000000</color>
     <color name="vn_color">#7744CC</color>
-
+    <color name="match_previously_found_species_code">#00000000</color>
+    <color name="match_previously_found_species_text">#00000000</color>
+    <color name="match_local_species_code">#ffb4ffb7</color>
+    <color name="match_local_species_text">#ffcfffd1</color>
+    <color name="match_placeholder_code">#469846f0</color>
+    <color name="match_placeholder_text">#117744cc</color>
+    <color name="match_nonlocal_species_code">#ffbea585</color>
+    <color name="match_nonlocal_species_text">#ffbea585</color>
 </resources>
