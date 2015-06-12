@@ -27,6 +27,8 @@ public class SelSppItemAdapter extends ResourceCursorAdapter {
 //		}
         TextView sppText = (TextView) v.findViewById(R.id.spp_descr_text);
         sppText.setText(c.getString(c.getColumnIndexOrThrow("MatchTxt")));
-
+        if (c.getInt(c.getColumnIndexOrThrow("IsPlaceholder")) == 1) {
+            v.setBackgroundColor(ctx.getResources().getColor(R.color.vn_color));
+        }
     }
 }
