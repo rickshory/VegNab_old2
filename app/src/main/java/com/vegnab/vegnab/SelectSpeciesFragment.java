@@ -478,10 +478,28 @@ public class SelectSpeciesFragment extends ListFragment
                         + "(CASE WHEN LENGTH(SubsppVar)>0 THEN (' ' || SubsppVar) ELSE '' END) || "
                         + "(CASE WHEN LENGTH(Vernacular)>0 THEN (', ' || Vernacular) ELSE '' END)) LIKE ? "
                         + "AND Local = 1 AND HasBeenFound = 0 "
+                        + "UNION SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, "
+                        + "Code || ': ' || Genus || "
+                        + "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
+                        + "(CASE WHEN LENGTH(SubsppVar)>0 THEN (' ' || SubsppVar) ELSE '' END) || "
+                        + "(CASE WHEN LENGTH(Vernacular)>0 THEN (', ' || Vernacular) ELSE '' END) "
+                        + "AS MatchTxt, 5 AS SubListOrder, 0 AS IsPlaceholder FROM RegionalSpeciesList "
+                        + "WHERE Code LIKE ? AND Local = 0 AND HasBeenFound = 0 "
+                        + "UNION SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, "
+                        + "Code || ': ' || Genus || "
+                        + "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
+                        + "(CASE WHEN LENGTH(SubsppVar)>0 THEN (' ' || SubsppVar) ELSE '' END) || "
+                        + "(CASE WHEN LENGTH(Vernacular)>0 THEN (', ' || Vernacular) ELSE '' END) "
+                        + "AS MatchTxt, 6 AS SubListOrder, 0 AS IsPlaceholder FROM RegionalSpeciesList "
+                        + "WHERE (Genus || "
+                        + "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
+                        + "(CASE WHEN LENGTH(SubsppVar)>0 THEN (' ' || SubsppVar) ELSE '' END) || "
+                        + "(CASE WHEN LENGTH(Vernacular)>0 THEN (', ' || Vernacular) ELSE '' END)) LIKE ? "
+                        + "AND Local = 0 AND HasBeenFound = 0 "
                         + "ORDER BY SubListOrder, Code;";
                 params = new String[] {mStSearch + "%", mStSearch + "%", "" + mProjectId, "" + mNamerId,
                         "%" + mStSearch + "%", "%" + mStSearch + "%", "" + mProjectId, "" + mNamerId,
-                        mStSearch + "%", "%" + mStSearch + "%" };
+                        mStSearch + "%", "%" + mStSearch + "%", mStSearch + "%", "%" + mStSearch + "%" };
             }
 
             cl = new CursorLoader(getActivity(), baseUri,
