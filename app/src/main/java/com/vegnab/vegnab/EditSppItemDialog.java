@@ -80,7 +80,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
     private int mValidationLevel = Validation.SILENT;
     Uri mUri, mVegItemsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "vegitems");
     ContentValues mValues = new ContentValues();
-    private TextView mTxtSpeciesItemLabel, mTxtSppDupLabel, mTxtHeightLabel, mTxtCoverLabel;
+    private TextView mTxtSpeciesItemLabel, mTxtSppDupLabel, mTxtSppCFLabel, mTxtHeightLabel, mTxtCoverLabel;
     private EditText mEditSpeciesHeight, mEditSpeciesCover;
     private CheckBox mCkSpeciesIsPresent, mCkDontVerifyPresence;
     private Spinner mSpinnerSpeciesConfidence;
@@ -117,6 +117,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
         mEditSpeciesCover = (EditText) view.findViewById(R.id.txt_spp_cover);
         mCkSpeciesIsPresent = (CheckBox) view.findViewById(R.id.ck_spp_present);
         mCkDontVerifyPresence = (CheckBox) view.findViewById(R.id.ck_spp_present_do_not_ask);
+        mTxtSppCFLabel = (TextView) view.findViewById(R.id.lbl_spp_confidence);
         mSpinnerSpeciesConfidence = (Spinner) view.findViewById(R.id.spinner_spp_confidence);
         mSpinnerSpeciesConfidence.setTag(Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
         mSpinnerSpeciesConfidence.setEnabled(false); // will enable when data ready
@@ -190,6 +191,10 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
         } else { // hide the Presence/Absence views
             mCkSpeciesIsPresent.setVisibility(View.GONE);
             mCkDontVerifyPresence.setVisibility(View.GONE);
+        }
+        if (mRecSource != 1) { // can only vary Confidence for defined species
+            mTxtSppCFLabel.setVisibility(View.GONE);
+            mSpinnerSpeciesConfidence.setVisibility(View.GONE);
         }
     }
 
