@@ -72,7 +72,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
     public static final String VEG_IS_PLACEHOLDER = "VegIsPlaceholder";
     private String mStrVegCode = null, mStrDescription = null,
             mStrGenus = null, mStrSpecies = null, mStrSubsppVar = null, mStrVernacular = null;
-    private int mHeight, mCover;
+    private int mHeight, mCover, mSublistOrder, mIsPlaceholder;
     private boolean isPresent = true; // assume present; explicit false by user means verified absent
     long mIDConfidence = 1; // default 'no doubt of ID'
     Cursor mCFCursor, mDupSppCursor;
@@ -170,6 +170,8 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
             mStrSpecies = args.getString(VEG_SPECIES);
             mStrSubsppVar = args.getString(VEG_SUBSPP_VAR);
             mStrVernacular = args.getString(VEG_VERNACULAR);
+            mSublistOrder = args.getInt(VEG_SUB_LIST_ORDER);
+            mIsPlaceholder = args.getInt(VEG_IS_PLACEHOLDER);
         }
         mTxtSpeciesItemLabel.setText(mStrDescription);
         // fire off these database requests
@@ -233,21 +235,34 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
         }
         mValues.put("IdLevelID", mIDConfidence);
 
-        if (mIDConfidence == 3) { // uncertain of genus, build botanical nomenclature
-            strSaveDescription = "CF " + mStrGenus
-                    + ((mStrSpecies.length() == 0) ? "" : " " + mStrSpecies)
-                    + ((mStrSubsppVar.length() == 0) ? "" : " " + mStrSubsppVar)
-                    + ((mStrVernacular.length() == 0) ? "" : ", " + mStrVernacular);
-        } else if (mIDConfidence == 2) { // uncertain of species, build botanical nomenclature
-            strSaveDescription = mStrGenus + " CF"
-                    + ((mStrSpecies.length() == 0) ? "" : " " + mStrSpecies)
-                    + ((mStrSubsppVar.length() == 0) ? "" : " " + mStrSubsppVar)
-                    + ((mStrVernacular.length() == 0) ? "" : ", " + mStrVernacular);
-        }  else { // usual default, no uncertainty, build botanical nomenclature
-            strSaveDescription = mStrGenus
-                    + ((mStrSpecies.length() == 0) ? "" : " " + mStrSpecies)
-                    + ((mStrSubsppVar.length() == 0) ? "" : " " + mStrSubsppVar)
-                    + ((mStrVernacular.length() == 0) ? "" : ", " + mStrVernacular);
+/**/
+        switch (mRecSource) {
+            case 1: // normally named species
+                if (mIDConfidence == 3) { // uncertain of genus, build botanical nomenclature
+                    strSaveDescription = "CF " + mStrGenus
+                            + ((mStrSpecies.length() == 0) ? "" : " " + mStrSpecies)
+                            + ((mStrSubsppVar.length() == 0) ? "" : " " + mStrSubsppVar)
+                            + ((mStrVernacular.length() == 0) ? "" : ", " + mStrVernacular);
+                } else if (mIDConfidence == 2) { // uncertain of species, build botanical nomenclature
+                    strSaveDescription = mStrGenus + " CF"
+                            + ((mStrSpecies.length() == 0) ? "" : " " + mStrSpecies)
+                            + ((mStrSubsppVar.length() == 0) ? "" : " " + mStrSubsppVar)
+                            + ((mStrVernacular.length() == 0) ? "" : ", " + mStrVernacular);
+                }  else { // usual default, no uncertainty, build botanical nomenclature
+                    strSaveDescription = mStrGenus
+                            + ((mStrSpecies.length() == 0) ? "" : " " + mStrSpecies)
+                            + ((mStrSubsppVar.length() == 0) ? "" : " " + mStrSubsppVar)
+                            + ((mStrVernacular.length() == 0) ? "" : ", " + mStrVernacular);
+                }
+                break;
+            case 2: // Placeholder, string is stored in Vernacular
+                strSaveDescription = mStrVernacular;
+                break;
+            case 3: // special code, only one so far is 'no veg'
+                strSaveDescription = "(no veg)";
+                break;
+            default:
+                strSaveDescription = "";
         }
 
         ContentResolver rs = c.getContentResolver();
