@@ -6,6 +6,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
@@ -236,6 +237,10 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     public void onStart() {
         super.onStart();
         GoogleAnalytics.getInstance(getActivity()).reportActivityStart(getActivity());
+//        // make sure device has a camera
+//        if (!hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+//
+//        }
         // check if arguments are passed to the fragment that will change the layout
         Bundle args = getArguments();
         if (args != null) {
