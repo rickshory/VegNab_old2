@@ -265,7 +265,7 @@ public class VegSubplotFragment extends ListFragment
         } else {
             Log.d(LOG_TAG, "onContextItemSelected info: " + info.toString());
         }
-        Toast.makeText(this.getActivity(), "Right-Clicked item " + info.id, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this.getActivity(), "Right-Clicked position " + info.position + ", record ID " + info.id, Toast.LENGTH_SHORT).show();
 
         Context c = getActivity();
         UnderConstrDialog notYetDlg = new UnderConstrDialog();
