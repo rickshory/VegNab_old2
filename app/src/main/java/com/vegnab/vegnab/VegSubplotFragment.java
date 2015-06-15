@@ -249,11 +249,6 @@ public class VegSubplotFragment extends ListFragment
             MenuInflater inflater = getActivity().getMenuInflater();
             switch (v.getId()) {
                 case android.R.id.list:
-                    ListView lv = (ListView) v;
-                    //ListView lv = getListView();
-                    int position = lv.getPositionForView(v);
-                    Toast.makeText(this.getActivity(), "Right-Clicked position " + position, Toast.LENGTH_SHORT).show();
-
                     inflater.inflate(R.menu.context_veg_sbpl_list_item, menu);
                 break;
         }
@@ -270,6 +265,8 @@ public class VegSubplotFragment extends ListFragment
         } else {
             Log.d(LOG_TAG, "onContextItemSelected info: " + info.toString());
         }
+        Toast.makeText(this.getActivity(), "Right-Clicked item " + info.id, Toast.LENGTH_SHORT).show();
+
         Context c = getActivity();
         UnderConstrDialog notYetDlg = new UnderConstrDialog();
         HelpUnderConstrDialog hlpDlg = new HelpUnderConstrDialog();
@@ -279,7 +276,6 @@ public class VegSubplotFragment extends ListFragment
         Tracker headerContextTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
 
         switch (item.getItemId()) {
-
         case R.id.veg_subl_list_item_edit:
             Log.d(LOG_TAG, "Veg item 'Edit' selected");
             headerContextTracker.send(new HitBuilders.EventBuilder()
