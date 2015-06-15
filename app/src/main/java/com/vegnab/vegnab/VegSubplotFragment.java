@@ -6,6 +6,8 @@ import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.Loaders;
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -373,6 +375,17 @@ public class VegSubplotFragment extends ListFragment
             mButtonCallback.onNewItemButtonClicked(mPosition, mVisitId, mSubplotTypeId, mPresenceOnly);
             break;
         }
+    }
+
+    public void deleteVegItem(long vegItemRecId) {
+        Log.d(LOG_TAG, "About to delete Veg Item record id=" + vegItemRecId);
+        Uri uri = ContentUris.withAppendedId(
+                Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "vegitems"), vegItemRecId);
+        Log.d(LOG_TAG, "In ConfirmDelNamerDialog URI: " + uri.toString());
+        ContentResolver rs = getActivity().getContentResolver();
+        int numDeleted = rs.delete(uri, null, null);
+        Log.d(LOG_TAG, "numDeleted: " + numDeleted);
+        refreshVegList();
     }
 
     public void refreshVegList() {
