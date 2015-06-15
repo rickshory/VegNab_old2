@@ -249,7 +249,12 @@ public class VegSubplotFragment extends ListFragment
             MenuInflater inflater = getActivity().getMenuInflater();
             switch (v.getId()) {
                 case android.R.id.list:
-                inflater.inflate(R.menu.context_veg_sbpl_list_item, menu);
+                    ListView lv = (ListView) v;
+                    //ListView lv = getListView();
+                    int position = lv.getPositionForView(v);
+                    Toast.makeText(this.getActivity(), "Right-Clicked position " + position, Toast.LENGTH_SHORT).show();
+
+                    inflater.inflate(R.menu.context_veg_sbpl_list_item, menu);
                 break;
         }
     }
