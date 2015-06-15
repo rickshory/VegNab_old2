@@ -375,8 +375,8 @@ public class VegSubplotFragment extends ListFragment
         }
     }
 
-    public void refreshSppList() {
-        // when the referred Loader callback returns, will refresh the currently used species
+    public void refreshVegList() {
+        // use after edit/delete
         getLoaderManager().restartLoader(mSppLoaderId, null, this);
     }
 

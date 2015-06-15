@@ -508,7 +508,7 @@ public class MainVNActivity extends ActionBarActivity
                 } else {
                     Log.d(LOG_TAG, "vegSubpFragment: " + vegSubpFragment.toString());
                     Log.d(LOG_TAG, "About to do 'refreshSppList' for data page " + index);
-                    vegSubpFragment.refreshSppList();
+                    vegSubpFragment.refreshVegList();
                     Log.d(LOG_TAG, "Completed 'refreshSppList' for data page " + index);
     //				dataScreensFrag.mDataScreenPager.setCurrentItem(index);
                 }
