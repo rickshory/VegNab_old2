@@ -6,6 +6,7 @@ import java.util.Locale;
 
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract.Loaders;
+import com.vegnab.vegnab.database.VNContract.Prefs;
 import com.vegnab.vegnab.database.VNContract.Tags;
 import com.vegnab.vegnab.database.VNContract.Validation;
 
@@ -14,6 +15,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -296,6 +298,12 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
             mVegItemRecId = newRecId;
             mUri = ContentUris.withAppendedId(mVegItemsUri, mVegItemRecId);
             Log.d(LOG_TAG, "new record in saveVegItemRecord; URI re-parsed: " + mUri.toString());
+            // save the timestamp when this occurred
+            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor prefEditor = sharedPref.edit();
+            prefEditor.putLong(Prefs.LATEST_VEG_ITEM_SAVE, (new Date().getTime())/1000);
+            prefEditor.commit();
+
             return 1;
         } else {
             mUri = ContentUris.withAppendedId(mVegItemsUri, mVegItemRecId);
