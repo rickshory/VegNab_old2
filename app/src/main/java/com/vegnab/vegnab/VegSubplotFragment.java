@@ -312,8 +312,8 @@ public class VegSubplotFragment extends ListFragment
             if ((timestampNow - latestVegSaveTimestamp < 60) && (info.position == 0)) {
                 // top item in the list, put in within the last minute; undo without verification
                 deleteVegItem(info.id);
-                Toast.makeText(this.getActivity(), "Latest veg entry removed.", Toast.LENGTH_SHORT).show();
-//                helpMessage = "Undo: delete without verification";
+                helpMessage = getActivity().getResources().getString(R.string.veg_subpl_list_ctx_delete_quick);
+                Toast.makeText(this.getActivity(), helpMessage, Toast.LENGTH_SHORT).show();
             } else {
                 helpMessage = "Verify to delete";
                 flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
