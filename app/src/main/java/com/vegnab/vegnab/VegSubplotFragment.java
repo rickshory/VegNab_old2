@@ -269,7 +269,7 @@ public class VegSubplotFragment extends ListFragment
         } else {
             Log.d(LOG_TAG, "onContextItemSelected info: " + info.toString());
         }
-        Toast.makeText(this.getActivity(), "Right-Clicked position " + info.position + ", record ID " + info.id, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this.getActivity(), "Right-Clicked position " + info.position + ", record ID " + info.id, Toast.LENGTH_SHORT).show();
 
         Context c = getActivity();
         UnderConstrDialog notYetDlg = new UnderConstrDialog();
@@ -308,14 +308,18 @@ public class VegSubplotFragment extends ListFragment
             SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
             long latestVegSaveTimestamp = sharedPref.getLong(Prefs.LATEST_VEG_ITEM_SAVE, 0);
             long timestampNow = (new Date().getTime())/1000;
-            Toast.makeText(this.getActivity(), "Latest veg entry  " + (timestampNow - latestVegSaveTimestamp) + " seconds ago.", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this.getActivity(), "Latest veg entry  " + (timestampNow - latestVegSaveTimestamp) + " seconds ago.", Toast.LENGTH_SHORT).show();
             if ((timestampNow - latestVegSaveTimestamp < 60) && (info.position == 0)) {
                 // top item in the list, put in within the last minute; undo without verification
                 deleteVegItem(info.id);
                 helpMessage = getActivity().getResources().getString(R.string.veg_subpl_list_ctx_delete_quick);
                 Toast.makeText(this.getActivity(), helpMessage, Toast.LENGTH_SHORT).show();
             } else {
-                helpMessage = "Verify to delete";
+                // verify to delete veg item
+                mVegItemsCursor.moveToPosition(info.position);
+                helpMessage = getActivity().getResources().getString(R.string.veg_subpl_list_ctx_delete_verify_pre)
+                    + mVegItemsCursor.getString(mVegItemsCursor.getColumnIndexOrThrow("OrigDescr"))
+                    + getActivity().getResources().getString(R.string.veg_subpl_list_ctx_delete_verify_post);
                 flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
                 flexHlpDlg.show(getFragmentManager(), "frg_veg_item_delete");
             }
