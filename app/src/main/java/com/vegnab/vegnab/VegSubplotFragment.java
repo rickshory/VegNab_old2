@@ -315,13 +315,19 @@ public class VegSubplotFragment extends ListFragment
                 helpMessage = getActivity().getResources().getString(R.string.veg_subpl_list_ctx_delete_quick);
                 Toast.makeText(this.getActivity(), helpMessage, Toast.LENGTH_SHORT).show();
             } else {
-                // verify to delete veg item
+                // confirm to delete veg item
                 mVegItemsCursor.moveToPosition(info.position);
                 helpMessage = getActivity().getResources().getString(R.string.veg_subpl_list_ctx_delete_verify_pre)
                     + mVegItemsCursor.getString(mVegItemsCursor.getColumnIndexOrThrow("OrigDescr"))
                     + getActivity().getResources().getString(R.string.veg_subpl_list_ctx_delete_verify_post);
                 flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
                 flexHlpDlg.show(getFragmentManager(), "frg_veg_item_delete");
+
+                /*        // confirm delete veg item
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                ConfirmDelVegItemDialog  confDelVegitemDlg = ConfirmDelVegItemDialog.newInstance(id, strNamer);
+                confDelVegitemDlg.show(fm, "frg_conf_del_veg_item");
+*/
             }
             return true;
 
