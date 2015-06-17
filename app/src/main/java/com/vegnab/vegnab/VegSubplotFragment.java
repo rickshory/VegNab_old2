@@ -311,12 +311,14 @@ public class VegSubplotFragment extends ListFragment
             Toast.makeText(this.getActivity(), "Latest veg entry  " + (timestampNow - latestVegSaveTimestamp) + " seconds ago.", Toast.LENGTH_SHORT).show();
             if ((timestampNow - latestVegSaveTimestamp < 60) && (info.position == 0)) {
                 // top item in the list, put in within the last minute; undo without verification
-                helpMessage = "Undo: delete without verification";
+                deleteVegItem(info.id);
+                Toast.makeText(this.getActivity(), "Latest veg entry removed.", Toast.LENGTH_SHORT).show();
+//                helpMessage = "Undo: delete without verification";
             } else {
                 helpMessage = "Verify to delete";
+                flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+                flexHlpDlg.show(getFragmentManager(), "frg_veg_item_delete");
             }
-            flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-            flexHlpDlg.show(getFragmentManager(), "frg_veg_item_delete");
             return true;
 
         case R.id.veg_subl_list_item_help:
@@ -338,7 +340,6 @@ public class VegSubplotFragment extends ListFragment
             return super.onContextItemSelected(item);
        }
     }
-
 
     @Override
     public void onStop() {
