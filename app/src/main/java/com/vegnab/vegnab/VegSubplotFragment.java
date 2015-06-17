@@ -5,10 +5,12 @@ import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.Loaders;
+import com.vegnab.vegnab.database.VNContract.Prefs;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,6 +32,8 @@ import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Date;
 
 public class VegSubplotFragment extends ListFragment 
         implements OnClickListener,
@@ -299,9 +303,18 @@ public class VegSubplotFragment extends ListFragment
                     .setLabel("Veg Item Delete")
                     .setValue(1)
                     .build());
-            // Search Characters help
+
             helpTitle = "Delete";
-            helpMessage = "Delete tapped";
+            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+            long latestVegSaveTimestamp = sharedPref.getLong(Prefs.LATEST_VEG_ITEM_SAVE, 0);
+            long timestampNow = (new Date().getTime())/1000;
+            Toast.makeText(this.getActivity(), "Latest veg entry  " + (timestampNow - latestVegSaveTimestamp) + " seconds ago.", Toast.LENGTH_SHORT).show();
+            if ((timestampNow - latestVegSaveTimestamp < 60) && (info.position == 0)) {
+                // top item in the list, put in within the last minute; undo without verification
+                helpMessage = "Undo: delete without verification";
+            } else {
+                helpMessage = "Verify to delete";
+            }
             flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
             flexHlpDlg.show(getFragmentManager(), "frg_veg_item_delete");
             return true;

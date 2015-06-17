@@ -9,6 +9,7 @@ import com.vegnab.vegnab.database.VNContract.Loaders;
 import com.vegnab.vegnab.database.VNContract.Prefs;
 import com.vegnab.vegnab.database.VNContract.Tags;
 import com.vegnab.vegnab.database.VNContract.Validation;
+import com.vegnab.vegnab.database.VNContract.VegcodeSources;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -244,7 +245,9 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 
 /**/
         switch (mRecSource) {
-            case 1: // normally named species
+            case VegcodeSources.REGIONAL_LIST: // standard NRCS codes from the regional list, first time entered
+            case VegcodeSources.PREVIOUSLY_FOUND: // NRCS code, species previously entered
+                // normally named species; may distinguish above two later
                 if (mIDConfidence == 3) { // uncertain of genus, build botanical nomenclature
                     strSaveDescription = "CF " + mStrGenus
                             + ((mStrSpecies.length() == 0) ? "" : " " + mStrSpecies)
@@ -262,10 +265,12 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
                             + ((mStrVernacular.length() == 0) ? "" : ", " + mStrVernacular);
                 }
                 break;
-            case 2: // Placeholder, string is stored in Vernacular
+            case VegcodeSources.PLACE_HOLDERS: // user-created codes for species not known at the time
+                // Placeholder, string is stored in Vernacular
                 strSaveDescription = mStrVernacular;
                 break;
-            case 3: // special code, only one so far is 'no veg'
+            case VegcodeSources.SPECIAL_CODES: // e.g. "no veg" (no vegetation on this subplot)
+            // 'no veg' is the only one so far
                 strSaveDescription = "(no veg)";
                 break;
             default:
@@ -298,12 +303,11 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
             mVegItemRecId = newRecId;
             mUri = ContentUris.withAppendedId(mVegItemsUri, mVegItemRecId);
             Log.d(LOG_TAG, "new record in saveVegItemRecord; URI re-parsed: " + mUri.toString());
-            // save the timestamp when this occurred
+            // save the timestamp, in seconds, when this occurred
             SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
             SharedPreferences.Editor prefEditor = sharedPref.edit();
             prefEditor.putLong(Prefs.LATEST_VEG_ITEM_SAVE, (new Date().getTime())/1000);
             prefEditor.commit();
-
             return 1;
         } else {
             mUri = ContentUris.withAppendedId(mVegItemsUri, mVegItemRecId);
@@ -314,14 +318,6 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
             return numUpdated;
         }
     }
-
-    /*
-    SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-    SharedPreferences.Editor prefEditor = sharedPref.edit();
-    prefEditor.putBoolean(Prefs.VERIFY_VEG_ITEMS_PRESENCE, false);
-    prefEditor.commit();
-
-     */
 
     private boolean validateVegItemValues() {
         // validate all user-accessible items
