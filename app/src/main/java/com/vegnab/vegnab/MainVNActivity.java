@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -260,6 +259,7 @@ public class MainVNActivity extends ActionBarActivity
         FragmentTransaction transaction = fm.beginTransaction();
         // put the present fragment on the backstack so the user can navigate back to it
         // the tag is for the fragment now being added, not the one replaced
+
         transaction.replace(R.id.fragment_container, dataEntryFrag, Tags.DATA_SCREENS_CONTAINER);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -462,14 +462,26 @@ public class MainVNActivity extends ActionBarActivity
         }
     }
 
-
-/*    @Override
+//    @Override
     public void onDeleteVegItemConfirm(DialogFragment dialog) {
         Log.d(LOG_TAG, "onDeleteVegItemConfirm(DialogFragment dialog)");
-        VegSubplotFragment vegSbplFragment = (VegSubplotFragment)
-                getSupportFragmentManager().findFragmentByTag(Tags.VISIT_HEADER);
-        vegSbplFragment.deleteVegItem(recId);
-    }*/
+        Bundle args = dialog.getArguments();
+        long recIdToDelete = args.getLong(ConfirmDelVegItemDialog.ARG_VI_REC_ID);
+        DataEntryContainerFragment dataEntryFrag = (DataEntryContainerFragment)
+                getSupportFragmentManager().findFragmentByTag(Tags.DATA_SCREENS_CONTAINER);
+
+        int index = dataEntryFrag.mDataScreenPager.getCurrentItem();
+        DataEntryContainerFragment.dataPagerAdapter ad =
+                ((DataEntryContainerFragment.dataPagerAdapter)dataEntryFrag.mDataScreenPager.getAdapter());
+        Fragment f = ad.getFragment(index);
+        // fix this up when AuxData implemented, to make sure the class of fragment
+        try {
+            VegSubplotFragment vf = (VegSubplotFragment) f;
+            vf.deleteVegItem(recIdToDelete);
+        } catch (ClassCastException e) {
+            // if not the right class of fragment, fail silently
+        }
+    }
 
     @Override
     public void onEditNamerComplete(DialogFragment dialog) {

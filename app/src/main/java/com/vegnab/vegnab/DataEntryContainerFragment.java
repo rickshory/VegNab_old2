@@ -129,10 +129,7 @@ public class DataEntryContainerFragment extends Fragment
     }
 
     public static class dataPagerAdapter extends FragmentStatePagerAdapter {
-
-
         private SparseArray<WeakReference<Fragment>> mFragments = new SparseArray<>();
-
         public dataPagerAdapter(FragmentManager fm) {
             super(fm);
         }
