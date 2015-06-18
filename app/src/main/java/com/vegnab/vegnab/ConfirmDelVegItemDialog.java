@@ -14,31 +14,35 @@ import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 
 public class ConfirmDelVegItemDialog extends DialogFragment {
     private static final String LOG_TAG = ConfirmDelVegItemDialog.class.getSimpleName();
-    public interface DeleteVegItemDialogListener {
-        public void onDeleteVegItemConfirm(DialogFragment dialog);
+
+    final static String ARG_VI_REC_ID = "viRecId";
+    final static String ARG_VI_MSG_STRING = "viMsgString";
+    
+    public interface ConfirmDeleteVegItemDialogListener {
+        void onDeleteVegItemConfirm(DialogFragment dialog);
     }
-    DeleteVegItemDialogListener mDeleteVegItemListener;
+    ConfirmDeleteVegItemDialogListener mConfirmDeleteVegItemListener;
     long mVegItemRecId = 0;
     String mStringVegItem = "";
 
-    static ConfirmDelVegItemDialog newInstance(long vegItemRecId, String stringVegItem) {
+    static ConfirmDelVegItemDialog newInstance(Bundle args) {
         ConfirmDelVegItemDialog f = new ConfirmDelVegItemDialog();
-        // supply arguments
-        Bundle args = new Bundle();
-        args.putLong("vegItemRecId", vegItemRecId);
-        args.putString("stringVegItem", stringVegItem);
+//        // supply arguments
+//        Bundle args = new Bundle();
+//        args.putLong("vegItemRecId", vegItemRecId);
+//        args.putString("stringVegItem", stringVegItem);
         f.setArguments(args);
         return f;
-    };
-
+    }
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
-            mDeleteVegItemListener = (DeleteVegItemDialogListener) getActivity();
-            Log.d(LOG_TAG, "(DeleteVegItemDialogListener) getActivity()");
+            mConfirmDeleteVegItemListener = (ConfirmDeleteVegItemDialogListener) getActivity();
+            Log.d(LOG_TAG, "(ConfirmDeleteVegItemDialogListener) getActivity()");
         } catch (ClassCastException e) {
-            throw new ClassCastException("Main Activity must implement DeleteVegItemDialogListener interface");
+            throw new ClassCastException("Main Activity must implement ConfirmDeleteVegItemDialogListener interface");
         }
     }
 
@@ -46,8 +50,8 @@ public class ConfirmDelVegItemDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle args = getArguments();
         if (args != null) {
-            mVegItemRecId = args.getLong("vegItemRecId");
-            mStringVegItem = args.getString("stringVegItem");
+            mVegItemRecId = args.getLong(ARG_VI_REC_ID);
+            mStringVegItem = args.getString(ARG_VI_MSG_STRING);
 //			Log.d(LOG_TAG, "In DialogFragment, onCreateDialog, mVegItemRecId: " + mVegItemRecId);
 //			Log.d(LOG_TAG, "In DialogFragment, onCreateDialog, mStringVegItem: " + mStringVegItem);
         }
@@ -68,7 +72,7 @@ public class ConfirmDelVegItemDialog extends DialogFragment {
                     ContentResolver rs = getActivity().getContentResolver();
                     int numDeleted = rs.delete(uri, null, null);
                     Log.d(LOG_TAG, "numDeleted: " + numDeleted);
-                    mDeleteVegItemListener.onDeleteVegItemConfirm(ConfirmDelVegItemDialog.this);
+                    mConfirmDeleteVegItemListener.onDeleteVegItemConfirm(ConfirmDelVegItemDialog.this);
                 }
             })
             .setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
