@@ -462,6 +462,15 @@ public class MainVNActivity extends ActionBarActivity
         }
     }
 
+
+/*    @Override
+    public void onDeleteVegItemConfirm(DialogFragment dialog) {
+        Log.d(LOG_TAG, "onDeleteVegItemConfirm(DialogFragment dialog)");
+        VegSubplotFragment vegSbplFragment = (VegSubplotFragment)
+                getSupportFragmentManager().findFragmentByTag(Tags.VISIT_HEADER);
+        vegSbplFragment.deleteVegItem(recId);
+    }*/
+
     @Override
     public void onEditNamerComplete(DialogFragment dialog) {
         Log.d(LOG_TAG, "onEditNamerComplete(DialogFragment dialog)");

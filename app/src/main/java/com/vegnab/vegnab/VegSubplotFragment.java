@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -323,11 +324,12 @@ public class VegSubplotFragment extends ListFragment
                 flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
                 flexHlpDlg.show(getFragmentManager(), "frg_veg_item_delete");
 
-                /*        // confirm delete veg item
+                Bundle args = new Bundle();
+                args.putLong(ConfirmDelVegItemDialog.ARG_VI_REC_ID, info.id);
+                args.putString(ConfirmDelVegItemDialog.ARG_VI_MSG_STRING, helpMessage);
                 FragmentManager fm = getActivity().getSupportFragmentManager();
-                ConfirmDelVegItemDialog  confDelVegitemDlg = ConfirmDelVegItemDialog.newInstance(id, strNamer);
+                ConfirmDelVegItemDialog  confDelVegitemDlg = ConfirmDelVegItemDialog.newInstance(args);
                 confDelVegitemDlg.show(fm, "frg_conf_del_veg_item");
-*/
             }
             return true;
 
