@@ -195,9 +195,16 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
             mCkSpeciesIsPresent.setVisibility(View.GONE);
             mCkDontVerifyPresence.setVisibility(View.GONE);
         }
-        if (mRecSource != 1) { // can only vary Confidence for defined species
-            mTxtSppCFLabel.setVisibility(View.GONE);
-            mSpinnerSpeciesConfidence.setVisibility(View.GONE);
+        switch (mRecSource) {
+            case VegcodeSources.REGIONAL_LIST: // standard NRCS codes from the regional list, first time entered
+            case VegcodeSources.PREVIOUSLY_FOUND: // NRCS code, species previously entered
+                // normally named species; may distinguish above two later
+                break; // allow Confidence selector to show for these
+//            case VegcodeSources.PLACE_HOLDERS: // user-created codes for species not known at the time
+//            case VegcodeSources.SPECIAL_CODES: // e.g. "no veg" (no vegetation on this subplot)
+            default: // otherwise hide Confidence selector, has no meaning
+                mTxtSppCFLabel.setVisibility(View.GONE);
+                mSpinnerSpeciesConfidence.setVisibility(View.GONE);
         }
     }
 
