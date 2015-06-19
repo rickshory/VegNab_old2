@@ -321,8 +321,6 @@ public class VegSubplotFragment extends ListFragment
                 helpMessage = getActivity().getResources().getString(R.string.veg_subpl_list_ctx_delete_verify_pre)
                     + mVegItemsCursor.getString(mVegItemsCursor.getColumnIndexOrThrow("OrigDescr"))
                     + getActivity().getResources().getString(R.string.veg_subpl_list_ctx_delete_verify_post);
-                flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-                flexHlpDlg.show(getFragmentManager(), "frg_veg_item_delete");
 
                 Bundle args = new Bundle();
                 args.putLong(ConfirmDelVegItemDialog.ARG_VI_REC_ID, info.id);

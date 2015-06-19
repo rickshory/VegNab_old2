@@ -49,7 +49,8 @@ public class MainVNActivity extends ActionBarActivity
         ConfirmDelNamerDialog.EditNamerDialogListener,
         SelectSpeciesFragment.OnEditPlaceholderListener,
         EditSppItemDialog.EditSppItemDialogListener,
-        EditPlaceholderFragment.OnButtonListener{
+        EditPlaceholderFragment.OnButtonListener,
+        ConfirmDelVegItemDialog.ConfirmDeleteVegItemDialogListener {
 
     private static final String LOG_TAG = MainVNActivity.class.getSimpleName();
     static String mUniqueDeviceId, mDeviceIdSource;

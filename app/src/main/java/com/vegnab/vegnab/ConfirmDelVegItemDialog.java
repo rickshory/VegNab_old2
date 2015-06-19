@@ -27,10 +27,6 @@ public class ConfirmDelVegItemDialog extends DialogFragment {
 
     static ConfirmDelVegItemDialog newInstance(Bundle args) {
         ConfirmDelVegItemDialog f = new ConfirmDelVegItemDialog();
-//        // supply arguments
-//        Bundle args = new Bundle();
-//        args.putLong("vegItemRecId", vegItemRecId);
-//        args.putString("stringVegItem", stringVegItem);
         f.setArguments(args);
         return f;
     }
@@ -52,8 +48,6 @@ public class ConfirmDelVegItemDialog extends DialogFragment {
         if (args != null) {
             mVegItemRecId = args.getLong(ARG_VI_REC_ID);
             mStringVegItem = args.getString(ARG_VI_MSG_STRING);
-//			Log.d(LOG_TAG, "In DialogFragment, onCreateDialog, mVegItemRecId: " + mVegItemRecId);
-//			Log.d(LOG_TAG, "In DialogFragment, onCreateDialog, mStringVegItem: " + mStringVegItem);
         }
 
         Builder bld = new Builder(getActivity());
@@ -62,23 +56,13 @@ public class ConfirmDelVegItemDialog extends DialogFragment {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Log.d(LOG_TAG, "In DialogFragment, onCreateDialog, Positive button clicked");
-                    Log.d(LOG_TAG, "About to delete Namer record id=" + mVegItemRecId);
-
-                    //old, not used any more: "DELETE FROM Namers WHERE _id = ?;" {"" + mVegItemRecId}
-                    Uri uri = ContentUris.withAppendedId(
-                            Uri.withAppendedPath(
-                            ContentProvider_VegNab.CONTENT_URI, "namers"), mVegItemRecId);
-                    Log.d(LOG_TAG, "In ConfirmDelNamerDialog URI: " + uri.toString());
-                    ContentResolver rs = getActivity().getContentResolver();
-                    int numDeleted = rs.delete(uri, null, null);
-                    Log.d(LOG_TAG, "numDeleted: " + numDeleted);
+                    Log.d(LOG_TAG, "About to call onDeleteVegItemConfirm=" + mVegItemRecId);
                     mConfirmDeleteVegItemListener.onDeleteVegItemConfirm(ConfirmDelVegItemDialog.this);
                 }
             })
             .setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     Log.d(LOG_TAG, "In DialogFragment, onCreateDialog, Negative button clicked");
-                    // User cancelled the dialog
                 }
             });
         return bld.create();
