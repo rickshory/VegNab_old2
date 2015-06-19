@@ -429,6 +429,22 @@ public class SelectSpeciesFragment extends ListFragment
                         + "Code || ': ' || Genus AS MatchTxt FROM RegionalSpeciesList "
                         + "WHERE Code LIKE '';";  // dummy query that gets no records
                 // leave params = null;
+            } else if (mStSearch.trim().length() < 3) {
+                select = "SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, "
+                        + "Code || ': ' || Genus || "
+                        + "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
+                        + "(CASE WHEN LENGTH(SubsppVar)>0 THEN (' ' || SubsppVar) ELSE '' END) || "
+                        + "(CASE WHEN LENGTH(Vernacular)>0 THEN (', ' || Vernacular) ELSE '' END) "
+                        + "AS MatchTxt, 1 AS SubListOrder, 0 AS IsPlaceholder FROM RegionalSpeciesList "
+                        + "WHERE Code LIKE ? AND HasBeenFound = 1 "
+                        + "UNION SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
+                        + "'' AS SubsppVar, Description AS Vernacular, "
+                        + "PlaceHolderCode || ': ' || Description AS MatchTxt, 1 AS SubListOrder, 1 AS IsPlaceholder "
+                        + "FROM PlaceHolders "
+                        + "WHERE Code Like ? "
+                        + "AND ProjID=? AND PlaceHolders.NamerID=? "
+                        + "ORDER BY SubListOrder, Code;";
+                params = new String[] {mStSearch + "%", mStSearch + "%", "" + mProjectId, "" + mNamerId };
             } else {
                 select = "SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, "
                         + "Code || ': ' || Genus || "
