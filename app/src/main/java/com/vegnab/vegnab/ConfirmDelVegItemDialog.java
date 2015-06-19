@@ -51,7 +51,7 @@ public class ConfirmDelVegItemDialog extends DialogFragment {
         }
 
         Builder bld = new Builder(getActivity());
-        bld.setTitle(R.string.del_namer_confirm).setMessage(mStringVegItem)
+        bld.setTitle(R.string.veg_subpl_list_ctx_delete_verify_title).setMessage(mStringVegItem)
             .setPositiveButton(R.string.action_affirm, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

@@ -271,6 +271,7 @@
     <string name="veg_subpl_list_ctxmenu_item_help">Help</string>
 
     <string name="veg_subpl_list_ctx_delete_quick">Latest veg entry removed.</string>
+    <string name="veg_subpl_list_ctx_delete_verify_title">Delete Item</string>
     <string name="veg_subpl_list_ctx_delete_verify_pre">Remove \"</string>
     <string name="veg_subpl_list_ctx_delete_verify_post">\"?</string>
 
