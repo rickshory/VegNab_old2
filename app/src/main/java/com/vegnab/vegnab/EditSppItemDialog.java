@@ -315,6 +315,18 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
             SharedPreferences.Editor prefEditor = sharedPref.edit();
             prefEditor.putLong(Prefs.LATEST_VEG_ITEM_SAVE, (new Date().getTime())/1000);
             prefEditor.commit();
+            // remember the species
+            if (mRecSource == VegcodeSources.REGIONAL_LIST) { // standard NRCS codes from the regional list, first time entered
+
+            }
+            /*
+            *         Log.d(LOG_TAG, "About to delete Veg Item record id=" + vegItemRecId);
+        Uri uri = ContentUris.withAppendedId(
+                Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "vegitems"), vegItemRecId);
+        Log.d(LOG_TAG, "In ConfirmDelNamerDialog URI: " + uri.toString());
+        ContentResolver rs = getActivity().getContentResolver();
+        int numDeleted = rs.delete(uri, null, null);
+        Log.d(LOG_TAG, "numDeleted: " + numDeleted);*/
             return 1;
         } else {
             mUri = ContentUris.withAppendedId(mVegItemsUri, mVegItemRecId);
