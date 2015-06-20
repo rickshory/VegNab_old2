@@ -230,6 +230,10 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         c.setOnClickListener(this);
         // if more, loop through all the child items of the ViewGroup rootView and
         // set the onclicklistener for all the Button instances found
+        PackageManager packageManager = getActivity().getPackageManager();
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+
+        }
         return rootView;
     }
 
