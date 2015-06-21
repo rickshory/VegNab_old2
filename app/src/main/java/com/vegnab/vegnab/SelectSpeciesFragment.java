@@ -378,11 +378,29 @@ public class SelectSpeciesFragment extends ListFragment
                         .setLabel("List Item Forget Species")
                         .setValue(1)
                         .build());
-                // Search Characters help
-                helpTitle = "Forget";
-                helpMessage = "Forget Species tapped";
-                flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-                flexHlpDlg.show(getFragmentManager(), "frg_spp_item_forget_spp");
+                // Forget remembered species
+//                helpTitle = "Forget";
+//                helpMessage = "Forget Species tapped";
+//                flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+//                flexHlpDlg.show(getFragmentManager(), "frg_spp_item_forget_spp");
+                if (info == null) {
+                    Toast.makeText(getActivity(),
+                            c.getResources().getString(R.string.sel_spp_list_ctx_forget_not_spp),
+                            Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                mSppMatchCursor.moveToPosition(info.position);
+                int itemIsPlaceholder = mSppMatchCursor.getInt(
+                        mSppMatchCursor.getColumnIndexOrThrow("IsPlaceholder"));
+                if (itemIsPlaceholder == 1) {
+                    Toast.makeText(getActivity(),
+                            c.getResources().getString(R.string.sel_spp_list_ctx_forget_not_spp),
+                            Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+//                Toast.makeText(this.getActivity(), "Forget Species, recordId = " + info.id, Toast.LENGTH_SHORT).show();
+                forgetSppMatch(info.id);
+
         /*            if ((timestampNow - latestVegSaveTimestamp < 60) && (info.position == 0)) {
                         // top item in the list, put in within the last minute; undo without verification
                         deleteVegItem(info.id);
@@ -390,7 +408,7 @@ public class SelectSpeciesFragment extends ListFragment
                         Toast.makeText(this.getActivity(), helpMessage, Toast.LENGTH_SHORT).show();
                     } else {
                         // confirm to delete veg item
-                        mVegItemsCursor.moveToPosition(info.position);
+                        mSppMatchCursor.moveToPosition(info.position);
                         helpMessage = getActivity().getResources().getString(R.string.veg_subpl_list_ctx_delete_verify_pre)
                             + mVegItemsCursor.getString(mVegItemsCursor.getColumnIndexOrThrow("OrigDescr"))
                             + getActivity().getResources().getString(R.string.veg_subpl_list_ctx_delete_verify_post);
