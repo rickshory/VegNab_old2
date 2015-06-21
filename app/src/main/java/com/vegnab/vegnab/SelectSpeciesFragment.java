@@ -180,10 +180,13 @@ public class SelectSpeciesFragment extends ListFragment
         mViewSearchChars.postDelayed(new Runnable() {
             @Override
             public void run() {
-                InputMethodManager keyboard = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager keyboard = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 keyboard.showSoftInput(mViewSearchChars, 0);
             }
-        },50);
+        }, 50);
+
+        // set up the list to receive long-press
+        registerForContextMenu(getListView());
     }
 
     @Override
@@ -271,16 +274,17 @@ public class SelectSpeciesFragment extends ListFragment
         case R.id.txt_search_chars:
             inflater.inflate(R.menu.context_sel_spp_search_chars, menu);
             break;
-//		case android.R.id.list:
-//			inflater.inflate(R.menu.context_sel_spp_list_items, menu);
-//			break;
+		case android.R.id.list:
+			inflater.inflate(R.menu.context_sel_spp_list_items, menu);
+			break;
         }
     }
 
     // This is executed when the user selects an option
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-    AdapterViewCompat.AdapterContextMenuInfo info = (AdapterViewCompat.AdapterContextMenuInfo) item.getMenuInfo();
+//    AdapterViewCompat.AdapterContextMenuInfo info = (AdapterViewCompat.AdapterContextMenuInfo) item.getMenuInfo();
+    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
     if (info == null) {
         Log.d(LOG_TAG, "onContextItemSelected info is null");
     } else {
@@ -362,34 +366,34 @@ public class SelectSpeciesFragment extends ListFragment
         flexHlpDlg.show(getFragmentManager(), "frg_help_search_chars");
         return true;
 
-    case R.id.sel_spp_list_item_edit:
-        Log.d(LOG_TAG, "Spp list item 'Edit' selected");
+    case R.id.sel_spp_list_item_forget:
+        Log.d(LOG_TAG, "Spp list item 'Forget Species' selected");
         headerContextTracker.send(new HitBuilders.EventBuilder()
                 .setCategory("Species Select Event")
                 .setAction("Context Menu")
-                .setLabel("List Item Edit")
+                .setLabel("List Item Forget Species")
+                .setValue(1)
+                .build());
+        // Search Characters help
+        helpTitle = "Forget";
+        helpMessage = "Forget Species tapped";
+        flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+        flexHlpDlg.show(getFragmentManager(), "frg_spp_item_forget_spp");
+        return true;
+
+    case R.id.sel_spp_list_item_edit_ph:
+        Log.d(LOG_TAG, "Spp list item 'Edit Placeholder' selected");
+        headerContextTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Species Select Event")
+                .setAction("Context Menu")
+                .setLabel("List Item Edit Placeholder")
                 .setValue(1)
                 .build());
         // Search Characters help
         helpTitle = "Edit";
-        helpMessage = "Edit tapped";
+        helpMessage = "Edit Placeholder tapped";
         flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-        flexHlpDlg.show(getFragmentManager(), "frg_spp_item_edit");
-        return true;
-
-    case R.id.sel_spp_list_item_delete:
-        Log.d(LOG_TAG, "Spp list item 'Delete' selected");
-        headerContextTracker.send(new HitBuilders.EventBuilder()
-                .setCategory("Species Select Event")
-                .setAction("Context Menu")
-                .setLabel("List Item Delete")
-                .setValue(1)
-                .build());
-        // Search Characters help
-        helpTitle = "Delete";
-        helpMessage = "Delete tapped";
-        flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-        flexHlpDlg.show(getFragmentManager(), "frg_spp_item_delete");
+        flexHlpDlg.show(getFragmentManager(), "frg_spp_item_edit_ph");
         return true;
 
     case R.id.sel_spp_list_item_help:
