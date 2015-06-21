@@ -379,10 +379,6 @@ public class SelectSpeciesFragment extends ListFragment
                         .setValue(1)
                         .build());
                 // Forget remembered species
-//                helpTitle = "Forget";
-//                helpMessage = "Forget Species tapped";
-//                flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-//                flexHlpDlg.show(getFragmentManager(), "frg_spp_item_forget_spp");
                 if (info == null) {
                     Toast.makeText(getActivity(),
                             c.getResources().getString(R.string.sel_spp_list_ctx_forget_not_spp),
@@ -398,21 +394,7 @@ public class SelectSpeciesFragment extends ListFragment
                             Toast.LENGTH_SHORT).show();
                     return true;
                 }
-//                Toast.makeText(this.getActivity(), "Forget Species, recordId = " + info.id, Toast.LENGTH_SHORT).show();
                 forgetSppMatch(info.id);
-
-        /*            if ((timestampNow - latestVegSaveTimestamp < 60) && (info.position == 0)) {
-                        // top item in the list, put in within the last minute; undo without verification
-                        deleteVegItem(info.id);
-                        helpMessage = getActivity().getResources().getString(R.string.veg_subpl_list_ctx_delete_quick);
-                        Toast.makeText(this.getActivity(), helpMessage, Toast.LENGTH_SHORT).show();
-                    } else {
-                        // confirm to delete veg item
-                        mSppMatchCursor.moveToPosition(info.position);
-                        helpMessage = getActivity().getResources().getString(R.string.veg_subpl_list_ctx_delete_verify_pre)
-                            + mVegItemsCursor.getString(mVegItemsCursor.getColumnIndexOrThrow("OrigDescr"))
-                            + getActivity().getResources().getString(R.string.veg_subpl_list_ctx_delete_verify_post);
-        */
                 return true;
 
             case R.id.sel_spp_list_item_edit_ph:
