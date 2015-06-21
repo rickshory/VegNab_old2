@@ -263,6 +263,10 @@
     <string name="sel_spp_list_ctxmenu_item_edit_ph">Edit Placeholder</string>
     <string name="sel_spp_list_ctxmenu_item_help">Help</string>
 
+    <string name="sel_spp_list_ctx_forget_not_spp">Can only forget defined species.</string>
+    <string name="sel_spp_list_ctx_forget_spp_done">Species forgotten.</string>
+    <string name="sel_spp_list_ctx_edit_ph_not">Can only edit Placeholders.</string>
+
     <string name="sel_spp_help_list_item_title">\"Species Item\" Help</string>
     <string name="sel_spp_help_list_item_text">Choose \"Edit\" to change an item, \"Delete\" to remove it. You can also edit by just tapping an idtem.</string>
 

@@ -13,6 +13,9 @@ import com.vegnab.vegnab.database.VNContract.VNRegex;
 import com.vegnab.vegnab.database.VNContract.VNConstraints;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -57,6 +60,7 @@ public class SelectSpeciesFragment extends ListFragment
     long mNamerId = 0;
     HashMap<String, Long> mPlaceholderCodesForThisNamer = new HashMap<String, Long>();
     Cursor mSppMatchCursor;
+    ContentValues mValues = new ContentValues();
 
     SelSppItemAdapter mSppResultsAdapter;
 
@@ -426,6 +430,27 @@ public class SelectSpeciesFragment extends ListFragment
             default:
                 return super.onContextItemSelected(item);
        } // end of Switch
+    }
+
+    public void forgetSppMatch(long sppRecId) {
+        Context c = getActivity();
+        Log.d(LOG_TAG, "About to forget Species, record id=" + sppRecId);
+        Uri uri, sUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "species");
+        uri = ContentUris.withAppendedId(sUri, sppRecId);
+        mValues.clear();
+        mValues.put("HasBeenFound", 0);
+        ContentResolver rs = c.getContentResolver();
+        int numUpdated = rs.update(uri, mValues, null, null);
+        Log.d(LOG_TAG, "Updated species to HasBeenFound=false; numUpdated: " + numUpdated);
+        Toast.makeText(getActivity(),
+                c.getResources().getString(R.string.sel_spp_list_ctx_forget_spp_done),
+                Toast.LENGTH_LONG).show();
+        refreshMatchList();
+    }
+
+    public void refreshMatchList() {
+        // use after edit/delete
+        getLoaderManager().restartLoader(Loaders.SPP_MATCHES, null, this);
     }
 
     @Override
