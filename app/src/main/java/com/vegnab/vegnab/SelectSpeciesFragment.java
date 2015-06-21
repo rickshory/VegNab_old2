@@ -284,59 +284,59 @@ public class SelectSpeciesFragment extends ListFragment
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 //    AdapterViewCompat.AdapterContextMenuInfo info = (AdapterViewCompat.AdapterContextMenuInfo) item.getMenuInfo();
-    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-    if (info == null) {
-        Log.d(LOG_TAG, "onContextItemSelected info is null");
-    } else {
-        Log.d(LOG_TAG, "onContextItemSelected info: " + info.toString());
-    }
-    Context c = getActivity();
-    UnderConstrDialog notYetDlg = new UnderConstrDialog();
-    HelpUnderConstrDialog hlpDlg = new HelpUnderConstrDialog();
-    ConfigurableMsgDialog flexHlpDlg = new ConfigurableMsgDialog();
-    String helpTitle, helpMessage;
-    Bundle phArgs = new Bundle();
-
-
-    // get an Analytics event tracker
-    Tracker headerContextTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
-
-    switch (item.getItemId()) {
-
-    case R.id.sel_spp_search_add_placeholder:
-        Log.d(LOG_TAG, "'Create Placeholder' selected");
-        headerContextTracker.send(new HitBuilders.EventBuilder()
-                .setCategory("Species Select Event")
-                .setAction("Context Menu")
-                .setLabel("Create Placeholder")
-                .setValue(1)
-                .build());
-        // add or edit Placeholder
-        String phCode, wholeContents = mStSearch.trim();
-        Boolean wasShortened;
-        if (wholeContents.length() <= VNConstraints.PLACEHOLDER_MAX_LENGTH) {
-            phCode = wholeContents;
-            wasShortened = false;
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        if (info == null) {
+            Log.d(LOG_TAG, "onContextItemSelected info is null");
         } else {
-            phCode = wholeContents.substring(0, VNConstraints.PLACEHOLDER_MAX_LENGTH);
-            wasShortened = true;
+            Log.d(LOG_TAG, "onContextItemSelected info: " + info.toString());
         }
+        Context c = getActivity();
+        UnderConstrDialog notYetDlg = new UnderConstrDialog();
+        HelpUnderConstrDialog hlpDlg = new HelpUnderConstrDialog();
+        ConfigurableMsgDialog flexHlpDlg = new ConfigurableMsgDialog();
+        String helpTitle, helpMessage;
+        Bundle phArgs = new Bundle();
 
-        Toast.makeText(this.getActivity(), "Placeholder code '" + phCode + "'", Toast.LENGTH_SHORT).show();
-        if (phCode.length() < 3) {
-            Toast.makeText(this.getActivity(), "Placeholder codes must be at least 3 characters long.", Toast.LENGTH_SHORT).show();
-            return true;
-        }
 
-        if (phCode.matches(VNRegex.NRCS_CODE)) { // see VNContract for details
-            Toast.makeText(this.getActivity(), "Placeholder can\'t be like an NRCS code.", Toast.LENGTH_SHORT).show();
-            return true;
-        }
+        // get an Analytics event tracker
+        Tracker headerContextTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
 
-        if (mPlaceholderCodesForThisNamer.containsKey(phCode)) {
-            Toast.makeText(this.getActivity(), "Placeholder code \"" + phCode + "\" is already used.", Toast.LENGTH_SHORT).show();
-            return true;
-        }
+        switch (item.getItemId()) {
+
+            case R.id.sel_spp_search_add_placeholder:
+                Log.d(LOG_TAG, "'Create Placeholder' selected");
+                headerContextTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Species Select Event")
+                        .setAction("Context Menu")
+                        .setLabel("Create Placeholder")
+                        .setValue(1)
+                        .build());
+                // add or edit Placeholder
+                String phCode, wholeContents = mStSearch.trim();
+                Boolean wasShortened;
+                if (wholeContents.length() <= VNConstraints.PLACEHOLDER_MAX_LENGTH) {
+                  phCode = wholeContents;
+                    wasShortened = false;
+                } else {
+                    phCode = wholeContents.substring(0, VNConstraints.PLACEHOLDER_MAX_LENGTH);
+                    wasShortened = true;
+                }
+
+                Toast.makeText(this.getActivity(), "Placeholder code '" + phCode + "'", Toast.LENGTH_SHORT).show();
+                if (phCode.length() < 3) {
+                    Toast.makeText(this.getActivity(), "Placeholder codes must be at least 3 characters long.", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+
+                if (phCode.matches(VNRegex.NRCS_CODE)) { // see VNContract for details
+                    Toast.makeText(this.getActivity(), "Placeholder can\'t be like an NRCS code.", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+
+                if (mPlaceholderCodesForThisNamer.containsKey(phCode)) {
+                    Toast.makeText(this.getActivity(), "Placeholder code \"" + phCode + "\" is already used.", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
 
 //// for menu testing, pop us some Help
 //        helpTitle = "New Placeholder";
@@ -345,75 +345,87 @@ public class SelectSpeciesFragment extends ListFragment
 //        flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
 //        flexHlpDlg.show(getFragmentManager(), "frg_help_phld_dlg");
 
-        phArgs.putLong(EditPlaceholderFragment.ARG_PLACEHOLDER_ID, 0); // new, may not be needed
-        phArgs.putString(EditPlaceholderFragment.ARG_PLACEHOLDER_CODE, phCode);
-        phArgs.putBoolean(EditPlaceholderFragment.ARG_CODE_WAS_SHORTENED, wasShortened);
-        mEditPlaceholderCallback.onEditPlaceholder(phArgs);
-        return true;
+                phArgs.putLong(EditPlaceholderFragment.ARG_PLACEHOLDER_ID, 0); // new, may not be needed
+                phArgs.putString(EditPlaceholderFragment.ARG_PLACEHOLDER_CODE, phCode);
+                phArgs.putBoolean(EditPlaceholderFragment.ARG_CODE_WAS_SHORTENED, wasShortened);
+                mEditPlaceholderCallback.onEditPlaceholder(phArgs);
+                return true;
 
-    case R.id.sel_spp_search_help:
-        Log.d(LOG_TAG, "'Search Chars Help' selected");
-        headerContextTracker.send(new HitBuilders.EventBuilder()
-                .setCategory("Species Select Event")
-                .setAction("Context Menu")
-                .setLabel("Search Chars Help")
-                .setValue(1)
-                .build());
-        // Search Characters help
-        helpTitle = c.getResources().getString(R.string.sel_spp_help_search_title);
-        helpMessage = c.getResources().getString(R.string.sel_spp_help_search_text);
-        flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-        flexHlpDlg.show(getFragmentManager(), "frg_help_search_chars");
-        return true;
+            case R.id.sel_spp_search_help:
+                Log.d(LOG_TAG, "'Search Chars Help' selected");
+                headerContextTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Species Select Event")
+                        .setAction("Context Menu")
+                        .setLabel("Search Chars Help")
+                        .setValue(1)
+                        .build());
+                // Search Characters help
+                helpTitle = c.getResources().getString(R.string.sel_spp_help_search_title);
+                helpMessage = c.getResources().getString(R.string.sel_spp_help_search_text);
+                flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+                flexHlpDlg.show(getFragmentManager(), "frg_help_search_chars");
+                return true;
 
-    case R.id.sel_spp_list_item_forget:
-        Log.d(LOG_TAG, "Spp list item 'Forget Species' selected");
-        headerContextTracker.send(new HitBuilders.EventBuilder()
-                .setCategory("Species Select Event")
-                .setAction("Context Menu")
-                .setLabel("List Item Forget Species")
-                .setValue(1)
-                .build());
-        // Search Characters help
-        helpTitle = "Forget";
-        helpMessage = "Forget Species tapped";
-        flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-        flexHlpDlg.show(getFragmentManager(), "frg_spp_item_forget_spp");
-        return true;
+            case R.id.sel_spp_list_item_forget:
+                Log.d(LOG_TAG, "Spp list item 'Forget Species' selected");
+                headerContextTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Species Select Event")
+                        .setAction("Context Menu")
+                        .setLabel("List Item Forget Species")
+                        .setValue(1)
+                        .build());
+                // Search Characters help
+                helpTitle = "Forget";
+                helpMessage = "Forget Species tapped";
+                flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+                flexHlpDlg.show(getFragmentManager(), "frg_spp_item_forget_spp");
+        /*            if ((timestampNow - latestVegSaveTimestamp < 60) && (info.position == 0)) {
+                        // top item in the list, put in within the last minute; undo without verification
+                        deleteVegItem(info.id);
+                        helpMessage = getActivity().getResources().getString(R.string.veg_subpl_list_ctx_delete_quick);
+                        Toast.makeText(this.getActivity(), helpMessage, Toast.LENGTH_SHORT).show();
+                    } else {
+                        // confirm to delete veg item
+                        mVegItemsCursor.moveToPosition(info.position);
+                        helpMessage = getActivity().getResources().getString(R.string.veg_subpl_list_ctx_delete_verify_pre)
+                            + mVegItemsCursor.getString(mVegItemsCursor.getColumnIndexOrThrow("OrigDescr"))
+                            + getActivity().getResources().getString(R.string.veg_subpl_list_ctx_delete_verify_post);
+        */
+                return true;
 
-    case R.id.sel_spp_list_item_edit_ph:
-        Log.d(LOG_TAG, "Spp list item 'Edit Placeholder' selected");
-        headerContextTracker.send(new HitBuilders.EventBuilder()
-                .setCategory("Species Select Event")
-                .setAction("Context Menu")
-                .setLabel("List Item Edit Placeholder")
-                .setValue(1)
-                .build());
-        // Search Characters help
-        helpTitle = "Edit";
-        helpMessage = "Edit Placeholder tapped";
-        flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-        flexHlpDlg.show(getFragmentManager(), "frg_spp_item_edit_ph");
-        return true;
+            case R.id.sel_spp_list_item_edit_ph:
+                Log.d(LOG_TAG, "Spp list item 'Edit Placeholder' selected");
+                headerContextTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Species Select Event")
+                        .setAction("Context Menu")
+                        .setLabel("List Item Edit Placeholder")
+                        .setValue(1)
+                        .build());
+                // Search Characters help
+                helpTitle = "Edit";
+                helpMessage = "Edit Placeholder tapped";
+                flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+                flexHlpDlg.show(getFragmentManager(), "frg_spp_item_edit_ph");
+                return true;
 
-    case R.id.sel_spp_list_item_help:
-        Log.d(LOG_TAG, "Spp list item 'Help' selected");
-        headerContextTracker.send(new HitBuilders.EventBuilder()
-                .setCategory("Species Select Event")
-                .setAction("Context Menu")
-                .setLabel("List Item Help")
-                .setValue(1)
-                .build());
-        // Search Characters help
-        helpTitle = c.getResources().getString(R.string.sel_spp_help_list_item_title);
-        helpMessage = c.getResources().getString(R.string.sel_spp_help_list_item_text);
-        flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-        flexHlpDlg.show(getFragmentManager(), "frg_spp_item_help");
-        return true;
+            case R.id.sel_spp_list_item_help:
+                Log.d(LOG_TAG, "Spp list item 'Help' selected");
+                headerContextTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Species Select Event")
+                        .setAction("Context Menu")
+                        .setLabel("List Item Help")
+                        .setValue(1)
+                        .build());
+                // Search Characters help
+                helpTitle = c.getResources().getString(R.string.sel_spp_help_list_item_title);
+                helpMessage = c.getResources().getString(R.string.sel_spp_help_list_item_text);
+                flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+                flexHlpDlg.show(getFragmentManager(), "frg_spp_item_help");
+                return true;
 
-    default:
-        return super.onContextItemSelected(item);
-       }
+            default:
+                return super.onContextItemSelected(item);
+       } // end of Switch
     }
 
     @Override
