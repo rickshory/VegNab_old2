@@ -20,13 +20,23 @@
 		android:layout_height="wrap_content"
 		android:text="@string/edit_placeholder_title" />
 
+	<Button
+		android:id="@+id/placeholder_pix_button"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/edit_placeholder_pix_button_msg"
+		android:padding="10dp"
+		android:layout_alignLeft="@id/placeholder_title_text"
+		android:layout_below="@id/placeholder_title_text"
+		/>
+
 	<TextView
 		android:id="@+id/lbl_placeholder_code"
 		android:text="@string/edit_placeholder_label_code"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_alignLeft="@id/placeholder_title_text"
-		android:layout_below="@id/placeholder_title_text"
+		android:layout_alignLeft="@id/placeholder_pix_button"
+		android:layout_below="@id/placeholder_pix_button"
 		/>
 
 	<EditText

@@ -219,6 +219,7 @@
     <string name="edit_spp_item_validate_cover_bad">Need a number for Cover between 1 and 100 percent</string>
 
     <string name="edit_placeholder_title">Placeholder</string>
+    <string name="edit_placeholder_pix_button_msg">Take pictures</string>
     <string name="edit_placeholder_label_code">Code</string>
     <string name="edit_placeholder_hint_code">Code</string>
     <string name="edit_placeholder_label_description">Description</string>
