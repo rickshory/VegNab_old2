@@ -300,6 +300,7 @@ public class SelectSpeciesFragment extends ListFragment
         ConfigurableMsgDialog flexHlpDlg = new ConfigurableMsgDialog();
         String helpTitle, helpMessage;
         Bundle phArgs = new Bundle();
+        int itemIsPlaceholder;
 
 
         // get an Analytics event tracker
@@ -386,7 +387,7 @@ public class SelectSpeciesFragment extends ListFragment
                     return true;
                 }
                 mSppMatchCursor.moveToPosition(info.position);
-                int itemIsPlaceholder = mSppMatchCursor.getInt(
+                itemIsPlaceholder = mSppMatchCursor.getInt(
                         mSppMatchCursor.getColumnIndexOrThrow("IsPlaceholder"));
                 if (itemIsPlaceholder == 1) {
                     Toast.makeText(getActivity(),
@@ -410,6 +411,31 @@ public class SelectSpeciesFragment extends ListFragment
                 helpMessage = "Edit Placeholder tapped";
                 flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
                 flexHlpDlg.show(getFragmentManager(), "frg_spp_item_edit_ph");
+
+                // Edit placeholder
+                if (info == null) {
+                    Toast.makeText(getActivity(),
+                            c.getResources().getString(R.string.sel_spp_list_ctx_edit_ph_not),
+                            Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                mSppMatchCursor.moveToPosition(info.position);
+                itemIsPlaceholder = mSppMatchCursor.getInt(
+                        mSppMatchCursor.getColumnIndexOrThrow("IsPlaceholder"));
+                if (itemIsPlaceholder != 1) {
+                    Toast.makeText(getActivity(),
+                            c.getResources().getString(R.string.sel_spp_list_ctx_edit_ph_not),
+                            Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                phArgs.putLong(EditPlaceholderFragment.ARG_PLACEHOLDER_ID, info.id);
+                phArgs.putString(EditPlaceholderFragment.ARG_PLACEHOLDER_CODE, mSppMatchCursor.getString(
+                        mSppMatchCursor.getColumnIndexOrThrow("Code")));
+                phArgs.putBoolean(EditPlaceholderFragment.ARG_CODE_WAS_SHORTENED, false);
+                
+/*
+*/
+
                 return true;
 
             case R.id.sel_spp_list_item_help:
