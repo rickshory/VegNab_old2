@@ -223,17 +223,20 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 //		getLoaderManager().initLoader(Loaders.PLACEHOLDER_BACKSTORY, null, this); // project, location, namer, etc., automatically recorded for a placeholder
         getLoaderManager().initLoader(Loaders.PLACEHOLDER_HABITATS, null, this); // Recall these as options to re-select
 
-        // set click listener for the button in the view
+        // set click listener for the buttons in the view
+        Button p = (Button) rootView.findViewById(R.id.placeholder_pix_button);
+        PackageManager packageManager = getActivity().getPackageManager();
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            p.setOnClickListener(this);
+        } else {
+            p.setVisibility(View.GONE);
+        }
         Button s = (Button) rootView.findViewById(R.id.placeholder_save_button);
         s.setOnClickListener(this);
         Button c = (Button) rootView.findViewById(R.id.placeholder_cancel_button);
         c.setOnClickListener(this);
         // if more, loop through all the child items of the ViewGroup rootView and
         // set the onclicklistener for all the Button instances found
-        PackageManager packageManager = getActivity().getPackageManager();
-        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-
-        }
         return rootView;
     }
 
