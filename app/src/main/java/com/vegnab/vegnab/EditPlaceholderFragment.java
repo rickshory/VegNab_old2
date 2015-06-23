@@ -219,7 +219,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
         // Prepare the loader. Either re-connect with an existing one or start a new one
 //		getLoaderManager().initLoader(Loaders.PLACEHOLDER_TO_EDIT, null, this); // The current placeholder
-        getLoaderManager().initLoader(Loaders.PLACEHOLDERS_EXISTING, null, this); // Any existing placeholders
+//        getLoaderManager().initLoader(Loaders.PLACEHOLDERS_EXISTING, null, this); // Any existing placeholders
 //		getLoaderManager().initLoader(Loaders.PLACEHOLDER_BACKSTORY, null, this); // project, location, namer, etc., automatically recorded for a placeholder
         getLoaderManager().initLoader(Loaders.PLACEHOLDER_HABITATS, null, this); // Recall these as options to re-select
 
@@ -264,6 +264,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         }
         // fire off loaders that depend on layout being ready to receive results
         getLoaderManager().initLoader(Loaders.PLACEHOLDER_TO_EDIT, null, this);
+        getLoaderManager().initLoader(Loaders.PLACEHOLDERS_EXISTING, null, this); // Any existing placeholders
         getLoaderManager().initLoader(Loaders.PLACEHOLDER_BACKSTORY, null, this); // text of other fields
     }
 
