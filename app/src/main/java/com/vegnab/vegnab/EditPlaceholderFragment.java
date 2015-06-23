@@ -302,10 +302,34 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     public void onClick(View v) {
         Bundle args= new Bundle();
         int numUpdated;
+        Context c = getActivity();
+        ConfigurableMsgDialog flexHlpDlg = new ConfigurableMsgDialog();
+        String helpTitle, helpMessage;
+        // get an Analytics event tracker
+        Tracker placeholderButtonTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+
         switch (v.getId()) {
 
             case R.id.placeholder_pix_button:
                 Log.d(LOG_TAG, "in onClick, placeholder_pix_button");
+                placeholderButtonTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Edit Placeholder Event")
+                        .setAction("Button click")
+                        .setLabel("Pictures button")
+                        .setValue(mPlaceholderId)
+                        .build());
+                if (mPlaceholderId == 0) { // record not defined yet
+                    helpTitle = c.getResources().getString(R.string.placeholder_pix_btn_no_descr_title);
+                    helpMessage = c.getResources().getString(R.string.placeholder_pix_btn_no_descr_msg);
+                    flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+                    flexHlpDlg.show(getFragmentManager(), "frg_ph_pix_not_ready");
+                } else {
+                    helpTitle = "Take Pictures";
+                    helpMessage = "Not implemented yet, but this will allow you to photograph your plants";
+                    flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+                    flexHlpDlg.show(getFragmentManager(), "frg_ph_pix_ready");
+                }
+
                 break;
 
             case R.id.placeholder_save_button:
