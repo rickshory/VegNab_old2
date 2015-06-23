@@ -406,11 +406,11 @@ public class SelectSpeciesFragment extends ListFragment
                         .setLabel("List Item Edit Placeholder")
                         .setValue(1)
                         .build());
-                // Search Characters help
-                helpTitle = "Edit";
-                helpMessage = "Edit Placeholder tapped";
-                flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-                flexHlpDlg.show(getFragmentManager(), "frg_spp_item_edit_ph");
+//                // Search Characters help
+//                helpTitle = "Edit";
+//                helpMessage = "Edit Placeholder tapped";
+//                flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+//                flexHlpDlg.show(getFragmentManager(), "frg_spp_item_edit_ph");
 
                 // Edit placeholder
                 if (info == null) {
@@ -432,10 +432,7 @@ public class SelectSpeciesFragment extends ListFragment
                 phArgs.putString(EditPlaceholderFragment.ARG_PLACEHOLDER_CODE, mSppMatchCursor.getString(
                         mSppMatchCursor.getColumnIndexOrThrow("Code")));
                 phArgs.putBoolean(EditPlaceholderFragment.ARG_CODE_WAS_SHORTENED, false);
-                
-/*
-*/
-
+                mEditPlaceholderCallback.onEditPlaceholder(phArgs);
                 return true;
 
             case R.id.sel_spp_list_item_help:
