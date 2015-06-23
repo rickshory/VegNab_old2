@@ -304,6 +304,11 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         int numUpdated;
         switch (v.getId()) {
 
+        case R.id.placeholder_pix_button:
+            Log.d(LOG_TAG, "in onClick, placeholder_pix_button");
+            break;
+
+//
         case R.id.placeholder_save_button:
             // create or update the Placeholder record in the database, if everything is valid
             mValidationLevel = Validation.CRITICAL; // save if possible, and announce anything invalid
