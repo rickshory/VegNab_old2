@@ -304,27 +304,26 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         int numUpdated;
         switch (v.getId()) {
 
-        case R.id.placeholder_pix_button:
-            Log.d(LOG_TAG, "in onClick, placeholder_pix_button");
-            break;
-
-//
-        case R.id.placeholder_save_button:
-            // create or update the Placeholder record in the database, if everything is valid
-            mValidationLevel = Validation.CRITICAL; // save if possible, and announce anything invalid
-            numUpdated = savePlaceholderRecord();
-            if (numUpdated == 0) {
-                Log.d(LOG_TAG, "Failed to save record in onClick; mValues: " + mValues.toString());
-            } else {
-                Log.d(LOG_TAG, "Saved record in onClick; mValues: " + mValues.toString());
-            }
-            if (numUpdated == 0) {
+            case R.id.placeholder_pix_button:
+                Log.d(LOG_TAG, "in onClick, placeholder_pix_button");
                 break;
-            }
-            Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onVisitHeaderGoButtonClicked()'");
-			mButtonCallback.onPlaceholderSaveButtonClicked(args);
-            Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onVisitHeaderGoButtonClicked()'");
-            break;
+
+            case R.id.placeholder_save_button:
+                // create or update the Placeholder record in the database, if everything is valid
+                mValidationLevel = Validation.CRITICAL; // save if possible, and announce anything invalid
+                numUpdated = savePlaceholderRecord();
+                if (numUpdated == 0) {
+                    Log.d(LOG_TAG, "Failed to save record in onClick; mValues: " + mValues.toString());
+                } else {
+                    Log.d(LOG_TAG, "Saved record in onClick; mValues: " + mValues.toString());
+                }
+                if (numUpdated == 0) {
+                    break;
+                }
+                Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onVisitHeaderGoButtonClicked()'");
+                mButtonCallback.onPlaceholderSaveButtonClicked(args);
+                Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onVisitHeaderGoButtonClicked()'");
+                break;
 
             case R.id.placeholder_cancel_button:
                 Log.d(LOG_TAG, "in onClick, placeholder_cancel_button");
@@ -341,21 +340,21 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         Uri baseUri;
         String select = null; // default for all-columns, unless re-assigned or overridden by raw SQL
         switch (id) {
-        case Loaders.PLACEHOLDER_TO_EDIT:
-            Uri onePlaceholderUri = ContentUris.withAppendedId(
-                            Uri.withAppendedPath(
-                            ContentProvider_VegNab.CONTENT_URI, "placeholders"), mPlaceholderId);
-            cl = new CursorLoader(getActivity(), onePlaceholderUri,
-                    null, select, null, null);
-            break;
+            case Loaders.PLACEHOLDER_TO_EDIT:
+                Uri onePlaceholderUri = ContentUris.withAppendedId(
+                                Uri.withAppendedPath(
+                                ContentProvider_VegNab.CONTENT_URI, "placeholders"), mPlaceholderId);
+                cl = new CursorLoader(getActivity(), onePlaceholderUri,
+                        null, select, null, null);
+                break;
 
-        case Loaders.PLACEHOLDERS_EXISTING:
-            baseUri = ContentProvider_VegNab.SQL_URI;
-            select = "SELECT PlaceHolderCode FROM PlaceHolders "
-                + "WHERE ProjID = ? AND NamerID = ? AND _id != ?";
-            cl = new CursorLoader(getActivity(), baseUri, null, select,
-                    new String[] { "" + mPhProjId, "" + mPhNamerId, "" + mPlaceholderId}, null);
-            break;
+            case Loaders.PLACEHOLDERS_EXISTING:
+                baseUri = ContentProvider_VegNab.SQL_URI;
+                select = "SELECT PlaceHolderCode FROM PlaceHolders "
+                    + "WHERE ProjID = ? AND NamerID = ? AND _id != ?";
+                cl = new CursorLoader(getActivity(), baseUri, null, select,
+                        new String[] { "" + mPhProjId, "" + mPhNamerId, "" + mPlaceholderId}, null);
+                break;
 
 //		case Loaders.PLACEHOLDER_PROJ_NAMER:
 //			baseUri = ContentProvider_VegNab.SQL_URI;
@@ -366,24 +365,24 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 //					null, select, new String[] { "" + mPhVisitId }, null);
 //			break;
 
-        case Loaders.PLACEHOLDER_BACKSTORY:
-            baseUri = ContentProvider_VegNab.SQL_URI;
-            select = "SELECT Visits._id, Visits.VisitName, Visits.ProjID, Locations._id AS LocID, "
-                    + "Locations.Latitude, Locations.Longitude, Locations.Accuracy, "
-                    + "Visits.NamerID, Namers.NamerName, Visits.Scribe "
-                    + "FROM (Visits LEFT JOIN Namers ON Visits.NamerID = Namers._id) "
-                    + "LEFT JOIN Locations ON Visits.RefLocID = Locations._id "
-                    + "WHERE (((Visits._id)=?));";
-            cl = new CursorLoader(getActivity(), baseUri,
-                    null, select, new String[] { "" + mPhVisitId }, null);
-            break;
+            case Loaders.PLACEHOLDER_BACKSTORY:
+                baseUri = ContentProvider_VegNab.SQL_URI;
+                select = "SELECT Visits._id, Visits.VisitName, Visits.ProjID, Locations._id AS LocID, "
+                        + "Locations.Latitude, Locations.Longitude, Locations.Accuracy, "
+                        + "Visits.NamerID, Namers.NamerName, Visits.Scribe "
+                        + "FROM (Visits LEFT JOIN Namers ON Visits.NamerID = Namers._id) "
+                        + "LEFT JOIN Locations ON Visits.RefLocID = Locations._id "
+                        + "WHERE (((Visits._id)=?));";
+                cl = new CursorLoader(getActivity(), baseUri,
+                        null, select, new String[] { "" + mPhVisitId }, null);
+                break;
 
-        case Loaders.PLACEHOLDER_HABITATS:
-            baseUri = ContentProvider_VegNab.SQL_URI;
-            select = "SELECT Habitat FROM PlaceHolders GROUP BY Habitat;";
-            cl = new CursorLoader(getActivity(), baseUri,
-                    null, select, null, null);
-            break;
+            case Loaders.PLACEHOLDER_HABITATS:
+                baseUri = ContentProvider_VegNab.SQL_URI;
+                select = "SELECT Habitat FROM PlaceHolders GROUP BY Habitat;";
+                cl = new CursorLoader(getActivity(), baseUri,
+                        null, select, null, null);
+                break;
         }
         return cl;
     }
@@ -394,65 +393,64 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mRowCt = c.getCount();
         switch (loader.getId()) {
 
-        case Loaders.PLACEHOLDER_TO_EDIT:
-            Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_TO_EDIT, records: " + c.getCount());
-            if (c.moveToFirst()) {
-//				mPlaceholderId = c.getLong(c.getColumnIndexOrThrow("_id"));
-                mViewPlaceholderCode.setText(c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
-                mViewPlaceholderDescription.setText(c.getString(c.getColumnIndexOrThrow("Description")));
-                mViewPlaceholderHabitat.setText(c.getString(c.getColumnIndexOrThrow("Habitat")));
-                mViewPlaceholderIdentifier.setText(c.getString(c.getColumnIndexOrThrow("LabelNum")));
-//				mPhVisitId = c.getLong(c.getColumnIndexOrThrow("VisitIdWhereFirstFound"));
-//				mPhProjId = c.getLong(c.getColumnIndexOrThrow("ProjID"));
-//				mPhNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
-            } else { // no record to edit yet, set up new record
-                mViewPlaceholderCode.setText(mPlaceholderCode);
-            }
-            break;
+            case Loaders.PLACEHOLDER_TO_EDIT:
+                Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_TO_EDIT, records: " + c.getCount());
+                if (c.moveToFirst()) {
+    //				mPlaceholderId = c.getLong(c.getColumnIndexOrThrow("_id"));
+                    mViewPlaceholderCode.setText(c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
+                    mViewPlaceholderDescription.setText(c.getString(c.getColumnIndexOrThrow("Description")));
+                    mViewPlaceholderHabitat.setText(c.getString(c.getColumnIndexOrThrow("Habitat")));
+                    mViewPlaceholderIdentifier.setText(c.getString(c.getColumnIndexOrThrow("LabelNum")));
+    //				mPhVisitId = c.getLong(c.getColumnIndexOrThrow("VisitIdWhereFirstFound"));
+    //				mPhProjId = c.getLong(c.getColumnIndexOrThrow("ProjID"));
+    //				mPhNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
+                } else { // no record to edit yet, set up new record
+                    mViewPlaceholderCode.setText(mPlaceholderCode);
+                }
+                break;
 
-        case Loaders.PLACEHOLDERS_EXISTING:
-            mExistingPlaceholderCodes.clear();
-            while (c.moveToNext()) {
-                Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
-                mExistingPlaceholderCodes.add(c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
-            }
-            Log.d(LOG_TAG, "onLoadFinished, number of items in mExistingPlaceholderCodes: " + mExistingPlaceholderCodes.size());
-            Log.d(LOG_TAG, "onLoadFinished, items in mExistingPlaceholderCodes: " + mExistingPlaceholderCodes.toString());
-            break;
+            case Loaders.PLACEHOLDERS_EXISTING:
+                mExistingPlaceholderCodes.clear();
+                while (c.moveToNext()) {
+                    Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
+                    mExistingPlaceholderCodes.add(c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
+                }
+                Log.d(LOG_TAG, "onLoadFinished, number of items in mExistingPlaceholderCodes: " + mExistingPlaceholderCodes.size());
+                Log.d(LOG_TAG, "onLoadFinished, items in mExistingPlaceholderCodes: " + mExistingPlaceholderCodes.toString());
+                break;
 
-//		case Loaders.PLACEHOLDER_PROJ_NAMER:
-//			Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PROJ_NAMER, records: " + c.getCount());
-//			if (c.moveToFirst()) {
-//				mPhProjId = c.getLong(c.getColumnIndexOrThrow("ProjID"));
-//				mPhNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
-//			}
-//			break;
+    //		case Loaders.PLACEHOLDER_PROJ_NAMER:
+    //			Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PROJ_NAMER, records: " + c.getCount());
+    //			if (c.moveToFirst()) {
+    //				mPhProjId = c.getLong(c.getColumnIndexOrThrow("ProjID"));
+    //				mPhNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
+    //			}
+    //			break;
 
-        case Loaders.PLACEHOLDER_BACKSTORY:
-            Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_BACKSTORY, records: " + c.getCount());
-            if (c.moveToFirst()) {
-                mPhVisitName = c.getString(c.getColumnIndexOrThrow("VisitName"));
-                mPhProjId = c.getLong(c.getColumnIndexOrThrow("ProjID"));
-                mPhLocId = c.getLong(c.getColumnIndexOrThrow("LocID"));
-                mPhLocText = "" + c.getString(c.getColumnIndexOrThrow("Latitude"))
-                    + "," + c.getString(c.getColumnIndexOrThrow("Longitude"))
-                    + "\naccuracy " + c.getString(c.getColumnIndexOrThrow("Accuracy")) + "m";
-                mPhNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
-                mPhNamerName = c.getString(c.getColumnIndexOrThrow("NamerName"));
-                mPhScribe = c.getString(c.getColumnIndexOrThrow("Scribe"));
-            }
-            break;
+            case Loaders.PLACEHOLDER_BACKSTORY:
+                Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_BACKSTORY, records: " + c.getCount());
+                if (c.moveToFirst()) {
+                    mPhVisitName = c.getString(c.getColumnIndexOrThrow("VisitName"));
+                    mPhProjId = c.getLong(c.getColumnIndexOrThrow("ProjID"));
+                    mPhLocId = c.getLong(c.getColumnIndexOrThrow("LocID"));
+                    mPhLocText = "" + c.getString(c.getColumnIndexOrThrow("Latitude"))
+                        + "," + c.getString(c.getColumnIndexOrThrow("Longitude"))
+                        + "\naccuracy " + c.getString(c.getColumnIndexOrThrow("Accuracy")) + "m";
+                    mPhNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
+                    mPhNamerName = c.getString(c.getColumnIndexOrThrow("NamerName"));
+                    mPhScribe = c.getString(c.getColumnIndexOrThrow("Scribe"));
+                }
+                break;
 
-        case Loaders.PLACEHOLDER_HABITATS:
-            mPreviouslyEnteredHabitats.clear();
-            while (c.moveToNext()) {
-                Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("Habitat")));
-                mPreviouslyEnteredHabitats.add(c.getString(c.getColumnIndexOrThrow("Habitat")));
-            }
-            Log.d(LOG_TAG, "onLoadFinished, number of items in mPreviouslyEnteredHabitats: " + mPreviouslyEnteredHabitats.size());
-            Log.d(LOG_TAG, "onLoadFinished, items in mPreviouslyEnteredHabitats: " + mPreviouslyEnteredHabitats.toString());
-            break;
-
+            case Loaders.PLACEHOLDER_HABITATS:
+                mPreviouslyEnteredHabitats.clear();
+                while (c.moveToNext()) {
+                    Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("Habitat")));
+                    mPreviouslyEnteredHabitats.add(c.getString(c.getColumnIndexOrThrow("Habitat")));
+                }
+                Log.d(LOG_TAG, "onLoadFinished, number of items in mPreviouslyEnteredHabitats: " + mPreviouslyEnteredHabitats.size());
+                Log.d(LOG_TAG, "onLoadFinished, items in mPreviouslyEnteredHabitats: " + mPreviouslyEnteredHabitats.toString());
+                break;
         }
     }
 
