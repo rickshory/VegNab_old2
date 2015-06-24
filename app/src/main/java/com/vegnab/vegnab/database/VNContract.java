@@ -3,6 +3,7 @@
  */
 package com.vegnab.vegnab.database;
 
+import android.graphics.Bitmap;
 import android.provider.BaseColumns;
 
 /**
@@ -125,6 +126,34 @@ public final class VNContract {
 
 	public static abstract class VNConstraints {
 		public static final int PLACEHOLDER_MAX_LENGTH = 10; // maximum allowed length for a Placeholder code
+	}
+
+	// POJO class for use in grid view
+	public class VNGridImageItem {
+		private Bitmap image;
+		private String title;
+
+		public VNGridImageItem(Bitmap image, String title) {
+			super();
+			this.image = image;
+			this.title = title;
+		}
+
+		public Bitmap getImage() {
+			return image;
+		}
+
+		public void setImage(Bitmap image) {
+			this.image = image;
+		}
+
+		public String getTitle() {
+			return title;
+		}
+
+		public void setTitle(String title) {
+			this.title = title;
+		}
 	}
 
 	// inner classes to define tables
