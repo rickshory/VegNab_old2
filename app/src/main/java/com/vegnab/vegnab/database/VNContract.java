@@ -128,7 +128,7 @@ public final class VNContract {
         public static final int PLACEHOLDER_MAX_LENGTH = 10; // maximum allowed length for a Placeholder code
     }
 
-    // POJO class for use in grid view
+    // class for use in grid view
     public class VNGridImageItem {
         private Bitmap image;
         private String title;
