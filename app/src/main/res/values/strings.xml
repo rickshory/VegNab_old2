@@ -264,7 +264,7 @@
     <string name="placeholder_validate_habitat_none">Need a Habitat for this Placeholder, long-press for more info</string>
 
     <string name="ph_pix_grid_pic_button_message">New Picture</string>
-    
+
 
     <string name="sel_spp_list_ctxmenu_item_forget">Forget species</string>
     <string name="sel_spp_list_ctxmenu_item_edit_ph">Edit Placeholder</string>
