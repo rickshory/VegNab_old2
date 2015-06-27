@@ -417,8 +417,16 @@ public class MainVNActivity extends ActionBarActivity
         transaction.commit();
     }
 
+    public void onPlaceholderPixButtonClicked(Bundle args) {
+        Log.d(LOG_TAG, "In onPlaceholderPixButtonClicked");
+    }
+
     public void onPlaceholderSaveButtonClicked(Bundle args) {
         Log.d(LOG_TAG, "In onPlaceholderSaveButtonClicked");
+    }
+
+    public void onPlaceholderCancelButtonClicked(Bundle args) {
+        Log.d(LOG_TAG, "In onPlaceholderCancelButtonClicked");
     }
 
     @Override

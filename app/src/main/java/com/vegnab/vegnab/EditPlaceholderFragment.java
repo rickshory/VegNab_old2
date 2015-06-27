@@ -51,10 +51,12 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         View.OnFocusChangeListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
-//    public interface EditPlaceholderDialogListener {
-//        public void onEditPlaceholderComplete(EditPlaceholderFragment visitHeaderFragment);
+    // declare an interface the container Activity must implement
+//    public interface OnPlaceholderPixListener {
+//        // methods that must be implemented in the container Activity
+//        public void onPlaceholderPix(Bundle args);
 //    }
-//    EditPlaceholderDialogListener mEditPlaceholderListener;
+//    OnPlaceholderPixListener mPlaceholderPixCallback; // declare the interface
 
     private static final String LOG_TAG = EditPlaceholderFragment.class.getSimpleName();
 
@@ -111,7 +113,9 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     // declare that the container Activity must implement this interface
     public interface OnButtonListener {
         // methods that must be implemented in the container Activity
-        public void onPlaceholderSaveButtonClicked(Bundle args);
+        void onPlaceholderPixButtonClicked(Bundle args);
+        void onPlaceholderSaveButtonClicked(Bundle args);
+        void onPlaceholderCancelButtonClicked(Bundle args);
     }
 
     public static EditPlaceholderFragment newInstance(Bundle args) {
@@ -271,7 +275,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        // assure the container activity has implemented the callback interface
+        // assure the container activity has implemented the callback interfaces
         try {
             mButtonCallback = (OnButtonListener) activity;
         } catch (ClassCastException e) {
