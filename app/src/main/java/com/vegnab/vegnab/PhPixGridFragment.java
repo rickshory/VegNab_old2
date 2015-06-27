@@ -1,6 +1,7 @@
 package com.vegnab.vegnab;
 
 import android.content.ContentUris;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,11 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract;
 
-public class PhPixGridFragment extends Fragment
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+public class PhPixGridFragment extends Fragment implements View.OnClickListener,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String LOG_TAG = PhPixGridFragment.class.getSimpleName();
     final static String ARG_PLACEHOLDER_ID = "phId";
@@ -79,6 +82,45 @@ public class PhPixGridFragment extends Fragment
             }
             return imageItems;
     */
+
+    @Override
+    public void onClick(View v) {
+        Bundle args= new Bundle();
+        int numUpdated;
+        Context c = getActivity();
+        ConfigurableMsgDialog flexHlpDlg = new ConfigurableMsgDialog();
+        String helpTitle, helpMessage;
+        // get an Analytics event tracker
+        Tracker placeholderButtonTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+
+        switch (v.getId()) {
+
+            case R.id.placeholder_take_picture_button:
+                Log.d(LOG_TAG, "in onClick, placeholder_take_picture_button");
+                placeholderButtonTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Placeholder Pictures Grid Event")
+                        .setAction("Button click")
+                        .setLabel("Take picture button")
+                        .setValue(mPlaceholderId)
+                        .build());
+                if (mPlaceholderId == 0) { // record not defined yet; this should not happen
+                    helpTitle = c.getResources().getString(R.string.placeholder_validate_generic_title);
+                    helpMessage = c.getResources().getString(R.string.ph_pix_grid_pic_button_err);
+                    flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+                    flexHlpDlg.show(getFragmentManager(), "frg_ph_pix_no_ph_code");
+                } else {
+                    helpTitle = "Take Pictures";
+                    helpMessage = "Not implemented yet, but this will allow you to take a picture";
+                    flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+                    flexHlpDlg.show(getFragmentManager(), "frg_ph_pix_ok");
+                }
+
+                break;
+
+        }
+    }
+
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // This is called when a new Loader needs to be created.
