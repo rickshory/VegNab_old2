@@ -96,6 +96,8 @@ public final class VNContract {
         public static final String VEG_SUBPLOT = "VegSubplot";
         public static final String SELECT_SPECIES = "SelectSpecies";
         public static final String EDIT_PLACEHOLDER = "EditPlaceholder";
+        public static final String PLACEHOLDER_PIX_GRID = "PlaceholderPixGrid";
+        public static final String PLACEHOLDER_PIC_DETAIL = "PlaceholderPicDetail";
 
     }
     // inner class to define Veg Item record sources

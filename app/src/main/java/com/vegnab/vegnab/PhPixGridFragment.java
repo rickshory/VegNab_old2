@@ -13,6 +13,12 @@ public class PhPixGridFragment extends Fragment {
     private GridView mPhPixGridView;
     private PhPixGridAdapter mPhPixGridAdapter;
 
+    public static PhPixGridFragment newInstance(Bundle args) {
+        PhPixGridFragment f = new PhPixGridFragment();
+        f.setArguments(args);
+        return f;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
