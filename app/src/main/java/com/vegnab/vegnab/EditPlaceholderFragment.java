@@ -36,6 +36,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
+import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.Loaders;
 import com.vegnab.vegnab.database.VNContract.Prefs;
 import com.vegnab.vegnab.database.VNContract.Validation;
@@ -101,6 +102,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     final static String ARG_PH_NAMER_NAME = "phNamerName";
     final static String ARG_PH_SCRIBE = "phScribe";
     final static String ARG_PLACEHOLDER_TIME = "phTimeStamp";
+    final static String BUTTON_KEY = "buttonKey";
 
     OnButtonListener mButtonCallback; // declare the interface
     // declare that the container Activity must implement this interface
@@ -319,13 +321,18 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                     helpMessage = c.getResources().getString(R.string.placeholder_pix_btn_no_descr_msg);
                     flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
                     flexHlpDlg.show(getFragmentManager(), "frg_ph_pix_not_ready");
-                } else {
-                    helpTitle = "Take Pictures";
-                    helpMessage = "Not implemented yet, but this will allow you to photograph your plants";
-                    flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-                    flexHlpDlg.show(getFragmentManager(), "frg_ph_pix_ready");
+                    return;
+//                } else {
+//                    helpTitle = "Take Pictures";
+//                    helpMessage = "Not implemented yet, but this will allow you to photograph your plants";
+//                    flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+//                    flexHlpDlg.show(getFragmentManager(), "frg_ph_pix_ready");
                 }
-
+                args.putInt(BUTTON_KEY, VNContract.PhActions.GO_TO_PICTURES);
+                args.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
+                Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onPlaceholderActionButtonClicked(PICTURES)'");
+                mButtonCallback.onPlaceholderActionButtonClicked(args);
+                Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onPlaceholderActionButtonClicked(PICTURES)'");
                 break;
 
             case R.id.placeholder_save_button:
@@ -340,13 +347,20 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 if (numUpdated == 0) {
                     break;
                 }
-                Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onVisitHeaderGoButtonClicked()'");
+                args.putInt(BUTTON_KEY, VNContract.PhActions.SAVE);
+                args.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
+                Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onPlaceholderActionButtonClicked(SAVE)'");
                 mButtonCallback.onPlaceholderActionButtonClicked(args);
-                Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onVisitHeaderGoButtonClicked()'");
+                Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onPlaceholderActionButtonClicked(SAVE)'");
                 break;
 
             case R.id.placeholder_cancel_button:
                 Log.d(LOG_TAG, "in onClick, placeholder_cancel_button");
+                args.putInt(BUTTON_KEY, VNContract.PhActions.CANCEL);
+                args.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
+                Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
+                mButtonCallback.onPlaceholderActionButtonClicked(args);
+                Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
 //                super.onBackPressed();
                 break;
         }

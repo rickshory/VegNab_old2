@@ -417,8 +417,12 @@ public class MainVNActivity extends ActionBarActivity
         transaction.commit();
     }
 
-    public void onEditPlaceholderButtonClicked(Bundle args) {
-        Log.d(LOG_TAG, "In onEditPlaceholderButtonClicked");
+    public void onPlaceholderActionButtonClicked(Bundle args) {
+        Log.d(LOG_TAG, "In onPlaceholderActionButtonClicked");
+/*      VNContract.PhActions.GO_TO_PICTURES = 0; // go to the show/take/edit photos screen
+        VNContract.PhActions.SAVE = 1; // attempt to force-save the Placeholder information
+        VNContract.PhActions.CANCEL = 2; // cancel creating the Placeholder
+*/
     }
 
     @Override

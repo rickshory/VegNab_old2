@@ -108,6 +108,15 @@ public final class VNContract {
         public static final int PLACE_HOLDERS = 2; // user-created codes for species not known at the time
         public static final int SPECIAL_CODES = 3; // e.g. "no veg" (no vegetation on this subplot)
     }
+
+    // inner class to define Placeholder screen actions
+    // putting them all together here allows consistent usage throughout
+    public static abstract class PhActions {
+        public static final int GO_TO_PICTURES = 0; // go to the show/take/edit photos screen
+        public static final int SAVE = 1; // attempt to force-save the Placeholder information
+        public static final int CANCEL = 2; // cancel creating the Placeholder
+    }
+
     // inner class to define Validation levels
     // putting them all together here allows consistent usage throughout
     public static abstract class Validation {
