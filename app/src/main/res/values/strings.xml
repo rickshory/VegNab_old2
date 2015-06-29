@@ -201,7 +201,7 @@
     <string name="edit_spp_item_title_add">New Species Item</string>
     <string name="edit_spp_item_title_edit">Edit Species Item</string>
     <string name="edit_spp_item_label_sppitem">Code: Description</string>
-    <string name="edit_spp_item_label_dup_notice">"\n\rThis is already entered.\n\rYou can only only enter it again at a different Confidence or the duplicate will not be saved.\n\r"</string>
+    <string name="edit_spp_item_label_dup_notice">"\n\rThis is already entered.\n\rYou can only enter it again at a different Confidence or the duplicate will not be saved.\n\r"</string>
     <string name="edit_spp_item_label_height">Plant height, in centimeters</string>
     <string name="edit_spp_item_hint_height">Height</string>
     <string name="edit_spp_item_label_cover">Plant cover, percent</string>
@@ -265,7 +265,7 @@
 
     <string name="ph_pix_grid_pic_button_message">New Picture</string>
 
-    <string name="ph_pix_grid_pic_button_err">No Placeholder defined, can't take pictures.</string>
+    <string name="ph_pix_grid_pic_button_err">No Placeholder defined, can\'t take pictures.</string>
 
 
     <string name="sel_spp_list_ctxmenu_item_forget">Forget species</string>
