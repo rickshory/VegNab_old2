@@ -14,6 +14,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.BuildConfig;
+import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.Prefs;
 import com.vegnab.vegnab.database.VNContract.Tags;
 
@@ -38,6 +39,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 import android.os.Build;
+
+import static com.vegnab.vegnab.PhPixGridFragment.*;
 
 public class MainVNActivity extends ActionBarActivity 
         implements NewVisitFragment.OnButtonListener,
@@ -393,7 +396,7 @@ public class MainVNActivity extends ActionBarActivity
     final static String ARG_PLACEHOLDER_TIME = "phTimeStamp";
 */		args.putLong(EditPlaceholderFragment.ARG_PLACEHOLDER_ID, 0); // fix this
         args.putString(EditPlaceholderFragment.ARG_PLACEHOLDER_CODE, ""); // fix this
-        PhPixGridFragment phPixGridFrag = PhPixGridFragment.newInstance(args);
+        PhPixGridFragment phPixGridFrag = newInstance(args);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         // put the present fragment on the backstack so the user can navigate back to it
         // the tag is for the fragment now being added, not the one replaced
@@ -418,11 +421,27 @@ public class MainVNActivity extends ActionBarActivity
     }
 
     public void onPlaceholderActionButtonClicked(Bundle args) {
+        Bundle argsOut= new Bundle();
         Log.d(LOG_TAG, "In onPlaceholderActionButtonClicked");
-/*      VNContract.PhActions.GO_TO_PICTURES = 0; // go to the show/take/edit photos screen
-        VNContract.PhActions.SAVE = 1; // attempt to force-save the Placeholder information
-        VNContract.PhActions.CANCEL = 2; // cancel creating the Placeholder
-*/
+        switch (args.getInt(EditPlaceholderFragment.BUTTON_KEY)) {
+            case VNContract.PhActions.GO_TO_PICTURES: // go to the show/take/edit photos screen
+                argsOut.putLong(PhPixGridFragment.ARG_PLACEHOLDER_ID,
+                        args.getLong(EditPlaceholderFragment.ARG_PLACEHOLDER_ID));
+                PhPixGridFragment phGridFrag = PhPixGridFragment.newInstance(argsOut);
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                // put the present fragment on the backstack so the user can navigate back to it
+                // the tag is for the fragment now being added, not the one replaced
+                transaction.replace(R.id.fragment_container, phGridFrag, Tags.PLACEHOLDER_PIX_GRID);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                break;
+
+            case VNContract.PhActions.SAVE: // attempt to force-save the Placeholder information
+                break;
+
+            case VNContract.PhActions.CANCEL: // cancel creating the Placeholder
+                break;
+        }
     }
 
     @Override
