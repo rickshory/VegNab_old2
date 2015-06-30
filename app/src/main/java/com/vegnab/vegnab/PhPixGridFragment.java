@@ -2,10 +2,12 @@ package com.vegnab.vegnab;
 
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -27,6 +29,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
 
     private static final String LOG_TAG = PhPixGridFragment.class.getSimpleName();
     final static String ARG_PLACEHOLDER_ID = "phId";
+    static final int REQUEST_IMAGE_CAPTURE = 1;
     long mPlaceholderId = 0;
     private GridView mPhPixGridView;
     private PhPixGridAdapter mPhPixGridAdapter;
@@ -130,10 +133,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                     flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
                     flexHlpDlg.show(getFragmentManager(), "frg_ph_pix_no_ph_code");
                 } else {
-                    helpTitle = "Take Pictures";
-                    helpMessage = "Not implemented yet, but this will allow you to take a picture";
-                    flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-                    flexHlpDlg.show(getFragmentManager(), "frg_ph_pix_ok");
+                    dispatchTakePictureIntent();
                 }
 
                 break;
@@ -141,6 +141,12 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         }
     }
 
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
