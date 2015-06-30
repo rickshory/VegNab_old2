@@ -27,7 +27,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
 
     private static final String LOG_TAG = PhPixGridFragment.class.getSimpleName();
     final static String ARG_PLACEHOLDER_ID = "phId";
-    long mPlaceholderId;
+    long mPlaceholderId = 0;
     private GridView mPhPixGridView;
     private PhPixGridAdapter mPhPixGridAdapter;
 
@@ -76,6 +76,17 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         // to the fragment
         Bundle args = getArguments();
         if (args != null) {
+            if (mPlaceholderId == 0) {
+                // On return, this method can re-run before
+                // SaveInstanceState and so retain arguments originally passed when created,
+                // such as mPlaceholderId=0.
+                // Do not allow that zero to overwrite a new (nonzero) mPlaceholderId, or
+                // it will flag to create a second copy of the same placeholder.
+                mPlaceholderId = args.getLong(ARG_PLACEHOLDER_ID, 0);
+//                mPlaceholderCode = args.getString(ARG_PLACEHOLDER_CODE);
+            }
+            // also use for special arguments like screen layout
+
 //            start loader to populate grid
 //            mTxtNote.setText(args.getString(ARG_NOTE_ID));
         }
