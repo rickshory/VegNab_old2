@@ -1,10 +1,12 @@
 package com.vegnab.vegnab;
 
+import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageView;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -33,6 +36,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     long mPlaceholderId = 0;
     private GridView mPhPixGridView;
     private PhPixGridAdapter mPhPixGridAdapter;
+    ImageView mTestImageView;
 
     public static PhPixGridFragment newInstance(Bundle args) {
         PhPixGridFragment f = new PhPixGridFragment();
@@ -67,6 +71,8 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         //mPhPixGridAdapter = new PhPixGridAdapter(this, R.layout.grid_item_layout, getData());
         mPhPixGridAdapter = new PhPixGridAdapter(getActivity(), R.layout.grid_ph_pix, null, 0);
         mPhPixGridView.setAdapter(mPhPixGridAdapter);
+
+        mTestImageView = (ImageView) rootView.findViewById(R.id.imageViewTest);
 
         return rootView;
     }
@@ -148,6 +154,15 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            mTestImageView.setImageBitmap(imageBitmap);
+        }
+    }
+    
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // This is called when a new Loader needs to be created.

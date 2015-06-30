@@ -28,4 +28,14 @@
         android:layout_below="@id/placeholder_take_picture_button"
         />
 
+    <ImageView
+        android:id="@+id/imageViewTest"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:visibility="visible"
+        android:layout_alignLeft="@id/phPixGridView"
+        android:layout_below="@id/phPixGridView"
+
+        />
+
 </RelativeLayout>
