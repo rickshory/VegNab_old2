@@ -162,7 +162,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
             mTestImageView.setImageBitmap(imageBitmap);
         }
     }
-    
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // This is called when a new Loader needs to be created.
