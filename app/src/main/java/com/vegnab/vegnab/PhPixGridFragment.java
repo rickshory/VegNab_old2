@@ -2,6 +2,7 @@ package com.vegnab.vegnab;
 
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.GridView;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -50,6 +52,14 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         // inflate the layout for this fragment
 
         View rootView = inflater.inflate(R.layout.fragment_ph_pix_grid, container, false);
+        // set click listener for the buttons in the view
+        Button p = (Button) rootView.findViewById(R.id.placeholder_take_picture_button);
+        PackageManager packageManager = getActivity().getPackageManager();
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            p.setOnClickListener(this);
+        } else {
+            p.setVisibility(View.GONE);
+        }
         mPhPixGridView = (GridView) rootView.findViewById(R.id.phPixGridView);
         //mPhPixGridAdapter = new PhPixGridAdapter(this, R.layout.grid_item_layout, getData());
         mPhPixGridAdapter = new PhPixGridAdapter(getActivity(), R.layout.grid_ph_pix, null, 0);
