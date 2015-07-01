@@ -170,13 +170,16 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         CursorLoader cl = null;
         Uri baseUri;
         String select = null; // default for all-columns, unless re-assigned or overridden by raw SQL
+        String[] params = null;
         switch (id) {
             case VNContract.Loaders.PLACEHOLDER_OF_PIX:
-                Uri onePlaceholderUri = ContentUris.withAppendedId(
-                        Uri.withAppendedPath(
-                                ContentProvider_VegNab.CONTENT_URI, "placeholders"), mPlaceholderId);
-                cl = new CursorLoader(getActivity(), onePlaceholderUri,
-                        null, select, null, null);
+                baseUri = ContentProvider_VegNab.SQL_URI;
+                select = "SELECT PlaceHolders.PlaceHolderCode, PlaceHolders.Description, Namers.NamerName " +
+                        "FROM PlaceHolders LEFT JOIN Namers ON PlaceHolders.NamerID = Namers._id " +
+                        "WHERE PlaceHolders._id = ?;";
+                params = new String[] { "" + mPlaceholderId };
+                cl = new CursorLoader(getActivity(), baseUri,
+                        null, select, params, null);
                 break;
         }
         return cl;
