@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -28,6 +29,8 @@ import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract;
 
+import java.io.File;
+
 public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -42,7 +45,16 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     private TextView mViewPlaceholderGridHeader;
     private GridView mPhPixGridView;
     private PhPixGridAdapter mPhPixGridAdapter;
-    ImageView mTestImageView;
+    private ImageView mTestImageView;
+
+
+//    private static final String BITMAP_STORAGE_KEY = "viewBitMap";
+
+    private Bitmap mImageBitmap;
+    private String mCurrentPhotoPath;
+    private static final String JPEG_FILE_PREFIX = "IMG_";
+    private static final String JPEG_FILE_SUFFIX = ".jpg";
+    private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
 
     public static PhPixGridFragment newInstance(Bundle args) {
         PhPixGridFragment f = new PhPixGridFragment();
@@ -238,5 +250,29 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
 //			don't need to do anything here, no cursor adapter
             break;
         }
+    }
+
+    // Photo album for this Placeholder
+    private String getAlbumName() {
+        // PUBLIC_DB_FOLDER is e.g. "VegNab" or "VegNabAlphaTest"; same as for copies of the DB
+        return BuildConfig.PUBLIC_DB_FOLDER + "/" + mPlaceholderNamer + "/" + mPlaceholderCode;
+    }
+
+    private File getAlbumDir() {
+        File storageDir = null;
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            storageDir = mAlbumStorageDirFactory.getAlbumStorageDir(getAlbumName());
+            if (storageDir != null) {
+                if (! storageDir.mkdirs()) {
+                    if (! storageDir.exists()){
+                        Log.d("CameraSample", "failed to create directory");
+                        return null;
+                    }
+                }
+            }
+        } else {
+            Log.v(getString(R.string.app_name), "External storage is not mounted READ/WRITE.");
+        }
+        return storageDir;
     }
 }
