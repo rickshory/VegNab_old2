@@ -54,7 +54,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     private String mCurrentPhotoPath;
     private static final String JPEG_FILE_PREFIX = "IMG_";
     private static final String JPEG_FILE_SUFFIX = ".jpg";
-    private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
+//    private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
 
     public static PhPixGridFragment newInstance(Bundle args) {
         PhPixGridFragment f = new PhPixGridFragment();
@@ -261,7 +261,10 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     private File getAlbumDir() {
         File storageDir = null;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            storageDir = mAlbumStorageDirFactory.getAlbumStorageDir(getAlbumName());
+            //min SDK version is Honeycomb 3.0, API level 11, so can depend on following
+            storageDir = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES), getAlbumName());
+//            storageDir = mAlbumStorageDirFactory.getAlbumStorageDir(getAlbumName());
             if (storageDir != null) {
                 if (! storageDir.mkdirs()) {
                     if (! storageDir.exists()){
