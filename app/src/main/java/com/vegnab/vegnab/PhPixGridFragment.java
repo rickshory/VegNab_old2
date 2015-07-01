@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -34,6 +35,8 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     final static String ARG_PLACEHOLDER_ID = "phId";
     static final int REQUEST_IMAGE_CAPTURE = 1;
     long mPlaceholderId = 0;
+    String mPlaceholderCode, mPlaceholderDescr, mPlaceholderNamer;
+    private TextView mViewPlaceholderGridHeader;
     private GridView mPhPixGridView;
     private PhPixGridAdapter mPhPixGridAdapter;
     ImageView mTestImageView;
@@ -59,6 +62,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         // inflate the layout for this fragment
 
         View rootView = inflater.inflate(R.layout.fragment_ph_pix_grid, container, false);
+        mViewPlaceholderGridHeader = (TextView) rootView.findViewById(R.id.phPixGridTitleText);
         // set click listener for the buttons in the view
         Button p = (Button) rootView.findViewById(R.id.placeholder_take_picture_button);
         PackageManager packageManager = getActivity().getPackageManager();
@@ -96,7 +100,10 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
             }
             // also use for special arguments like screen layout
 
+            // start loader to get header parameters
+            getLoaderManager().initLoader(VNContract.Loaders.PLACEHOLDER_OF_PIX, null, this);
 //            start loader to populate grid
+
 //            mTxtNote.setText(args.getString(ARG_NOTE_ID));
         }
     }
@@ -194,14 +201,10 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
             case VNContract.Loaders.PLACEHOLDER_OF_PIX:
                 Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_OF_PIX, records: " + c.getCount());
                 if (c.moveToFirst()) {
-    //				mPlaceholderId = c.getLong(c.getColumnIndexOrThrow("_id"));
-//                    mViewPlaceholderCode.setText(c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
-//                    mViewPlaceholderDescription.setText(c.getString(c.getColumnIndexOrThrow("Description")));
-//                    mViewPlaceholderHabitat.setText(c.getString(c.getColumnIndexOrThrow("Habitat")));
-//                    mViewPlaceholderIdentifier.setText(c.getString(c.getColumnIndexOrThrow("LabelNum")));
-    //				mPhVisitId = c.getLong(c.getColumnIndexOrThrow("VisitIdWhereFirstFound"));
-    //				mPhProjId = c.getLong(c.getColumnIndexOrThrow("ProjID"));
-    //				mPhNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
+                    mPlaceholderCode = c.getString(c.getColumnIndexOrThrow("PlaceHolderCode"));
+                    mPlaceholderDescr = c.getString(c.getColumnIndexOrThrow("Description"));
+                    mPlaceholderNamer = c.getString(c.getColumnIndexOrThrow("NamerName"));
+                    mViewPlaceholderGridHeader.setText(mPlaceholderCode + ": " + mPlaceholderDescr);
                 } else { // no record to edit yet, set up new record
 //                    mViewPlaceholderCode.setText(mPlaceholderCode);
                 }
