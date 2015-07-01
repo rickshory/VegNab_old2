@@ -33,6 +33,9 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
 
     private static final String LOG_TAG = PhPixGridFragment.class.getSimpleName();
     final static String ARG_PLACEHOLDER_ID = "phId";
+    final static String ARG_PLACEHOLDER_CODE = "phCode";
+    final static String ARG_PLACEHOLDER_DESCRIPTION = "phDescr";
+    final static String ARG_PLACEHOLDER_NAMER = "phNamer";
     static final int REQUEST_IMAGE_CAPTURE = 1;
     long mPlaceholderId = 0;
     String mPlaceholderCode, mPlaceholderDescr, mPlaceholderNamer;
@@ -53,14 +56,16 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         // if the activity was re-created (e.g. from a screen rotate)
         // restore the previous parameters remembered by onSaveInstanceState()
         // This is mostly needed in fixed-pane layouts
-/*		if (savedInstanceState != null) {
-            // restore parameters
-            }
-        } else {
-            // default parameters
-        } */
-        // inflate the layout for this fragment
+        if (savedInstanceState != null) { // restore parameters
+            Log.d(LOG_TAG, "In onCreateView, about to retrieve mPlaceholderId: " + mPlaceholderId);
+            mPlaceholderId = savedInstanceState.getLong(ARG_PLACEHOLDER_ID, 0);
+            mPlaceholderCode = savedInstanceState.getString(ARG_PLACEHOLDER_CODE);
+            mPlaceholderDescr = savedInstanceState.getString(ARG_PLACEHOLDER_DESCRIPTION);
+            mPlaceholderNamer = savedInstanceState.getString(ARG_PLACEHOLDER_NAMER);
+        } else { // default parameters
 
+        }
+        // inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_ph_pix_grid, container, false);
         mViewPlaceholderGridHeader = (TextView) rootView.findViewById(R.id.phPixGridTitleText);
         // set click listener for the buttons in the view
@@ -119,6 +124,16 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
             }
             return imageItems;
     */
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // save members needed to re-create the fragment
+        outState.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
+        outState.putString(ARG_PLACEHOLDER_CODE, mPlaceholderCode);
+        outState.putString(ARG_PLACEHOLDER_DESCRIPTION, mPlaceholderDescr);
+        outState.putString(ARG_PLACEHOLDER_NAMER, mPlaceholderNamer);
+    }
 
     @Override
     public void onClick(View v) {
