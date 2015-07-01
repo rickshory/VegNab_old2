@@ -268,13 +268,13 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
             if (storageDir != null) {
                 if (! storageDir.mkdirs()) {
                     if (! storageDir.exists()){
-                        Log.d("CameraSample", "failed to create directory");
+                        Log.d(LOG_TAG, "Could not create folder: " + getAlbumName());
                         return null;
                     }
                 }
             }
         } else {
-            Log.v(getString(R.string.app_name), "External storage is not mounted READ/WRITE.");
+            Log.d(getString(R.string.app_name), "External storage is not mounted READ/WRITE.");
         }
         return storageDir;
     }
