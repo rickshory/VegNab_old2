@@ -30,6 +30,9 @@ import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -255,7 +258,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     // Photo album for this Placeholder
     private String getAlbumName() {
         // PUBLIC_DB_FOLDER is e.g. "VegNab" or "VegNabAlphaTest"; same as for copies of the DB
-        return BuildConfig.PUBLIC_DB_FOLDER + "/" + mPlaceholderNamer + "/" + mPlaceholderCode;
+        return BuildConfig.PUBLIC_DB_FOLDER + "/" + mPlaceholderNamer;
     }
 
     private File getAlbumDir() {
@@ -278,4 +281,21 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         }
         return storageDir;
     }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = mPlaceholderCode.replace(" ", "_") + timeStamp + "_";
+        File albumF = getAlbumDir();
+        File imageF = File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
+        return imageF;
+    }
+
+    private File setUpPhotoFile() throws IOException {
+        File f = createImageFile();
+        mCurrentPhotoPath = f.getAbsolutePath();
+        return f;
+    }
+
+
 }
