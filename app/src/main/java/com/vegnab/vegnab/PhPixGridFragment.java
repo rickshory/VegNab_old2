@@ -171,7 +171,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         Uri baseUri;
         String select = null; // default for all-columns, unless re-assigned or overridden by raw SQL
         switch (id) {
-            case VNContract.Loaders.PLACEHOLDER_TO_EDIT:
+            case VNContract.Loaders.PLACEHOLDER_OF_PIX:
                 Uri onePlaceholderUri = ContentUris.withAppendedId(
                         Uri.withAppendedPath(
                                 ContentProvider_VegNab.CONTENT_URI, "placeholders"), mPlaceholderId);
@@ -188,8 +188,8 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
 //        mRowCt = c.getCount();
         switch (loader.getId()) {
 
-            case VNContract.Loaders.PLACEHOLDER_TO_EDIT:
-                Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_TO_EDIT, records: " + c.getCount());
+            case VNContract.Loaders.PLACEHOLDER_OF_PIX:
+                Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_OF_PIX, records: " + c.getCount());
                 if (c.moveToFirst()) {
     //				mPlaceholderId = c.getLong(c.getColumnIndexOrThrow("_id"));
 //                    mViewPlaceholderCode.setText(c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
@@ -212,8 +212,8 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         // is about to be closed. Need to make sure it is no longer is use.
         switch (loader.getId()) {
 
-        case VNContract.Loaders.PLACEHOLDER_TO_EDIT:
-            Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_TO_EDIT.");
+        case VNContract.Loaders.PLACEHOLDER_OF_PIX:
+            Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_OF_PIX.");
 //			don't need to do anything here, no cursor adapter
             break;
         }

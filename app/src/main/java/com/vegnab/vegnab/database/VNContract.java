@@ -80,6 +80,11 @@ public final class VNContract {
         public static final int PLACEHOLDER_PROJ_NAMER = 93; // projectID and NamerID from the Visit
         public static final int PLACEHOLDER_BACKSTORY = 94; // project, location, namer, etc., details for the placeholder
         public static final int PLACEHOLDER_HABITATS = 95; // Recall these as options to re-select
+
+        // in Placeholder Pictures Grid
+        public static final int PLACEHOLDER_OF_PIX = 101; // The current placeholder
+        public static final int PLACEHOLDER_PIX = 102; // Pictures for the current placeholder
+
     }
 
     // inner class to define Tags
