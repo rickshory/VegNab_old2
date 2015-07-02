@@ -368,6 +368,12 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
 
     private void storePicturePathInDB() {
         return;
+/*"_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+"PlaceHolderID" INTEGER NOT NULL,
+"PhotoPath" VARCHAR(255),
+"PhotoTimeStamp" TIMESTAMP NOT NULL DEFAULT (DATETIME('now')),
+"PhotoNotes" VARCHAR(255),
+"PhotoURL" VARCHAR(255),*/
     }
 
 /*
