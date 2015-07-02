@@ -41,10 +41,12 @@ public class ContentProvider_VegNab extends ContentProvider {
 	private static final int VEGITEM_ID = 140;
 	private static final int PLACEHOLDERS = 150;
 	private static final int PLACEHOLDER_ID = 160;
-	private static final int IDLEVELS = 170;
-	private static final int IDLEVEL_ID = 180;
-	private static final int SPECIES = 190;
-	private static final int SPECIES_ID = 200;
+    private static final int PLACEHOLDER_PIX = 170;
+    private static final int PLACEHOLDER_PIX_ID = 180;
+	private static final int IDLEVELS = 190;
+	private static final int IDLEVEL_ID = 200;
+	private static final int SPECIES = 210;
+	private static final int SPECIES_ID = 220;
 	
 //	private static final String AUTHORITY = "com.vegnab.provider"; // must match in app Manifest
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".provider";
@@ -76,6 +78,8 @@ public class ContentProvider_VegNab extends ContentProvider {
 		sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/vegitems/#", VEGITEM_ID);
 		sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/placeholders", PLACEHOLDERS);
 		sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/placeholders/#", PLACEHOLDER_ID);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/placeholderpix", PLACEHOLDER_PIX);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/placeholderpix/#", PLACEHOLDER_PIX_ID);
 		sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/idlevels", IDLEVELS);
 		sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/idlevels/#", IDLEVEL_ID);
 		sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/species", SPECIES);
@@ -191,6 +195,16 @@ public class ContentProvider_VegNab extends ContentProvider {
 				queryBuilder.setTables("Placeholders");
 				Log.d(LOG_TAG, "PLACEHOLDERS setTables");
 				break;
+
+			case PLACEHOLDER_PIX_ID:
+				queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
+				Log.d(LOG_TAG, "PLACEHOLDER_PIX_ID appendWhere");
+				// note, no break, so drops through
+			case PLACEHOLDER_PIX:
+				queryBuilder.setTables("Placeholders");
+				Log.d(LOG_TAG, "PLACEHOLDER_PIX setTables");
+				break;
+
 			case IDLEVEL_ID:
 				queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
 				Log.d(LOG_TAG, "IDLEVEL_ID appendWhere");
@@ -262,7 +276,11 @@ public class ContentProvider_VegNab extends ContentProvider {
 			id = sqlDB.insert("Placeholders", null, values);
 			uriToReturn = Uri.parse(BASE_PATH + "/placeholders/" + id);
 			break;
-		case IDLEVELS:
+		case PLACEHOLDER_PIX:
+			id = sqlDB.insert("PlaceHolderPix", null, values);
+			uriToReturn = Uri.parse(BASE_PATH + "/placeholderpix/" + id);
+			break;
+        case IDLEVELS:
 			id = sqlDB.insert("IdLevels", null, values);
 			uriToReturn = Uri.parse(BASE_PATH + "/idlevels/" + id);
 		case SPECIES:
@@ -377,6 +395,19 @@ public class ContentProvider_VegNab extends ContentProvider {
 				rowsDeleted = sqlDB.delete("Placeholders", "_id=" + id, selectionArgs);
 			}
 			break;
+
+		case PLACEHOLDER_PIX:
+			rowsDeleted = sqlDB.delete("PlaceHolderPix", selection, selectionArgs);
+			break;
+		case PLACEHOLDER_PIX_ID:
+			id = uri.getLastPathSegment();
+			if (TextUtils.isEmpty(selection)) {
+				rowsDeleted = sqlDB.delete("PlaceHolderPix", "_id=" + id, null);
+			} else {
+				rowsDeleted = sqlDB.delete("PlaceHolderPix", "_id=" + id, selectionArgs);
+			}
+			break;
+
 		case IDLEVELS:
 			rowsDeleted = sqlDB.delete("IdLevels", selection, selectionArgs);
 			break;
@@ -517,6 +548,18 @@ public class ContentProvider_VegNab extends ContentProvider {
 			}
 			break;
 
+		case PLACEHOLDER_PIX:
+			rowsUpdated = sqlDB.updateWithOnConflict("PlaceHolderPix", values, selection, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
+			break;
+		case PLACEHOLDER_PIX_ID:
+			id = uri.getLastPathSegment();
+			if (TextUtils.isEmpty(selection)) {
+				rowsUpdated = sqlDB.updateWithOnConflict("PlaceHolderPix", values, "_id=" + id, null, SQLiteDatabase.CONFLICT_IGNORE);
+			} else {
+				rowsUpdated = sqlDB.updateWithOnConflict("PlaceHolderPix", values, "_id=" + id, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
+			}
+			break;
+
 		case IDLEVELS:
 			rowsUpdated = sqlDB.updateWithOnConflict("IdLevels", values, selection, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
 			break;
@@ -528,7 +571,7 @@ public class ContentProvider_VegNab extends ContentProvider {
 				rowsUpdated = sqlDB.updateWithOnConflict("IdLevels", values, "_id=" + id, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
 			}
 			break;
-		
+
 		case SPECIES:
 			rowsUpdated = sqlDB.updateWithOnConflict("RegionalSpeciesList", values, selection, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
 			break;
