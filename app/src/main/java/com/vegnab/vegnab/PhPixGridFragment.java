@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -258,7 +259,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     // Photo album for this Placeholder
     private String getAlbumName() {
         // PUBLIC_DB_FOLDER is e.g. "VegNab" or "VegNabAlphaTest"; same as for copies of the DB
-        return BuildConfig.PUBLIC_DB_FOLDER + "/" + mPlaceholderNamer;
+        return BuildConfig.PUBLIC_DB_FOLDER + "/" + mPlaceholderNamer.replace("[^a-zA-Z0-9-]", "_");
     }
 
     private File getAlbumDir() {
@@ -285,7 +286,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = mPlaceholderCode.replace(" ", "_") + timeStamp + "_";
+        String imageFileName = mPlaceholderCode.replace("[^a-zA-Z0-9-]", "_") + timeStamp + "_";
         File albumF = getAlbumDir();
         File imageF = File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
         return imageF;
@@ -297,5 +298,49 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         return f;
     }
 
+    private void setPic() {
+        // There isn't enough memory to open up more than a couple camera photos
+        // so pre-scale the target bitmap into which the file is decoded
 
+        // Get the size of the ImageView
+        int targetW = mTestImageView.getWidth();
+        int targetH = mTestImageView.getHeight();
+
+        // Get the size of the image
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // determine which dimension needs to be reduced less
+        int scaleFactor = 1;
+        if ((targetW > 0) || (targetH > 0)) {
+            scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+        }
+
+        // Set bitmap options to scale the image decode target
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+//        bmOptions.inPurgeable = true;
+
+        // Decode the JPEG file into a Bitmap
+        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+
+        // Associate the Bitmap to the ImageView
+        mTestImageView.setImageBitmap(bitmap);
+        mTestImageView.setVisibility(View.VISIBLE);
+
+    }
+
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE");
+        File f = new File(mCurrentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        getActivity().sendBroadcast(mediaScanIntent);
+    }
+
+/*
+*/
 }
