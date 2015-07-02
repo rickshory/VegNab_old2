@@ -57,7 +57,6 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
 
     private Bitmap mImageBitmap;
     private String mCurrentPhotoPath;
-    private static final String JPEG_FILE_PREFIX = "IMG_";
     private static final String JPEG_FILE_SUFFIX = ".jpg";
 //    private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
 
@@ -276,7 +275,8 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     // Photo album for this Placeholder
     private String getAlbumName() {
         // PUBLIC_DB_FOLDER is e.g. "VegNab" or "VegNabAlphaTest"; same as for copies of the DB
-        return BuildConfig.PUBLIC_DB_FOLDER + "/" + mPlaceholderNamer.replace("[^a-zA-Z0-9-]", "_");
+//        return BuildConfig.PUBLIC_DB_FOLDER + "/" + mPlaceholderNamer.replace("[^a-zA-Z0-9-]", "_");
+        return BuildConfig.PUBLIC_DB_FOLDER + "/" + mPlaceholderNamer;
     }
 
     private File getAlbumDir() {
@@ -303,7 +303,8 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = mPlaceholderCode.replace("[^a-zA-Z0-9-]", "_") + timeStamp + "_";
+//        String imageFileName = mPlaceholderCode.replace("[^a-zA-Z0-9-]", "_") + timeStamp + "_";
+        String imageFileName = mPlaceholderCode + "_" + timeStamp + "_";
         File albumF = getAlbumDir();
         File imageF = File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
         return imageF;
@@ -363,6 +364,10 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         File f = new File(mCurrentPhotoPath);
         MediaScannerConnection.scanFile(getActivity().getApplicationContext(),
                 new String[]{f.getAbsolutePath()}, null, null);
+    }
+
+    private void storePicturePathInDB() {
+        return;
     }
 
 /*
