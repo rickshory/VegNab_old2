@@ -213,6 +213,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                 setPic();
                 galleryAddPic();
                 makeFileVisible();
+                storePicturePathInDB();
                 mCurrentPhotoPath = null;
             }
 //            Bundle extras = data.getExtras();
