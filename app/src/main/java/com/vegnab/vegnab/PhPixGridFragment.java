@@ -55,7 +55,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     private PhPixGridAdapter mPhPixGridAdapter;
     private ImageView mTestImageView;
     SimpleDateFormat mTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-
+    Cursor mPixMatchCursor;
 
 //    private static final String BITMAP_STORAGE_KEY = "viewBitMap";
 
@@ -274,14 +274,8 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                 break;
 
             case VNContract.Loaders.PLACEHOLDER_PIX:
-
-/*CREATE TABLE IF NOT EXISTS "PlaceHolderPix" (
-"_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
-"PlaceHolderID" INTEGER NOT NULL,
-"PhotoPath" VARCHAR(255),
-"PhotoTimeStamp" TIMESTAMP NOT NULL DEFAULT (DATETIME('now')),
-"PhotoNotes" VARCHAR(255),
-"PhotoURL" VARCHAR(255),*/
+                mPhPixGridAdapter.swapCursor(c);
+                mPixMatchCursor = c;
                 break;
         }
     }
