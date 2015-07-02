@@ -1,7 +1,9 @@
 package com.vegnab.vegnab;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -35,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -51,6 +54,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     private GridView mPhPixGridView;
     private PhPixGridAdapter mPhPixGridAdapter;
     private ImageView mTestImageView;
+    SimpleDateFormat mTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
 
 //    private static final String BITMAP_STORAGE_KEY = "viewBitMap";
@@ -367,13 +371,36 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     }
 
     private void storePicturePathInDB() {
-        return;
-/*"_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
-"PlaceHolderID" INTEGER NOT NULL,
-"PhotoPath" VARCHAR(255),
-"PhotoTimeStamp" TIMESTAMP NOT NULL DEFAULT (DATETIME('now')),
-"PhotoNotes" VARCHAR(255),
+        Log.d(LOG_TAG, "savePlaceHolderPix; creating new record with mPlaceholderId = " + mPlaceholderId);
+        ContentResolver rs = getActivity().getContentResolver();
+        ContentValues values = new ContentValues();
+        values.put("PlaceHolderID", mPlaceholderId);
+        values.put("PhotoPath", mCurrentPhotoPath);
+        values.put("PhotoTimeStamp", mTimeFormat.format(new Date()));
+        Uri phPixUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "placeholderpix");
+        Uri phUri = rs.insert(phPixUri, values);
+        Log.d(LOG_TAG, "new record in storePicturePathInDB; returned URI: " + phUri.toString());
+        long newRecId = Long.parseLong(phUri.getLastPathSegment());
+        if (newRecId < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
+            Log.d(LOG_TAG, "new record in savePlaceholderRecord has Id == " + newRecId + "); canceled");
+//            return 0;
+        }
+
+/* "PhotoNotes" VARCHAR(255),
 "PhotoURL" VARCHAR(255),*/
+
+/*Uri mPlaceholdersUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "placeholders");
+            mUri = rs.insert(mPlaceholdersUri, mValues);
+            Log.d(LOG_TAG, "new record in savePlaceholderRecord; returned URI: " + mUri.toString());
+            long newRecId = Long.parseLong(mUri.getLastPathSegment());
+
+            mPlaceholderId = newRecId;
+            getLoaderManager().restartLoader(Loaders.PLACEHOLDERS_EXISTING, null, this);
+
+            mUri = ContentUris.withAppendedId(mPlaceholdersUri, mPlaceholderId);
+            Log.d(LOG_TAG, "new record in savePlaceholderRecord; URI re-parsed: " + mUri.toString());
+            numUpdated = 1;*/
+
     }
 
 /*
