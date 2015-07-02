@@ -516,6 +516,7 @@ public class ContentProvider_VegNab extends ContentProvider {
 				rowsUpdated = sqlDB.updateWithOnConflict("Placeholders", values, "_id=" + id, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
 			}
 			break;
+
 		case IDLEVELS:
 			rowsUpdated = sqlDB.updateWithOnConflict("IdLevels", values, selection, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
 			break;
@@ -527,6 +528,7 @@ public class ContentProvider_VegNab extends ContentProvider {
 				rowsUpdated = sqlDB.updateWithOnConflict("IdLevels", values, "_id=" + id, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
 			}
 			break;
+		
 		case SPECIES:
 			rowsUpdated = sqlDB.updateWithOnConflict("RegionalSpeciesList", values, selection, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
 			break;
