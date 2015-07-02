@@ -240,6 +240,17 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                 cl = new CursorLoader(getActivity(), baseUri,
                         null, select, params, null);
                 break;
+
+            case VNContract.Loaders.PLACEHOLDER_PIX:
+                baseUri = ContentProvider_VegNab.SQL_URI;
+                select = "SELECT PlaceHolderPix.PhotoPath, PlaceHolderPix.PhotoNotes " +
+                        "FROM PlaceHolderPix " +
+                        "WHERE PlaceHolderPix.PlaceHolderID = ? " +
+                        "ORDER BY PlaceHolderPix.PhotoTimeStamp DESC;";
+                params = new String[] { "" + mPlaceholderId };
+                cl = new CursorLoader(getActivity(), baseUri,
+                        null, select, params, null);
+                break;
         }
         return cl;
     }
@@ -261,6 +272,17 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
 //                    mViewPlaceholderCode.setText(mPlaceholderCode);
                 }
                 break;
+
+            case VNContract.Loaders.PLACEHOLDER_PIX:
+
+/*CREATE TABLE IF NOT EXISTS "PlaceHolderPix" (
+"_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+"PlaceHolderID" INTEGER NOT NULL,
+"PhotoPath" VARCHAR(255),
+"PhotoTimeStamp" TIMESTAMP NOT NULL DEFAULT (DATETIME('now')),
+"PhotoNotes" VARCHAR(255),
+"PhotoURL" VARCHAR(255),*/
+                break;
         }
     }
 
@@ -270,10 +292,15 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         // is about to be closed. Need to make sure it is no longer is use.
         switch (loader.getId()) {
 
-        case VNContract.Loaders.PLACEHOLDER_OF_PIX:
-            Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_OF_PIX.");
-//			don't need to do anything here, no cursor adapter
-            break;
+            case VNContract.Loaders.PLACEHOLDER_OF_PIX:
+                Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_OF_PIX.");
+    //			don't need to do anything here, no cursor adapter
+                break;
+
+            case VNContract.Loaders.PLACEHOLDER_PIX:
+                Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_PIX.");
+    //			don't need to do anything here, no cursor adapter
+                break;
         }
     }
 
