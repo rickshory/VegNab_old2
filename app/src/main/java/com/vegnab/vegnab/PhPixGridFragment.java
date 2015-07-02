@@ -377,32 +377,21 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         values.put("PlaceHolderID", mPlaceholderId);
         values.put("PhotoPath", mCurrentPhotoPath);
         values.put("PhotoTimeStamp", mTimeFormat.format(new Date()));
+/* "PhotoNotes" VARCHAR(255),
+"PhotoURL" VARCHAR(255),*/
         Uri phPixUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "placeholderpix");
         Uri phUri = rs.insert(phPixUri, values);
         Log.d(LOG_TAG, "new record in storePicturePathInDB; returned URI: " + phUri.toString());
         long newRecId = Long.parseLong(phUri.getLastPathSegment());
+        long placeholderPixId = newRecId;
         if (newRecId < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
-            Log.d(LOG_TAG, "new record in savePlaceholderRecord has Id == " + newRecId + "); canceled");
+            Log.d(LOG_TAG, "new record in savePlaceHolderPix has Id == " + newRecId + "); canceled");
 //            return 0;
+        } else {
+            getLoaderManager().restartLoader(VNContract.Loaders.PLACEHOLDER_PIX, null, this);
+//            Uri phNewUri = ContentUris.withAppendedId(phUri, newRecId);
+//            Log.d(LOG_TAG, "new record in savePlaceHolderPix; URI re-parsed: " + phNewUri.toString());
+//            long numUpdated = 1;
         }
-
-/* "PhotoNotes" VARCHAR(255),
-"PhotoURL" VARCHAR(255),*/
-
-/*Uri mPlaceholdersUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "placeholders");
-            mUri = rs.insert(mPlaceholdersUri, mValues);
-            Log.d(LOG_TAG, "new record in savePlaceholderRecord; returned URI: " + mUri.toString());
-            long newRecId = Long.parseLong(mUri.getLastPathSegment());
-
-            mPlaceholderId = newRecId;
-            getLoaderManager().restartLoader(Loaders.PLACEHOLDERS_EXISTING, null, this);
-
-            mUri = ContentUris.withAppendedId(mPlaceholdersUri, mPlaceholderId);
-            Log.d(LOG_TAG, "new record in savePlaceholderRecord; URI re-parsed: " + mUri.toString());
-            numUpdated = 1;*/
-
     }
-
-/*
-*/
 }
