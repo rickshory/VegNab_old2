@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -208,6 +209,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
             if (mCurrentPhotoPath != null) {
                 setPic();
                 galleryAddPic();
+                makeFileVisible();
                 mCurrentPhotoPath = null;
             }
 //            Bundle extras = data.getExtras();
@@ -354,6 +356,13 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         getActivity().sendBroadcast(mediaScanIntent);
+    }
+
+    private void makeFileVisible() {
+        // must do following or file is not visible externally
+        File f = new File(mCurrentPhotoPath);
+        MediaScannerConnection.scanFile(getActivity().getApplicationContext(),
+                new String[]{f.getAbsolutePath()}, null, null);
     }
 
 /*
