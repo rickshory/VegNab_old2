@@ -187,6 +187,16 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File f = null;
+        try {
+            f = setUpPhotoFile();
+            mCurrentPhotoPath = f.getAbsolutePath();
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+        } catch (IOException e) {
+            e.printStackTrace();
+            f = null;
+            mCurrentPhotoPath = null;
+        }
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
@@ -195,9 +205,14 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            mTestImageView.setImageBitmap(imageBitmap);
+            if (mCurrentPhotoPath != null) {
+                setPic();
+                galleryAddPic();
+                mCurrentPhotoPath = null;
+            }
+//            Bundle extras = data.getExtras();
+//            Bitmap imageBitmap = (Bitmap) extras.get("data");
+//            mTestImageView.setImageBitmap(imageBitmap);
         }
     }
 
