@@ -16,6 +16,8 @@ public class PhPixGridAdapter extends ResourceCursorAdapter {
         super(ctx, layout, c, flags);
         mInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
+
+
 /*	private Context context;
 	private int layoutResourceId;
 	private ArrayList data = new ArrayList();

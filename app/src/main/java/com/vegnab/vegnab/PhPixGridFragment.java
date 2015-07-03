@@ -243,13 +243,15 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
 
             case VNContract.Loaders.PLACEHOLDER_PIX:
                 baseUri = ContentProvider_VegNab.SQL_URI;
-                select = "SELECT PlaceHolderPix.PhotoPath, PlaceHolderPix.PhotoNotes " +
+                select = "SELECT PlaceHolderPix._id, PlaceHolderPix.PhotoPath, PlaceHolderPix.PhotoNotes " +
                         "FROM PlaceHolderPix " +
                         "WHERE PlaceHolderPix.PlaceHolderID = ? " +
                         "ORDER BY PlaceHolderPix.PhotoTimeStamp DESC;";
                 params = new String[] { "" + mPlaceholderId };
+                Log.d(LOG_TAG, "onCreateLoader, PLACEHOLDER_PIX, just before CursorLoader");
                 cl = new CursorLoader(getActivity(), baseUri,
                         null, select, params, null);
+                Log.d(LOG_TAG, "onCreateLoader, PLACEHOLDER_PIX, just after CursorLoader");
                 break;
         }
         return cl;
@@ -274,7 +276,9 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                 break;
 
             case VNContract.Loaders.PLACEHOLDER_PIX:
+                Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PIX, just before swapCursor");
                 mPhPixGridAdapter.swapCursor(c);
+                Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PIX, just before copy cursor");
                 mPixMatchCursor = c;
                 break;
         }
@@ -302,7 +306,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     private String getAlbumName() {
         // PUBLIC_DB_FOLDER is e.g. "VegNab" or "VegNabAlphaTest"; same as for copies of the DB
 //        return BuildConfig.PUBLIC_DB_FOLDER + "/" + mPlaceholderNamer.replace("[^a-zA-Z0-9-]", "_");
-        return BuildConfig.PUBLIC_DB_FOLDER + "/" + mPlaceholderNamer;
+        return BuildConfig.PUBLIC_DB_FOLDER + "/" + mPlaceholderNamer + "/" + mPlaceholderCode;
     }
 
     private File getAlbumDir() {
@@ -330,7 +334,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 //        String imageFileName = mPlaceholderCode.replace("[^a-zA-Z0-9-]", "_") + timeStamp + "_";
-        String imageFileName = mPlaceholderCode + "_" + timeStamp + "_";
+        String imageFileName = timeStamp + "_";
         File albumF = getAlbumDir();
         File imageF = File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
         return imageF;
