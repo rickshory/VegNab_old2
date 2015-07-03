@@ -1,12 +1,19 @@
 package com.vegnab.vegnab;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.ResourceCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.vegnab.vegnab.database.VNContract;
+
+import java.util.ArrayList;
 
 public class PhPixGridAdapter extends ResourceCursorAdapter {
 
@@ -17,8 +24,26 @@ public class PhPixGridAdapter extends ResourceCursorAdapter {
         mInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
+/*    @Override
+    public void bindView(View view, Context context, Cursor cursor) {
 
-/*	private Context context;
+        ImageView photo = (ImageView) view;
+        String url_medium = cursor.getString(cursor.getColumnIndex(KarmaDbAdapter.PHOTO_URL_MEDIUM));
+        ImageCache.download(url_medium, photo);
+
+    }
+
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        ImageView v = new ImageView(context);
+        v.setLayoutParams(new GridView.LayoutParams(100, 100));
+        v.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        bindView(v, context, cursor);
+        return v;
+    }
+}*/
+
+	private Context context;
 	private int layoutResourceId;
 	private ArrayList data = new ArrayList();
 
@@ -45,7 +70,7 @@ public class PhPixGridAdapter extends ResourceCursorAdapter {
 			holder = (ViewHolder) row.getTag();
 		}
 
-		VNGridImageItem item = data.get(position);
+		VNContract.VNGridImageItem item = data.get(position);
 		holder.imageTitle.setText(item.getTitle());
 		holder.image.setImageBitmap(item.getImage());
 		return row;
@@ -55,7 +80,7 @@ public class PhPixGridAdapter extends ResourceCursorAdapter {
 		TextView imageTitle;
 		ImageView image;
 	}
-}*/
+}
     @Override
     public void bindView(View v, Context ctx, Cursor c) {
 // example of formatting by position
@@ -72,8 +97,12 @@ public class PhPixGridAdapter extends ResourceCursorAdapter {
 "PhotoTimeStamp" TIMESTAMP NOT NULL DEFAULT (DATETIME('now')),
 "PhotoNotes" VARCHAR(255),
 "PhotoURL" VARCHAR(255),*/
-        int cfCode = c.getInt(c.getColumnIndexOrThrow("IdLevelID")); // not used yet
-        String sppLine = ""; // not used yet
+        String note = c.getString(c.getColumnIndexOrThrow("PhotoNotes"));
+        if (note == null) {
+            note = "(no note)";
+        }
+        String path = c.getString(c.getColumnIndexOrThrow("PhotoPath"));
+
         TextView vegText = (TextView) v.findViewById(R.id.veg_descr_text);
         vegText.setText(c.getString(c.getColumnIndexOrThrow("SppLine")));
 
@@ -85,25 +114,5 @@ public class PhPixGridAdapter extends ResourceCursorAdapter {
             vegHt.setText(ht + "cm");
         }
 
-        TextView vegCov = (TextView) v.findViewById(R.id.veg_cover_text);
-        String cv = c.getString(c.getColumnIndexOrThrow("Cover"));
-        if (cv == null) {
-            vegCov.setVisibility(View.GONE);
-        } else {
-            vegCov.setText(cv + "%");
-        }
-
-        CheckBox vegPresence = (CheckBox) v.findViewById(R.id.veg_presence_ck);
-        // explicitly test Presence for null
-        if (c.isNull(c.getColumnIndexOrThrow("Presence"))) {
-            vegPresence.setVisibility(View.GONE);
-        } else {
-            int presence = c.getInt(c.getColumnIndexOrThrow("Presence"));
-            if (presence != 0) {
-                vegPresence.setChecked(true);
-            } else {
-                vegPresence.setChecked(false);
-            }
-        }
     }
 }
