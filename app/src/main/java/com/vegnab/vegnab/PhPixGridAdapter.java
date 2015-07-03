@@ -3,6 +3,8 @@ package com.vegnab.vegnab;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.widget.ResourceCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 
 import com.vegnab.vegnab.database.VNContract;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class PhPixGridAdapter extends ResourceCursorAdapter {
@@ -102,17 +105,17 @@ public class PhPixGridAdapter extends ResourceCursorAdapter {
             note = "(no note)";
         }
         String path = c.getString(c.getColumnIndexOrThrow("PhotoPath"));
-
-        TextView vegText = (TextView) v.findViewById(R.id.veg_descr_text);
-        vegText.setText(c.getString(c.getColumnIndexOrThrow("SppLine")));
-
-        TextView vegHt = (TextView) v.findViewById(R.id.veg_height_text);
-        String ht = c.getString(c.getColumnIndexOrThrow("Height"));
-        if (ht == null) {
-            vegHt.setVisibility(View.GONE);
-        } else {
-            vegHt.setText(ht + "cm");
+        File imgFile = new  File(path);
+        if (imgFile.exists()) {
+            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            mImgOriginal.setImageBitmap(myBitmap);
+            mImgOriginal.setAdjustViewBounds(true);
         }
+
+
+
+
+
 
     }
 }
