@@ -37,14 +37,4 @@
         android:layout_below="@id/placeholder_take_picture_button"
         />
 
-    <ImageView
-        android:id="@+id/imageViewTest"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:visibility="visible"
-        android:layout_alignLeft="@id/phPixGridView"
-        android:layout_below="@id/phPixGridView"
-
-        />
-
 </RelativeLayout>
