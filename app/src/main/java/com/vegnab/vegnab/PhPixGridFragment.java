@@ -127,8 +127,8 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
 
             // start loader to get header parameters
             getLoaderManager().initLoader(VNContract.Loaders.PLACEHOLDER_OF_PIX, null, this);
-//            start loader to populate grid
-
+            // start loader to populate grid
+            getLoaderManager().initLoader(VNContract.Loaders.PLACEHOLDER_PIX, null, this);
 //            mTxtNote.setText(args.getString(ARG_NOTE_ID));
         }
     }

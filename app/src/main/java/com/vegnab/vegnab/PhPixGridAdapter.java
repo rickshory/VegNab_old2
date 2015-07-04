@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.widget.ResourceCursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class PhPixGridAdapter extends ResourceCursorAdapter {
+    private static final String LOG_TAG = PhPixGridAdapter.class.getSimpleName();
 
     private LayoutInflater mInflater;
 
@@ -112,6 +114,10 @@ public class PhPixGridAdapter extends ResourceCursorAdapter {
             // Get the size of the ImageView
             int targetW = phGridCellImage.getWidth();
             int targetH = phGridCellImage.getHeight();
+            Log.d(LOG_TAG, "grid cell image Ht " + targetH + ", Wd " + targetW);
+            // for testing, manually override
+            targetW = 100;
+            targetH = 100;
             // Get the size of the image
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
             bmOptions.inJustDecodeBounds = true;
@@ -128,7 +134,10 @@ public class PhPixGridAdapter extends ResourceCursorAdapter {
             bmOptions.inSampleSize = scaleFactor;
             // bmOptions.inPurgeable = true;
             // Decode the JPEG file into a Bitmap
+            Log.d(LOG_TAG, "Scale Factor " + scaleFactor + ", About to decode: " + path);
             Bitmap bitmap = BitmapFactory.decodeFile(path, bmOptions);
+            Log.d(LOG_TAG, "bitmap Ht " + bitmap.getHeight() + ", width " + bitmap.getWidth());
+
             // associate the Bitmap to the ImageView
             phGridCellImage.setImageBitmap(bitmap);
 
