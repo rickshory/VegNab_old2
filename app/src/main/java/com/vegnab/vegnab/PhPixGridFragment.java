@@ -19,15 +19,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.internal.widget.AdapterViewCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -96,7 +99,16 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         //mPhPixGridAdapter = new PhPixGridAdapter(this, R.layout.grid_item_layout, getData());
         mPhPixGridAdapter = new PhPixGridAdapter(getActivity(), R.layout.grid_ph_pix, null, 0);
         mPhPixGridView.setAdapter(mPhPixGridAdapter);
-
+//        mPhPixGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view,
+//                                    int position, long id) {
+//                Toast.makeText(this.getActivity(), "Placeholder codes must be at least 3 characters long.", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this.getActivity(),
+//                        "Item Clicked: " + position, Toast.LENGTH_SHORT).show();
+//
+//            }
+//        }
         return rootView;
     }
 
@@ -180,9 +192,36 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
 
                 break;
 
+            default:
+                Toast.makeText(this.getActivity(), "Something else clicked.", Toast.LENGTH_SHORT).show();
+                break;
+
         }
     }
 
+/*@Override
+public void onActivityCreated(Bundle savedInstanceState)
+{
+    super.onCreate(savedInstanceState);
+
+    GridView itemsGridViewObj = (GridView) findViewById(R.id.itemsGridView);
+
+    itemsGridViewObj.setOnItemClickListener(new OnItemClickListener() {
+
+    @Override
+    public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+            long arg3) {
+
+        Log.d(TAG, "--> onItemClick listener..."); // You should see this now
+        //if(position == 1) {
+         //   FruitMenuFragment fruitMenuFragment = new FruitMenuFragment();
+         //   fragmentTransaction.replace(android.R.id.content, fruitMenuFragment);
+         //   fragmentTransaction.commit();
+        //}
+}});
+        }
+        }*/
+    
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File f = null;
