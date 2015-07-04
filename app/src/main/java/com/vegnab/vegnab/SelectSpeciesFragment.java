@@ -184,8 +184,8 @@ public class SelectSpeciesFragment extends ListFragment
         mViewSearchChars.postDelayed(new Runnable() {
             @Override
             public void run() {
-                InputMethodManager keyboard = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                keyboard.showSoftInput(mViewSearchChars, 0);
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(mViewSearchChars, 0);
             }
         }, 50);
 

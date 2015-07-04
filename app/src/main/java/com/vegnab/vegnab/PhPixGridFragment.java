@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -124,6 +125,18 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
             getLoaderManager().initLoader(VNContract.Loaders.PLACEHOLDER_PIX, null, this);
 //            mTxtNote.setText(args.getString(ARG_NOTE_ID));
         }
+
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mPhPixGridView.getWindowToken(), 0);
+
+
+        /*        mPhPixGridView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(mPhPixGridView.getWindowToken(), 0);
+            }
+        }, 50);*/
     }
 
     @Override
