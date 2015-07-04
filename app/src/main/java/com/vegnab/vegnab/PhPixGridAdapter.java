@@ -95,7 +95,6 @@ public class PhPixGridAdapter extends ResourceCursorAdapter {
             note = "(no note)";
         }
         phGridCellText.setText(note);
-        ImageView phGridCellImage = (ImageView) v.findViewById(R.id.phGridItemImage);
 
 /*CREATE TABLE IF NOT EXISTS "PlaceHolderPix" (
 "_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
@@ -104,18 +103,39 @@ public class PhPixGridAdapter extends ResourceCursorAdapter {
 "PhotoTimeStamp" TIMESTAMP NOT NULL DEFAULT (DATETIME('now')),
 "PhotoNotes" VARCHAR(255),
 "PhotoURL" VARCHAR(255),*/
+        ImageView phGridCellImage = (ImageView) v.findViewById(R.id.phGridItemImage);
         String path = c.getString(c.getColumnIndexOrThrow("PhotoPath"));
         File imgFile = new  File(path);
         if (imgFile.exists()) {
-            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-            phGridCellImage.setImageBitmap(myBitmap);
-            phGridCellImage.setAdjustViewBounds(true);
+            // There isn't enough memory to open up more than a few camera photos
+            // so pre-scale the target bitmap into which the file is decoded
+            // Get the size of the ImageView
+            int targetW = phGridCellImage.getWidth();
+            int targetH = phGridCellImage.getHeight();
+            // Get the size of the image
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            bmOptions.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(path, bmOptions);
+            int photoW = bmOptions.outWidth;
+            int photoH = bmOptions.outHeight;
+            // determine the aspect ratio
+            int scaleFactor = 1;
+            if ((targetW > 0) || (targetH > 0)) {
+                scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+            }
+            // Set bitmap options to scale the image decode target
+            bmOptions.inJustDecodeBounds = false;
+            bmOptions.inSampleSize = scaleFactor;
+            // bmOptions.inPurgeable = true;
+            // Decode the JPEG file into a Bitmap
+            Bitmap bitmap = BitmapFactory.decodeFile(path, bmOptions);
+            // associate the Bitmap to the ImageView
+            phGridCellImage.setImageBitmap(bitmap);
+
+/*         mTestImageView.setVisibility(View.VISIBLE);*/
+//            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+//            phGridCellImage.setImageBitmap(myBitmap);
+//            phGridCellImage.setAdjustViewBounds(true);
         }
-
-
-
-
-
-
     }
 }
