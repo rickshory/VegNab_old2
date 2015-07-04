@@ -55,13 +55,9 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     private PhPixGridAdapter mPhPixGridAdapter;
     SimpleDateFormat mTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
     Cursor mPixMatchCursor;
-
-//    private static final String BITMAP_STORAGE_KEY = "viewBitMap";
-
     private Bitmap mImageBitmap;
     private String mCurrentPhotoPath;
     private static final String JPEG_FILE_SUFFIX = ".jpg";
-//    private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
 
     public static PhPixGridFragment newInstance(Bundle args) {
         PhPixGridFragment f = new PhPixGridFragment();
@@ -129,18 +125,6 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
 //            mTxtNote.setText(args.getString(ARG_NOTE_ID));
         }
     }
-
-
-    /* adapt following to work with cursor rather than array
-        private ArrayList<ImageItem> getData() {
-            final ArrayList<ImageItem> imageItems = new ArrayList<>();
-            TypedArray imgs = getResources().obtainTypedArray(R.array.image_ids);
-            for (int i = 0; i < imgs.length(); i++) {
-                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), imgs.getResourceId(i, -1));
-                imageItems.add(new ImageItem(bitmap, "Image#" + i));
-            }
-            return imageItems;
-    */
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

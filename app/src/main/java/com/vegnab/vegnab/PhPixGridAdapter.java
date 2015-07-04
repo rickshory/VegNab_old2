@@ -29,25 +29,7 @@ public class PhPixGridAdapter extends ResourceCursorAdapter {
         mInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-/*    @Override
-    public void bindView(View view, Context context, Cursor cursor) {
-
-        ImageView photo = (ImageView) view;
-        String url_medium = cursor.getString(cursor.getColumnIndex(KarmaDbAdapter.PHOTO_URL_MEDIUM));
-        ImageCache.download(url_medium, photo);
-
-    }
-
-    @Override
-    public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        ImageView v = new ImageView(context);
-        v.setLayoutParams(new GridView.LayoutParams(100, 100));
-        v.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        bindView(v, context, cursor);
-        return v;
-    }
-}*/
-
+    // following commented-out techniques may give smoother scrolling, but code at bottom is OK for now
 //	private Context context;
 //	private int layoutResourceId;
 //	private ArrayList data = new ArrayList();
@@ -59,7 +41,7 @@ public class PhPixGridAdapter extends ResourceCursorAdapter {
 //		this.data = data;
 //	}
 //
-    // break the following apart to use with cursor
+    // break the following apart to use with cursor instead of arry
 //	@Override
 //	public View getView(int position, View convertView, ViewGroup parent) {
 //		View row = convertView;
@@ -91,6 +73,7 @@ public class PhPixGridAdapter extends ResourceCursorAdapter {
 
     @Override
     public void bindView(View v, Context ctx, Cursor c) {
+        // available fields: PhotoPath, PlaceHolderID, PhotoTimeStamp, PhotoNotes, PhotoURL
         TextView phGridCellText = (TextView) v.findViewById(R.id.phGridItemText);
         String note = c.getString(c.getColumnIndexOrThrow("PhotoNotes"));
         if (note == null) {
@@ -98,13 +81,6 @@ public class PhPixGridAdapter extends ResourceCursorAdapter {
         }
         phGridCellText.setText(note);
 
-/*CREATE TABLE IF NOT EXISTS "PlaceHolderPix" (
-"_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
-"PlaceHolderID" INTEGER NOT NULL,
-"PhotoPath" VARCHAR(255),
-"PhotoTimeStamp" TIMESTAMP NOT NULL DEFAULT (DATETIME('now')),
-"PhotoNotes" VARCHAR(255),
-"PhotoURL" VARCHAR(255),*/
         ImageView phGridCellImage = (ImageView) v.findViewById(R.id.phGridItemImage);
         String path = c.getString(c.getColumnIndexOrThrow("PhotoPath"));
         File imgFile = new  File(path);
@@ -141,7 +117,6 @@ public class PhPixGridAdapter extends ResourceCursorAdapter {
             // associate the Bitmap to the ImageView
             phGridCellImage.setImageBitmap(bitmap);
 
-/*         mTestImageView.setVisibility(View.VISIBLE);*/
 //            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
 //            phGridCellImage.setImageBitmap(myBitmap);
 //            phGridCellImage.setAdjustViewBounds(true);
