@@ -196,7 +196,11 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(LOG_TAG, "created onItemClick listener");
-                Toast.makeText(getActivity(), "Item Clicked: " + position, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Item Clicked: " + position + ", id=" + id, Toast.LENGTH_SHORT).show();
+//                mPixMatchCursor.moveToPosition(position);
+//                long recId = mPixMatchCursor.getLong(
+//                        mPixMatchCursor.getColumnIndexOrThrow("id"));
+
             }
         });
     }
