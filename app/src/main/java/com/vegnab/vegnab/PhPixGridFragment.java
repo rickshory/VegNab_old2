@@ -99,16 +99,6 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         //mPhPixGridAdapter = new PhPixGridAdapter(this, R.layout.grid_item_layout, getData());
         mPhPixGridAdapter = new PhPixGridAdapter(getActivity(), R.layout.grid_ph_pix, null, 0);
         mPhPixGridView.setAdapter(mPhPixGridAdapter);
-//        mPhPixGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view,
-//                                    int position, long id) {
-//                Toast.makeText(this.getActivity(), "Placeholder codes must be at least 3 characters long.", Toast.LENGTH_SHORT).show();
-//                Toast.makeText(this.getActivity(),
-//                        "Item Clicked: " + position, Toast.LENGTH_SHORT).show();
-//
-//            }
-//        }
         return rootView;
     }
 
@@ -199,29 +189,18 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         }
     }
 
-/*@Override
-public void onActivityCreated(Bundle savedInstanceState)
-{
-    super.onCreate(savedInstanceState);
-
-    GridView itemsGridViewObj = (GridView) findViewById(R.id.itemsGridView);
-
-    itemsGridViewObj.setOnItemClickListener(new OnItemClickListener() {
-
     @Override
-    public void onItemClick(AdapterView<?> arg0, View arg1, int position,
-            long arg3) {
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mPhPixGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(LOG_TAG, "created onItemClick listener");
+                Toast.makeText(getActivity(), "Item Clicked: " + position, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
-        Log.d(TAG, "--> onItemClick listener..."); // You should see this now
-        //if(position == 1) {
-         //   FruitMenuFragment fruitMenuFragment = new FruitMenuFragment();
-         //   fragmentTransaction.replace(android.R.id.content, fruitMenuFragment);
-         //   fragmentTransaction.commit();
-        //}
-}});
-        }
-        }*/
-    
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File f = null;

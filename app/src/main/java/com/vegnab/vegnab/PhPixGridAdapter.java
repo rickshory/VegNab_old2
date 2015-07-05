@@ -41,7 +41,7 @@ public class PhPixGridAdapter extends ResourceCursorAdapter {
 //		this.data = data;
 //	}
 //
-    // break the following apart to use with cursor instead of arry
+    // break the following apart to use with cursor instead of array
 //	@Override
 //	public View getView(int position, View convertView, ViewGroup parent) {
 //		View row = convertView;
