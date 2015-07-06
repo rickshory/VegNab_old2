@@ -96,6 +96,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
             p.setVisibility(View.GONE);
         }
         mPhPixGridView = (GridView) rootView.findViewById(R.id.phPixGridView);
+//        mPhPixGridView.setOnClickListener(this);
         //mPhPixGridAdapter = new PhPixGridAdapter(this, R.layout.grid_item_layout, getData());
         mPhPixGridAdapter = new PhPixGridAdapter(getActivity(), R.layout.grid_ph_pix, null, 0);
         mPhPixGridView.setAdapter(mPhPixGridAdapter);
@@ -192,19 +193,29 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPhPixGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(LOG_TAG, "created onItemClick listener");
-                Toast.makeText(getActivity(), "Item Clicked: " + position + ", id=" + id, Toast.LENGTH_SHORT).show();
-//                mPixMatchCursor.moveToPosition(position);
-//                long recId = mPixMatchCursor.getLong(
-//                        mPixMatchCursor.getColumnIndexOrThrow("id"));
-
-            }
-        });
+//        mPhPixGridView.setOnClickListener(this);
+        mPhPixGridView.setOnItemClickListener(mPixGrid_ClickListener);
+//        mPhPixGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Log.d(LOG_TAG, "created onItemClick listener");
+//                Toast.makeText(getActivity(), "Item Clicked: " + position + ", id=" + id, Toast.LENGTH_SHORT).show();
+////                mPixMatchCursor.moveToPosition(position);
+////                long recId = mPixMatchCursor.getLong(
+////                        mPixMatchCursor.getColumnIndexOrThrow("id"));
+//
+//            }
+//        });
     }
 
+    //On click listener for pictures grid
+    final AdapterView.OnItemClickListener mPixGrid_ClickListener = new AdapterView.OnItemClickListener() {
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Log.d(LOG_TAG, "created onItemClick listener");
+            Toast.makeText(getActivity(), "Item Clicked: " + position + ", id=" + id, Toast.LENGTH_SHORT).show();
+        }
+    };
+    
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File f = null;
