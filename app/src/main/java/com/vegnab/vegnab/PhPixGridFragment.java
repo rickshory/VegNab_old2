@@ -200,11 +200,16 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     final AdapterView.OnItemClickListener mPixGrid_ItemClickListener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Log.d(LOG_TAG, "created onItemClick listener");
-            Toast.makeText(getActivity(), "Item Clicked: " + position + ", id=" + id, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getActivity(), "Item Clicked: " + position + ", id=" + id, Toast.LENGTH_SHORT).show();
             mPixMatchCursor.moveToPosition(position);
             String path = mPixMatchCursor.getString(mPixMatchCursor.getColumnIndexOrThrow("PhotoPath"));
-            Toast.makeText(getActivity(), "" + path, Toast.LENGTH_SHORT).show();
-            Toast.makeText(getActivity(), "" + getImageContentUri(getActivity(), path).toString(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getActivity(), "" + path, Toast.LENGTH_SHORT).show();
+            Uri uri = getImageContentUri(getActivity(), path);
+//            Toast.makeText(getActivity(), "" + uri.toString(), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setDataAndType(uri, "image/*");
+            startActivity(intent);
         }
     };
 
