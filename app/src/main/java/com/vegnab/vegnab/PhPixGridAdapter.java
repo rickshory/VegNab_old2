@@ -120,6 +120,8 @@ public class PhPixGridAdapter extends ResourceCursorAdapter {
 //            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
 //            phGridCellImage.setImageBitmap(myBitmap);
 //            phGridCellImage.setAdjustViewBounds(true);
+        } else {
+            // set bitmap to a not-found icon
         }
     }
 }

@@ -327,19 +327,22 @@ public class SelectSpeciesFragment extends ListFragment
                     wasShortened = true;
                 }
 
-                Toast.makeText(this.getActivity(), "Placeholder code '" + phCode + "'", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this.getActivity(), "Placeholder code '" + phCode + "'", Toast.LENGTH_SHORT).show();
                 if (phCode.length() < 3) {
-                    Toast.makeText(this.getActivity(), "Placeholder codes must be at least 3 characters long.", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this.getActivity(), "Placeholder codes must be at least 3 characters long.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this.getActivity(), c.getResources().getString(R.string.placeholder_validate_code_short), Toast.LENGTH_SHORT).show();
                     return true;
                 }
 
                 if (phCode.matches(VNRegex.NRCS_CODE)) { // see VNContract for details
-                    Toast.makeText(this.getActivity(), "Placeholder can\'t be like an NRCS code.", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this.getActivity(), "Placeholder can\'t be like an NRCS code.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this.getActivity(), c.getResources().getString(R.string.placeholder_validate_code_bad), Toast.LENGTH_SHORT).show();
                     return true;
                 }
 
                 if (mPlaceholderCodesForThisNamer.containsKey(phCode)) {
-                    Toast.makeText(this.getActivity(), "Placeholder code \"" + phCode + "\" is already used.", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this.getActivity(), "Placeholder code \"" + phCode + "\" is already used.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this.getActivity(), c.getResources().getString(R.string.placeholder_validate_code_dup), Toast.LENGTH_SHORT).show();
                     return true;
                 }
 
