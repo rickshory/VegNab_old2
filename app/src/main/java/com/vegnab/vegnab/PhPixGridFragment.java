@@ -193,19 +193,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        mPhPixGridView.setOnClickListener(this);
         mPhPixGridView.setOnItemClickListener(mPixGrid_ClickListener);
-//        mPhPixGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Log.d(LOG_TAG, "created onItemClick listener");
-//                Toast.makeText(getActivity(), "Item Clicked: " + position + ", id=" + id, Toast.LENGTH_SHORT).show();
-////                mPixMatchCursor.moveToPosition(position);
-////                long recId = mPixMatchCursor.getLong(
-////                        mPixMatchCursor.getColumnIndexOrThrow("id"));
-//
-//            }
-//        });
     }
 
     //On click listener for pictures grid
@@ -213,9 +201,12 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Log.d(LOG_TAG, "created onItemClick listener");
             Toast.makeText(getActivity(), "Item Clicked: " + position + ", id=" + id, Toast.LENGTH_SHORT).show();
+            mPixMatchCursor.moveToPosition(position);
+            String path = mPixMatchCursor.getString(mPixMatchCursor.getColumnIndexOrThrow("PhotoPath"));
+            Toast.makeText(getActivity(), "" + path, Toast.LENGTH_SHORT).show();
         }
     };
-    
+
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File f = null;
@@ -302,9 +293,9 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                 break;
 
             case VNContract.Loaders.PLACEHOLDER_PIX:
-                Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PIX, just before swapCursor");
+//                Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PIX, just before swapCursor");
                 mPhPixGridAdapter.swapCursor(c);
-                Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PIX, just before copy cursor");
+//                Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PIX, just before copy cursor");
                 mPixMatchCursor = c;
                 break;
         }
