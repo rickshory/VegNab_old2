@@ -232,7 +232,11 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
             }
         }
-        cursor.close();
+        try {
+            cursor.close();
+        } catch (Exception e) {
+            // ignore
+        }
         return uri;
     }
 
