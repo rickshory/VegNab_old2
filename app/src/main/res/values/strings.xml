@@ -251,7 +251,7 @@
     <string name="placeholder_help_description_title">Placeholder Description</string>
     <string name="placeholder_help_description_text">A thorough description will help you remember what you meant by the code. It will show in place of a plant species name.</string>
     <string name="placeholder_help_habitat_title">Plant Habitat</string>
-    <string name="placeholder_help_habitat_text">Habitat, such as \"Desert\", \"Meadow\", "\Riparian\" will help identify this species later.</string>
+    <string name="placeholder_help_habitat_text">Habitat, such as \"Desert\", \"Meadow\", \"Riparian\" will help identify this species later.</string>
     <string name="placeholder_help_labelnumber_title">Label Number</string>
     <string name="placeholder_help_labelnumber_text">Some rigorous studies require a numbered label attached to a voucher specimen, which is collected immediately when you input each Placeholder. If you are not doing this, you can leave \"Label Number\" blank, or use it for some other identifier.</string>
 
