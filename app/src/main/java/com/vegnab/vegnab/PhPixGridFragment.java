@@ -193,19 +193,43 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPhPixGridView.setOnItemClickListener(mPixGrid_ClickListener);
+        mPhPixGridView.setOnItemClickListener(mPixGrid_ItemClickListener);
     }
 
-    //On click listener for pictures grid
-    final AdapterView.OnItemClickListener mPixGrid_ClickListener = new AdapterView.OnItemClickListener() {
+    //Item click listener for pictures grid
+    final AdapterView.OnItemClickListener mPixGrid_ItemClickListener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Log.d(LOG_TAG, "created onItemClick listener");
             Toast.makeText(getActivity(), "Item Clicked: " + position + ", id=" + id, Toast.LENGTH_SHORT).show();
             mPixMatchCursor.moveToPosition(position);
             String path = mPixMatchCursor.getString(mPixMatchCursor.getColumnIndexOrThrow("PhotoPath"));
             Toast.makeText(getActivity(), "" + path, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "" + getImageContentUri(getActivity(), path).toString(), Toast.LENGTH_SHORT).show();
         }
     };
+
+    public static Uri getImageContentUri(Context context, String filePath) {
+        Uri uri = null;
+        File imageFile = new File(filePath);
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[] { MediaStore.Images.Media._ID },
+                MediaStore.Images.Media.DATA + "=? ",
+                new String[] { filePath }, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
+            uri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + id);
+        } else {
+            if (imageFile.exists()) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DATA, filePath);
+                uri = context.getContentResolver().insert(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            }
+        }
+        cursor.close();
+        return uri;
+    }
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
