@@ -266,7 +266,7 @@
     <string name="ph_pix_grid_pic_button_message">New Picture</string>
 
     <string name="ph_pix_grid_pic_button_err">No Placeholder defined, can\'t take pictures.</string>
-
+    <string name="ph_pix_grid_pic_no_file">Image file not found</string>
 
     <string name="sel_spp_list_ctxmenu_item_forget">Forget species</string>
     <string name="sel_spp_list_ctxmenu_item_edit_ph">Edit Placeholder</string>
