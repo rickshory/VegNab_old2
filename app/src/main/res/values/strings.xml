@@ -182,11 +182,13 @@
     <string name="sel_spp_search_msg_3chars">Enter at least 3 characters</string>
 
     <string name="sel_spp_ctxmenu_add_placeholder">Create Placeholder</string>
+    <string name="sel_spp_ctxmenu_pick_placeholder">Pick Placeholder</string>
     <string name="sel_spp_ctxmenu_search_help">Help</string>
 
     <string name="sel_spp_help_search_title">\"Search\" Help</string>
     <string name="sel_spp_help_search_text">Enter text here to search for species. Use NRCS codes, species names (scientific or vernacular), or your own previously entered Placeholders.\n\r\n\rVegNab remembers species you find and shows them first in the list. To \"forget\" a species, long-press and choose that option.</string>
-    
+    <string name="sel_spp_pick_placeholder_none">No Placeholders yet</string>
+
     <string name="veg_subplot_menu_add_item">Add item</string>
     <string name="veg_subplot_menu_help">Help</string>
     <string name="veg_subplot_menu_mark_no_veg">Mark \""no veg\"</string>

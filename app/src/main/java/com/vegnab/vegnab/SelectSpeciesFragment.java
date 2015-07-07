@@ -80,6 +80,7 @@ public class SelectSpeciesFragment extends ListFragment
     TextWatcher sppCodeTextWatcher = new TextWatcher() {
         @Override
         public void afterTextChanged(Editable s) {
+            mPickPlaceholder = false; // pop out of this mode on any keystroke
             // use this method; test length of string; e.g. 'count' of other methods does not give this length
             //Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "'");
             Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "', length: " + s.length());
@@ -363,6 +364,17 @@ public class SelectSpeciesFragment extends ListFragment
                 mEditPlaceholderCallback.onEditPlaceholder(phArgs);
                 return true;
 
+            case R.id.sel_spp_search_pick_placeholder:
+                headerContextTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Species Select Event")
+                        .setAction("Context Menu")
+                        .setLabel("Pick Placeholder")
+                        .setValue(1)
+                        .build());
+                mPickPlaceholder = true;
+                getLoaderManager().restartLoader(Loaders.SPP_MATCHES, null, SelectSpeciesFragment.this);
+                return true;
+
             case R.id.sel_spp_search_help:
                 Log.d(LOG_TAG, "'Search Chars Help' selected");
                 headerContextTracker.send(new HitBuilders.EventBuilder()
@@ -503,7 +515,6 @@ public class SelectSpeciesFragment extends ListFragment
                         + "WHERE ProjID=? AND PlaceHolders.NamerID=? "
                         + "ORDER BY TimeFirstInput DESC;";
                 params = new String[] {"" + mProjectId, "" + mNamerId };
-
             } else {
                 if (mStSearch.trim().length() == 0) {
                     select = "SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, "
@@ -626,6 +637,11 @@ public class SelectSpeciesFragment extends ListFragment
         case Loaders.SPP_MATCHES:
             mSppResultsAdapter.swapCursor(finishedCursor);
             mSppMatchCursor = finishedCursor;
+            if ((mPickPlaceholder) && (mRowCt == 0)) {
+                Toast.makeText(getActivity(),
+                        getActivity().getResources().getString(R.string.sel_spp_pick_placeholder_none),
+                        Toast.LENGTH_SHORT).show();
+            }
             break;
 
         case Loaders.EXISTING_PLACEHOLDER_CODES:

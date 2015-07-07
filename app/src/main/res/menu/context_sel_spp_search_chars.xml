@@ -3,6 +3,8 @@
     
     <item android:id="@+id/sel_spp_search_add_placeholder"
         android:title="@string/sel_spp_ctxmenu_add_placeholder" />
+    <item android:id="@+id/sel_spp_search_pick_placeholder"
+          android:title="@string/sel_spp_ctxmenu_pick_placeholder" />
     <item android:id="@+id/sel_spp_search_help"
         android:title="@string/sel_spp_ctxmenu_search_help" />
 </menu>
