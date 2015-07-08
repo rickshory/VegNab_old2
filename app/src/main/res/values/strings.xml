@@ -235,16 +235,16 @@
 
     <string name="edit_placeholder_ident_button_off_msg">Identify</string>
     <string name="edit_placeholder_ident_button_on_msg">Done with ID</string>
-    <string name="edit_placeholder_label_ident_spp">Placeholder is this species</string>
-    <string name="edit_placeholder_hint_ident_spp">Enter NRCS code</string>
-    <string name="edit_placeholder_label_ident_namer">Who determined the species</string>
+    <string name="edit_placeholder_label_ident_namer">You who determined the species</string>
     <string name="edit_placeholder_hint_ident_namer">Person\'s name who determined the species</string>
     <string name="edit_placeholder_label_ident_reference">Reference used</string>
-    <string name="edit_placeholder_hint_ident_reference">Book or resource; if multiple, one having the name used here</string>
+    <string name="edit_placeholder_hint_ident_reference">Book or resource; if multiple, one having the species name used here</string>
     <string name="edit_placeholder_label_ident_method">Method</string>
     <string name="edit_placeholder_hint_ident_method">How identified</string>
     <string name="edit_placeholder_label_ident_confidence">Confidence</string>
     <string name="edit_placeholder_hint_ident_confidence">Any uncertainty of identification</string>
+    <string name="edit_placeholder_label_ident_spp">Placeholder is this species</string>
+    <string name="edit_placeholder_hint_ident_spp">Enter NRCS code</string>
     <string name="edit_placeholder_label_ident_notes">Notes</string>
     <string name="edit_placeholder_hint_ident_notes">Optional, notes on this identification</string>
 

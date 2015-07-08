@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -52,6 +53,7 @@ import java.util.HashSet;
 import java.util.Locale;
 
 public class EditPlaceholderFragment extends Fragment implements OnClickListener,
+        android.widget.AdapterView.OnItemSelectedListener,
         View.OnFocusChangeListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -92,7 +94,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     SimpleDateFormat mTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
-    int mRowCt;
     // explicitly save/retrieve all these through Bundles, some versions have bugs that lose cursor
     final static String ARG_PLACEHOLDER_ID = "placeholderId";
     final static String ARG_PLACEHOLDER_CODE = "placeholderCode";
@@ -246,8 +247,30 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         s.setOnClickListener(this);
         Button c = (Button) rootView.findViewById(R.id.placeholder_cancel_button);
         c.setOnClickListener(this);
+        Button i = (Button) rootView.findViewById(R.id.ph_identify_button);
+        i.setOnClickListener(this);
         // if more, loop through all the child items of the ViewGroup rootView and
         // set the onclicklistener for all the Button instances found
+
+        // set up spinners
+        mIdentNamerSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_namer);
+        mIdentNamerSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
+        mIdentNamerSpinner.setEnabled(false); // will enable when data ready
+        mIdentNamerAdapter = new SimpleCursorAdapter(getActivity(),
+                android.R.layout.simple_spinner_item, null,
+                new String[] {"IdNamerName"},
+                new int[] {android.R.id.text1}, 0);
+        mIdentNamerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mIdentNamerSpinner.setAdapter(mIdentNamerAdapter);
+        mIdentNamerSpinner.setOnItemSelectedListener(this);
+        registerForContextMenu(mIdentNamerSpinner); // enable long-press
+        // also need click, if no items & therefore selection cannot be changed
+        // use a TextView on top of the spinner, named "..._spinner_cover"
+        mLblIdentNamerSpinnerCover = (TextView) rootView.findViewById(R.id.lbl_ident_namer_spinner_cover);
+        mLblIdentNamerSpinnerCover.setOnClickListener(this);
+        registerForContextMenu(mLblIdentNamerSpinnerCover); // enable long-press
+
+        /* mLblIdentNamerSpinnerCover, mLblIdentRefSpinnerCover, mLblIdentMethodSpinnerCover;*/
         return rootView;
     }
 
@@ -387,6 +410,28 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
 //                super.onBackPressed();
                 break;
+
+            case R.id.ph_identify_button:
+                Log.d(LOG_TAG, "in onClick, ph_identify_button");
+//                args.putInt(BUTTON_KEY, VNContract.PhActions.CANCEL);
+//                args.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
+//                Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
+//                mButtonCallback.onPlaceholderActionButtonClicked(args);
+//                Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
+//                super.onBackPressed();
+                break;
+
+            case R.id.lbl_ident_namer_spinner_cover:
+                Log.d(LOG_TAG, "in onClick, lbl_ident_namer_spinner_cover");
+//                args.putInt(BUTTON_KEY, VNContract.PhActions.CANCEL);
+//                args.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
+//                Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
+//                mButtonCallback.onPlaceholderActionButtonClicked(args);
+//                Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
+//                super.onBackPressed();
+                break;
+
+            //
         }
     }
 
@@ -851,6 +896,55 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         } else { // default, mIdPlaceholder = false
 
         }
+    }
+
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position,
+                               long id) {
+        // 'parent' is the spinner
+        // 'view' is one of the internal Android constants (e.g. text1=16908307, text2=16908308)
+        //    in the item layout, unless set up otherwise
+        // 'position' is the zero-based index in the list
+        // 'id' is the (one-based) database record '_id' of the item
+        // get the text by:
+        //Cursor cur = (Cursor)mNamerAdapter.getItem(position);
+        //String strSel = cur.getString(cur.getColumnIndex("NamerName"));
+        //Log.d(LOG_TAG, strSel);
+        // if spinner is filled by Content Provider, can't get text by:
+        //String strSel = parent.getItemAtPosition(position).toString();
+        // that returns something like below, which there is no way to get text out of:
+        // "android.content.ContentResolver$CursorWrapperInner@42041b40"
+
+        // sort out the spinners
+        // can't use switch because not constants
+//        if (parent.getId() == mNamerSpinner.getId()) {
+//            // workaround for spinner firing when first set
+//            if(((String)parent.getTag()).equalsIgnoreCase(VNContract.Tags.SPINNER_FIRST_USE)) {
+//                parent.setTag("");
+//                return;
+//            }
+//            mNamerId = id;
+//            if (mNamerId == 0) { // picked '(add new)'
+//                Log.d(LOG_TAG, "Starting 'add new' for Namer from onItemSelect");
+////				AddSpeciesNamerDialog  addSppNamerDlg = AddSpeciesNamerDialog.newInstance();
+////				FragmentManager fm = getActivity().getSupportFragmentManager();
+////				addSppNamerDlg.show(fm, "sppNamerDialog_SpinnerSelect");
+//                EditNamerDialog newNmrDlg = EditNamerDialog.newInstance(0);
+//                newNmrDlg.show(getFragmentManager(), "frg_new_namer_fromSpinner");
+//
+//            } else { // (mNamerId != 0)
+//                // save in app Preferences as the default Namer
+//                saveDefaultNamerId(mNamerId);
+//            }
+//            setNamerSpinnerSelectionFromDefaultNamer(); // in either case, reset selection
+//        }
+        // write code for any other spinner(s) here
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
+//        setNamerSpinnerSelectionFromDefaultNamer();
     }
 
 
