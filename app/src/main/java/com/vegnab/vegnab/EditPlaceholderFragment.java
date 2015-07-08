@@ -277,6 +277,11 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         getLoaderManager().initLoader(Loaders.PLACEHOLDER_TO_EDIT, null, this);
         getLoaderManager().initLoader(Loaders.PLACEHOLDERS_EXISTING, null, this); // Any existing placeholders
         getLoaderManager().initLoader(Loaders.PLACEHOLDER_BACKSTORY, null, this); // text of other fields
+        // loaders for species identification items
+        getLoaderManager().initLoader(Loaders.PH_IDENT_NAMERS, null, this);
+        getLoaderManager().initLoader(Loaders.PH_IDENT_REFS, null, this);
+        getLoaderManager().initLoader(Loaders.PH_IDENT_METHODS, null, this);
+        getLoaderManager().initLoader(Loaders.PH_IDENT_CONFIDENCS, null, this);
     }
 
     @Override
@@ -479,7 +484,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
         // there will be various loaders, switch them out here
-        mRowCt = c.getCount();
+        long rowCt = c.getCount();
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         switch (loader.getId()) {
 
             case Loaders.PLACEHOLDER_TO_EDIT:
@@ -542,53 +548,76 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 break;
 
             case Loaders.PH_IDENT_NAMERS:
-/*            // Swap the new cursor in.
-            // The framework will take care of closing the old cursor once we return.
-            mIdentNamerAdapter.swapCursor(c);
-            if (mRowCt > 0) {
-                setNamerSpinnerSelectionFromDefaultNamer(); // internally sets mNamerId
-                mNamerSpinner.setEnabled(true);
-            } else {
-                mNamerSpinner.setEnabled(false);
-            }*/
+                // Swap the new cursor in.
+                // The framework will take care of closing the old cursor once we return.
+                mIdentNamerAdapter.swapCursor(c);
+                if (rowCt == 0) {
+                    mIdentNamerSpinner.setEnabled(false);
+                } else {
+                    long identNamerId = sharedPref.getLong(Prefs.DEFAULT_IDENT_NAMER_ID, 0);
+                    setSpinnerSelection(mIdentNamerSpinner, identNamerId, rowCt);
+                    if (identNamerId == 0) {
+                        // user sees '(add new)', blank TextView receives click;
+                        mLblIdentNamerSpinnerCover.bringToFront();
+                    } else {
+                        // user can operate the spinner
+                        mIdentNamerSpinner.bringToFront();
+                    }
+                    mIdentNamerSpinner.setEnabled(true);
+                }
                 break;
 
             case Loaders.PH_IDENT_REFS:
-/*            // Swap the new cursor in.
-            // The framework will take care of closing the old cursor once we return.
-            mIdentRefAdapter.swapCursor(c);
-            if (mRowCt > 0) {
-                setNamerSpinnerSelectionFromDefaultNamer(); // internally sets mNamerId
-                mNamerSpinner.setEnabled(true);
-            } else {
-                mNamerSpinner.setEnabled(false);
-            }*/
+                // Swap the new cursor in.
+                // The framework will take care of closing the old cursor once we return.
+                mIdentRefAdapter.swapCursor(c);
+                if (rowCt == 0) {
+                    mIdentRefSpinner.setEnabled(false);
+                } else {
+                    long identRefId = sharedPref.getLong(Prefs.DEFAULT_IDENT_REF_ID, 0);
+                    setSpinnerSelection(mIdentRefSpinner, identRefId, rowCt);
+                    if (identRefId == 0) {
+                        // user sees '(add new)', blank TextView receives click;
+                        mLblIdentRefSpinnerCover.bringToFront();
+                    } else {
+                        // user can operate the spinner
+                        mIdentRefSpinner.bringToFront();
+                    }
+                    mIdentRefSpinner.setEnabled(true);
+                }
                 break;
 
             case Loaders.PH_IDENT_METHODS:
-/*            // Swap the new cursor in.
-            // The framework will take care of closing the old cursor once we return.
-            mIdentMethodAdapter.swapCursor(c);
-            if (mRowCt > 0) {
-                setNamerSpinnerSelectionFromDefaultNamer(); // internally sets mNamerId
-                mNamerSpinner.setEnabled(true);
-            } else {
-                mNamerSpinner.setEnabled(false);
-            }*/
+                // Swap the new cursor in.
+                // The framework will take care of closing the old cursor once we return.
+                mIdentMethodAdapter.swapCursor(c);
+                if (rowCt == 0) {
+                    mIdentMethodSpinner.setEnabled(false);
+                } else {
+                    long identMethodId = sharedPref.getLong(Prefs.DEFAULT_IDENT_METHOD_ID, 0);
+                    setSpinnerSelection(mIdentMethodSpinner, identMethodId, rowCt);
+                    if (identMethodId == 0) {
+                        // user sees '(add new)', blank TextView receives click;
+                        mLblIdentMethodSpinnerCover.bringToFront();
+                    } else {
+                        // user can operate the spinner
+                        mIdentMethodSpinner.bringToFront();
+                    }
+                    mIdentMethodSpinner.setEnabled(true);
+                }
                 break;
 
             case Loaders.PH_IDENT_CONFIDENCS:
-/*            // Swap the new cursor in.
-            // The framework will take care of closing the old cursor once we return.
-            mIdentCFAdapter.swapCursor(c);
-            if (mRowCt > 0) {
-                setNamerSpinnerSelectionFromDefaultNamer(); // internally sets mNamerId
-                mNamerSpinner.setEnabled(true);
-            } else {
-                mNamerSpinner.setEnabled(false);
-            }*/
+                // Swap the new cursor in.
+                // The framework will take care of closing the old cursor once we return.
+                mIdentCFAdapter.swapCursor(c);
+                if (rowCt == 0) { // would not happen unless tables are hacked & items deleted
+                    mIdentCFSpinner.setEnabled(false);
+                } else {
+                    mIdentCFSpinner.setSelection(0); // default is always 'no doubt...'
+                    mIdentCFSpinner.setEnabled(true);
+                }
                 break;
-
         }
     }
 
@@ -641,36 +670,9 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         }
     }
 
-
-/*    public void setNamerSpinnerSelectionFromDefaultNamer() {
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        // if none yet, use _id = 0, generated in query as '(add new)'
-        mNamerId = sharedPref.getLong(Prefs.DEFAULT_NAMER_ID, 0);
-        setNamerSpinnerSelection();
-        if (mNamerId == 0) {
-            // user sees '(add new)', blank TextView receives click;
-            mLblNewNamerSpinnerCover.bringToFront();
-        } else {
-            // user can operate the spinner
-            mNamerSpinner.bringToFront();
-        }
-    }
-
-    public void setNamerSpinnerSelection() {
-        // set the current Namer to show in its spinner
-        for (int i=0; i<mRowCt; i++) {
-            Log.d(LOG_TAG, "Setting mNamerSpinner; testing index " + i);
-            if (mNamerSpinner.getItemIdAtPosition(i) == mNamerId) {
-                Log.d(LOG_TAG, "Setting mNamerSpinner; found matching index " + i);
-                mNamerSpinner.setSelection(i);
-                break;
-            }
-        }
-    }
-*/
     public void setSpinnerSelection(Spinner spn, long recId, long rowCt) {
         for (int i=0; i<rowCt; i++) {
-            if (spn.getItemIdAtPosition(i) == (int) recId) {
+            if (spn.getItemIdAtPosition(i) == recId) {
                 spn.setSelection(i);
             }
         }

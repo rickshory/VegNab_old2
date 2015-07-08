@@ -32,6 +32,9 @@ public final class VNContract {
         public static final String SPECIES_LIST_DOWNLOADED = "Species_List_Downloaded";
         public static final String VERIFY_VEG_ITEMS_PRESENCE = "VerifyVegItemsPresence";
         public static final String LATEST_VEG_ITEM_SAVE = "LatestVegItemSave";
+        public static final String DEFAULT_IDENT_NAMER_ID = "DefaultIdentNamerId";
+        public static final String DEFAULT_IDENT_REF_ID = "DefaultIdentRefId";
+        public static final String DEFAULT_IDENT_METHOD_ID = "DefaultIdentMethodId";
 
     }
     // inner class to define loader IDs
