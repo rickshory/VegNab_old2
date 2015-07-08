@@ -89,7 +89,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     private EditText mViewPlaceholderCode, mViewPlaceholderDescription,
             mViewPlaceholderHabitat, mViewPlaceholderIdentifier;
 
-//	SimpleCursorAdapter mVisitAdapter, mNamerAdapter;
     SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     SimpleDateFormat mTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
@@ -232,14 +231,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mViewPlaceholderIdentifier.setOnFocusChangeListener(this);
         registerForContextMenu(mViewPlaceholderIdentifier); // enable long-press
 
-
-/*
-    mIdentNamerId = 0, mIdentRefId = 0, mIdentMethodId = 0, mIdentCFId = 0;*/
-
         // Prepare the loader. Either re-connect with an existing one or start a new one
-//		getLoaderManager().initLoader(Loaders.PLACEHOLDER_TO_EDIT, null, this); // The current placeholder
-//        getLoaderManager().initLoader(Loaders.PLACEHOLDERS_EXISTING, null, this); // Any existing placeholders
-//		getLoaderManager().initLoader(Loaders.PLACEHOLDER_BACKSTORY, null, this); // project, location, namer, etc., automatically recorded for a placeholder
         getLoaderManager().initLoader(Loaders.PLACEHOLDER_HABITATS, null, this); // Recall these as options to re-select
 
         // set click listener for the buttons in the view
@@ -444,6 +436,42 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 cl = new CursorLoader(getActivity(), baseUri,
                         null, select, null, null);
                 break;
+
+            case Loaders.PH_IDENT_NAMERS:
+                baseUri = ContentProvider_VegNab.SQL_URI;
+                select = "SELECT _id, IdNamerName FROM IdNamers "
+                        + "UNION SELECT 0, '(add new)' "
+                        + "ORDER BY _id;";
+                cl = new CursorLoader(getActivity(), baseUri,
+                        null, select, null, null);
+                break;
+
+            case Loaders.PH_IDENT_REFS:
+                baseUri = ContentProvider_VegNab.SQL_URI;
+                select = "SELECT _id, IdRef FROM IdRefs "
+                        + "UNION SELECT 0, '(add new)' "
+                        + "ORDER BY _id;";
+                cl = new CursorLoader(getActivity(), baseUri,
+                        null, select, null, null);
+                break;
+
+            case Loaders.PH_IDENT_METHODS:
+                baseUri = ContentProvider_VegNab.SQL_URI;
+                select = "SELECT _id, IdMethod FROM IdMethods "
+                        + "UNION SELECT 0, '(add new)' "
+                        + "ORDER BY _id;";
+                cl = new CursorLoader(getActivity(), baseUri,
+                        null, select, null, null);
+                break;
+
+            case Loaders.PH_IDENT_CONFIDENCS:
+                baseUri = ContentProvider_VegNab.SQL_URI;
+                select = "SELECT _id, IdLevelDescr FROM IdLevels "
+                        + "ORDER BY _id;";
+                cl = new CursorLoader(getActivity(), baseUri,
+                        null, select, null, null);
+                break;
+
         }
         return cl;
     }
@@ -512,6 +540,55 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 Log.d(LOG_TAG, "onLoadFinished, number of items in mPreviouslyEnteredHabitats: " + mPreviouslyEnteredHabitats.size());
                 Log.d(LOG_TAG, "onLoadFinished, items in mPreviouslyEnteredHabitats: " + mPreviouslyEnteredHabitats.toString());
                 break;
+
+            case Loaders.PH_IDENT_NAMERS:
+/*            // Swap the new cursor in.
+            // The framework will take care of closing the old cursor once we return.
+            mIdentNamerAdapter.swapCursor(c);
+            if (mRowCt > 0) {
+                setNamerSpinnerSelectionFromDefaultNamer(); // internally sets mNamerId
+                mNamerSpinner.setEnabled(true);
+            } else {
+                mNamerSpinner.setEnabled(false);
+            }*/
+                break;
+
+            case Loaders.PH_IDENT_REFS:
+/*            // Swap the new cursor in.
+            // The framework will take care of closing the old cursor once we return.
+            mIdentRefAdapter.swapCursor(c);
+            if (mRowCt > 0) {
+                setNamerSpinnerSelectionFromDefaultNamer(); // internally sets mNamerId
+                mNamerSpinner.setEnabled(true);
+            } else {
+                mNamerSpinner.setEnabled(false);
+            }*/
+                break;
+
+            case Loaders.PH_IDENT_METHODS:
+/*            // Swap the new cursor in.
+            // The framework will take care of closing the old cursor once we return.
+            mIdentMethodAdapter.swapCursor(c);
+            if (mRowCt > 0) {
+                setNamerSpinnerSelectionFromDefaultNamer(); // internally sets mNamerId
+                mNamerSpinner.setEnabled(true);
+            } else {
+                mNamerSpinner.setEnabled(false);
+            }*/
+                break;
+
+            case Loaders.PH_IDENT_CONFIDENCS:
+/*            // Swap the new cursor in.
+            // The framework will take care of closing the old cursor once we return.
+            mIdentCFAdapter.swapCursor(c);
+            if (mRowCt > 0) {
+                setNamerSpinnerSelectionFromDefaultNamer(); // internally sets mNamerId
+                mNamerSpinner.setEnabled(true);
+            } else {
+                mNamerSpinner.setEnabled(false);
+            }*/
+                break;
+
         }
     }
 
@@ -521,31 +598,81 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         // is about to be closed. Need to make sure it is no longer is use.
         switch (loader.getId()) {
 
-        case Loaders.PLACEHOLDER_TO_EDIT:
-            Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_TO_EDIT.");
-//			don't need to do anything here, no cursor adapter
-            break;
+            case Loaders.PLACEHOLDER_TO_EDIT:
+                Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_TO_EDIT.");
+    //			don't need to do anything here, no cursor adapter
+                break;
 
-        case Loaders.PLACEHOLDERS_EXISTING:
-            Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDERS_EXISTING.");
-//			don't need to do anything here, no cursor adapter
-            break;
+            case Loaders.PLACEHOLDERS_EXISTING:
+                Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDERS_EXISTING.");
+    //			don't need to do anything here, no cursor adapter
+                break;
 
-//		case Loaders.PLACEHOLDER_PROJ_NAMER:
-//			Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_PROJ_NAMER.");
-////			don't need to do anything here, no cursor adapter
-//			break;
+    //		case Loaders.PLACEHOLDER_PROJ_NAMER:
+    //			Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_PROJ_NAMER.");
+    ////			don't need to do anything here, no cursor adapter
+    //			break;
 
-        case Loaders.PLACEHOLDER_BACKSTORY:
-            Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_BACKSTORY.");
-//			don't need to do anything here, no cursor adapter
-            break;
+            case Loaders.PLACEHOLDER_BACKSTORY:
+                Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_BACKSTORY.");
+    //			don't need to do anything here, no cursor adapter
+                break;
 
-        case Loaders.PLACEHOLDER_HABITATS:
-            Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_HABITATS.");
-//			don't need to do anything here, no cursor adapter
-            break;
+            case Loaders.PLACEHOLDER_HABITATS:
+                Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_HABITATS.");
+    //			don't need to do anything here, no cursor adapter
+                break;
 
+            case Loaders.PH_IDENT_NAMERS:
+                mIdentNamerAdapter.swapCursor(null);
+                break;
+
+            case Loaders.PH_IDENT_REFS:
+                mIdentRefAdapter.swapCursor(null);
+                break;
+
+            case Loaders.PH_IDENT_METHODS:
+                mIdentMethodAdapter.swapCursor(null);
+                break;
+
+            case Loaders.PH_IDENT_CONFIDENCS:
+                mIdentCFAdapter.swapCursor(null);
+                break;
+        }
+    }
+
+
+/*    public void setNamerSpinnerSelectionFromDefaultNamer() {
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        // if none yet, use _id = 0, generated in query as '(add new)'
+        mNamerId = sharedPref.getLong(Prefs.DEFAULT_NAMER_ID, 0);
+        setNamerSpinnerSelection();
+        if (mNamerId == 0) {
+            // user sees '(add new)', blank TextView receives click;
+            mLblNewNamerSpinnerCover.bringToFront();
+        } else {
+            // user can operate the spinner
+            mNamerSpinner.bringToFront();
+        }
+    }
+
+    public void setNamerSpinnerSelection() {
+        // set the current Namer to show in its spinner
+        for (int i=0; i<mRowCt; i++) {
+            Log.d(LOG_TAG, "Setting mNamerSpinner; testing index " + i);
+            if (mNamerSpinner.getItemIdAtPosition(i) == mNamerId) {
+                Log.d(LOG_TAG, "Setting mNamerSpinner; found matching index " + i);
+                mNamerSpinner.setSelection(i);
+                break;
+            }
+        }
+    }
+*/
+    public void setSpinnerSelection(Spinner spn, long recId, long rowCt) {
+        for (int i=0; i<rowCt; i++) {
+            if (spn.getItemIdAtPosition(i) == (int) recId) {
+                spn.setSelection(i);
+            }
         }
     }
 
