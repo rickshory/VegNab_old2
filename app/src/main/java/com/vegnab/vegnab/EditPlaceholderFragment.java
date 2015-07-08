@@ -69,7 +69,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     String mPlaceholderCode = null, mPlaceholderDescription = null, mPlaceholderHabitat = null,
             mPlaceholderLabelNumber = null, mPhVisitName = null, mPhNamerName = null,
             mPhScribe = null, mPhLocText = null;
-    Boolean mCodeWasShortened = false;
+    Boolean mCodeWasShortened = false, mIdPlaceholder = false;
     HashSet<String> mExistingPlaceholderCodes = new HashSet<String>();
     HashSet<String> mPreviouslyEnteredHabitats = new HashSet<String>();
 
@@ -103,6 +103,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     final static String ARG_PH_SCRIBE = "phScribe";
     final static String ARG_PLACEHOLDER_TIME = "phTimeStamp";
     final static String BUTTON_KEY = "buttonKey";
+    final static String ARG_ID_PLACEHOLDER = "identifyPh";
 
     OnButtonListener mButtonCallback; // declare the interface
     // declare that the container Activity must implement this interface
@@ -188,6 +189,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mPhLocText = savedInstanceState.getString(ARG_PH_LOC_TEXT);
             mPhNamerName = savedInstanceState.getString(ARG_PH_NAMER_NAME);
             mPhScribe = savedInstanceState.getString(ARG_PH_SCRIBE);
+            mIdPlaceholder = savedInstanceState.getBoolean(ARG_ID_PLACEHOLDER);
 
             Log.d(LOG_TAG, "In onCreateView, retrieved mPlaceholderId: " + mPlaceholderId);
             Log.d(LOG_TAG, "In onCreateView, retrieved mPlaceholderCode: " + mPlaceholderCode);
@@ -294,6 +296,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         outState.putString(ARG_PH_LOC_TEXT, mPhLocText);
         outState.putString(ARG_PH_NAMER_NAME, mPhNamerName);
         outState.putString(ARG_PH_SCRIBE, mPhScribe);
+        outState.putBoolean(ARG_ID_PLACEHOLDER, mIdPlaceholder);
     }
 
     @Override
@@ -686,6 +689,15 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 //            }
         }
         return numUpdated;
+    }
+
+    private void configureIdViews() {
+        // hide or show the views that involve identifying a Placeholder
+        if (mIdPlaceholder) {
+
+        } else { // default, mIdPlaceholder = false
+
+        }
     }
 
 
