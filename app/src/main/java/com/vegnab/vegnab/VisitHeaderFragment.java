@@ -93,10 +93,6 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     EditVisitDialogListener mEditVisitListener;
 
     private static final String LOG_TAG = VisitHeaderFragment.class.getSimpleName();
-    private static final int MENU_HELP = 0;
-    private static final int MENU_ADD = 1;
-    private static final int MENU_EDIT = 2;
-    private static final int MENU_DELETE = 3;
     private int mValidationLevel = Validation.SILENT;
     private static final int INTERNAL_GPS = 1;
     private static final int NETWORK = 2;
@@ -1262,18 +1258,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
         flexHlpDlg.show(getFragmentManager(), "frg_help_notes");
         return true;
-    case MENU_EDIT:
-        Log.d(LOG_TAG, "MENU_EDIT selected");
-//	        mark_item(info.id);
-        return true;
-    case MENU_DELETE:
-        Log.d(LOG_TAG, "MENU_DELETE selected");
-//	        delete_item(info.id);
-        return true;
-    case MENU_HELP:
-        Log.d(LOG_TAG, "MENU_HELP selected");
-        hlpDlg.show(getFragmentManager(), null);
-        return true;
+
     default:
         return super.onContextItemSelected(item);
        }

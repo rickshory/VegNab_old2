@@ -16,6 +16,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.internal.widget.AdapterViewCompat.AdapterContextMenuInfo;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -29,6 +30,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -65,13 +68,18 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
     // explicitly handle all fields; some API versions have bugs that lose cursors on orientation change, etc.
     // zero and null defaults means new or not specified yet
-    long mPlaceholderId = 0, mPhProjId = 0, mPhVisitId = 0, mPhLocId = 0, mPhNamerId = 0;
+    long mPlaceholderId = 0, mPhProjId = 0, mPhVisitId = 0, mPhLocId = 0, mPhNamerId = 0,
+            mIdentNamerId = 0, mIdentRefId = 0, mIdentMethodId = 0, mIdentCFId = 0;
     String mPlaceholderCode = null, mPlaceholderDescription = null, mPlaceholderHabitat = null,
             mPlaceholderLabelNumber = null, mPhVisitName = null, mPhNamerName = null,
             mPhScribe = null, mPhLocText = null;
     Boolean mCodeWasShortened = false, mIdPlaceholder = false;
     HashSet<String> mExistingPlaceholderCodes = new HashSet<String>();
     HashSet<String> mPreviouslyEnteredHabitats = new HashSet<String>();
+
+    private Spinner mIdentNamerSpinner, mIdentRefSpinner, mIdentMethodSpinner, mIdentCFSpinner;
+    private TextView mLblIdentNamerSpinnerCover, mLblIdentRefSpinnerCover, mLblIdentMethodSpinnerCover;
+    SimpleCursorAdapter mIdentNamerAdapter, mIdentRefAdapter, mIdentMethodAdapter, mIdentCFAdapter;
 
     Uri mUri;
     Uri mPlaceholdersUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "placeholders");
@@ -104,6 +112,10 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     final static String ARG_PLACEHOLDER_TIME = "phTimeStamp";
     final static String BUTTON_KEY = "buttonKey";
     final static String ARG_ID_PLACEHOLDER = "identifyPh";
+    final static String ARG_IDENT_NAMER_ID = "identNamerId";
+    final static String ARG_IDENT_REF_ID = "identRefId";
+    final static String ARG_IDENT_METHOD_ID = "identMethodId";
+    final static String ARG_IDENT_CF_ID = "identCFId";
 
     OnButtonListener mButtonCallback; // declare the interface
     // declare that the container Activity must implement this interface
@@ -190,6 +202,10 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mPhNamerName = savedInstanceState.getString(ARG_PH_NAMER_NAME);
             mPhScribe = savedInstanceState.getString(ARG_PH_SCRIBE);
             mIdPlaceholder = savedInstanceState.getBoolean(ARG_ID_PLACEHOLDER);
+            mIdentNamerId = savedInstanceState.getLong(ARG_IDENT_NAMER_ID, 0);
+            mIdentRefId = savedInstanceState.getLong(ARG_IDENT_REF_ID, 0);
+            mIdentMethodId = savedInstanceState.getLong(ARG_IDENT_METHOD_ID, 0);
+            mIdentCFId = savedInstanceState.getLong(ARG_IDENT_CF_ID, 0);
 
             Log.d(LOG_TAG, "In onCreateView, retrieved mPlaceholderId: " + mPlaceholderId);
             Log.d(LOG_TAG, "In onCreateView, retrieved mPlaceholderCode: " + mPlaceholderCode);
@@ -215,6 +231,10 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mViewPlaceholderIdentifier = (EditText) rootView.findViewById(R.id.txt_placeholder_labelnumber);
         mViewPlaceholderIdentifier.setOnFocusChangeListener(this);
         registerForContextMenu(mViewPlaceholderIdentifier); // enable long-press
+
+
+/*
+    mIdentNamerId = 0, mIdentRefId = 0, mIdentMethodId = 0, mIdentCFId = 0;*/
 
         // Prepare the loader. Either re-connect with an existing one or start a new one
 //		getLoaderManager().initLoader(Loaders.PLACEHOLDER_TO_EDIT, null, this); // The current placeholder
@@ -297,6 +317,10 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         outState.putString(ARG_PH_NAMER_NAME, mPhNamerName);
         outState.putString(ARG_PH_SCRIBE, mPhScribe);
         outState.putBoolean(ARG_ID_PLACEHOLDER, mIdPlaceholder);
+        outState.putLong(ARG_IDENT_NAMER_ID, mIdentNamerId);
+        outState.putLong(ARG_IDENT_REF_ID, mIdentRefId);
+        outState.putLong(ARG_IDENT_METHOD_ID, mIdentMethodId);
+        outState.putLong(ARG_IDENT_CF_ID, mIdentCFId);
     }
 
     @Override
