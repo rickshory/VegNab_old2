@@ -316,7 +316,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mIdentCFSpinner.setAdapter(mIdentCFAdapter);
         mIdentCFSpinner.setOnItemSelectedListener(this);
         registerForContextMenu(mIdentCFSpinner); // enable long-press
-        
+
         /* mLblIdentNamerSpinnerCover, mLblIdentRefSpinnerCover, mLblIdentMethodSpinnerCover;*/
         return rootView;
     }
