@@ -253,6 +253,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         // set the onclicklistener for all the Button instances found
 
         // set up spinners
+        // Namer spinner
         mIdentNamerSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_namer);
         mIdentNamerSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
         mIdentNamerSpinner.setEnabled(false); // will enable when data ready
@@ -269,7 +270,53 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mLblIdentNamerSpinnerCover = (TextView) rootView.findViewById(R.id.lbl_ident_namer_spinner_cover);
         mLblIdentNamerSpinnerCover.setOnClickListener(this);
         registerForContextMenu(mLblIdentNamerSpinnerCover); // enable long-press
-
+        // Ref spinner
+        mIdentRefSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_namer);
+        mIdentRefSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
+        mIdentRefSpinner.setEnabled(false); // will enable when data ready
+        mIdentRefAdapter = new SimpleCursorAdapter(getActivity(),
+                android.R.layout.simple_spinner_item, null,
+                new String[] {"IdNamerName"},
+                new int[] {android.R.id.text1}, 0);
+        mIdentRefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mIdentRefSpinner.setAdapter(mIdentRefAdapter);
+        mIdentRefSpinner.setOnItemSelectedListener(this);
+        registerForContextMenu(mIdentRefSpinner); // enable long-press
+        // also need click, if no items & therefore selection cannot be changed
+        // use a TextView on top of the spinner, named "..._spinner_cover"
+        mLblIdentRefSpinnerCover = (TextView) rootView.findViewById(R.id.lbl_ident_namer_spinner_cover);
+        mLblIdentRefSpinnerCover.setOnClickListener(this);
+        registerForContextMenu(mLblIdentRefSpinnerCover); // enable long-press
+        // Method spinner
+        mIdentMethodSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_namer);
+        mIdentMethodSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
+        mIdentMethodSpinner.setEnabled(false); // will enable when data ready
+        mIdentMethodAdapter = new SimpleCursorAdapter(getActivity(),
+                android.R.layout.simple_spinner_item, null,
+                new String[] {"IdNamerName"},
+                new int[] {android.R.id.text1}, 0);
+        mIdentMethodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mIdentMethodSpinner.setAdapter(mIdentMethodAdapter);
+        mIdentMethodSpinner.setOnItemSelectedListener(this);
+        registerForContextMenu(mIdentMethodSpinner); // enable long-press
+        // also need click, if no items & therefore selection cannot be changed
+        // use a TextView on top of the spinner, named "..._spinner_cover"
+        mLblIdentMethodSpinnerCover = (TextView) rootView.findViewById(R.id.lbl_ident_namer_spinner_cover);
+        mLblIdentMethodSpinnerCover.setOnClickListener(this);
+        registerForContextMenu(mLblIdentMethodSpinnerCover); // enable long-press
+        // CF spinner
+        mIdentCFSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_namer);
+        mIdentCFSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
+        mIdentCFSpinner.setEnabled(false); // will enable when data ready
+        mIdentCFAdapter = new SimpleCursorAdapter(getActivity(),
+                android.R.layout.simple_spinner_item, null,
+                new String[] {"IdNamerName"},
+                new int[] {android.R.id.text1}, 0);
+        mIdentCFAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mIdentCFSpinner.setAdapter(mIdentCFAdapter);
+        mIdentCFSpinner.setOnItemSelectedListener(this);
+        registerForContextMenu(mIdentCFSpinner); // enable long-press
+        
         /* mLblIdentNamerSpinnerCover, mLblIdentRefSpinnerCover, mLblIdentMethodSpinnerCover;*/
         return rootView;
     }
@@ -431,7 +478,29 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 //                super.onBackPressed();
                 break;
 
-            //
+//            case R.id.lbl_ident_ref_spinner_cover:
+//                Log.d(LOG_TAG, "in onClick, lbl_ident_ref_spinner_cover");
+////                args.putInt(BUTTON_KEY, VNContract.PhActions.CANCEL);
+////                args.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
+////                Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
+////                mButtonCallback.onPlaceholderActionButtonClicked(args);
+////                Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
+////                super.onBackPressed();
+//                break;
+//
+//            case R.id.lbl_ident_method_spinner_cover:
+//                Log.d(LOG_TAG, "in onClick, lbl_ident_method_spinner_cover");
+////                args.putInt(BUTTON_KEY, VNContract.PhActions.CANCEL);
+////                args.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
+////                Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
+////                mButtonCallback.onPlaceholderActionButtonClicked(args);
+////                Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
+////                super.onBackPressed();
+//                break;
+
+
+
+
         }
     }
 
