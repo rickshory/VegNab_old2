@@ -243,6 +243,6 @@
         android:layout_below="@id/lbl_ph_ident_cf"
         android:prompt="@string/edit_placeholder_hint_ident_confidence"
         />
-    
+
 </RelativeLayout>
 </ScrollView>

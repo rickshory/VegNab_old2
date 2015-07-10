@@ -79,6 +79,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     HashSet<String> mExistingPlaceholderCodes = new HashSet<String>();
     HashSet<String> mPreviouslyEnteredHabitats = new HashSet<String>();
 
+    private TextView mLblIdentNamer, mLblIdentRef, mLblIdentMethod, mLblIdentCF;
     private Spinner mIdentNamerSpinner, mIdentRefSpinner, mIdentMethodSpinner, mIdentCFSpinner;
     private TextView mLblIdentNamerSpinnerCover, mLblIdentRefSpinnerCover, mLblIdentMethodSpinnerCover;
     SimpleCursorAdapter mIdentNamerAdapter, mIdentRefAdapter, mIdentMethodAdapter, mIdentCFAdapter;
@@ -254,6 +255,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
         // set up spinners
         // Namer spinner
+        mLblIdentNamer = (TextView) rootView.findViewById(R.id.lbl_ph_ident_namer);
         mIdentNamerSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_namer);
         mIdentNamerSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
         mIdentNamerSpinner.setEnabled(false); // will enable when data ready
@@ -271,6 +273,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mLblIdentNamerSpinnerCover.setOnClickListener(this);
         registerForContextMenu(mLblIdentNamerSpinnerCover); // enable long-press
         // Ref spinner
+        mLblIdentRef = (TextView) rootView.findViewById(R.id.lbl_ph_ident_ref);
         mIdentRefSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_namer);
         mIdentRefSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
         mIdentRefSpinner.setEnabled(false); // will enable when data ready
@@ -288,6 +291,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mLblIdentRefSpinnerCover.setOnClickListener(this);
         registerForContextMenu(mLblIdentRefSpinnerCover); // enable long-press
         // Method spinner
+        mLblIdentMethod = (TextView) rootView.findViewById(R.id.lbl_ph_ident_method);
         mIdentMethodSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_namer);
         mIdentMethodSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
         mIdentMethodSpinner.setEnabled(false); // will enable when data ready
@@ -305,6 +309,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mLblIdentMethodSpinnerCover.setOnClickListener(this);
         registerForContextMenu(mLblIdentMethodSpinnerCover); // enable long-press
         // CF spinner
+        mLblIdentCF = (TextView) rootView.findViewById(R.id.lbl_ph_ident_cf);
         mIdentCFSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_namer);
         mIdentCFSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
         mIdentCFSpinner.setEnabled(false); // will enable when data ready
@@ -317,7 +322,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mIdentCFSpinner.setOnItemSelectedListener(this);
         registerForContextMenu(mIdentCFSpinner); // enable long-press
 
-        /* mLblIdentNamerSpinnerCover, mLblIdentRefSpinnerCover, mLblIdentMethodSpinnerCover;*/
         return rootView;
     }
 
@@ -961,8 +965,30 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     private void configureIdViews() {
         // hide or show the views that involve identifying a Placeholder
         if (mIdPlaceholder) {
+            mLblIdentNamer.setVisibility(View.GONE);
+            mIdentNamerSpinner.setVisibility(View.GONE);
+            mLblIdentNamerSpinnerCover.setVisibility(View.GONE);
+            mLblIdentRef.setVisibility(View.GONE);
+            mIdentRefSpinner.setVisibility(View.GONE);
+            mLblIdentRefSpinnerCover.setVisibility(View.GONE);
+            mLblIdentMethod.setVisibility(View.GONE);
+            mIdentMethodSpinner.setVisibility(View.GONE);
+            mLblIdentMethodSpinnerCover.setVisibility(View.GONE);
+            mLblIdentCF.setVisibility(View.GONE);
+            mIdentCFSpinner.setVisibility(View.GONE);
 
         } else { // default, mIdPlaceholder = false
+            mLblIdentNamer.setVisibility(View.VISIBLE);
+            mIdentNamerSpinner.setVisibility(View.VISIBLE);
+            mLblIdentNamerSpinnerCover.setVisibility(View.VISIBLE);
+            mLblIdentRef.setVisibility(View.VISIBLE);
+            mIdentRefSpinner.setVisibility(View.VISIBLE);
+            mLblIdentRefSpinnerCover.setVisibility(View.VISIBLE);
+            mLblIdentMethod.setVisibility(View.VISIBLE);
+            mIdentMethodSpinner.setVisibility(View.VISIBLE);
+            mLblIdentMethodSpinnerCover.setVisibility(View.VISIBLE);
+            mLblIdentCF.setVisibility(View.VISIBLE);
+            mIdentCFSpinner.setVisibility(View.VISIBLE);
 
         }
     }
