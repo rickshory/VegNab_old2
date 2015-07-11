@@ -279,7 +279,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mIdentRefSpinner.setEnabled(false); // will enable when data ready
         mIdentRefAdapter = new SimpleCursorAdapter(getActivity(),
                 android.R.layout.simple_spinner_item, null,
-                new String[] {"IdNamerName"},
+                new String[] {"IdRef"},
                 new int[] {android.R.id.text1}, 0);
         mIdentRefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mIdentRefSpinner.setAdapter(mIdentRefAdapter);
@@ -297,7 +297,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mIdentMethodSpinner.setEnabled(false); // will enable when data ready
         mIdentMethodAdapter = new SimpleCursorAdapter(getActivity(),
                 android.R.layout.simple_spinner_item, null,
-                new String[] {"IdNamerName"},
+                new String[] {"IdMethod"},
                 new int[] {android.R.id.text1}, 0);
         mIdentMethodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mIdentMethodSpinner.setAdapter(mIdentMethodAdapter);
@@ -315,7 +315,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mIdentCFSpinner.setEnabled(false); // will enable when data ready
         mIdentCFAdapter = new SimpleCursorAdapter(getActivity(),
                 android.R.layout.simple_spinner_item, null,
-                new String[] {"IdNamerName"},
+                new String[] {"IdLevelDescr"},
                 new int[] {android.R.id.text1}, 0);
         mIdentCFAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mIdentCFSpinner.setAdapter(mIdentCFAdapter);
@@ -356,6 +356,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         getLoaderManager().initLoader(Loaders.PH_IDENT_REFS, null, this);
         getLoaderManager().initLoader(Loaders.PH_IDENT_METHODS, null, this);
         getLoaderManager().initLoader(Loaders.PH_IDENT_CONFIDENCS, null, this);
+        //  hide views dealing with identifying the species
+        configureIdViews();
     }
 
     @Override
@@ -464,6 +466,16 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
             case R.id.ph_identify_button:
                 Log.d(LOG_TAG, "in onClick, ph_identify_button");
+                if (mPlaceholderId == 0) {
+                    // message that Placeholder must be defined first
+                    break;
+                }
+                if (mIdPlaceholder) {
+                    mIdPlaceholder = false;
+                } else {
+                    mIdPlaceholder = true;
+                }
+                configureIdViews();
 //                args.putInt(BUTTON_KEY, VNContract.PhActions.CANCEL);
 //                args.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
 //                Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
