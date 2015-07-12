@@ -79,6 +79,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     HashSet<String> mExistingPlaceholderCodes = new HashSet<String>();
     HashSet<String> mPreviouslyEnteredHabitats = new HashSet<String>();
 
+    private Button mBtnIdent;
     private TextView mLblIdentNamer, mLblIdentRef, mLblIdentMethod, mLblIdentCF;
     private Spinner mIdentNamerSpinner, mIdentRefSpinner, mIdentMethodSpinner, mIdentCFSpinner;
     private TextView mLblIdentNamerSpinnerCover, mLblIdentRefSpinnerCover, mLblIdentMethodSpinnerCover;
@@ -248,8 +249,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         s.setOnClickListener(this);
         Button c = (Button) rootView.findViewById(R.id.placeholder_cancel_button);
         c.setOnClickListener(this);
-        Button i = (Button) rootView.findViewById(R.id.ph_identify_button);
-        i.setOnClickListener(this);
+        mBtnIdent = (Button) rootView.findViewById(R.id.ph_identify_button);
+        mBtnIdent.setOnClickListener(this);
         // if more, loop through all the child items of the ViewGroup rootView and
         // set the onclicklistener for all the Button instances found
 
@@ -468,12 +469,13 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 Log.d(LOG_TAG, "in onClick, ph_identify_button");
                 if (mPlaceholderId == 0) {
                     // message that Placeholder must be defined first
-                    break;
-                }
-                if (mIdPlaceholder) {
                     mIdPlaceholder = false;
                 } else {
-                    mIdPlaceholder = true;
+                    if (mIdPlaceholder) {
+                        mIdPlaceholder = false;
+                    } else {
+                        mIdPlaceholder = true;
+                    }
                 }
                 configureIdViews();
 //                args.putInt(BUTTON_KEY, VNContract.PhActions.CANCEL);
@@ -975,6 +977,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     }
 
     private void configureIdViews() {
+        String btnMsg;
         // hide or show the views that involve identifying a Placeholder
         if (mIdPlaceholder) {
             mLblIdentNamer.setVisibility(View.GONE);
@@ -988,7 +991,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mLblIdentMethodSpinnerCover.setVisibility(View.GONE);
             mLblIdentCF.setVisibility(View.GONE);
             mIdentCFSpinner.setVisibility(View.GONE);
-
+            btnMsg = getActivity().getResources().getString(R.string.edit_placeholder_ident_button_on_msg);
         } else { // default, mIdPlaceholder = false
             mLblIdentNamer.setVisibility(View.VISIBLE);
             mIdentNamerSpinner.setVisibility(View.VISIBLE);
@@ -1001,8 +1004,9 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mLblIdentMethodSpinnerCover.setVisibility(View.VISIBLE);
             mLblIdentCF.setVisibility(View.VISIBLE);
             mIdentCFSpinner.setVisibility(View.VISIBLE);
-
+            btnMsg = getActivity().getResources().getString(R.string.edit_placeholder_ident_button_off_msg);
         }
+        mBtnIdent.setText(btnMsg);
     }
 
 
