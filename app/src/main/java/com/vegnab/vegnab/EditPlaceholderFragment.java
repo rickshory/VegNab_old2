@@ -980,19 +980,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         String btnMsg;
         // hide or show the views that involve identifying a Placeholder
         if (mIdPlaceholder) {
-            mLblIdentNamer.setVisibility(View.GONE);
-            mIdentNamerSpinner.setVisibility(View.GONE);
-            mLblIdentNamerSpinnerCover.setVisibility(View.GONE);
-            mLblIdentRef.setVisibility(View.GONE);
-            mIdentRefSpinner.setVisibility(View.GONE);
-            mLblIdentRefSpinnerCover.setVisibility(View.GONE);
-            mLblIdentMethod.setVisibility(View.GONE);
-            mIdentMethodSpinner.setVisibility(View.GONE);
-            mLblIdentMethodSpinnerCover.setVisibility(View.GONE);
-            mLblIdentCF.setVisibility(View.GONE);
-            mIdentCFSpinner.setVisibility(View.GONE);
-            btnMsg = getActivity().getResources().getString(R.string.edit_placeholder_ident_button_on_msg);
-        } else { // default, mIdPlaceholder = false
             mLblIdentNamer.setVisibility(View.VISIBLE);
             mIdentNamerSpinner.setVisibility(View.VISIBLE);
             mLblIdentNamerSpinnerCover.setVisibility(View.VISIBLE);
@@ -1004,6 +991,19 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mLblIdentMethodSpinnerCover.setVisibility(View.VISIBLE);
             mLblIdentCF.setVisibility(View.VISIBLE);
             mIdentCFSpinner.setVisibility(View.VISIBLE);
+            btnMsg = getActivity().getResources().getString(R.string.edit_placeholder_ident_button_on_msg);
+        } else { // default, mIdPlaceholder = false
+            mLblIdentNamer.setVisibility(View.GONE);
+            mIdentNamerSpinner.setVisibility(View.GONE);
+            mLblIdentNamerSpinnerCover.setVisibility(View.GONE);
+            mLblIdentRef.setVisibility(View.GONE);
+            mIdentRefSpinner.setVisibility(View.GONE);
+            mLblIdentRefSpinnerCover.setVisibility(View.GONE);
+            mLblIdentMethod.setVisibility(View.GONE);
+            mIdentMethodSpinner.setVisibility(View.GONE);
+            mLblIdentMethodSpinnerCover.setVisibility(View.GONE);
+            mLblIdentCF.setVisibility(View.GONE);
+            mIdentCFSpinner.setVisibility(View.GONE);
             btnMsg = getActivity().getResources().getString(R.string.edit_placeholder_ident_button_off_msg);
         }
         mBtnIdent.setText(btnMsg);
