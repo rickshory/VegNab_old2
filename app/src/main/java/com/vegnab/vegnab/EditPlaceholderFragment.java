@@ -85,6 +85,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     private TextView mLblIdentNamerSpinnerCover, mLblIdentRefSpinnerCover, mLblIdentMethodSpinnerCover;
     SimpleCursorAdapter mIdentNamerAdapter, mIdentRefAdapter, mIdentMethodAdapter, mIdentCFAdapter;
 
+    private ViewGroup mViewGroupIdent; // the set of views involved with identify-species
+
     Uri mUri;
     Uri mPlaceholdersUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "placeholders");
     Uri mLocationsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "locations");
@@ -322,6 +324,9 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mIdentCFSpinner.setAdapter(mIdentCFAdapter);
         mIdentCFSpinner.setOnItemSelectedListener(this);
         registerForContextMenu(mIdentCFSpinner); // enable long-press
+
+        // the views for identify-species, to show or hide as a group
+        mViewGroupIdent = (ViewGroup) rootView.findViewById(R.id.ident_veiw_group);
 
         return rootView;
     }
@@ -977,34 +982,15 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     }
 
     private void configureIdViews() {
+
         String btnMsg;
         // hide or show the views that involve identifying a Placeholder
         if (mIdPlaceholder) {
-            mLblIdentNamer.setVisibility(View.VISIBLE);
-            mIdentNamerSpinner.setVisibility(View.VISIBLE);
-            mLblIdentNamerSpinnerCover.setVisibility(View.VISIBLE);
-            mLblIdentRef.setVisibility(View.VISIBLE);
-            mIdentRefSpinner.setVisibility(View.VISIBLE);
-            mLblIdentRefSpinnerCover.setVisibility(View.VISIBLE);
-            mLblIdentMethod.setVisibility(View.VISIBLE);
-            mIdentMethodSpinner.setVisibility(View.VISIBLE);
-            mLblIdentMethodSpinnerCover.setVisibility(View.VISIBLE);
-            mLblIdentCF.setVisibility(View.VISIBLE);
-            mIdentCFSpinner.setVisibility(View.VISIBLE);
             btnMsg = getActivity().getResources().getString(R.string.edit_placeholder_ident_button_on_msg);
+            mViewGroupIdent.setVisibility(View.VISIBLE);
         } else { // default, mIdPlaceholder = false
-            mLblIdentNamer.setVisibility(View.GONE);
-            mIdentNamerSpinner.setVisibility(View.GONE);
-            mLblIdentNamerSpinnerCover.setVisibility(View.GONE);
-            mLblIdentRef.setVisibility(View.GONE);
-            mIdentRefSpinner.setVisibility(View.GONE);
-            mLblIdentRefSpinnerCover.setVisibility(View.GONE);
-            mLblIdentMethod.setVisibility(View.GONE);
-            mIdentMethodSpinner.setVisibility(View.GONE);
-            mLblIdentMethodSpinnerCover.setVisibility(View.GONE);
-            mLblIdentCF.setVisibility(View.GONE);
-            mIdentCFSpinner.setVisibility(View.GONE);
             btnMsg = getActivity().getResources().getString(R.string.edit_placeholder_ident_button_off_msg);
+            mViewGroupIdent.setVisibility(View.GONE);
         }
         mBtnIdent.setText(btnMsg);
     }

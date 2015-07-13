@@ -139,110 +139,117 @@
         android:layout_below="@id/placeholder_cancel_button"
         />
 
-    <TextView
-        android:id="@+id/lbl_ph_ident_namer"
-        android:text="@string/edit_placeholder_label_ident_namer"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/ident_veiw_group"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/ph_identify_button"
         android:layout_below="@id/ph_identify_button"
-        />
+        >
 
-    <Spinner
-        android:id="@+id/spn_ph_ident_namer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/lbl_ph_ident_namer"
-        android:layout_below="@id/lbl_ph_ident_namer"
-        android:prompt="@string/edit_placeholder_hint_ident_namer"
-        />
+        <TextView
+            android:id="@+id/lbl_ph_ident_namer"
+            android:text="@string/edit_placeholder_label_ident_namer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
 
-    <TextView
-        android:id="@+id/lbl_ident_namer_spinner_cover"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/spn_ph_ident_namer"
-        android:layout_alignRight="@id/spn_ph_ident_namer"
-        android:layout_alignTop="@id/spn_ph_ident_namer"
-        android:layout_alignBottom="@id/spn_ph_ident_namer"
-        android:text="@string/empty_string"
-        />
+            />
 
-    <TextView
-        android:id="@+id/lbl_ph_ident_ref"
-        android:text="@string/edit_placeholder_label_ident_reference"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/spn_ph_ident_namer"
-        android:layout_below="@id/spn_ph_ident_namer"
-        />
+        <Spinner
+            android:id="@+id/spn_ph_ident_namer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/lbl_ph_ident_namer"
+            android:layout_below="@id/lbl_ph_ident_namer"
+            android:prompt="@string/edit_placeholder_hint_ident_namer"
+            />
 
-    <Spinner
-        android:id="@+id/spn_ph_ident_ref"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/lbl_ph_ident_ref"
-        android:layout_below="@id/lbl_ph_ident_ref"
-        android:prompt="@string/edit_placeholder_hint_ident_reference"
-        />
+        <TextView
+            android:id="@+id/lbl_ident_namer_spinner_cover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/spn_ph_ident_namer"
+            android:layout_alignRight="@id/spn_ph_ident_namer"
+            android:layout_alignTop="@id/spn_ph_ident_namer"
+            android:layout_alignBottom="@id/spn_ph_ident_namer"
+            android:text="@string/empty_string"
+            />
 
-    <TextView
-        android:id="@+id/lbl_ident_ref_spinner_cover"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/spn_ph_ident_ref"
-        android:layout_alignRight="@id/spn_ph_ident_ref"
-        android:layout_alignTop="@id/spn_ph_ident_ref"
-        android:layout_alignBottom="@id/spn_ph_ident_ref"
-        android:text="@string/empty_string"
-        />
+        <TextView
+            android:id="@+id/lbl_ph_ident_ref"
+            android:text="@string/edit_placeholder_label_ident_reference"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/spn_ph_ident_namer"
+            android:layout_below="@id/spn_ph_ident_namer"
+            />
 
-    <TextView
-        android:id="@+id/lbl_ph_ident_method"
-        android:text="@string/edit_placeholder_label_ident_method"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/spn_ph_ident_ref"
-        android:layout_below="@id/spn_ph_ident_ref"
-        />
+        <Spinner
+            android:id="@+id/spn_ph_ident_ref"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/lbl_ph_ident_ref"
+            android:layout_below="@id/lbl_ph_ident_ref"
+            android:prompt="@string/edit_placeholder_hint_ident_reference"
+            />
 
-    <Spinner
-        android:id="@+id/spn_ph_ident_method"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/lbl_ph_ident_method"
-        android:layout_below="@id/lbl_ph_ident_method"
-        android:prompt="@string/edit_placeholder_hint_ident_method"
-        />
+        <TextView
+            android:id="@+id/lbl_ident_ref_spinner_cover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/spn_ph_ident_ref"
+            android:layout_alignRight="@id/spn_ph_ident_ref"
+            android:layout_alignTop="@id/spn_ph_ident_ref"
+            android:layout_alignBottom="@id/spn_ph_ident_ref"
+            android:text="@string/empty_string"
+            />
 
-    <TextView
-        android:id="@+id/lbl_ident_method_spinner_cover"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/spn_ph_ident_method"
-        android:layout_alignRight="@id/spn_ph_ident_method"
-        android:layout_alignTop="@id/spn_ph_ident_method"
-        android:layout_alignBottom="@id/spn_ph_ident_method"
-        android:text="@string/empty_string"
-        />
+        <TextView
+            android:id="@+id/lbl_ph_ident_method"
+            android:text="@string/edit_placeholder_label_ident_method"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/spn_ph_ident_ref"
+            android:layout_below="@id/spn_ph_ident_ref"
+            />
 
-    <TextView
-        android:id="@+id/lbl_ph_ident_cf"
-        android:text="@string/edit_placeholder_label_ident_confidence"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/spn_ph_ident_method"
-        android:layout_below="@id/spn_ph_ident_method"
-        />
+        <Spinner
+            android:id="@+id/spn_ph_ident_method"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/lbl_ph_ident_method"
+            android:layout_below="@id/lbl_ph_ident_method"
+            android:prompt="@string/edit_placeholder_hint_ident_method"
+            />
 
-    <Spinner
-        android:id="@+id/spn_ph_ident_cf"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/lbl_ph_ident_cf"
-        android:layout_below="@id/lbl_ph_ident_cf"
-        android:prompt="@string/edit_placeholder_hint_ident_confidence"
-        />
+        <TextView
+            android:id="@+id/lbl_ident_method_spinner_cover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/spn_ph_ident_method"
+            android:layout_alignRight="@id/spn_ph_ident_method"
+            android:layout_alignTop="@id/spn_ph_ident_method"
+            android:layout_alignBottom="@id/spn_ph_ident_method"
+            android:text="@string/empty_string"
+            />
 
+        <TextView
+            android:id="@+id/lbl_ph_ident_cf"
+            android:text="@string/edit_placeholder_label_ident_confidence"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/spn_ph_ident_method"
+            android:layout_below="@id/spn_ph_ident_method"
+            />
+
+        <Spinner
+            android:id="@+id/spn_ph_ident_cf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/lbl_ph_ident_cf"
+            android:layout_below="@id/lbl_ph_ident_cf"
+            android:prompt="@string/edit_placeholder_hint_ident_confidence"
+            />
+    </RelativeLayout>
 </RelativeLayout>
 </ScrollView>
