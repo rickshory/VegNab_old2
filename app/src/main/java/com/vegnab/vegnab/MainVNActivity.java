@@ -50,6 +50,7 @@ public class MainVNActivity extends ActionBarActivity
         VegSubplotFragment.OnButtonListener,
         EditNamerDialog.EditNamerDialogListener,
         ConfirmDelNamerDialog.EditNamerDialogListener,
+        ConfigurableEditDialog.ConfigurableEditDialogListener,
         SelectSpeciesFragment.OnEditPlaceholderListener,
         EditSppItemDialog.EditSppItemDialogListener,
         EditPlaceholderFragment.OnButtonListener,
@@ -535,6 +536,17 @@ public class MainVNActivity extends ActionBarActivity
             // if not the right class of fragment, fail silently
         }
     }
+
+    @Override
+    public void onConfigurableEditComplete(DialogFragment dialog) {
+        Log.d(LOG_TAG, "onConfigurableEditComplete(DialogFragment dialog)");
+        // get parameter(s) from dialog
+        // switch out task based on where called from
+        VisitHeaderFragment visHdrFragment = (VisitHeaderFragment)
+                getSupportFragmentManager().findFragmentByTag(Tags.VISIT_HEADER);
+        visHdrFragment.refreshNamerSpinner();
+    }
+
 
     @Override
     public void onEditNamerComplete(DialogFragment dialog) {
