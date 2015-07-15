@@ -308,4 +308,10 @@
     <string name="veg_subpl_help_list_item_title">\"Species Item\" Help</string>
     <string name="veg_subpl_help_list_item_text">Choose \"Edit\" to change an item, \"Delete\" to remove it. You can also edit by just tapping an idtem.</string>
 
+    <string name="configurable_edit_title_new">New Item</string>
+    <string name="configurable_edit_title_edit">Edit Item</string>
+    <string name="configurable_edit_label_edit_item">This will change the spelling wherever used.</string>
+    <string name="configurable_edit_hint">Item Text</string>
+
+
 </resources>

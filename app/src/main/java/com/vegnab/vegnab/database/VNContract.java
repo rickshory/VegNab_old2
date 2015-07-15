@@ -92,6 +92,12 @@ public final class VNContract {
         public static final int PLACEHOLDER_OF_PIX = 101; // The current placeholder
         public static final int PLACEHOLDER_PIX = 102; // Pictures for the current placeholder
 
+        // in Configurable Edit Dialog
+        public static final int ITEMS = 110; // all Items, to choose from
+        public static final int ITEM_TO_EDIT = 111;
+        public static final int EXISTING_ITEMS = 112; // Items other than the current, to check duplicates
+
+
     }
 
     // inner class to define Tags
