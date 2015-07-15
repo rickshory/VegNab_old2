@@ -28,9 +28,6 @@
         android:layout_alignLeft="@id/lbl_hdr_msg"
         android:layout_below="@id/lbl_hdr_msg"
         android:hint="@string/configurable_edit_hint"
-        android:inputType="textPersonName|textCapWords"
-        android:maxLines="1"
-        android:maxLength="16"
         />
 
 </RelativeLayout>

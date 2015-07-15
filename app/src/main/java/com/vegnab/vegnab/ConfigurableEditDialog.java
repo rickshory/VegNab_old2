@@ -13,6 +13,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,22 +33,26 @@ public class ConfigurableEditDialog extends DialogFragment implements
         {
     private static final String LOG_TAG = ConfigurableEditDialog.class.getSimpleName();
     public interface ConfigurableEditDialogListener {
-        public void onConfigurableEditComplete(DialogFragment dialog);
+        void onConfigurableEditComplete(DialogFragment dialog);
     }
     ConfigurableEditDialogListener mEditListener;
     long mItemRecId = 0; // zero default means new or not specified yet
     Uri mUri, mItemsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "namers");
     ContentValues mValues = new ContentValues();
     HashMap<Long, String> mExistingItems = new HashMap<Long, String>();
-    private EditText mEditItem;
     private TextView mTxtHeaderMsg;
+    private EditText mEditItem;
     String mStringItem;
 
-    static ConfigurableEditDialog newInstance(long namerId) {
+    public static final String ITEM_REC_ID = "ItemRecId";
+    public static final String ITEM_TEXT_FORMAT = "ItemTextFormat";
+    public static final String MAX_ITEM_LENGTH = "MaxItemLength";
+
+    private String mTextFormat = null;
+    private int maxLength = 0; // zero flag means no text limit
+
+    static ConfigurableEditDialog newInstance(Bundle args) {
         ConfigurableEditDialog f = new ConfigurableEditDialog();
-        // supply namerId as an argument
-        Bundle args = new Bundle();
-        args.putLong("namerId", namerId);
         f.setArguments(args);
         return f;
     }
@@ -57,17 +62,38 @@ public class ConfigurableEditDialog extends DialogFragment implements
         super.onCreate(savedInstanceState);
         try {
             mEditListener = (ConfigurableEditDialogListener) getActivity();
-            Log.d(LOG_TAG, "(EditItemDialogListener) getActivity()");
+            Log.d(LOG_TAG, "(ConfigurableEditDialogListener) getActivity()");
         } catch (ClassCastException e) {
-            throw new ClassCastException("Main Activity must implement EditItemDialogListener interface");
+            throw new ClassCastException("Main Activity must implement ConfigurableEditDialogListener interface");
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup root, Bundle savedInstanceState) {
+        mItemRecId = getArguments().getLong(ITEM_REC_ID);
+        mTextFormat = getArguments().getString(ITEM_TEXT_FORMAT);
+        maxLength = getArguments().getInt(MAX_ITEM_LENGTH);
+
         View view = inflater.inflate(R.layout.fragment_configurable_edit, root);
         mTxtHeaderMsg = (TextView) view.findViewById(R.id.lbl_hdr_msg);
         mEditItem = (EditText) view.findViewById(R.id.txt_edit_item);
+        // set input type
+//        mEditItem.setInputType();
+       /*        android:inputType="textPersonName|textCapWords"
+        android:maxLines="1"*/
+        // set maximum lines
+//        mEditItem.setMaxLines();
+
+        // set maximum length
+        if (maxLength != 0) { // zero flag means no text limit
+            InputFilter[] FilterArray = new InputFilter[1];
+            FilterArray[0] = new InputFilter.LengthFilter(maxLength);
+            mEditItem.setFilters(FilterArray);
+        }
+
+
+
+//        mEditItem.setHint();
         // attempt to automatically show soft keyboard
         mEditItem.requestFocus();
         getDialog().getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
