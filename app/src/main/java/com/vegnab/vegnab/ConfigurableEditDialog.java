@@ -30,12 +30,13 @@ import com.vegnab.vegnab.database.VNContract.Prefs;
 import java.util.HashMap;
 
 public class ConfigurableEditDialog extends DialogFragment implements
-        View.OnFocusChangeListener, LoaderManager.LoaderCallbacks<Cursor>
-        {
+        View.OnFocusChangeListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = ConfigurableEditDialog.class.getSimpleName();
     public interface ConfigurableEditDialogListener {
         void onConfigurableEditComplete(DialogFragment dialog);
     }
+
+
     ConfigurableEditDialogListener mEditListener;
     long mItemRecId = 0; // zero default means new or not specified yet
     Uri mUri, mItemsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "namers");
@@ -45,9 +46,14 @@ public class ConfigurableEditDialog extends DialogFragment implements
     private EditText mEditItem;
     String mStringItem;
 
+    public static final String DIALOG_TITLE = "DialogTitle";
+    public static final String DIALOG_MESSAGE = "DialogMessage";
     public static final String ITEM_REC_ID = "ItemRecId";
     public static final String ITEM_INPUT_TYPE_CODE = "ItemInputTypeCode";
     public static final String MAX_ITEM_LENGTH = "MaxItemLength";
+    public static final String ITEM_HINT = "ItemHint";
+
+    private String mDialogTitle = "", mDialogMessage = "", mItemHint = "";
 
     private int mInputTypeCode = InputType.TYPE_CLASS_TEXT;
     private int maxLength = 0; // zero flag means no text limit
@@ -72,7 +78,10 @@ public class ConfigurableEditDialog extends DialogFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup root, Bundle savedInstanceState) {
         mItemRecId = getArguments().getLong(ITEM_REC_ID);
-        mInputTypeCode = getArguments().getInt(ITEM_INPUT_TYPE_CODE);
+        mDialogTitle = getArguments().getString(DIALOG_TITLE);
+        mDialogMessage = getArguments().getString(DIALOG_MESSAGE);
+        mItemHint = getArguments().getString(ITEM_HINT);
+        mInputTypeCode = getArguments().getInt(ITEM_INPUT_TYPE_CODE); // text format, e.g. name, date, number
         maxLength = getArguments().getInt(MAX_ITEM_LENGTH);
 
         View view = inflater.inflate(R.layout.fragment_configurable_edit, root);
@@ -83,18 +92,15 @@ public class ConfigurableEditDialog extends DialogFragment implements
        /* example       android:inputType="textPersonName|textCapWords"
         android:maxLines="1"*/
         // set maximum lines
-//        mEditItem.setMaxLines();
+//        mEditItem.setMaxLines(); //controls outer boundaries not inner text lines
 
-        // set maximum length
-        if (maxLength != 0) { // zero flag means no text limit
+        // set maximum number of characters
+        if (maxLength != 0) { // zero flag means no limit
             InputFilter[] FilterArray = new InputFilter[1];
             FilterArray[0] = new InputFilter.LengthFilter(maxLength);
             mEditItem.setFilters(FilterArray);
         }
-
-
-
-//        mEditItem.setHint();
+        mEditItem.setHint(mItemHint);
         // attempt to automatically show soft keyboard
         mEditItem.requestFocus();
         getDialog().getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
