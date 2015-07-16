@@ -14,6 +14,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,10 +46,10 @@ public class ConfigurableEditDialog extends DialogFragment implements
     String mStringItem;
 
     public static final String ITEM_REC_ID = "ItemRecId";
-    public static final String ITEM_TEXT_FORMAT = "ItemTextFormat";
+    public static final String ITEM_INPUT_TYPE_CODE = "ItemInputTypeCode";
     public static final String MAX_ITEM_LENGTH = "MaxItemLength";
 
-    private String mTextFormat = null;
+    private int mInputTypeCode = InputType.TYPE_CLASS_TEXT;
     private int maxLength = 0; // zero flag means no text limit
 
     static ConfigurableEditDialog newInstance(Bundle args) {
@@ -71,15 +72,15 @@ public class ConfigurableEditDialog extends DialogFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup root, Bundle savedInstanceState) {
         mItemRecId = getArguments().getLong(ITEM_REC_ID);
-        mTextFormat = getArguments().getString(ITEM_TEXT_FORMAT);
+        mInputTypeCode = getArguments().getInt(ITEM_INPUT_TYPE_CODE);
         maxLength = getArguments().getInt(MAX_ITEM_LENGTH);
 
         View view = inflater.inflate(R.layout.fragment_configurable_edit, root);
         mTxtHeaderMsg = (TextView) view.findViewById(R.id.lbl_hdr_msg);
         mEditItem = (EditText) view.findViewById(R.id.txt_edit_item);
         // set input type
-//        mEditItem.setInputType();
-       /*        android:inputType="textPersonName|textCapWords"
+        mEditItem.setInputType(mInputTypeCode);
+       /* example       android:inputType="textPersonName|textCapWords"
         android:maxLines="1"*/
         // set maximum lines
 //        mEditItem.setMaxLines();
