@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -106,6 +107,7 @@ public class ConfigurableEditDialog extends DialogFragment implements
         getDialog().getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         mEditItem.setOnFocusChangeListener(this);
 
+
 //		if (mItemRecId == 0) { // new record
 //			getDialog().setTitle(R.string.add_namer_title);
 //		} else { // existing record being edited
@@ -121,22 +123,20 @@ public class ConfigurableEditDialog extends DialogFragment implements
         // this is where to do this because the layout has been applied
         // to the fragment
         Bundle args = getArguments();
-
-        if (args != null) {
-            mItemRecId = args.getLong("namerId");
-            // request existing Items ASAP, this doesn't use the UI
-            getLoaderManager().initLoader(Loaders.EXISTING_ITEMS, null, this);
-            getLoaderManager().initLoader(Loaders.ITEM_TO_EDIT, null, this);
-            // will insert values into screen when cursor is finished
-        }
-        if (mItemRecId == 0) { // new record
-            getDialog().setTitle(R.string.add_namer_title);
-            mTxtHeaderMsg.setText(R.string.add_namer_header);
-        } else { // existing record being edited
-            getDialog().setTitle(R.string.edit_namer_title_edit);
-            mTxtHeaderMsg.setText(R.string.edit_namer_label_namername);
-        }
-
+        // request existing Items ASAP, this doesn't use the UI
+        getLoaderManager().initLoader(Loaders.EXISTING_ITEMS, null, this);
+        getLoaderManager().initLoader(Loaders.ITEM_TO_EDIT, null, this);
+        // will insert values into screen when cursor is finished
+        getDialog().setTitle(mDialogTitle);
+        mTxtHeaderMsg.setText(mDialogMessage);
+        // attempt to automatically show soft keyboard
+        mEditItem.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(mEditItem, 0);
+            }
+        }, 50);
     }
 
     @Override
@@ -145,6 +145,7 @@ public class ConfigurableEditDialog extends DialogFragment implements
             mValues.clear();
             switch (v.getId()) {
             case R.id.txt_edit_item:
+                mStringItem = mEditItem.getText().toString().trim();
                 mValues.put("ItemName", mEditItem.getText().toString().trim());
                 break;
 
@@ -156,8 +157,7 @@ public class ConfigurableEditDialog extends DialogFragment implements
             int numUpdated = saveItemRecord();
             }
         }
-
-
+    
     @Override
     public void onCancel (DialogInterface dialog) {
         // update the project record in the database, if everything valid
