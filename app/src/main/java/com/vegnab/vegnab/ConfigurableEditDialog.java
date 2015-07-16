@@ -54,7 +54,12 @@ public class ConfigurableEditDialog extends DialogFragment implements
     public static final String MAX_ITEM_LENGTH = "MaxItemLength";
     public static final String ITEM_HINT = "ItemHint";
 
+    public static final String ITEM_ERR_MISSING = "ItemErrMissing";
+    public static final String ITEM_ERR_SHORT = "ItemErrShort";
+    public static final String ITEM_ERR_DUP = "ItemErrDup";
+
     private String mDialogTitle = "", mDialogMessage = "", mItemHint = "";
+    private String mItemErrMissing = "", mItemErrShort = "", mItemErrDup = "";
 
     private int mInputTypeCode = InputType.TYPE_CLASS_TEXT;
     private int maxLength = 0; // zero flag means no text limit
@@ -78,12 +83,15 @@ public class ConfigurableEditDialog extends DialogFragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup root, Bundle savedInstanceState) {
-        mItemRecId = getArguments().getLong(ITEM_REC_ID);
+        mItemRecId = getArguments().getLong(ITEM_REC_ID, 0);
         mDialogTitle = getArguments().getString(DIALOG_TITLE);
         mDialogMessage = getArguments().getString(DIALOG_MESSAGE);
         mItemHint = getArguments().getString(ITEM_HINT);
         mInputTypeCode = getArguments().getInt(ITEM_INPUT_TYPE_CODE); // text format, e.g. name, date, number
         maxLength = getArguments().getInt(MAX_ITEM_LENGTH);
+        mItemErrMissing = getArguments().getString(ITEM_ERR_MISSING);
+        mItemErrShort = getArguments().getString(ITEM_ERR_SHORT);
+        mItemErrDup = getArguments().getString(ITEM_ERR_DUP);
 
         View view = inflater.inflate(R.layout.fragment_configurable_edit, root);
         mTxtHeaderMsg = (TextView) view.findViewById(R.id.lbl_hdr_msg);
@@ -102,9 +110,9 @@ public class ConfigurableEditDialog extends DialogFragment implements
             mEditItem.setFilters(FilterArray);
         }
         mEditItem.setHint(mItemHint);
-        // attempt to automatically show soft keyboard
-        mEditItem.requestFocus();
-        getDialog().getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+//        // attempt to automatically show soft keyboard
+//        mEditItem.requestFocus();
+//        getDialog().getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         mEditItem.setOnFocusChangeListener(this);
 
 
@@ -130,6 +138,7 @@ public class ConfigurableEditDialog extends DialogFragment implements
         getDialog().setTitle(mDialogTitle);
         mTxtHeaderMsg.setText(mDialogMessage);
         // attempt to automatically show soft keyboard
+        mEditItem.requestFocus();
         mEditItem.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -157,7 +166,7 @@ public class ConfigurableEditDialog extends DialogFragment implements
             int numUpdated = saveItemRecord();
             }
         }
-    
+
     @Override
     public void onCancel (DialogInterface dialog) {
         // update the project record in the database, if everything valid
