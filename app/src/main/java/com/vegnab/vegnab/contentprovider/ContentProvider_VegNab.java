@@ -43,10 +43,16 @@ public class ContentProvider_VegNab extends ContentProvider {
     private static final int PLACEHOLDER_ID = 160;
     private static final int PLACEHOLDER_PIX = 170;
     private static final int PLACEHOLDER_PIX_ID = 180;
-    private static final int IDLEVELS = 190;
-    private static final int IDLEVEL_ID = 200;
-    private static final int SPECIES = 210;
-    private static final int SPECIES_ID = 220;
+    private static final int IDNAMERS = 190;
+    private static final int IDNAMER_ID = 200;
+    private static final int IDREFS = 210;
+    private static final int IDREF_ID = 220;
+    private static final int IDMETHODS = 230;
+    private static final int IDMETHOD_ID = 240;
+    private static final int IDLEVELS = 250;
+    private static final int IDLEVEL_ID = 260;
+    private static final int SPECIES = 270;
+    private static final int SPECIES_ID = 280;
 
 //	private static final String AUTHORITY = "com.vegnab.provider"; // must match in app Manifest
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".provider";
@@ -80,6 +86,12 @@ public class ContentProvider_VegNab extends ContentProvider {
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/placeholders/#", PLACEHOLDER_ID);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/placeholderpix", PLACEHOLDER_PIX);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/placeholderpix/#", PLACEHOLDER_PIX_ID);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/idnamers", IDNAMERS);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/idnamers/#", IDNAMER_ID);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/idrefs", IDREFS);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/idrefs/#", IDREF_ID);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/idmethods", IDMETHODS);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/idmethods/#", IDMETHOD_ID);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/idlevels", IDLEVELS);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/idlevels/#", IDLEVEL_ID);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/species", SPECIES);
@@ -204,7 +216,30 @@ public class ContentProvider_VegNab extends ContentProvider {
                 queryBuilder.setTables("Placeholders");
                 Log.d(LOG_TAG, "PLACEHOLDER_PIX setTables");
                 break;
-
+            case IDNAMER_ID:
+                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
+                Log.d(LOG_TAG, "IDNAMER_ID appendWhere");
+                // note, no break, so drops through
+            case IDNAMERS:
+                queryBuilder.setTables("IdNamers");
+                Log.d(LOG_TAG, "IDNAMERS setTables");
+                break;
+            case IDREF_ID:
+                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
+                Log.d(LOG_TAG, "IDREF_ID appendWhere");
+                // note, no break, so drops through
+            case IDREFS:
+                queryBuilder.setTables("IdRefs");
+                Log.d(LOG_TAG, "IDREFS setTables");
+                break;
+            case IDMETHOD_ID:
+                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
+                Log.d(LOG_TAG, "IDMETHOD_ID appendWhere");
+                // note, no break, so drops through
+            case IDMETHODS:
+                queryBuilder.setTables("IdMethods");
+                Log.d(LOG_TAG, "IDMETHODS setTables");
+                break;
             case IDLEVEL_ID:
                 queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
                 Log.d(LOG_TAG, "IDLEVEL_ID appendWhere");
@@ -280,12 +315,26 @@ public class ContentProvider_VegNab extends ContentProvider {
             id = sqlDB.insert("PlaceHolderPix", null, values);
             uriToReturn = Uri.parse(BASE_PATH + "/placeholderpix/" + id);
             break;
+        case IDNAMERS:
+            id = sqlDB.insert("IdNamers", null, values);
+            uriToReturn = Uri.parse(BASE_PATH + "/idnamers/" + id);
+            break;
+        case IDREFS:
+            id = sqlDB.insert("IdRefs", null, values);
+            uriToReturn = Uri.parse(BASE_PATH + "/idrefs/" + id);
+            break;
+        case IDMETHODS:
+            id = sqlDB.insert("IdMethods", null, values);
+            uriToReturn = Uri.parse(BASE_PATH + "/idmethods/" + id);
+            break;
         case IDLEVELS:
             id = sqlDB.insert("IdLevels", null, values);
             uriToReturn = Uri.parse(BASE_PATH + "/idlevels/" + id);
+            break;
         case SPECIES:
             id = sqlDB.insert("RegionalSpeciesList", null, values);
             uriToReturn = Uri.parse(BASE_PATH + "/species/" + id);
+            break;
         default:
             throw new IllegalArgumentException("Unknown URI: " + uri);
         }
@@ -408,7 +457,43 @@ public class ContentProvider_VegNab extends ContentProvider {
             }
             break;
 
-        case IDLEVELS:
+            case IDNAMERS:
+                rowsDeleted = sqlDB.delete("IdNamers", selection, selectionArgs);
+                break;
+            case IDNAMER_ID:
+                id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsDeleted = sqlDB.delete("IdNamers", "_id=" + id, null);
+                } else {
+                    rowsDeleted = sqlDB.delete("IdNamers", "_id=" + id, selectionArgs);
+                }
+                break;
+
+            case IDREFS:
+                rowsDeleted = sqlDB.delete("IdRefs", selection, selectionArgs);
+                break;
+            case IDREF_ID:
+                id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsDeleted = sqlDB.delete("IdRefs", "_id=" + id, null);
+                } else {
+                    rowsDeleted = sqlDB.delete("IdRefs", "_id=" + id, selectionArgs);
+                }
+                break;
+
+            case IDMETHODS:
+                rowsDeleted = sqlDB.delete("IdMethods", selection, selectionArgs);
+                break;
+            case IDMETHOD_ID:
+                id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsDeleted = sqlDB.delete("IdMethods", "_id=" + id, null);
+                } else {
+                    rowsDeleted = sqlDB.delete("IdMethods", "_id=" + id, selectionArgs);
+                }
+                break;
+
+            case IDLEVELS:
             rowsDeleted = sqlDB.delete("IdLevels", selection, selectionArgs);
             break;
         case IDLEVEL_ID:
@@ -419,6 +504,7 @@ public class ContentProvider_VegNab extends ContentProvider {
                 rowsDeleted = sqlDB.delete("IdLevels", "_id=" + id, selectionArgs);
             }
             break;
+
         case SPECIES:
             rowsDeleted = sqlDB.delete("RegionalSpeciesList", selection, selectionArgs);
             break;
@@ -430,6 +516,7 @@ public class ContentProvider_VegNab extends ContentProvider {
                 rowsDeleted = sqlDB.delete("RegionalSpeciesList", "_id=" + id, selectionArgs);
             }
             break;
+
         default:
             throw new IllegalArgumentException("Unknown URI: " + uri);
         }
@@ -453,6 +540,7 @@ public class ContentProvider_VegNab extends ContentProvider {
             rowsUpdated = cur.getInt(0);
             cur.close();
             break;
+
         case PROJECTS:
             rowsUpdated = sqlDB.updateWithOnConflict("Projects", values, selection, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
             break;
@@ -561,9 +649,45 @@ public class ContentProvider_VegNab extends ContentProvider {
             }
             break;
 
-        case IDLEVELS:
-            rowsUpdated = sqlDB.updateWithOnConflict("IdLevels", values, selection, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
+        case IDNAMERS:
+            rowsUpdated = sqlDB.updateWithOnConflict("IdNamers", values, selection, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
             break;
+        case IDNAMER_ID:
+            id = uri.getLastPathSegment();
+            if (TextUtils.isEmpty(selection)) {
+                rowsUpdated = sqlDB.updateWithOnConflict("IdNamers", values, "_id=" + id, null, SQLiteDatabase.CONFLICT_IGNORE);
+            } else {
+                rowsUpdated = sqlDB.updateWithOnConflict("IdNamers", values, "_id=" + id, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
+            }
+            break;
+
+        case IDREFS:
+            rowsUpdated = sqlDB.updateWithOnConflict("IdRefs", values, selection, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
+            break;
+        case IDREF_ID:
+            id = uri.getLastPathSegment();
+            if (TextUtils.isEmpty(selection)) {
+                rowsUpdated = sqlDB.updateWithOnConflict("IdRefs", values, "_id=" + id, null, SQLiteDatabase.CONFLICT_IGNORE);
+            } else {
+                rowsUpdated = sqlDB.updateWithOnConflict("IdRefs", values, "_id=" + id, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
+            }
+            break;
+
+        case IDMETHODS:
+            rowsUpdated = sqlDB.updateWithOnConflict("IdMethods", values, selection, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
+            break;
+        case IDMETHOD_ID:
+            id = uri.getLastPathSegment();
+            if (TextUtils.isEmpty(selection)) {
+                rowsUpdated = sqlDB.updateWithOnConflict("IdMethods", values, "_id=" + id, null, SQLiteDatabase.CONFLICT_IGNORE);
+            } else {
+                rowsUpdated = sqlDB.updateWithOnConflict("IdMethods", values, "_id=" + id, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
+            }
+            break;
+
+        case IDLEVELS:
+        rowsUpdated = sqlDB.updateWithOnConflict("IdLevels", values, selection, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
+        break;
         case IDLEVEL_ID:
             id = uri.getLastPathSegment();
             if (TextUtils.isEmpty(selection)) {
