@@ -53,12 +53,15 @@ public class ConfigurableEditDialog extends DialogFragment implements
     public static final String ITEM_INPUT_TYPE_CODE = "ItemInputTypeCode";
     public static final String MAX_ITEM_LENGTH = "MaxItemLength";
     public static final String ITEM_HINT = "ItemHint";
-
     public static final String ITEM_ERR_MISSING = "ItemErrMissing";
     public static final String ITEM_ERR_SHORT = "ItemErrShort";
     public static final String ITEM_ERR_DUP = "ItemErrDup";
+    public static final String ITEM_DB_TABLE = "ItemDbTable";
+    public static final String ITEM_DB_FIELD = "ItemDbField";
 
-    private String mDialogTitle, mDialogMessage, mItemHint, mItemErrMissing , mItemErrShort , mItemErrDup;
+    private String mDialogTitle, mDialogMessage, mItemHint,
+            mItemErrMissing , mItemErrShort , mItemErrDup,
+            mItemDbTable, mItemDbField;
     private int mInputTypeCode, maxLength;
 
     static ConfigurableEditDialog newInstance(Bundle args) {
@@ -117,6 +120,14 @@ public class ConfigurableEditDialog extends DialogFragment implements
         if (mItemErrDup == null) {
             mItemErrDup = c.getResources().getString(R.string.configurable_edit_err_dup);
         }
+        mItemDbTable = getArguments().getString(ITEM_DB_TABLE);
+        if (mItemDbTable == null) {
+            mItemDbTable = "Table"; // dummy value that will fail
+        }
+        mItemDbField = getArguments().getString(ITEM_DB_TABLE);
+        if (mItemDbField == null) {
+            mItemDbField = "Field"; // dummy value that will fail
+        }
 
         View view = inflater.inflate(R.layout.fragment_configurable_edit, root);
         mTxtHeaderMsg = (TextView) view.findViewById(R.id.lbl_hdr_msg);
@@ -139,13 +150,6 @@ public class ConfigurableEditDialog extends DialogFragment implements
 //        mEditItem.requestFocus();
 //        getDialog().getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         mEditItem.setOnFocusChangeListener(this);
-
-
-//		if (mItemRecId == 0) { // new record
-//			getDialog().setTitle(R.string.add_namer_title);
-//		} else { // existing record being edited
-//			getDialog().setTitle(R.string.edit_namer_title_edit);
-//		}
         return view;
     }
 
@@ -179,12 +183,11 @@ public class ConfigurableEditDialog extends DialogFragment implements
             mValues.clear();
             switch (v.getId()) {
             case R.id.txt_edit_item:
-                mStringItem = mEditItem.getText().toString().trim();
-                mValues.put("ItemName", mEditItem.getText().toString().trim());
+                mValues.put(mItemDbField, mEditItem.getText().toString().trim());
                 break;
 
-            default: // save everything
-                mValues.put("ItemName", mEditItem.getText().toString().trim());
+            default: // save everything; in this case only the one field
+                mValues.put(mItemDbField, mEditItem.getText().toString().trim());
 
                 }
             Log.d(LOG_TAG, "Saving record in onFocusChange; mValues: " + mValues.toString().trim());
@@ -196,7 +199,7 @@ public class ConfigurableEditDialog extends DialogFragment implements
     public void onCancel (DialogInterface dialog) {
         // update the project record in the database, if everything valid
         mValues.clear();
-        mValues.put("ItemName", mEditItem.getText().toString().trim());
+        mValues.put(mItemDbField, mEditItem.getText().toString().trim());
         Log.d(LOG_TAG, "Saving record in onCancel; mValues: " + mValues.toString());
         int numUpdated = saveItemRecord();
         if (numUpdated > 0) {
@@ -208,24 +211,17 @@ public class ConfigurableEditDialog extends DialogFragment implements
     private int saveItemRecord () {
         Context c = getActivity();
         // test field for validity
-        String namerString = mValues.getAsString("ItemName");
-
-        if (namerString.length() == 0) {
-            Toast.makeText(this.getActivity(),
-                    c.getResources().getString(R.string.add_namer_missing),
-                    Toast.LENGTH_LONG).show();
+        String itemString = mValues.getAsString(mItemDbField);
+        if (itemString.length() == 0) {
+            Toast.makeText(this.getActivity(), mItemErrMissing, Toast.LENGTH_LONG).show();
             return 0;
         }
-        if (!(namerString.length() >= 2)) {
-            Toast.makeText(this.getActivity(),
-                    c.getResources().getString(R.string.err_need_2_chars),
-                    Toast.LENGTH_LONG).show();
+        if (!(itemString.length() >= 2)) {
+            Toast.makeText(this.getActivity(), mItemErrShort, Toast.LENGTH_LONG).show();
             return 0;
         }
-        if (mExistingItems.containsValue(namerString)) {
-            Toast.makeText(this.getActivity(),
-                    c.getResources().getString(R.string.add_namer_duplicate),
-                    Toast.LENGTH_LONG).show();
+        if (mExistingItems.containsValue(itemString)) {
+            Toast.makeText(this.getActivity(), mItemErrDup, Toast.LENGTH_LONG).show();
             return 0;
         }
         ContentResolver rs = getActivity().getContentResolver();
@@ -275,7 +271,7 @@ public class ConfigurableEditDialog extends DialogFragment implements
             // get the existing Items, other than the current one, to disallow duplicates
             Uri allItemsUri = Uri.withAppendedPath(
                     ContentProvider_VegNab.CONTENT_URI, "namers");
-            String[] projection = {"_id", "ItemName"};
+            String[] projection = {"_id", mItemDbField};
             select = "(_id <> " + mItemRecId + ")";
             cl = new CursorLoader(getActivity(), allItemsUri,
                     projection, select, null, null);
@@ -304,9 +300,9 @@ public class ConfigurableEditDialog extends DialogFragment implements
         case Loaders.EXISTING_ITEMS:
             mExistingItems.clear();
             while (c.moveToNext()) {
-                Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("ItemName")));
+                Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow(mItemDbField)));
                 mExistingItems.put(c.getLong(c.getColumnIndexOrThrow("_id")),
-                        c.getString(c.getColumnIndexOrThrow("ItemName")));
+                        c.getString(c.getColumnIndexOrThrow(mItemDbField)));
             }
             Log.d(LOG_TAG, "onLoadFinished, number of items in mExistingItems: " + mExistingItems.size());
             Log.d(LOG_TAG, "onLoadFinished, items in mExistingItems: " + mExistingItems.toString());
@@ -315,7 +311,7 @@ public class ConfigurableEditDialog extends DialogFragment implements
         case Loaders.ITEM_TO_EDIT:
             Log.d(LOG_TAG, "onLoadFinished, records: " + c.getCount());
             if (c.moveToFirst()) {
-                mEditItem.setText(c.getString(c.getColumnIndexOrThrow("ItemName")));
+                mEditItem.setText(c.getString(c.getColumnIndexOrThrow(mItemDbField)));
             }
             break;
         }
