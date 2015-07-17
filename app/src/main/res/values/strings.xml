@@ -312,6 +312,9 @@
     <string name="configurable_edit_title_edit">Edit Item</string>
     <string name="configurable_edit_label_edit_item">This will change the spelling wherever used.</string>
     <string name="configurable_edit_hint">Item Text</string>
+    <string name="configurable_edit_err_missing">Need item text</string>
+    <string name="configurable_edit_err_short">Need at least 2 characters</string>
+    <string name="configurable_edit_err_dup">Duplicate item</string>
 
 
 </resources>

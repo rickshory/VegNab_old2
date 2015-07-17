@@ -58,11 +58,8 @@ public class ConfigurableEditDialog extends DialogFragment implements
     public static final String ITEM_ERR_SHORT = "ItemErrShort";
     public static final String ITEM_ERR_DUP = "ItemErrDup";
 
-    private String mDialogTitle = "", mDialogMessage = "", mItemHint = "";
-    private String mItemErrMissing = "", mItemErrShort = "", mItemErrDup = "";
-
-    private int mInputTypeCode = InputType.TYPE_CLASS_TEXT;
-    private int maxLength = 0; // zero flag means no text limit
+    private String mDialogTitle, mDialogMessage, mItemHint, mItemErrMissing , mItemErrShort , mItemErrDup;
+    private int mInputTypeCode, maxLength;
 
     static ConfigurableEditDialog newInstance(Bundle args) {
         ConfigurableEditDialog f = new ConfigurableEditDialog();
@@ -83,15 +80,43 @@ public class ConfigurableEditDialog extends DialogFragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup root, Bundle savedInstanceState) {
+        Context c = getActivity();
+        // use the getString format without a default value for API 11 compatibility
+        // then use if == null to insert the default
         mItemRecId = getArguments().getLong(ITEM_REC_ID, 0);
         mDialogTitle = getArguments().getString(DIALOG_TITLE);
+        if (mDialogTitle == null) {
+            if (mItemRecId == 0) {
+                mDialogTitle = c.getResources().getString(R.string.configurable_edit_title_new);
+            } else {
+                mDialogTitle = c.getResources().getString(R.string.configurable_edit_title_edit);
+            }
+        }
         mDialogMessage = getArguments().getString(DIALOG_MESSAGE);
+        if (mDialogMessage == null) {
+            mDialogMessage = c.getResources().getString(R.string.configurable_edit_label_edit_item);
+        }
         mItemHint = getArguments().getString(ITEM_HINT);
-        mInputTypeCode = getArguments().getInt(ITEM_INPUT_TYPE_CODE); // text format, e.g. name, date, number
-        maxLength = getArguments().getInt(MAX_ITEM_LENGTH);
+        if (mItemHint == null) {
+            mItemHint = c.getResources().getString(R.string.configurable_edit_hint);
+        }
+        // text format, e.g. name, date, number
+        mInputTypeCode = getArguments().getInt(ITEM_INPUT_TYPE_CODE,
+                InputType.TYPE_CLASS_TEXT); // default is text
+        // zero default means no text length limit
+        maxLength = getArguments().getInt(MAX_ITEM_LENGTH, 0);
         mItemErrMissing = getArguments().getString(ITEM_ERR_MISSING);
+        if (mItemErrMissing == null) {
+            mItemErrMissing = c.getResources().getString(R.string.configurable_edit_err_missing);
+        }
         mItemErrShort = getArguments().getString(ITEM_ERR_SHORT);
+        if (mItemErrShort == null) {
+            mItemErrShort = c.getResources().getString(R.string.configurable_edit_err_short);
+        }
         mItemErrDup = getArguments().getString(ITEM_ERR_DUP);
+        if (mItemErrDup == null) {
+            mItemErrDup = c.getResources().getString(R.string.configurable_edit_err_dup);
+        }
 
         View view = inflater.inflate(R.layout.fragment_configurable_edit, root);
         mTxtHeaderMsg = (TextView) view.findViewById(R.id.lbl_hdr_msg);
