@@ -7,7 +7,7 @@ import com.vegnab.vegnab.BuildConfig;
 import com.vegnab.vegnab.database.VegNabDbHelper;
 
 import android.content.ContentProvider;
-import android.content.ContentResolver;
+//import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -57,8 +57,8 @@ public class ContentProvider_VegNab extends ContentProvider {
     public static final Uri SQL_URI = Uri.parse("content://" + AUTHORITY
             + "/sql");
     private static final String CONTENT_SUBTYPE = "vnd.vegnab.data";
-    public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_SUBTYPE;
-    public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_SUBTYPE;
+//    public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_SUBTYPE;
+//    public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_SUBTYPE;
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static {
         sURIMatcher.addURI(AUTHORITY, "sql", RAW_SQL);
@@ -242,7 +242,7 @@ public class ContentProvider_VegNab extends ContentProvider {
         int uriType = sURIMatcher.match(uri);
         Uri uriToReturn;
         SQLiteDatabase sqlDB = database.getWritableDatabase();
-        long id = 0;
+        long id;
         switch (uriType) {
         case PROJECTS:
             id = sqlDB.insert("Projects", null, values);
@@ -298,7 +298,7 @@ public class ContentProvider_VegNab extends ContentProvider {
         int uriType = sURIMatcher.match(uri);
         String id;
         SQLiteDatabase sqlDB = database.getWritableDatabase();
-        int rowsDeleted = 0;
+        int rowsDeleted;
         switch (uriType) {
         case PROJECTS:
             rowsDeleted = sqlDB.delete("Projects", selection, selectionArgs);
@@ -441,7 +441,7 @@ public class ContentProvider_VegNab extends ContentProvider {
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         int uriType = sURIMatcher.match(uri);
         SQLiteDatabase sqlDB = database.getWritableDatabase();
-        int rowsUpdated = 0;
+        int rowsUpdated;
         String id;
         switch (uriType) {
         case RAW_SQL:
@@ -451,6 +451,7 @@ public class ContentProvider_VegNab extends ContentProvider {
             Cursor cur = sqlDB.rawQuery("SELECT Changes() AS C;", null);
             cur.moveToFirst();
             rowsUpdated = cur.getInt(0);
+            cur.close();
             break;
         case PROJECTS:
             rowsUpdated = sqlDB.updateWithOnConflict("Projects", values, selection, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
