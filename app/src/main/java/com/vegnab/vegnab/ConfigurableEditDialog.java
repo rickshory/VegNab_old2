@@ -40,7 +40,7 @@ public class ConfigurableEditDialog extends DialogFragment implements
 
     ConfigurableEditDialogListener mEditListener;
     long mItemRecId = 0; // zero default means new or not specified yet
-    Uri mUri, mItemsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "namers");
+    Uri mUri, mItemsUri;
     ContentValues mValues = new ContentValues();
     HashMap<Long, String> mExistingItems = new HashMap<Long, String>();
     private TextView mTxtHeaderMsg;
@@ -58,10 +58,12 @@ public class ConfigurableEditDialog extends DialogFragment implements
     public static final String ITEM_ERR_DUP = "ItemErrDup";
     public static final String ITEM_DB_TABLE = "ItemDbTable";
     public static final String ITEM_DB_FIELD = "ItemDbField";
+    public static final String ITEM_URI_TARGET = "ItemUriTarget";
+
 
     private String mDialogTitle, mDialogMessage, mItemHint,
             mItemErrMissing , mItemErrShort , mItemErrDup,
-            mItemDbTable, mItemDbField;
+            mItemDbTable, mItemDbField, mUriTarget;
     private int mInputTypeCode, maxLength;
 
     static ConfigurableEditDialog newInstance(Bundle args) {
@@ -124,9 +126,13 @@ public class ConfigurableEditDialog extends DialogFragment implements
         if (mItemDbTable == null) {
             mItemDbTable = "Table"; // dummy value that will fail
         }
-        mItemDbField = getArguments().getString(ITEM_DB_TABLE);
+        mItemDbField = getArguments().getString(ITEM_DB_FIELD);
         if (mItemDbField == null) {
             mItemDbField = "Field"; // dummy value that will fail
+        }
+        mUriTarget = getArguments().getString(ITEM_URI_TARGET);
+        if (mUriTarget == null) {
+            mUriTarget = "table"; // dummy value that will fail
         }
 
         View view = inflater.inflate(R.layout.fragment_configurable_edit, root);
@@ -229,6 +235,16 @@ public class ConfigurableEditDialog extends DialogFragment implements
             Log.d(LOG_TAG, "entered saveItemRecord with (mItemRecId == -1); canceled");
             return 0;
         }
+
+/*    public static final String ITEM_DB_TABLE = "ItemDbTable";
+    public static final String ITEM_DB_FIELD = "ItemDbField";
+    public static final String ITEM_URI_TARGET = "ItemUriTarget";
+
+
+    private String mDialogTitle, mDialogMessage, mItemHint,
+            mItemErrMissing , mItemErrShort , mItemErrDup,
+            mItemDbTable, mItemDbField, mUriTarget;*/
+        mItemsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, mUriTarget);
         if (mItemRecId == 0) { // new record
             mUri = rs.insert(mItemsUri, mValues);
             Log.d(LOG_TAG, "new record in saveItemRecord; returned URI: " + mUri.toString());
@@ -241,10 +257,26 @@ public class ConfigurableEditDialog extends DialogFragment implements
             getLoaderManager().restartLoader(Loaders.EXISTING_ITEMS, null, this);
             mUri = ContentUris.withAppendedId(mItemsUri, mItemRecId);
             Log.d(LOG_TAG, "new record in saveItemRecord; URI re-parsed: " + mUri.toString());
-            // set default Item
+            // for some cases, set default Item
             SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
             SharedPreferences.Editor prefEditor = sharedPref.edit();
-            prefEditor.putLong(Prefs.DEFAULT_NAMER_ID, mItemRecId);
+            switch (mUriTarget) {
+                case "projects":
+                    prefEditor.putLong(Prefs.DEFAULT_PROJECT_ID, mItemRecId);
+                    break;
+                case "namers":
+                    prefEditor.putLong(Prefs.DEFAULT_NAMER_ID, mItemRecId);
+                    break;
+                case "idnamers":
+                    prefEditor.putLong(Prefs.DEFAULT_IDENT_NAMER_ID, mItemRecId);
+                    break;
+                case "idrefs":
+                    prefEditor.putLong(Prefs.DEFAULT_IDENT_REF_ID, mItemRecId);
+                    break;
+                case "idmethods":
+                    prefEditor.putLong(Prefs.DEFAULT_IDENT_METHOD_ID, mItemRecId);
+                    break;
+            }
             prefEditor.commit();
             return 1;
         } else {
@@ -270,7 +302,7 @@ public class ConfigurableEditDialog extends DialogFragment implements
         case Loaders.EXISTING_ITEMS:
             // get the existing Items, other than the current one, to disallow duplicates
             Uri allItemsUri = Uri.withAppendedPath(
-                    ContentProvider_VegNab.CONTENT_URI, "namers");
+                    ContentProvider_VegNab.CONTENT_URI, mUriTarget);
             String[] projection = {"_id", mItemDbField};
             select = "(_id <> " + mItemRecId + ")";
             cl = new CursorLoader(getActivity(), allItemsUri,
@@ -282,7 +314,7 @@ public class ConfigurableEditDialog extends DialogFragment implements
 //			mItemsUri = ContentProvider_VegNab.CONTENT_URI; // get the whole list
             Uri oneItemUri = ContentUris.withAppendedId(
                             Uri.withAppendedPath(
-                            ContentProvider_VegNab.CONTENT_URI, "namers"), mItemRecId);
+                            ContentProvider_VegNab.CONTENT_URI, mUriTarget), mItemRecId);
             // Now create and return a CursorLoader that will take care of
             // creating a Cursor for the dataset being displayed
             // Could build a WHERE clause such as

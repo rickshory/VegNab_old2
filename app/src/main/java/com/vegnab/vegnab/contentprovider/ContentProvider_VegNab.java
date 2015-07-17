@@ -120,7 +120,6 @@ public class ContentProvider_VegNab extends ContentProvider {
         // SELECT tbl_name FROM sqlite_master WHERE (type='table') AND (sql LIKE '%_id%') AND (tbl_name <> 'android_metadata');
 
         c.close();
-
         return false;
     }
 
