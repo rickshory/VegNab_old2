@@ -18,6 +18,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.internal.widget.AdapterViewCompat.AdapterContextMenuInfo;
+import android.text.InputType;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -495,6 +496,18 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 Log.d(LOG_TAG, "in onClick, lbl_ident_namer_spinner_cover");
                 Log.d(LOG_TAG, "Starting 'add new' for IdNamer from onClick of 'lbl_ident_namer_spinner_cover'");
                 args.putLong(ConfigurableEditDialog.ITEM_REC_ID, 0);
+                args.putString(ConfigurableEditDialog.DIALOG_TITLE,
+                        c.getResources().getString(R.string.edit_placeholder_ident_namer_title_new));
+                args.putString(ConfigurableEditDialog.DIALOG_MESSAGE,
+                        c.getResources().getString(R.string.edit_placeholder_ident_namer_msg_new));
+                args.putInt(ConfigurableEditDialog.ITEM_INPUT_TYPE_CODE,
+                        InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+                args.putString(ConfigurableEditDialog.ITEM_ERR_MISSING,
+                        c.getResources().getString(R.string.edit_placeholder_ident_namer_err_missing));
+                args.putString(ConfigurableEditDialog.ITEM_ERR_SHORT,
+                        c.getResources().getString(R.string.edit_placeholder_ident_namer_err_short));
+                args.putString(ConfigurableEditDialog.ITEM_ERR_DUP,
+                        c.getResources().getString(R.string.edit_placeholder_ident_namer_err_dup));
                 args.putString(ConfigurableEditDialog.ITEM_DB_FIELD, "IdNamerName");
                 args.putString(ConfigurableEditDialog.ITEM_URI_TARGET, "idnamers");
                 ConfigurableEditDialog newIdNamerDlg = ConfigurableEditDialog.newInstance(args);

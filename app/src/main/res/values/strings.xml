@@ -237,10 +237,37 @@
     <string name="edit_placeholder_ident_button_on_msg">Done with ID</string>
     <string name="edit_placeholder_label_ident_namer">You who determined the species</string>
     <string name="edit_placeholder_hint_ident_namer">Person\'s name who determined the species</string>
+    <string name="edit_placeholder_ident_namer_title_new">New Name</string>
+    <string name="edit_placeholder_ident_namer_title_edit">Edit Name</string>
+    <string name="edit_placeholder_ident_namer_msg_new">Person\'s name who determined the species</string>
+    <string name="edit_placeholder_ident_namer_msg_edit">This will change the spelling wherever this Name is used</string>
+    <string name="edit_placeholder_ident_namer_err_missing">Need a person\'s name</string>
+    <string name="edit_placeholder_ident_namer_err_short">Name must be at least three characters</string>
+    <string name="edit_placeholder_ident_namer_err_dup">Duplicate name, already used</string>
+
     <string name="edit_placeholder_label_ident_reference">Reference used</string>
     <string name="edit_placeholder_hint_ident_reference">Book or resource; if multiple, one having the species name used here</string>
+
+    <string name="edit_placeholder_ident_ref_title_new">New Reference</string>
+    <string name="edit_placeholder_ident_ref_title_edit">Edit Reference</string>
+    <string name="edit_placeholder_ident_ref_msg_new">Book or resource; if multiple, one having the species name used here</string>
+    <string name="edit_placeholder_ident_ref_msg_edit">This will change the spelling wherever this Reference is used</string>
+    <string name="edit_placeholder_ident_ref_err_missing">Need a reference</string>
+    <string name="edit_placeholder_ident_ref_err_short">Reference text must be at least three characters</string>
+    <string name="edit_placeholder_ident_ref_err_dup">Duplicate reference, already used</string>
+
     <string name="edit_placeholder_label_ident_method">Method</string>
     <string name="edit_placeholder_hint_ident_method">How identified</string>
+
+    <string name="edit_placeholder_ident_method_title_new">New ID Method</string>
+    <string name="edit_placeholder_ident_method_title_edit">Edit Method</string>
+    <string name="edit_placeholder_ident_method_msg_new">Method used to identify this species</string>
+    <string name="edit_placeholder_ident_method_msg_edit">This will change the spelling wherever this Method is used</string>
+    <string name="edit_placeholder_ident_method_err_missing">Need an ID Method</string>
+    <string name="edit_placeholder_ident_method_err_short">Method text must be at least three characters</string>
+    <string name="edit_placeholder_ident_method_err_dup">Duplicate method, already used</string>
+
+
     <string name="edit_placeholder_label_ident_confidence">Confidence</string>
     <string name="edit_placeholder_hint_ident_confidence">Any uncertainty of identification</string>
     <string name="edit_placeholder_label_ident_spp">Placeholder is this species</string>
