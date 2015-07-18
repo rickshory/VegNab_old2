@@ -277,7 +277,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         registerForContextMenu(mLblIdentNamerSpinnerCover); // enable long-press
         // Ref spinner
         mLblIdentRef = (TextView) rootView.findViewById(R.id.lbl_ph_ident_ref);
-        mIdentRefSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_namer);
+        mIdentRefSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_ref);
         mIdentRefSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
         mIdentRefSpinner.setEnabled(false); // will enable when data ready
         mIdentRefAdapter = new SimpleCursorAdapter(getActivity(),
@@ -295,7 +295,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         registerForContextMenu(mLblIdentRefSpinnerCover); // enable long-press
         // Method spinner
         mLblIdentMethod = (TextView) rootView.findViewById(R.id.lbl_ph_ident_method);
-        mIdentMethodSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_namer);
+        mIdentMethodSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_method);
         mIdentMethodSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
         mIdentMethodSpinner.setEnabled(false); // will enable when data ready
         mIdentMethodAdapter = new SimpleCursorAdapter(getActivity(),
@@ -313,7 +313,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         registerForContextMenu(mLblIdentMethodSpinnerCover); // enable long-press
         // CF spinner
         mLblIdentCF = (TextView) rootView.findViewById(R.id.lbl_ph_ident_cf);
-        mIdentCFSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_namer);
+        mIdentCFSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_cf);
         mIdentCFSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
         mIdentCFSpinner.setEnabled(false); // will enable when data ready
         mIdentCFAdapter = new SimpleCursorAdapter(getActivity(),
