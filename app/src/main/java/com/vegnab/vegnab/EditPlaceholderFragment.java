@@ -493,12 +493,12 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
             case R.id.lbl_ident_namer_spinner_cover:
                 Log.d(LOG_TAG, "in onClick, lbl_ident_namer_spinner_cover");
-//                args.putInt(BUTTON_KEY, VNContract.PhActions.CANCEL);
-//                args.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
-//                Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
-//                mButtonCallback.onPlaceholderActionButtonClicked(args);
-//                Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
-//                super.onBackPressed();
+                Log.d(LOG_TAG, "Starting 'add new' for IdNamer from onClick of 'lbl_ident_namer_spinner_cover'");
+                args.putLong(ConfigurableEditDialog.ITEM_REC_ID, 0);
+                args.putString(ConfigurableEditDialog.ITEM_DB_FIELD, "IdNamerName");
+                args.putString(ConfigurableEditDialog.ITEM_URI_TARGET, "idnamers");
+                ConfigurableEditDialog newIdNamerDlg = ConfigurableEditDialog.newInstance(args);
+                newIdNamerDlg.show(getFragmentManager(), "frg_new_idnamer_fromCover");
                 break;
 
 //            case R.id.lbl_ident_ref_spinner_cover:
