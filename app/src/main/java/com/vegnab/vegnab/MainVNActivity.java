@@ -72,18 +72,19 @@ public class MainVNActivity extends ActionBarActivity
         ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
         // set up some default Preferences
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefEditor;
         if (!sharedPref.contains(Prefs.TARGET_ACCURACY_OF_VISIT_LOCATIONS)) {
-            SharedPreferences.Editor prefEditor = sharedPref.edit();
+            prefEditor = sharedPref.edit();
             prefEditor.putFloat(Prefs.TARGET_ACCURACY_OF_VISIT_LOCATIONS, (float) 7.0);
             prefEditor.commit();
         }
         if (!sharedPref.contains(Prefs.TARGET_ACCURACY_OF_MAPPED_LOCATIONS)) {
-            SharedPreferences.Editor prefEditor = sharedPref.edit();
+            prefEditor = sharedPref.edit();
             prefEditor.putFloat(Prefs.TARGET_ACCURACY_OF_MAPPED_LOCATIONS, (float) 7.0);
             prefEditor.commit();
         }
         if (!sharedPref.contains(Prefs.UNIQUE_DEVICE_ID)) {
-            SharedPreferences.Editor prefEditor = sharedPref.edit();
+            prefEditor = sharedPref.edit();
             getUniqueDeviceId(this); // generate the ID and the source
             prefEditor.putString(Prefs.DEVICE_ID_SOURCE, mDeviceIdSource);
             prefEditor.putString(Prefs.UNIQUE_DEVICE_ID, mUniqueDeviceId);
@@ -92,14 +93,14 @@ public class MainVNActivity extends ActionBarActivity
 
         // Is there a description of what "local" is (e.g. "Iowa")? Initially, no.
         if (!sharedPref.contains(Prefs.LOCAL_SPECIES_LIST_DESCRIPTION)) {
-            SharedPreferences.Editor prefEditor = sharedPref.edit();
+            prefEditor = sharedPref.edit();
             prefEditor.putString(Prefs.LOCAL_SPECIES_LIST_DESCRIPTION, "");
             prefEditor.commit();
         }
 
         // Has the regional species list been downloaded? Initially, no.
         if (!sharedPref.contains(Prefs.SPECIES_LIST_DOWNLOADED)) {
-            SharedPreferences.Editor prefEditor = sharedPref.edit();
+            prefEditor = sharedPref.edit();
             // improve this, test if table contains any species
             prefEditor.putBoolean(Prefs.SPECIES_LIST_DOWNLOADED, false);
             prefEditor.commit();
@@ -107,9 +108,16 @@ public class MainVNActivity extends ActionBarActivity
 
         // Have the user verify each species entered as presence/absence? Initially, yes.
         // user will probably turn this one off each session, but turn it on on each restart
-        SharedPreferences.Editor prefEditor = sharedPref.edit();
+        prefEditor = sharedPref.edit();
         prefEditor.putBoolean(Prefs.VERIFY_VEG_ITEMS_PRESENCE, true);
         prefEditor.commit();
+
+        // Set the default ID method to Digital Photograph
+        if (!sharedPref.contains(Prefs.DEFAULT_IDENT_METHOD_ID)) {
+            prefEditor = sharedPref.edit();
+            prefEditor.putLong(Prefs.DEFAULT_IDENT_METHOD_ID, 1);
+            prefEditor.commit();
+        }
 
         setContentView(R.layout.activity_vn_main);
 //		viewPager = (ViewPager) findViewById(R.id.data_entry_pager);

@@ -704,13 +704,16 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                     mIdentNamerSpinner.setEnabled(false);
                 } else {
                     long identNamerId = sharedPref.getLong(Prefs.DEFAULT_IDENT_NAMER_ID, 0);
-                    setSpinnerSelection(mIdentNamerSpinner, identNamerId, rowCt);
-                    if (identNamerId == 0) {
+                    if (rowCt == 1) { // only the "add new" record
+                        mIdentNamerSpinner.setSelection(0);
                         // user sees '(add new)', blank TextView receives click;
                         mLblIdentNamerSpinnerCover.bringToFront();
                     } else {
-                        // user can operate the spinner
-                        mIdentNamerSpinner.bringToFront();
+                        if (sharedPref.contains(Prefs.DEFAULT_IDENT_NAMER_ID)) {
+                            setSpinnerSelection(mIdentNamerSpinner, identNamerId, rowCt);
+                            // user can operate the spinner
+                            mIdentNamerSpinner.bringToFront();
+                        }
                     }
                     mIdentNamerSpinner.setEnabled(true);
                 }
@@ -724,13 +727,16 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                     mIdentRefSpinner.setEnabled(false);
                 } else {
                     long identRefId = sharedPref.getLong(Prefs.DEFAULT_IDENT_REF_ID, 0);
-                    setSpinnerSelection(mIdentRefSpinner, identRefId, rowCt);
-                    if (identRefId == 0) {
+                    if (rowCt == 1) { // only the "add new" record
+                        mIdentRefSpinner.setSelection(0);
                         // user sees '(add new)', blank TextView receives click;
                         mLblIdentRefSpinnerCover.bringToFront();
                     } else {
-                        // user can operate the spinner
-                        mIdentRefSpinner.bringToFront();
+                        if (sharedPref.contains(Prefs.DEFAULT_IDENT_REF_ID)) {
+                            setSpinnerSelection(mIdentRefSpinner, identRefId, rowCt);
+                            // user can operate the spinner
+                            mIdentRefSpinner.bringToFront();
+                        }
                     }
                     mIdentRefSpinner.setEnabled(true);
                 }
@@ -744,16 +750,20 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                     mIdentMethodSpinner.setEnabled(false);
                 } else {
                     long identMethodId = sharedPref.getLong(Prefs.DEFAULT_IDENT_METHOD_ID, 0);
-                    setSpinnerSelection(mIdentMethodSpinner, identMethodId, rowCt);
-                    if (identMethodId == 0) {
+                    if (rowCt == 1) { // only the "add new" record
+                        mIdentMethodSpinner.setSelection(0);
                         // user sees '(add new)', blank TextView receives click;
                         mLblIdentMethodSpinnerCover.bringToFront();
                     } else {
-                        // user can operate the spinner
-                        mIdentMethodSpinner.bringToFront();
+                        if (sharedPref.contains(Prefs.DEFAULT_IDENT_REF_ID)) {
+                            setSpinnerSelection(mIdentMethodSpinner, identMethodId, rowCt);
+                            // user can operate the spinner
+                            mIdentMethodSpinner.bringToFront();
+                        }
                     }
                     mIdentMethodSpinner.setEnabled(true);
                 }
+
                 break;
 
             case Loaders.PH_IDENT_CONFIDENCS:
