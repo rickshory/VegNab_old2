@@ -541,12 +541,41 @@ public class MainVNActivity extends ActionBarActivity
     public void onConfigurableEditComplete(DialogFragment dialog) {
         Log.d(LOG_TAG, "onConfigurableEditComplete(DialogFragment dialog)");
         // get parameter(s) from dialog
+        Bundle args = dialog.getArguments();
         // switch out task based on where called from
+        String UriTarget = args.getString(ConfigurableEditDialog.ITEM_URI_TARGET);
+        // make work with Projects too
         VisitHeaderFragment visHdrFragment = (VisitHeaderFragment)
                 getSupportFragmentManager().findFragmentByTag(Tags.VISIT_HEADER);
-        visHdrFragment.refreshNamerSpinner();
+        if (visHdrFragment != null) {
+            try {
+                if (UriTarget == "namers") {
+                    visHdrFragment.refreshNamerSpinner();
+                }
+            } catch (Exception e) {
+                // screen rotates may destroy some objects & cause null pointer exceptions
+                // refresh will occur when fragments rebuilt
+                Log.d(LOG_TAG, "exception: " + e.getMessage());
+            }
+        }
+        EditPlaceholderFragment editPhFragment = (EditPlaceholderFragment)
+                getSupportFragmentManager().findFragmentByTag(Tags.EDIT_PLACEHOLDER);
+        if (editPhFragment != null) {
+            try {
+                if (UriTarget == "idnamers") {
+                    editPhFragment.refreshIdNamerSpinner();
+                }
+                if (UriTarget == "idrefs") {
+                    editPhFragment.refreshIdRefSpinner();
+                }
+                if (UriTarget == "idmethods") {
+                    editPhFragment.refreshIdMethodSpinner();
+                }
+            } catch (Exception e) {
+                Log.d(LOG_TAG, "exception: " + e.getMessage());
+            }
+        }
     }
-
 
     @Override
     public void onEditNamerComplete(DialogFragment dialog) {

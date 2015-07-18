@@ -290,8 +290,8 @@ public class ConfigurableEditDialog extends DialogFragment implements
 
 /*        public static final int ITEMS = 110; // all Items, to choose from
         public static final int ITEM_TO_EDIT = 111;
-        public static final int EXISTING_ITEMS = 112; // Items other than the current, to check duplicates*/            
-            
+        public static final int EXISTING_ITEMS = 112; // Items other than the current, to check duplicates*/
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // This is called when a new Loader needs to be created.

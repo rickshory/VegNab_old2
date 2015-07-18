@@ -527,6 +527,18 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         }
     }
 
+    public void refreshIdNamerSpinner() {
+        getLoaderManager().restartLoader(Loaders.PH_IDENT_NAMERS, null, this);
+    }
+
+    public void refreshIdRefSpinner() {
+        getLoaderManager().restartLoader(Loaders.PH_IDENT_REFS, null, this);
+    }
+
+    public void refreshIdMethodSpinner() {
+        getLoaderManager().restartLoader(Loaders.PH_IDENT_METHODS, null, this);
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // This is called when a new Loader needs to be created.
