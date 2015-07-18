@@ -99,7 +99,11 @@ public class ConfigurableEditDialog extends DialogFragment implements
         }
         mDialogMessage = getArguments().getString(DIALOG_MESSAGE);
         if (mDialogMessage == null) {
-            mDialogMessage = c.getResources().getString(R.string.configurable_edit_label_edit_item);
+            if (mItemRecId == 0) {
+                mDialogTitle = c.getResources().getString(R.string.configurable_edit_title_new);
+            } else {
+                mDialogTitle = c.getResources().getString(R.string.configurable_edit_label_edit_item);
+            }
         }
         mItemHint = getArguments().getString(ITEM_HINT);
         if (mItemHint == null) {
