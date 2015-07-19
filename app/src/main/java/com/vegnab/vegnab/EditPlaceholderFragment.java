@@ -62,10 +62,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
     private int mValidationLevel = Validation.SILENT;
 
-    private double mLatitude, mLongitude;
-    private String mLocTime;
-    private Location mCurLocation, mPrevLocation;
-
     // Unique tag for the error dialog fragment
     private static final String DIALOG_ERROR = "dialog_error";
 
@@ -81,7 +77,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     HashSet<String> mPreviouslyEnteredHabitats = new HashSet<String>();
 
     private Button mBtnIdent;
-    private TextView mLblIdentNamer, mLblIdentRef, mLblIdentMethod, mLblIdentCF;
+//    private TextView mLblIdentNamer, mLblIdentRef, mLblIdentMethod, mLblIdentCF;
     private Spinner mIdentNamerSpinner, mIdentRefSpinner, mIdentMethodSpinner, mIdentCFSpinner;
     private TextView mLblIdentNamerSpinnerCover, mLblIdentRefSpinnerCover, mLblIdentMethodSpinnerCover;
     SimpleCursorAdapter mIdentNamerAdapter, mIdentRefAdapter, mIdentMethodAdapter, mIdentCFAdapter;
@@ -259,7 +255,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
         // set up spinners
         // Namer spinner
-        mLblIdentNamer = (TextView) rootView.findViewById(R.id.lbl_ph_ident_namer);
+//        mLblIdentNamer = (TextView) rootView.findViewById(R.id.lbl_ph_ident_namer);
         mIdentNamerSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_namer);
         mIdentNamerSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
         mIdentNamerSpinner.setEnabled(false); // will enable when data ready
@@ -277,7 +273,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mLblIdentNamerSpinnerCover.setOnClickListener(this);
         registerForContextMenu(mLblIdentNamerSpinnerCover); // enable long-press
         // Ref spinner
-        mLblIdentRef = (TextView) rootView.findViewById(R.id.lbl_ph_ident_ref);
+//        mLblIdentRef = (TextView) rootView.findViewById(R.id.lbl_ph_ident_ref);
         mIdentRefSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_ref);
         mIdentRefSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
         mIdentRefSpinner.setEnabled(false); // will enable when data ready
@@ -295,7 +291,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mLblIdentRefSpinnerCover.setOnClickListener(this);
         registerForContextMenu(mLblIdentRefSpinnerCover); // enable long-press
         // Method spinner
-        mLblIdentMethod = (TextView) rootView.findViewById(R.id.lbl_ph_ident_method);
+//        mLblIdentMethod = (TextView) rootView.findViewById(R.id.lbl_ph_ident_method);
         mIdentMethodSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_method);
         mIdentMethodSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
         mIdentMethodSpinner.setEnabled(false); // will enable when data ready
@@ -313,7 +309,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mLblIdentMethodSpinnerCover.setOnClickListener(this);
         registerForContextMenu(mLblIdentMethodSpinnerCover); // enable long-press
         // CF spinner
-        mLblIdentCF = (TextView) rootView.findViewById(R.id.lbl_ph_ident_cf);
+//        mLblIdentCF = (TextView) rootView.findViewById(R.id.lbl_ph_ident_cf);
         mIdentCFSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_cf);
         mIdentCFSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
         mIdentCFSpinner.setEnabled(false); // will enable when data ready
@@ -540,6 +536,13 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         }
     }
 
+    public void saveDefaultItemId(String pref, long id) {
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefEditor = sharedPref.edit();
+        prefEditor.putLong(pref, id);
+        prefEditor.commit();
+    }
+
     public void refreshIdNamerSpinner() {
         getLoaderManager().restartLoader(Loaders.PH_IDENT_NAMERS, null, this);
     }
@@ -723,7 +726,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                         mLblIdentNamerSpinnerCover.bringToFront();
                     } else {
                         if (sharedPref.contains(Prefs.DEFAULT_IDENT_NAMER_ID)) {
-                            setSpinnerSelection(mIdentNamerSpinner, identNamerId, rowCt);
+                            setSpinnerSelection(mIdentNamerSpinner, identNamerId);
                             // user can operate the spinner
                             mIdentNamerSpinner.bringToFront();
                         }
@@ -746,7 +749,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                         mLblIdentRefSpinnerCover.bringToFront();
                     } else {
                         if (sharedPref.contains(Prefs.DEFAULT_IDENT_REF_ID)) {
-                            setSpinnerSelection(mIdentRefSpinner, identRefId, rowCt);
+                            setSpinnerSelection(mIdentRefSpinner, identRefId);
                             // user can operate the spinner
                             mIdentRefSpinner.bringToFront();
                         }
@@ -769,7 +772,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                         mLblIdentMethodSpinnerCover.bringToFront();
                     } else {
                         if (sharedPref.contains(Prefs.DEFAULT_IDENT_REF_ID)) {
-                            setSpinnerSelection(mIdentMethodSpinner, identMethodId, rowCt);
+                            setSpinnerSelection(mIdentMethodSpinner, identMethodId);
                             // user can operate the spinner
                             mIdentMethodSpinner.bringToFront();
                         }
@@ -842,7 +845,39 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         }
     }
 
-    public void setSpinnerSelection(Spinner spn, long recId, long rowCt) {
+
+    public void setSpinnerSelectionFromDefault(Spinner spn) {
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        TextView spnCover = null;
+        long itemId = 0; // if none yet, use _id = 0, generated in query as '(add new)'
+        if (spn.getId() == mIdentNamerSpinner.getId()) {
+            itemId = sharedPref.getLong(Prefs.DEFAULT_IDENT_NAMER_ID, 0);
+            spnCover = mLblIdentNamerSpinnerCover;
+        }
+        if (spn.getId() == mIdentRefSpinner.getId()) {
+            itemId = sharedPref.getLong(Prefs.DEFAULT_IDENT_REF_ID, 0);
+            spnCover = mLblIdentRefSpinnerCover;
+        }
+        if (spn.getId() == mIdentMethodSpinner.getId()) {
+            itemId = sharedPref.getLong(Prefs.DEFAULT_IDENT_METHOD_ID, 0);
+            spnCover = mLblIdentMethodSpinnerCover;
+        }
+        if (spn.getId() == mIdentCFSpinner.getId()) {
+            itemId = 1;
+        }
+        setSpinnerSelection(spn, itemId);
+        if ((itemId == 0) && (spn.getAdapter().getCount() == 1) && (spnCover != null)) {
+            // user sees '(add new)', blank TextView receives click;
+            spnCover.bringToFront();
+        } else {
+            // user can operate the spinner
+            spn.bringToFront();
+        }
+    }
+
+    public void setSpinnerSelection(Spinner spn, long recId) {
+        long cta = spn.getCount();
+        long rowCt = spn.getAdapter().getCount();
         for (int i=0; i<rowCt; i++) {
             if (spn.getItemIdAtPosition(i) == recId) {
                 spn.setSelection(i);
@@ -1048,17 +1083,37 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         // that returns something like below, which there is no way to get text out of:
         // "android.content.ContentResolver$CursorWrapperInner@42041b40"
 
+        // workaround for spinner firing when first set
+        if(((String)parent.getTag()).equalsIgnoreCase(VNContract.Tags.SPINNER_FIRST_USE)) {
+            parent.setTag("");
+            return;
+        }
+/*            mIdentNamerId = 0, mIdentRefId = 0, mIdentMethodId = 0, mIdentCFId = 0;
+
+    private Spinner mIdentNamerSpinner, mIdentRefSpinner, mIdentMethodSpinner, mIdentCFSpinner;
+
+        public static final String DEFAULT_IDENT_NAMER_ID = "DefaultIdentNamerId";
+        public static final String DEFAULT_IDENT_REF_ID = "DefaultIdentRefId";
+        public static final String DEFAULT_IDENT_METHOD_ID = "DefaultIdentMethodId";
+*/
         // sort out the spinners
         // can't use switch because not constants
-//        if (parent.getId() == mNamerSpinner.getId()) {
-//            // workaround for spinner firing when first set
-//            if(((String)parent.getTag()).equalsIgnoreCase(VNContract.Tags.SPINNER_FIRST_USE)) {
-//                parent.setTag("");
-//                return;
-//            }
-//            mNamerId = id;
-//            if (mNamerId == 0) { // picked '(add new)'
-//                Log.d(LOG_TAG, "Starting 'add new' for Namer from onItemSelect");
+        if (parent.getId() == mIdentNamerSpinner.getId()) {
+            mIdentNamerId = id;
+            if (mIdentNamerId == 0) { // picked '(add new)'
+                Log.d(LOG_TAG, "Starting 'add new' for IdentNamer from onItemSelect");
+
+
+            } else {
+                saveDefaultItemId(Prefs.DEFAULT_IDENT_NAMER_ID, mIdentNamerId);
+            }
+            // in either case, reset selection
+
+        }
+//
+//
+//
+//
 ////				AddSpeciesNamerDialog  addSppNamerDlg = AddSpeciesNamerDialog.newInstance();
 ////				FragmentManager fm = getActivity().getSupportFragmentManager();
 ////				addSppNamerDlg.show(fm, "sppNamerDialog_SpinnerSelect");
@@ -1069,7 +1124,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 //                // save in app Preferences as the default Namer
 //                saveDefaultNamerId(mNamerId);
 //            }
-//            setNamerSpinnerSelectionFromDefaultNamer(); // in either case, reset selection
+//            setNamerSpinnerSelectionFromDefaultNamer();
 //        }
         // write code for any other spinner(s) here
     }
