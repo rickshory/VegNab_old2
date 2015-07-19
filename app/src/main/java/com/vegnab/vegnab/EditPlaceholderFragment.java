@@ -68,7 +68,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     // explicitly handle all fields; some API versions have bugs that lose cursors on orientation change, etc.
     // zero and null defaults means new or not specified yet
     long mPlaceholderId = 0, mPhProjId = 0, mPhVisitId = 0, mPhLocId = 0, mPhNamerId = 0,
-            mIdentNamerId = 0, mIdentRefId = 0, mIdentMethodId = 0, mIdentCFId = 0;
+            mIdentNamerId = 0, mIdentRefId = 0, mIdentMethodId = 0, mIdentCFId = 1;
     String mPlaceholderCode = null, mPlaceholderDescription = null, mPlaceholderHabitat = null,
             mPlaceholderLabelNumber = null, mPhVisitName = null, mPhNamerName = null,
             mPhScribe = null, mPhLocText = null;
@@ -206,7 +206,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mIdentNamerId = savedInstanceState.getLong(ARG_IDENT_NAMER_ID, 0);
             mIdentRefId = savedInstanceState.getLong(ARG_IDENT_REF_ID, 0);
             mIdentMethodId = savedInstanceState.getLong(ARG_IDENT_METHOD_ID, 0);
-            mIdentCFId = savedInstanceState.getLong(ARG_IDENT_CF_ID, 0);
+            mIdentCFId = savedInstanceState.getLong(ARG_IDENT_CF_ID, 1);
 
             Log.d(LOG_TAG, "In onCreateView, retrieved mPlaceholderId: " + mPlaceholderId);
             Log.d(LOG_TAG, "In onCreateView, retrieved mPlaceholderCode: " + mPlaceholderCode);
@@ -848,7 +848,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
     public void setSpinnerSelectionFromDefault(Spinner spn) {
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        TextView spnCover = null;
+        TextView spnCover = null; // a possible cover for the spinner to receive clicks
         long itemId = 0; // if none yet, use _id = 0, generated in query as '(add new)'
         if (spn.getId() == mIdentNamerSpinner.getId()) {
             itemId = sharedPref.getLong(Prefs.DEFAULT_IDENT_NAMER_ID, 0);
@@ -866,7 +866,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             itemId = 1;
         }
         setSpinnerSelection(spn, itemId);
-        if ((itemId == 0) && (spn.getAdapter().getCount() == 1) && (spnCover != null)) {
+        if ((itemId == 0) && (spn.getCount() == 1) && (spnCover != null)) {
             // user sees '(add new)', blank TextView receives click;
             spnCover.bringToFront();
         } else {
@@ -876,8 +876,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     }
 
     public void setSpinnerSelection(Spinner spn, long recId) {
-        long cta = spn.getCount();
-        long rowCt = spn.getAdapter().getCount();
+        long rowCt = spn.getCount();
         for (int i=0; i<rowCt; i++) {
             if (spn.getItemIdAtPosition(i) == recId) {
                 spn.setSelection(i);
@@ -1082,6 +1081,9 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         //String strSel = parent.getItemAtPosition(position).toString();
         // that returns something like below, which there is no way to get text out of:
         // "android.content.ContentResolver$CursorWrapperInner@42041b40"
+        Bundle args= new Bundle();
+        int numUpdated;
+        Context c = getActivity();
 
         // workaround for spinner firing when first set
         if(((String)parent.getTag()).equalsIgnoreCase(VNContract.Tags.SPINNER_FIRST_USE)) {
@@ -1102,12 +1104,28 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mIdentNamerId = id;
             if (mIdentNamerId == 0) { // picked '(add new)'
                 Log.d(LOG_TAG, "Starting 'add new' for IdentNamer from onItemSelect");
-
-
+                args.putLong(ConfigurableEditDialog.ITEM_REC_ID, 0);
+                args.putString(ConfigurableEditDialog.DIALOG_TITLE,
+                        c.getResources().getString(R.string.edit_placeholder_ident_namer_title_new));
+                args.putString(ConfigurableEditDialog.DIALOG_MESSAGE,
+                        c.getResources().getString(R.string.edit_placeholder_ident_namer_msg_new));
+                args.putInt(ConfigurableEditDialog.ITEM_INPUT_TYPE_CODE,
+                        InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+                args.putString(ConfigurableEditDialog.ITEM_ERR_MISSING,
+                        c.getResources().getString(R.string.edit_placeholder_ident_namer_err_missing));
+                args.putString(ConfigurableEditDialog.ITEM_ERR_SHORT,
+                        c.getResources().getString(R.string.edit_placeholder_ident_namer_err_short));
+                args.putString(ConfigurableEditDialog.ITEM_ERR_DUP,
+                        c.getResources().getString(R.string.edit_placeholder_ident_namer_err_dup));
+                args.putString(ConfigurableEditDialog.ITEM_DB_FIELD, "IdNamerName");
+                args.putString(ConfigurableEditDialog.ITEM_URI_TARGET, "idnamers");
+                ConfigurableEditDialog newIdNamerDlg = ConfigurableEditDialog.newInstance(args);
+                newIdNamerDlg.show(getFragmentManager(), "frg_new_idnamer_fromSpinner");
             } else {
                 saveDefaultItemId(Prefs.DEFAULT_IDENT_NAMER_ID, mIdentNamerId);
             }
             // in either case, reset selection
+            setSpinnerSelectionFromDefault(mIdentNamerSpinner);
 
         }
 //
