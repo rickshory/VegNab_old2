@@ -490,49 +490,24 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
             case R.id.lbl_ident_namer_spinner_cover:
                 Log.d(LOG_TAG, "in onClick, lbl_ident_namer_spinner_cover");
-                Log.d(LOG_TAG, "Starting 'add new' for IdNamer from onClick of 'lbl_ident_namer_spinner_cover'");
-                args.putLong(ConfigurableEditDialog.ITEM_REC_ID, 0);
-                args.putString(ConfigurableEditDialog.DIALOG_TITLE,
-                        c.getResources().getString(R.string.edit_placeholder_ident_namer_title_new));
-                args.putString(ConfigurableEditDialog.DIALOG_MESSAGE,
-                        c.getResources().getString(R.string.edit_placeholder_ident_namer_msg_new));
-                args.putInt(ConfigurableEditDialog.ITEM_INPUT_TYPE_CODE,
-                        InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-                args.putString(ConfigurableEditDialog.ITEM_ERR_MISSING,
-                        c.getResources().getString(R.string.edit_placeholder_ident_namer_err_missing));
-                args.putString(ConfigurableEditDialog.ITEM_ERR_SHORT,
-                        c.getResources().getString(R.string.edit_placeholder_ident_namer_err_short));
-                args.putString(ConfigurableEditDialog.ITEM_ERR_DUP,
-                        c.getResources().getString(R.string.edit_placeholder_ident_namer_err_dup));
-                args.putString(ConfigurableEditDialog.ITEM_DB_FIELD, "IdNamerName");
-                args.putString(ConfigurableEditDialog.ITEM_URI_TARGET, "idnamers");
-                ConfigurableEditDialog newIdNamerDlg = ConfigurableEditDialog.newInstance(args);
+                ConfigurableEditDialog newIdNamerDlg =
+                        ConfigurableEditDialog.newInstance(getArgsForNewIdentNamer());
                 newIdNamerDlg.show(getFragmentManager(), "frg_new_idnamer_fromCover");
                 break;
 
-//            case R.id.lbl_ident_ref_spinner_cover:
-//                Log.d(LOG_TAG, "in onClick, lbl_ident_ref_spinner_cover");
-////                args.putInt(BUTTON_KEY, VNContract.PhActions.CANCEL);
-////                args.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
-////                Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
-////                mButtonCallback.onPlaceholderActionButtonClicked(args);
-////                Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
-////                super.onBackPressed();
-//                break;
-//
-//            case R.id.lbl_ident_method_spinner_cover:
-//                Log.d(LOG_TAG, "in onClick, lbl_ident_method_spinner_cover");
-////                args.putInt(BUTTON_KEY, VNContract.PhActions.CANCEL);
-////                args.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
-////                Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
-////                mButtonCallback.onPlaceholderActionButtonClicked(args);
-////                Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
-////                super.onBackPressed();
-//                break;
+            case R.id.lbl_ident_ref_spinner_cover:
+                Log.d(LOG_TAG, "in onClick, lbl_ident_ref_spinner_cover");
+                ConfigurableEditDialog newIdRefDlg =
+                        ConfigurableEditDialog.newInstance(getArgsForNewIdentRef());
+                newIdRefDlg.show(getFragmentManager(), "frg_new_idref_fromCover");
+                break;
 
-
-
-
+            case R.id.lbl_ident_method_spinner_cover:
+                Log.d(LOG_TAG, "in onClick, lbl_ident_method_spinner_cover");
+                ConfigurableEditDialog newIdMethodDlg =
+                        ConfigurableEditDialog.newInstance(getArgsForNewIdentMethod());
+                newIdMethodDlg.show(getFragmentManager(), "frg_new_idmethod_fromCover");
+                break;
         }
     }
 
@@ -1104,48 +1079,106 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mIdentNamerId = id;
             if (mIdentNamerId == 0) { // picked '(add new)'
                 Log.d(LOG_TAG, "Starting 'add new' for IdentNamer from onItemSelect");
-                args.putLong(ConfigurableEditDialog.ITEM_REC_ID, 0);
-                args.putString(ConfigurableEditDialog.DIALOG_TITLE,
-                        c.getResources().getString(R.string.edit_placeholder_ident_namer_title_new));
-                args.putString(ConfigurableEditDialog.DIALOG_MESSAGE,
-                        c.getResources().getString(R.string.edit_placeholder_ident_namer_msg_new));
-                args.putInt(ConfigurableEditDialog.ITEM_INPUT_TYPE_CODE,
-                        InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-                args.putString(ConfigurableEditDialog.ITEM_ERR_MISSING,
-                        c.getResources().getString(R.string.edit_placeholder_ident_namer_err_missing));
-                args.putString(ConfigurableEditDialog.ITEM_ERR_SHORT,
-                        c.getResources().getString(R.string.edit_placeholder_ident_namer_err_short));
-                args.putString(ConfigurableEditDialog.ITEM_ERR_DUP,
-                        c.getResources().getString(R.string.edit_placeholder_ident_namer_err_dup));
-                args.putString(ConfigurableEditDialog.ITEM_DB_FIELD, "IdNamerName");
-                args.putString(ConfigurableEditDialog.ITEM_URI_TARGET, "idnamers");
-                ConfigurableEditDialog newIdNamerDlg = ConfigurableEditDialog.newInstance(args);
+                ConfigurableEditDialog newIdNamerDlg =
+                        ConfigurableEditDialog.newInstance(getArgsForNewIdentNamer());
                 newIdNamerDlg.show(getFragmentManager(), "frg_new_idnamer_fromSpinner");
             } else {
                 saveDefaultItemId(Prefs.DEFAULT_IDENT_NAMER_ID, mIdentNamerId);
             }
             // in either case, reset selection
             setSpinnerSelectionFromDefault(mIdentNamerSpinner);
-
         }
-//
-//
-//
-//
-////				AddSpeciesNamerDialog  addSppNamerDlg = AddSpeciesNamerDialog.newInstance();
-////				FragmentManager fm = getActivity().getSupportFragmentManager();
-////				addSppNamerDlg.show(fm, "sppNamerDialog_SpinnerSelect");
-//                EditNamerDialog newNmrDlg = EditNamerDialog.newInstance(0);
-//                newNmrDlg.show(getFragmentManager(), "frg_new_namer_fromSpinner");
-//
-//            } else { // (mNamerId != 0)
-//                // save in app Preferences as the default Namer
-//                saveDefaultNamerId(mNamerId);
-//            }
-//            setNamerSpinnerSelectionFromDefaultNamer();
-//        }
-        // write code for any other spinner(s) here
+
+        if (parent.getId() == mIdentRefSpinner.getId()) {
+            mIdentRefId = id;
+            if (mIdentRefId == 0) { // picked '(add new)'
+                Log.d(LOG_TAG, "Starting 'add new' for IdentRef from onItemSelect");
+                ConfigurableEditDialog newIdRefDlg = ConfigurableEditDialog.newInstance(getArgsForNewIdentRef());
+                newIdRefDlg.show(getFragmentManager(), "frg_new_idref_fromSpinner");
+            } else {
+                saveDefaultItemId(Prefs.DEFAULT_IDENT_REF_ID, mIdentRefId);
+            }
+            // in either case, reset selection
+            setSpinnerSelectionFromDefault(mIdentRefSpinner);
+        }
+
+        if (parent.getId() == mIdentMethodSpinner.getId()) {
+            mIdentMethodId = id;
+            if (mIdentMethodId == 0) { // picked '(add new)'
+                Log.d(LOG_TAG, "Starting 'add new' for IdentMethod from onItemSelect");
+                ConfigurableEditDialog newIdMethodDlg = ConfigurableEditDialog.newInstance(getArgsForNewIdentMethod());
+                newIdMethodDlg.show(getFragmentManager(), "frg_new_idmethod_fromSpinner");
+            } else {
+                saveDefaultItemId(Prefs.DEFAULT_IDENT_METHOD_ID, mIdentMethodId);
+            }
+            // in either case, reset selection
+            setSpinnerSelectionFromDefault(mIdentMethodSpinner);
+        }
     }
+
+    private Bundle getArgsForNewIdentNamer () {
+        Bundle args = new Bundle();
+        Context c = getActivity();
+        args.putLong(ConfigurableEditDialog.ITEM_REC_ID, 0);
+        args.putString(ConfigurableEditDialog.DIALOG_TITLE,
+                c.getResources().getString(R.string.edit_placeholder_ident_namer_title_new));
+        args.putString(ConfigurableEditDialog.DIALOG_MESSAGE,
+                c.getResources().getString(R.string.edit_placeholder_ident_namer_msg_new));
+        args.putInt(ConfigurableEditDialog.ITEM_INPUT_TYPE_CODE,
+                InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+        args.putString(ConfigurableEditDialog.ITEM_ERR_MISSING,
+                c.getResources().getString(R.string.edit_placeholder_ident_namer_err_missing));
+        args.putString(ConfigurableEditDialog.ITEM_ERR_SHORT,
+                c.getResources().getString(R.string.edit_placeholder_ident_namer_err_short));
+        args.putString(ConfigurableEditDialog.ITEM_ERR_DUP,
+                c.getResources().getString(R.string.edit_placeholder_ident_namer_err_dup));
+        args.putString(ConfigurableEditDialog.ITEM_DB_FIELD, "IdNamerName");
+        args.putString(ConfigurableEditDialog.ITEM_URI_TARGET, "idnamers");
+        return args;
+    }
+
+    private Bundle getArgsForNewIdentRef () {
+        Bundle args = new Bundle();
+        Context c = getActivity();
+        args.putLong(ConfigurableEditDialog.ITEM_REC_ID, 0);
+        args.putString(ConfigurableEditDialog.DIALOG_TITLE,
+                c.getResources().getString(R.string.edit_placeholder_ident_ref_title_new));
+        args.putString(ConfigurableEditDialog.DIALOG_MESSAGE,
+                c.getResources().getString(R.string.edit_placeholder_ident_ref_msg_new));
+        args.putString(ConfigurableEditDialog.ITEM_ERR_MISSING,
+                c.getResources().getString(R.string.edit_placeholder_ident_ref_err_missing));
+        args.putString(ConfigurableEditDialog.ITEM_ERR_SHORT,
+                c.getResources().getString(R.string.edit_placeholder_ident_ref_err_short));
+        args.putString(ConfigurableEditDialog.ITEM_ERR_DUP,
+                c.getResources().getString(R.string.edit_placeholder_ident_ref_err_dup));
+        args.putString(ConfigurableEditDialog.ITEM_DB_FIELD, "IdRef");
+        args.putString(ConfigurableEditDialog.ITEM_URI_TARGET, "idrefs");
+        return args;
+    }
+
+
+    private Bundle getArgsForNewIdentMethod () {
+        Bundle args = new Bundle();
+        Context c = getActivity();
+        args.putLong(ConfigurableEditDialog.ITEM_REC_ID, 0);
+        args.putString(ConfigurableEditDialog.DIALOG_TITLE,
+                c.getResources().getString(R.string.edit_placeholder_ident_method_title_new));
+        args.putString(ConfigurableEditDialog.DIALOG_MESSAGE,
+                c.getResources().getString(R.string.edit_placeholder_ident_method_msg_new));
+        args.putString(ConfigurableEditDialog.ITEM_ERR_MISSING,
+                c.getResources().getString(R.string.edit_placeholder_ident_method_err_missing));
+        args.putString(ConfigurableEditDialog.ITEM_ERR_SHORT,
+                c.getResources().getString(R.string.edit_placeholder_ident_method_err_short));
+        args.putString(ConfigurableEditDialog.ITEM_ERR_DUP,
+                c.getResources().getString(R.string.edit_placeholder_ident_method_err_dup));
+        args.putString(ConfigurableEditDialog.ITEM_DB_FIELD, "IdMethod");
+        args.putString(ConfigurableEditDialog.ITEM_URI_TARGET, "idmethods");
+        return args;
+    }
+
+
+
+
 
     @Override
     public void onNothingSelected(AdapterView<?> arg0) {
