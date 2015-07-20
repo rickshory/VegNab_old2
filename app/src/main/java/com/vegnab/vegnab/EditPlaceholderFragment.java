@@ -1056,23 +1056,13 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         //String strSel = parent.getItemAtPosition(position).toString();
         // that returns something like below, which there is no way to get text out of:
         // "android.content.ContentResolver$CursorWrapperInner@42041b40"
-        Bundle args= new Bundle();
-        int numUpdated;
-        Context c = getActivity();
 
         // workaround for spinner firing when first set
         if(((String)parent.getTag()).equalsIgnoreCase(VNContract.Tags.SPINNER_FIRST_USE)) {
             parent.setTag("");
             return;
         }
-/*            mIdentNamerId = 0, mIdentRefId = 0, mIdentMethodId = 0, mIdentCFId = 0;
 
-    private Spinner mIdentNamerSpinner, mIdentRefSpinner, mIdentMethodSpinner, mIdentCFSpinner;
-
-        public static final String DEFAULT_IDENT_NAMER_ID = "DefaultIdentNamerId";
-        public static final String DEFAULT_IDENT_REF_ID = "DefaultIdentRefId";
-        public static final String DEFAULT_IDENT_METHOD_ID = "DefaultIdentMethodId";
-*/
         // sort out the spinners
         // can't use switch because not constants
         if (parent.getId() == mIdentNamerSpinner.getId()) {
