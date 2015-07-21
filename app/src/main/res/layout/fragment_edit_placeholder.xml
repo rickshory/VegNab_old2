@@ -250,6 +250,42 @@
             android:layout_below="@id/lbl_ph_ident_cf"
             android:prompt="@string/edit_placeholder_hint_ident_confidence"
             />
+
+        <TextView
+            android:id="@+id/lbl_ph_ident_spp"
+            android:text="@string/edit_placeholder_label_ident_spp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/spn_ph_ident_cf"
+            android:layout_below="@id/spn_ph_ident_cf"
+            />
+
+        <AutoCompleteTextView
+            android:id="@+id/autocomplete_ph_ident_spp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/lbl_ph_ident_spp"
+            android:layout_below="@id/lbl_ph_ident_spp"
+            />
+
+        <TextView
+            android:id="@+id/lbl_ph_ident_notes"
+            android:text="@string/edit_placeholder_label_ident_notes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/autocomplete_ph_ident_spp"
+            android:layout_below="@id/autocomplete_ph_ident_spp"
+            />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/edit_placeholder_hint_ident_notes"
+            android:layout_alignLeft="@id/lbl_ph_ident_notes"
+            android:layout_below="@id/lbl_ph_ident_notes"
+            android:inputType="text"
+            />
+
     </RelativeLayout>
 </RelativeLayout>
 </ScrollView>

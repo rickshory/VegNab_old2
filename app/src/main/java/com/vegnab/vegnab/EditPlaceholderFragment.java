@@ -973,6 +973,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mValues.put("LabelNum", stringLabelNum);
         }
 
+
+
         return true;
     }
 
