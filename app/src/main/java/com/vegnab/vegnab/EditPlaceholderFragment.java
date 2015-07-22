@@ -333,6 +333,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 new String[] {"MatchTxt"},
                 new int[] {android.R.id.text1}, 0);
         mIdentSppAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+//        mIdentSppAdapter.setFilterQueryProvider();
         mSppIdentAutoComplete.setThreshold(3); // try 3 characters
         mSppIdentAutoComplete.setAdapter(mIdentSppAdapter);
 
@@ -804,6 +805,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             case Loaders.PH_IDENT_SPECIES:
                 // Swap the new cursor in.
                 // The framework will take care of closing the old cursor once we return.
+                mIdentSppAdapter.setStringConversionColumn(c.getColumnIndexOrThrow("MatchTxt"));
                 mIdentSppAdapter.swapCursor(c);
 //                if (rowCt == 0) { // would not happen unless tables are hacked & items deleted
 //                    mIdentCFSpinner.setEnabled(false);
