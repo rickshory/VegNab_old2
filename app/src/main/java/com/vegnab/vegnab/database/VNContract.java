@@ -87,15 +87,16 @@ public final class VNContract {
         public static final int PH_IDENT_REFS = 97; // For spinner
         public static final int PH_IDENT_METHODS = 98; // For spinner
         public static final int PH_IDENT_CONFIDENCS = 99; // For spinner
+        public static final int PH_IDENT_SPECIES = 100; // For auto complete
 
         // in Placeholder Pictures Grid
-        public static final int PLACEHOLDER_OF_PIX = 101; // The current placeholder
-        public static final int PLACEHOLDER_PIX = 102; // Pictures for the current placeholder
+        public static final int PLACEHOLDER_OF_PIX = 110; // The current placeholder
+        public static final int PLACEHOLDER_PIX = 111; // Pictures for the current placeholder
 
         // in Configurable Edit Dialog
-        public static final int ITEMS = 110; // all Items, to choose from
-        public static final int ITEM_TO_EDIT = 111;
-        public static final int EXISTING_ITEMS = 112; // Items other than the current, to check duplicates
+        public static final int ITEMS = 120; // all Items, to choose from
+        public static final int ITEM_TO_EDIT = 121;
+        public static final int EXISTING_ITEMS = 122; // Items other than the current, to check duplicates
 
 
     }

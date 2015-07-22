@@ -72,6 +72,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mIdentNamerId = 0, mIdentRefId = 0, mIdentMethodId = 0, mIdentCFId = 1;
     String mPlaceholderCode = null, mPlaceholderDescription = null, mPlaceholderHabitat = null,
             mPlaceholderLabelNumber = null, mPhIdentSppCode = null, mPhIdentSppDescr = null,
+            mStSearch = "",
             mPhVisitName = null, mPhNamerName = null,
             mPhScribe = null, mPhLocText = null;
     Boolean mCodeWasShortened = false, mIdPlaceholder = false;
@@ -329,11 +330,12 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mSppIdentAutoComplete = (AutoCompleteTextView) rootView.findViewById(R.id.autocomplete_ph_ident_spp);
         mIdentSppAdapter = new SimpleCursorAdapter(getActivity(),
                 android.R.layout.simple_dropdown_item_1line, null,
-                new String[] {"SppString"},
+                new String[] {"MatchTxt"},
                 new int[] {android.R.id.text1}, 0);
         mIdentSppAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        mSppIdentAutoComplete.setThreshold(3); // try 3 characters
         mSppIdentAutoComplete.setAdapter(mIdentSppAdapter);
-        
+
         mPhIdentNotes = (EditText) rootView.findViewById(R.id.txt_ph_ident_notes);
 
         // the views for identify-species, to show or hide as a group
@@ -373,6 +375,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         getLoaderManager().initLoader(Loaders.PH_IDENT_REFS, null, this);
         getLoaderManager().initLoader(Loaders.PH_IDENT_METHODS, null, this);
         getLoaderManager().initLoader(Loaders.PH_IDENT_CONFIDENCS, null, this);
+        getLoaderManager().initLoader(Loaders.PH_IDENT_SPECIES, null, this);
         //  hide views dealing with identifying the species
         configureIdViews();
     }
@@ -551,6 +554,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         CursorLoader cl = null;
         Uri baseUri;
         String select = null; // default for all-columns, unless re-assigned or overridden by raw SQL
+        String[] params;
         switch (id) {
             case Loaders.PLACEHOLDER_TO_EDIT:
                 Uri onePlaceholderUri = ContentUris.withAppendedId(
@@ -631,6 +635,20 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                         null, select, null, null);
                 break;
 
+            case Loaders.PH_IDENT_SPECIES:
+                baseUri = ContentProvider_VegNab.SQL_URI;
+                select = "SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, "
+                            + "Code || ': ' || Genus || "
+                            + "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
+                            + "(CASE WHEN LENGTH(SubsppVar)>0 THEN (' ' || SubsppVar) ELSE '' END) || "
+                            + "(CASE WHEN LENGTH(Vernacular)>0 THEN (', ' || Vernacular) ELSE '' END) "
+                            + "AS MatchTxt FROM RegionalSpeciesList "
+                            + "WHERE Code LIKE ? "
+                            + "ORDER BY Code;";
+                params = new String[] {mStSearch + "%"};
+                cl = new CursorLoader(getActivity(), baseUri,
+                        null, select, params, null);
+                break;
         }
         return cl;
     }
@@ -782,6 +800,18 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                     mIdentCFSpinner.setEnabled(true);
                 }
                 break;
+
+            case Loaders.PH_IDENT_SPECIES:
+                // Swap the new cursor in.
+                // The framework will take care of closing the old cursor once we return.
+                mIdentSppAdapter.swapCursor(c);
+//                if (rowCt == 0) { // would not happen unless tables are hacked & items deleted
+//                    mIdentCFSpinner.setEnabled(false);
+//                } else {
+//                    mIdentCFSpinner.setSelection(0); // default is always 'no doubt...'
+//                    mIdentCFSpinner.setEnabled(true);
+//                }
+                break;
         }
     }
 
@@ -830,6 +860,10 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
             case Loaders.PH_IDENT_CONFIDENCS:
                 mIdentCFAdapter.swapCursor(null);
+                break;
+
+            case Loaders.PH_IDENT_SPECIES:
+                mIdentSppAdapter.swapCursor(null);
                 break;
         }
     }
