@@ -82,7 +82,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 //    private TextView mLblIdentNamer, mLblIdentRef, mLblIdentMethod, mLblIdentCF;
     private Spinner mIdentNamerSpinner, mIdentRefSpinner, mIdentMethodSpinner, mIdentCFSpinner;
     private TextView mLblIdentNamerSpinnerCover, mLblIdentRefSpinnerCover, mLblIdentMethodSpinnerCover;
-    SimpleCursorAdapter mIdentNamerAdapter, mIdentRefAdapter, mIdentMethodAdapter, mIdentCFAdapter;
+    SimpleCursorAdapter mIdentNamerAdapter, mIdentRefAdapter, mIdentMethodAdapter, mIdentCFAdapter, mIdentSppAdapter;
 
 
     private ViewGroup mViewGroupIdent; // the set of views involved with identify-species
@@ -325,8 +325,15 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mIdentCFSpinner.setAdapter(mIdentCFAdapter);
         mIdentCFSpinner.setOnItemSelectedListener(this);
         registerForContextMenu(mIdentCFSpinner); // enable long-press
-        
+
         mSppIdentAutoComplete = (AutoCompleteTextView) rootView.findViewById(R.id.autocomplete_ph_ident_spp);
+        mIdentSppAdapter = new SimpleCursorAdapter(getActivity(),
+                android.R.layout.simple_dropdown_item_1line, null,
+                new String[] {"SppString"},
+                new int[] {android.R.id.text1}, 0);
+        mIdentSppAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        mSppIdentAutoComplete.setAdapter(mIdentSppAdapter);
+        
         mPhIdentNotes = (EditText) rootView.findViewById(R.id.txt_ph_ident_notes);
 
         // the views for identify-species, to show or hide as a group
