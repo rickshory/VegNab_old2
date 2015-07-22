@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -70,7 +71,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     long mPlaceholderId = 0, mPhProjId = 0, mPhVisitId = 0, mPhLocId = 0, mPhNamerId = 0,
             mIdentNamerId = 0, mIdentRefId = 0, mIdentMethodId = 0, mIdentCFId = 1;
     String mPlaceholderCode = null, mPlaceholderDescription = null, mPlaceholderHabitat = null,
-            mPlaceholderLabelNumber = null, mPhVisitName = null, mPhNamerName = null,
+            mPlaceholderLabelNumber = null, mPhIdentSppCode = null, mPhIdentSppDescr = null,
+            mPhVisitName = null, mPhNamerName = null,
             mPhScribe = null, mPhLocText = null;
     Boolean mCodeWasShortened = false, mIdPlaceholder = false;
     HashSet<String> mExistingPlaceholderCodes = new HashSet<String>();
@@ -82,6 +84,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     private TextView mLblIdentNamerSpinnerCover, mLblIdentRefSpinnerCover, mLblIdentMethodSpinnerCover;
     SimpleCursorAdapter mIdentNamerAdapter, mIdentRefAdapter, mIdentMethodAdapter, mIdentCFAdapter;
 
+
     private ViewGroup mViewGroupIdent; // the set of views involved with identify-species
 
     Uri mUri;
@@ -90,7 +93,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     ContentValues mValues = new ContentValues();
 
     private EditText mViewPlaceholderCode, mViewPlaceholderDescription,
-            mViewPlaceholderHabitat, mViewPlaceholderIdentifier;
+            mViewPlaceholderHabitat, mViewPlaceholderIdentifier, mPhIdentNotes;
+    AutoCompleteTextView mSppIdentAutoComplete;
 
     SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     SimpleDateFormat mTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
@@ -321,6 +325,9 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mIdentCFSpinner.setAdapter(mIdentCFAdapter);
         mIdentCFSpinner.setOnItemSelectedListener(this);
         registerForContextMenu(mIdentCFSpinner); // enable long-press
+        
+        mSppIdentAutoComplete = (AutoCompleteTextView) rootView.findViewById(R.id.autocomplete_ph_ident_spp);
+        mPhIdentNotes = (EditText) rootView.findViewById(R.id.txt_ph_ident_notes);
 
         // the views for identify-species, to show or hide as a group
         mViewGroupIdent = (ViewGroup) rootView.findViewById(R.id.ident_veiw_group);

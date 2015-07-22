@@ -278,6 +278,7 @@
             />
 
         <EditText
+            android:id="@+id/txt_ph_ident_notes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/edit_placeholder_hint_ident_notes"
