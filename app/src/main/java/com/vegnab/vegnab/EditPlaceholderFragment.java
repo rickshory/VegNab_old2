@@ -695,7 +695,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
             case Loaders.PLACEHOLDER_HABITATS:
                 baseUri = ContentProvider_VegNab.SQL_URI;
-                select = "SELECT Habitat FROM PlaceHolders "
+                select = "SELECT Min(_id) AS _id, Habitat FROM PlaceHolders "
                     + "WHERE ProjID = ? AND NamerID = ? AND  Habitat LIKE ? "
                     + "GROUP BY Habitat;";
                 params = new String[] {"" + mPhProjId, "" + mPhNamerId, mStSearchHabitat + "%"};
