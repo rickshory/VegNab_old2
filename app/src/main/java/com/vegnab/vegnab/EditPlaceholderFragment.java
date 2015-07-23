@@ -18,7 +18,9 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.internal.widget.AdapterViewCompat.AdapterContextMenuInfo;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -135,6 +137,32 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         f.setArguments(args);
         return f;
     }
+
+    TextWatcher sppIdentTextWatcher = new TextWatcher() {
+        @Override
+        public void afterTextChanged(Editable s) {
+            // use this method; test length of string; e.g. 'count' of other methods does not give this length
+            //Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "'");
+            Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "', length: " + s.length());
+            mStSearch = s.toString();
+            getLoaderManager().restartLoader(Loaders.PH_IDENT_SPECIES, null, EditPlaceholderFragment.this);
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            // the 'count' characters beginning at 'start' are about to be replaced by new text with length 'after'
+            //Log.d(LOG_TAG, "beforeTextChanged, s: '" + s.toString() + "', start: " + start + ", count: " + count + ", after: " + after);
+            //
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            // the 'count' characters beginning at 'start' have just replaced old text that had length 'before'
+            //Log.d(LOG_TAG, "onTextChanged, s: '" + s.toString() + "', start: " + start + ", before: " + before + ", count: " + count);
+
+        }
+    };
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -333,9 +361,9 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 new String[] {"MatchTxt"},
                 new int[] {android.R.id.text1}, 0);
         mIdentSppAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
-//        mIdentSppAdapter.setFilterQueryProvider();
-        mSppIdentAutoComplete.setThreshold(3); // try 3 characters
+        mSppIdentAutoComplete.setThreshold(2); // try 2 characters
         mSppIdentAutoComplete.setAdapter(mIdentSppAdapter);
+        mSppIdentAutoComplete.addTextChangedListener(sppIdentTextWatcher);
 
         mPhIdentNotes = (EditText) rootView.findViewById(R.id.txt_ph_ident_notes);
 
