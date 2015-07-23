@@ -78,8 +78,8 @@
         android:layout_below="@id/txt_placeholder_description"
         />
 
-    <EditText
-        android:id="@+id/txt_placeholder_habitat"
+    <AutoCompleteTextView
+        android:id="@+id/autocomplete_placeholder_habitat"
         android:hint="@string/edit_placeholder_hint_habitat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -94,8 +94,8 @@
         android:text="@string/edit_placeholder_label_labelnumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/txt_placeholder_habitat"
-        android:layout_below="@id/txt_placeholder_habitat"
+        android:layout_alignLeft="@id/autocomplete_placeholder_habitat"
+        android:layout_below="@id/autocomplete_placeholder_habitat"
         />
 
     <EditText

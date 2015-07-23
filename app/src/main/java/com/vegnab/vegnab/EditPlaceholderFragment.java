@@ -74,7 +74,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mIdentNamerId = 0, mIdentRefId = 0, mIdentMethodId = 0, mIdentCFId = 1;
     String mPlaceholderCode = null, mPlaceholderDescription = null, mPlaceholderHabitat = null,
             mPlaceholderLabelNumber = null, mPhIdentSppCode = null, mPhIdentSppDescr = null,
-            mStSearch = "",
+            mStSearchHabitat = "", mStSearch = "",
             mPhVisitName = null, mPhNamerName = null,
             mPhScribe = null, mPhLocText = null;
     Boolean mCodeWasShortened = false, mIdPlaceholder = false;
@@ -85,7 +85,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 //    private TextView mLblIdentNamer, mLblIdentRef, mLblIdentMethod, mLblIdentCF;
     private Spinner mIdentNamerSpinner, mIdentRefSpinner, mIdentMethodSpinner, mIdentCFSpinner;
     private TextView mLblIdentNamerSpinnerCover, mLblIdentRefSpinnerCover, mLblIdentMethodSpinnerCover;
-    SimpleCursorAdapter mIdentNamerAdapter, mIdentRefAdapter, mIdentMethodAdapter, mIdentCFAdapter;
+    SimpleCursorAdapter mPhHabitatAdapter, mIdentNamerAdapter, mIdentRefAdapter, mIdentMethodAdapter, mIdentCFAdapter;
 
 
     private ViewGroup mViewGroupIdent; // the set of views involved with identify-species
@@ -96,8 +96,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     ContentValues mValues = new ContentValues();
 
     private EditText mViewPlaceholderCode, mViewPlaceholderDescription,
-            mViewPlaceholderHabitat, mViewPlaceholderIdentifier, mPhIdentNotes;
-    AutoCompleteTextView mSppIdentAutoComplete;
+            mViewPlaceholderIdentifier, mPhIdentNotes;
+    AutoCompleteTextView mAutoCompletePlaceholderHabitat, mSppIdentAutoComplete;
 
     SelSppIdentAdapter mSppIdentResultsAdapter;
     Cursor mSppIdentCursor;
@@ -141,6 +141,32 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         return f;
     }
 
+    //habitatTextWatcher
+    TextWatcher habitatTextWatcher = new TextWatcher() {
+        @Override
+        public void afterTextChanged(Editable s) {
+            // use this method; test length of string; e.g. 'count' of other methods does not give this length
+            //Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "'");
+            Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "', length: " + s.length());
+            mStSearchHabitat = s.toString();
+            getLoaderManager().restartLoader(Loaders.PLACEHOLDER_HABITATS, null, EditPlaceholderFragment.this);
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            // the 'count' characters beginning at 'start' are about to be replaced by new text with length 'after'
+            //Log.d(LOG_TAG, "beforeTextChanged, s: '" + s.toString() + "', start: " + start + ", count: " + count + ", after: " + after);
+            //
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            // the 'count' characters beginning at 'start' have just replaced old text that had length 'before'
+            //Log.d(LOG_TAG, "onTextChanged, s: '" + s.toString() + "', start: " + start + ", before: " + before + ", count: " + count);
+        }
+    };
+
+
     TextWatcher sppIdentTextWatcher = new TextWatcher() {
         @Override
         public void afterTextChanged(Editable s) {
@@ -150,7 +176,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mStSearch = s.toString();
             getLoaderManager().restartLoader(Loaders.PH_IDENT_SPECIES, null, EditPlaceholderFragment.this);
         }
-
 
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -260,9 +285,22 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mViewPlaceholderDescription.setOnFocusChangeListener(this);
         registerForContextMenu(mViewPlaceholderDescription); // enable long-press
 
-        mViewPlaceholderHabitat = (EditText) rootView.findViewById(R.id.txt_placeholder_habitat);
-        mViewPlaceholderHabitat.setOnFocusChangeListener(this);
-        registerForContextMenu(mViewPlaceholderHabitat); // enable long-press
+        mAutoCompletePlaceholderHabitat = (AutoCompleteTextView) rootView.findViewById(R.id.autocomplete_placeholder_habitat);
+        mPhHabitatAdapter = new SimpleCursorAdapter(getActivity(),
+                android.R.layout.simple_dropdown_item_1line, null,
+                new String[] {"Habitat"},
+                new int[] {android.R.id.text1}, 0);
+        mPhHabitatAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        mAutoCompletePlaceholderHabitat.setAdapter(mPhHabitatAdapter);
+//                mIdentSppAdapter = new SimpleCursorAdapter(getActivity(),
+//                android.R.layout.simple_dropdown_item_1line, null,
+//                new String[] {"MatchTxt"},
+//                new int[] {android.R.id.text1}, 0);
+//        mIdentSppAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        mAutoCompletePlaceholderHabitat.addTextChangedListener(habitatTextWatcher);
+        mAutoCompletePlaceholderHabitat.setOnFocusChangeListener(this);
+        mAutoCompletePlaceholderHabitat.setThreshold(1); // match from 1st character
+        registerForContextMenu(mAutoCompletePlaceholderHabitat); // enable long-press
 
         mViewPlaceholderIdentifier = (EditText) rootView.findViewById(R.id.txt_placeholder_labelnumber);
         mViewPlaceholderIdentifier.setOnFocusChangeListener(this);
@@ -657,9 +695,12 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
             case Loaders.PLACEHOLDER_HABITATS:
                 baseUri = ContentProvider_VegNab.SQL_URI;
-                select = "SELECT Habitat FROM PlaceHolders GROUP BY Habitat;";
+                select = "SELECT Habitat FROM PlaceHolders "
+                    + "WHERE ProjID = ? AND NamerID = ? AND  Habitat LIKE ? "
+                    + "GROUP BY Habitat;";
+                params = new String[] {"" + mPhProjId, "" + mPhNamerId, mStSearchHabitat + "%"};
                 cl = new CursorLoader(getActivity(), baseUri,
-                        null, select, null, null);
+                        null, select, params, null);
                 break;
 
             case Loaders.PH_IDENT_NAMERS:
@@ -728,7 +769,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     //				mPlaceholderId = c.getLong(c.getColumnIndexOrThrow("_id"));
                     mViewPlaceholderCode.setText(c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
                     mViewPlaceholderDescription.setText(c.getString(c.getColumnIndexOrThrow("Description")));
-                    mViewPlaceholderHabitat.setText(c.getString(c.getColumnIndexOrThrow("Habitat")));
+                    mAutoCompletePlaceholderHabitat.setText(c.getString(c.getColumnIndexOrThrow("Habitat")));
                     mViewPlaceholderIdentifier.setText(c.getString(c.getColumnIndexOrThrow("LabelNum")));
     //				mPhVisitId = c.getLong(c.getColumnIndexOrThrow("VisitIdWhereFirstFound"));
     //				mPhProjId = c.getLong(c.getColumnIndexOrThrow("ProjID"));
@@ -772,13 +813,18 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 break;
 
             case Loaders.PLACEHOLDER_HABITATS:
-                mPreviouslyEnteredHabitats.clear();
-                while (c.moveToNext()) {
-                    Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("Habitat")));
-                    mPreviouslyEnteredHabitats.add(c.getString(c.getColumnIndexOrThrow("Habitat")));
+                if (rowCt > 0) {
+                    mPhHabitatAdapter.setStringConversionColumn(c.getColumnIndexOrThrow("Habitat"));
+//                mSppIdentCursor = c; // save a global reference
+                    mPhHabitatAdapter.swapCursor(c);
                 }
-                Log.d(LOG_TAG, "onLoadFinished, number of items in mPreviouslyEnteredHabitats: " + mPreviouslyEnteredHabitats.size());
-                Log.d(LOG_TAG, "onLoadFinished, items in mPreviouslyEnteredHabitats: " + mPreviouslyEnteredHabitats.toString());
+//                mPreviouslyEnteredHabitats.clear();
+//                while (c.moveToNext()) {
+//                    Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("Habitat")));
+//                    mPreviouslyEnteredHabitats.add(c.getString(c.getColumnIndexOrThrow("Habitat")));
+//                }
+//                Log.d(LOG_TAG, "onLoadFinished, number of items in mPreviouslyEnteredHabitats: " + mPreviouslyEnteredHabitats.size());
+//                Log.d(LOG_TAG, "onLoadFinished, items in mPreviouslyEnteredHabitats: " + mPreviouslyEnteredHabitats.toString());
                 break;
 
             case Loaders.PH_IDENT_NAMERS:
@@ -867,8 +913,10 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 // Swap the new cursor in.
                 // The framework will take care of closing the old cursor once we return.
 //                mIdentSppAdapter.setStringConversionColumn(c.getColumnIndexOrThrow("MatchTxt"));
-                mSppIdentCursor = c; // save a global reference
-                mSppIdentResultsAdapter.swapCursor(c);
+                if (rowCt > 0) {
+                    mSppIdentCursor = c; // save a global reference
+                    mSppIdentResultsAdapter.swapCursor(c);
+                }
 //                if (rowCt == 0) { // would not happen unless tables are hacked & items deleted
 //                    mIdentCFSpinner.setEnabled(false);
 //                } else {
@@ -906,8 +954,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 break;
 
             case Loaders.PLACEHOLDER_HABITATS:
-                Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_HABITATS.");
-    //			don't need to do anything here, no cursor adapter
+                mPhHabitatAdapter.swapCursor(null);
                 break;
 
             case Loaders.PH_IDENT_NAMERS:
@@ -1070,7 +1117,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mValues.put("Description", stringPlaceholderDescription); // Description is OK, store it
 
         // Habitat is optional, put as-is or Null if missing
-        String stringHabitat = mViewPlaceholderHabitat.getText().toString().trim();
+        String stringHabitat = mAutoCompletePlaceholderHabitat.getText().toString().trim();
         if (stringHabitat.length() == 0) {
             mValues.putNull("Habitat");
         } else {
@@ -1297,7 +1344,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             switch (v.getId()) {
             case R.id.txt_placeholder_code:
             case R.id.txt_placeholder_description:
-            case R.id.txt_placeholder_habitat:
+            case R.id.autocomplete_placeholder_habitat:
             case R.id.txt_placeholder_labelnumber:
                 mValidationLevel = Validation.QUIET; // save if possible, but notify minimally
                 int numUpdated = savePlaceholderRecord();
@@ -1324,7 +1371,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         case R.id.txt_placeholder_description:
             inflater.inflate(R.menu.context_placeholder_description, menu);
             break;
-        case R.id.txt_placeholder_habitat:
+        case R.id.autocomplete_placeholder_habitat:
             inflater.inflate(R.menu.context_placeholder_habitat, menu);
             break;
         case R.id.txt_placeholder_labelnumber:
