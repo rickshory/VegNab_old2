@@ -100,6 +100,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     AutoCompleteTextView mSppIdentAutoComplete;
 
     SelSppIdentAdapter mSppIdentResultsAdapter;
+    Cursor mSppIdentCursor;
 
     SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     SimpleDateFormat mTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
@@ -150,6 +151,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             getLoaderManager().restartLoader(Loaders.PH_IDENT_SPECIES, null, EditPlaceholderFragment.this);
         }
 
+
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             // the 'count' characters beginning at 'start' are about to be replaced by new text with length 'after'
@@ -161,10 +163,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             // the 'count' characters beginning at 'start' have just replaced old text that had length 'before'
             //Log.d(LOG_TAG, "onTextChanged, s: '" + s.toString() + "', start: " + start + ", before: " + before + ", count: " + count);
-
         }
     };
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -360,7 +360,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mSppIdentAutoComplete = (AutoCompleteTextView) rootView.findViewById(R.id.autocomplete_ph_ident_spp);
         mSppIdentResultsAdapter = new SelSppIdentAdapter(getActivity(),
                 R.layout.list_spp_search_item, null, 0);
-        
+
         /*mAdapter.setCursorToStringConverter(new CursorToStringConverter() {
 
     @Override
@@ -379,6 +379,19 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 //                new int[] {android.R.id.text1}, 0);
 //        mIdentSppAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         mSppIdentAutoComplete.setAdapter(mSppIdentResultsAdapter);
+//        mSppIdentAutoComplete.setOnClickListener(mSppIdentClickListener);
+        mSppIdentAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                mSppIdentCursor.moveToPosition(position);
+//                String stItem = mSppIdentResultsAdapter.getItem(position).toString();
+                String stItem = mSppIdentCursor.getString(mSppIdentCursor.getColumnIndexOrThrow("MatchTxt"));
+                mSppIdentAutoComplete.setText(stItem);
+            }
+        });
+
         mSppIdentAutoComplete.setThreshold(1); // see if search from 1st char is too slow
 //        mSppIdentAutoComplete.setAdapter(mIdentSppAdapter);
         mSppIdentAutoComplete.addTextChangedListener(sppIdentTextWatcher);
@@ -854,6 +867,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 // Swap the new cursor in.
                 // The framework will take care of closing the old cursor once we return.
 //                mIdentSppAdapter.setStringConversionColumn(c.getColumnIndexOrThrow("MatchTxt"));
+                mSppIdentCursor = c; // save a global reference
                 mSppIdentResultsAdapter.swapCursor(c);
 //                if (rowCt == 0) { // would not happen unless tables are hacked & items deleted
 //                    mIdentCFSpinner.setEnabled(false);
