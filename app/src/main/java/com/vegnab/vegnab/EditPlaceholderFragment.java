@@ -85,7 +85,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 //    private TextView mLblIdentNamer, mLblIdentRef, mLblIdentMethod, mLblIdentCF;
     private Spinner mIdentNamerSpinner, mIdentRefSpinner, mIdentMethodSpinner, mIdentCFSpinner;
     private TextView mLblIdentNamerSpinnerCover, mLblIdentRefSpinnerCover, mLblIdentMethodSpinnerCover;
-    SimpleCursorAdapter mIdentNamerAdapter, mIdentRefAdapter, mIdentMethodAdapter, mIdentCFAdapter, mIdentSppAdapter;
+    SimpleCursorAdapter mIdentNamerAdapter, mIdentRefAdapter, mIdentMethodAdapter, mIdentCFAdapter;
 
 
     private ViewGroup mViewGroupIdent; // the set of views involved with identify-species
@@ -98,6 +98,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     private EditText mViewPlaceholderCode, mViewPlaceholderDescription,
             mViewPlaceholderHabitat, mViewPlaceholderIdentifier, mPhIdentNotes;
     AutoCompleteTextView mSppIdentAutoComplete;
+
+    SelSppIdentAdapter mSppIdentResultsAdapter;
 
     SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     SimpleDateFormat mTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
@@ -356,13 +358,29 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         registerForContextMenu(mIdentCFSpinner); // enable long-press
 
         mSppIdentAutoComplete = (AutoCompleteTextView) rootView.findViewById(R.id.autocomplete_ph_ident_spp);
-        mIdentSppAdapter = new SimpleCursorAdapter(getActivity(),
-                android.R.layout.simple_dropdown_item_1line, null,
-                new String[] {"MatchTxt"},
-                new int[] {android.R.id.text1}, 0);
-        mIdentSppAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        mSppIdentResultsAdapter = new SelSppIdentAdapter(getActivity(),
+                R.layout.list_spp_search_item, null, 0);
+        
+        /*mAdapter.setCursorToStringConverter(new CursorToStringConverter() {
+
+    @Override
+    public CharSequence convertToString(Cursor c) {
+
+        return c.getString(c.getColumnIndexOrThrow(DbConstants.Tags.KEY_TAG));
+    }
+});*/
+        /*        mSppIdentResultsAdapter
+        mSppResultsAdapter = new SelSppItemAdapter(getActivity(),
+                R.layout.list_spp_search_item, null, 0);
+        setListAdapter(mSppResultsAdapter);*/
+//        mIdentSppAdapter = new SimpleCursorAdapter(getActivity(),
+//                android.R.layout.simple_dropdown_item_1line, null,
+//                new String[] {"MatchTxt"},
+//                new int[] {android.R.id.text1}, 0);
+//        mIdentSppAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        mSppIdentAutoComplete.setAdapter(mSppIdentResultsAdapter);
         mSppIdentAutoComplete.setThreshold(1); // see if search from 1st char is too slow
-        mSppIdentAutoComplete.setAdapter(mIdentSppAdapter);
+//        mSppIdentAutoComplete.setAdapter(mIdentSppAdapter);
         mSppIdentAutoComplete.addTextChangedListener(sppIdentTextWatcher);
         // try to turn off spell check, for scientific names
         mSppIdentAutoComplete.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
@@ -835,8 +853,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             case Loaders.PH_IDENT_SPECIES:
                 // Swap the new cursor in.
                 // The framework will take care of closing the old cursor once we return.
-                mIdentSppAdapter.setStringConversionColumn(c.getColumnIndexOrThrow("MatchTxt"));
-                mIdentSppAdapter.swapCursor(c);
+//                mIdentSppAdapter.setStringConversionColumn(c.getColumnIndexOrThrow("MatchTxt"));
+                mSppIdentResultsAdapter.swapCursor(c);
 //                if (rowCt == 0) { // would not happen unless tables are hacked & items deleted
 //                    mIdentCFSpinner.setEnabled(false);
 //                } else {
@@ -895,7 +913,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 break;
 
             case Loaders.PH_IDENT_SPECIES:
-                mIdentSppAdapter.swapCursor(null);
+                mSppIdentResultsAdapter.swapCursor(null);
                 break;
         }
     }
