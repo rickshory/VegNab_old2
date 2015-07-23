@@ -361,9 +361,11 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 new String[] {"MatchTxt"},
                 new int[] {android.R.id.text1}, 0);
         mIdentSppAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
-        mSppIdentAutoComplete.setThreshold(2); // try 2 characters
+        mSppIdentAutoComplete.setThreshold(1); // see if search from 1st char is too slow
         mSppIdentAutoComplete.setAdapter(mIdentSppAdapter);
         mSppIdentAutoComplete.addTextChangedListener(sppIdentTextWatcher);
+        // try to turn off spell check, for scientific names
+        mSppIdentAutoComplete.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 
         mPhIdentNotes = (EditText) rootView.findViewById(R.id.txt_ph_ident_notes);
 
