@@ -696,6 +696,9 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                              setSpinnerSelection(mIdentMethodSpinner, c.getLong(c.getColumnIndexOrThrow("IdMethodId")));
                              mIdentMethodSpinner.bringToFront();
                              setSpinnerSelection(mIdentCFSpinner, c.getLong(c.getColumnIndexOrThrow("IdLevelId")));
+                             if (!(c.isNull(c.getColumnIndexOrThrow("IdNotes")))) {
+                                 mPhIdentNotes.setText(c.getString(c.getColumnIndexOrThrow("IdNotes")));
+                             }//IdNotes
                          }
                     }
                 } else { // no record to edit yet, set up new record
@@ -917,7 +920,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             }
             return false;
         }
-        if (!(stringPlaceholderCode.length() >= 2)) {
+        if (!(stringPlaceholderCode.length() >= 3)) {
             if (mValidationLevel > Validation.SILENT) {
                 stringProblem = c.getResources().getString(R.string.placeholder_validate_code_short);
                 if (mValidationLevel == Validation.QUIET) {
@@ -989,15 +992,60 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             return false;
         }
 
+        if (!(stringPlaceholderDescription.length() >= 3)) {
+            if (mValidationLevel > Validation.SILENT) {
+                stringProblem = c.getResources().getString(R.string.placeholder_validate_description_short);
+                if (mValidationLevel == Validation.QUIET) {
+                    Toast.makeText(this.getActivity(),
+                            stringProblem,
+                            Toast.LENGTH_LONG).show();
+                }
+                if (mValidationLevel == Validation.CRITICAL) {
+                    flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
+                    flexErrDlg.show(getFragmentManager(), "frg_err_ph_drscr_short");
+                    mViewPlaceholderDescription.requestFocus();
+                }
+            }
+            return false;
+        }
+
         mValues.put("Description", stringPlaceholderDescription); // Description is OK, store it
 
         // Habitat is optional, put as-is or Null if missing
         String stringHabitat = mAutoCompletePlaceholderHabitat.getText().toString().trim();
         if (stringHabitat.length() == 0) {
-            mValues.putNull("Habitat");
-        } else {
-            mValues.put("Habitat", stringHabitat);
+            if (mValidationLevel > Validation.SILENT) {
+                stringProblem = c.getResources().getString(R.string.placeholder_validate_habitat_none);
+                if (mValidationLevel == Validation.QUIET) {
+                    Toast.makeText(this.getActivity(),
+                            stringProblem,
+                            Toast.LENGTH_LONG).show();
+                }
+                if (mValidationLevel == Validation.CRITICAL) {
+                    flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
+                    flexErrDlg.show(getFragmentManager(), "frg_err_ph_habitat_none");
+                    mAutoCompletePlaceholderHabitat.requestFocus();
+                }
+            }
+            return false;
         }
+        if (!(stringHabitat.length() >= 3)) {
+            if (mValidationLevel > Validation.SILENT) {
+                stringProblem = c.getResources().getString(R.string.placeholder_validate_habitat_short);
+                if (mValidationLevel == Validation.QUIET) {
+                    Toast.makeText(this.getActivity(),
+                            stringProblem,
+                            Toast.LENGTH_LONG).show();
+                }
+                if (mValidationLevel == Validation.CRITICAL) {
+                    flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
+                    flexErrDlg.show(getFragmentManager(), "frg_err_ph_habitat_short");
+                    mAutoCompletePlaceholderHabitat.requestFocus();
+                }
+            }
+            return false;
+        }
+        mValues.put("Habitat", stringHabitat);
 
         // LabelNum is optional, put as-is or Null if missing
         String stringLabelNum = mViewPlaceholderIdentifier.getText().toString().trim();
@@ -1007,8 +1055,33 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mValues.put("LabelNum", stringLabelNum);
         }
 
+        // following ident components are only serviced on an Update, record ID != 0,
+        // when in Ident mode
+        if ((mIdPlaceholder) && (mPlaceholderId != 0)) {
+            // this will always be an Update, not a New Record
+            // continue if there is a species code and it is like an NRCS code
+            String sppCode, sppDescr = null,
+                    sppIdent = mSppIdentAutoComplete.getText().toString().trim();
+            // if exists, will usually be combined code & sciname, like "JUCO5: Juniperus communis..."
+            if (sppIdent.contains(":")) {
+                String[] segs = sppIdent.split(":");
+                sppCode = segs[0];
+                sppDescr = segs[1].trim();
+            } else { // allow a raw NRCS code
+                sppCode = sppIdent;
+            }
+            if (sppCode.matches(VNRegex.NRCS_CODE)) {
 
-
+            } else { // code is not valid, null out all the ident fields
+                mValues.putNull("IdSppCode");
+                mValues.putNull("IdSppDescription");
+                mValues.putNull("IdNamerID");
+                mValues.putNull("IdRefID");
+                mValues.putNull("IdMethodID");
+                mValues.putNull("IdLevelID");
+                mValues.putNull("IdNotes");
+            }
+        }
         return true;
     }
 

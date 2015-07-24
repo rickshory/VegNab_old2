@@ -305,7 +305,9 @@
     <string name="placeholder_validate_code_bad">Code cannot be like an NRCS code</string>
     <string name="placeholder_validate_code_dup">Duplicate Code, already used.</string>
     <string name="placeholder_validate_description_none">Need a Description for this Placeholder, long-press for more info</string>
+    <string name="placeholder_validate_description_short">Description must be at least 3 characters</string>
     <string name="placeholder_validate_habitat_none">Need a Habitat for this Placeholder, long-press for more info</string>
+    <string name="placeholder_validate_habitat_short">Habitat must be at least 3 characters</string>
 
     <string name="ph_pix_grid_pic_button_message">New Picture</string>
 
