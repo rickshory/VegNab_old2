@@ -469,7 +469,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         // fire off loaders that depend on layout being ready to receive results
         getLoaderManager().initLoader(Loaders.PLACEHOLDER_TO_EDIT, null, this);
         getLoaderManager().initLoader(Loaders.PLACEHOLDERS_EXISTING, null, this); // Any existing placeholders
-//        getLoaderManager().initLoader(Loaders.PLACEHOLDER_BACKSTORY, null, this); // text of other fields
         // loaders for species identification items
         getLoaderManager().initLoader(Loaders.PH_IDENT_NAMERS, null, this);
         getLoaderManager().initLoader(Loaders.PH_IDENT_REFS, null, this);
@@ -681,18 +680,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 //					null, select, new String[] { "" + mPhVisitId }, null);
 //			break;
 
-            case Loaders.PLACEHOLDER_BACKSTORY:
-                baseUri = ContentProvider_VegNab.SQL_URI;
-                select = "SELECT Visits._id, Visits.VisitName, Visits.ProjID, Locations._id AS LocID, "
-                        + "Locations.Latitude, Locations.Longitude, Locations.Accuracy, "
-                        + "Visits.NamerID, Namers.NamerName, Visits.Scribe "
-                        + "FROM (Visits LEFT JOIN Namers ON Visits.NamerID = Namers._id) "
-                        + "LEFT JOIN Locations ON Visits.RefLocID = Locations._id "
-                        + "WHERE (((Visits._id)=?));";
-                cl = new CursorLoader(getActivity(), baseUri,
-                        null, select, new String[] { "" + mPhVisitId }, null);
-                break;
-
             case Loaders.PLACEHOLDER_HABITATS:
                 baseUri = ContentProvider_VegNab.SQL_URI;
                 select = "SELECT Min(_id) AS _id, Habitat FROM PlaceHolders "
@@ -796,21 +783,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     //				mPhNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
     //			}
     //			break;
-
-            case Loaders.PLACEHOLDER_BACKSTORY:
-                Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_BACKSTORY, records: " + c.getCount());
-                if (c.moveToFirst()) {
-                    mPhVisitName = c.getString(c.getColumnIndexOrThrow("VisitName"));
-                    mPhProjId = c.getLong(c.getColumnIndexOrThrow("ProjID"));
-                    mPhLocId = c.getLong(c.getColumnIndexOrThrow("LocID"));
-                    mPhLocText = "" + c.getString(c.getColumnIndexOrThrow("Latitude"))
-                        + "," + c.getString(c.getColumnIndexOrThrow("Longitude"))
-                        + "\naccuracy " + c.getString(c.getColumnIndexOrThrow("Accuracy")) + "m";
-                    mPhNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
-                    mPhNamerName = c.getString(c.getColumnIndexOrThrow("NamerName"));
-                    mPhScribe = c.getString(c.getColumnIndexOrThrow("Scribe"));
-                }
-                break;
 
             case Loaders.PLACEHOLDER_HABITATS:
 //                if (rowCt > 0) {
@@ -947,11 +919,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     //			Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_PROJ_NAMER.");
     ////			don't need to do anything here, no cursor adapter
     //			break;
-
-            case Loaders.PLACEHOLDER_BACKSTORY:
-                Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_BACKSTORY.");
-    //			don't need to do anything here, no cursor adapter
-                break;
 
             case Loaders.PLACEHOLDER_HABITATS:
                 mPhHabitatAdapter.swapCursor(null);
