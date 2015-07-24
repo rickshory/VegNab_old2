@@ -671,15 +671,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                         new String[] { "" + mPhProjId, "" + mPhNamerId, "" + mPlaceholderId}, null);
                 break;
 
-//		case Loaders.PLACEHOLDER_PROJ_NAMER:
-//			baseUri = ContentProvider_VegNab.SQL_URI;
-//			select = "SELECT Visits.ProjID, Visits.NamerID "
-//					+ "FROM Visits "
-//					+ "WHERE Visits._id=?;";
-//			cl = new CursorLoader(getActivity(), baseUri,
-//					null, select, new String[] { "" + mPhVisitId }, null);
-//			break;
-
             case Loaders.PLACEHOLDER_HABITATS:
                 baseUri = ContentProvider_VegNab.SQL_URI;
                 select = "SELECT Min(_id) AS _id, Habitat FROM PlaceHolders "
@@ -775,14 +766,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 Log.d(LOG_TAG, "onLoadFinished, number of items in mExistingPlaceholderCodes: " + mExistingPlaceholderCodes.size());
                 Log.d(LOG_TAG, "onLoadFinished, items in mExistingPlaceholderCodes: " + mExistingPlaceholderCodes.toString());
                 break;
-
-    //		case Loaders.PLACEHOLDER_PROJ_NAMER:
-    //			Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PROJ_NAMER, records: " + c.getCount());
-    //			if (c.moveToFirst()) {
-    //				mPhProjId = c.getLong(c.getColumnIndexOrThrow("ProjID"));
-    //				mPhNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
-    //			}
-    //			break;
 
             case Loaders.PLACEHOLDER_HABITATS:
 //                if (rowCt > 0) {
@@ -914,11 +897,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDERS_EXISTING.");
     //			don't need to do anything here, no cursor adapter
                 break;
-
-    //		case Loaders.PLACEHOLDER_PROJ_NAMER:
-    //			Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_PROJ_NAMER.");
-    ////			don't need to do anything here, no cursor adapter
-    //			break;
 
             case Loaders.PLACEHOLDER_HABITATS:
                 mPhHabitatAdapter.swapCursor(null);

@@ -80,13 +80,12 @@ public final class VNContract {
         // in Edit Placeholder
         public static final int PLACEHOLDER_TO_EDIT = 91; // The current placeholder
         public static final int PLACEHOLDERS_EXISTING = 92; // The current placeholder
-        public static final int PLACEHOLDER_PROJ_NAMER = 93; // projectID and NamerID from the Visit
-        public static final int PLACEHOLDER_HABITATS = 94; // Recall these as options to re-select
-        public static final int PH_IDENT_NAMERS = 95; // For spinner
-        public static final int PH_IDENT_REFS = 96; // For spinner
-        public static final int PH_IDENT_METHODS = 97; // For spinner
-        public static final int PH_IDENT_CONFIDENCS = 98; // For spinner
-        public static final int PH_IDENT_SPECIES = 99; // For auto complete
+        public static final int PLACEHOLDER_HABITATS = 93; // Recall these as options to re-select
+        public static final int PH_IDENT_NAMERS = 94; // For spinner
+        public static final int PH_IDENT_REFS = 95; // For spinner
+        public static final int PH_IDENT_METHODS = 96; // For spinner
+        public static final int PH_IDENT_CONFIDENCS = 97; // For spinner
+        public static final int PH_IDENT_SPECIES = 98; // For auto complete
 
         // in Placeholder Pictures Grid
         public static final int PLACEHOLDER_OF_PIX = 110; // The current placeholder
