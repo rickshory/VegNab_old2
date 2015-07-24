@@ -659,7 +659,45 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                     mViewPlaceholderCode.setText(c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
                     mViewPlaceholderDescription.setText(c.getString(c.getColumnIndexOrThrow("Description")));
                     mAutoCompletePlaceholderHabitat.setText(c.getString(c.getColumnIndexOrThrow("Habitat")));
-                    mViewPlaceholderIdentifier.setText(c.getString(c.getColumnIndexOrThrow("LabelNum")));
+                    if (!(c.isNull(c.getColumnIndexOrThrow("LabelNum")))) {
+                        mViewPlaceholderIdentifier.setText(c.getString(c.getColumnIndexOrThrow("LabelNum")));
+                    }
+
+                    if (c.isNull(c.getColumnIndexOrThrow("IdSppCode"))) {
+                        // absence of this code means a Placeholder is NOT identified, use defaults
+                        setSpinnerSelectionFromDefault(mIdentNamerSpinner);
+                        setSpinnerSelectionFromDefault(mIdentRefSpinner);
+                        setSpinnerSelectionFromDefault(mIdentMethodSpinner);
+                        setSpinnerSelectionFromDefault(mIdentCFSpinner);
+                    } else { // "IdSppCode" not null
+                        // presence of this code is the essential criteria that a Placeholder is identified
+                        // however, the other fields must be present or the ident is not valid
+                         if ((c.isNull(c.getColumnIndexOrThrow("IdNamerId"))) ||
+                                 (c.isNull(c.getColumnIndexOrThrow("IdRefId"))) ||
+                                 (c.isNull(c.getColumnIndexOrThrow("IdMethodId"))) ||
+                                 (c.isNull(c.getColumnIndexOrThrow("IdLevelId")))) {
+                             // do not fill in code, will null other fields on next save
+                             mSppIdentAutoComplete.setText("");
+                             setSpinnerSelectionFromDefault(mIdentNamerSpinner);
+                             setSpinnerSelectionFromDefault(mIdentRefSpinner);
+                             setSpinnerSelectionFromDefault(mIdentMethodSpinner);
+                             setSpinnerSelectionFromDefault(mIdentCFSpinner);
+                         } else { // fill in the code, and other fields, from saved values
+                             String spp = c.getString(c.getColumnIndexOrThrow("IdSppCode"));
+                             // there will normally be a Description, but not required
+                             if (!(c.isNull(c.getColumnIndexOrThrow("IdSppDescription")))) {
+                                 spp = spp + ": " + (c.getString(c.getColumnIndexOrThrow("IdSppDescription")));
+                             }
+                             mSppIdentAutoComplete.setText(spp);
+                             setSpinnerSelection(mIdentNamerSpinner, c.getLong(c.getColumnIndexOrThrow("IdNamerId")));
+                             mIdentNamerSpinner.bringToFront();
+                             setSpinnerSelection(mIdentRefSpinner, c.getLong(c.getColumnIndexOrThrow("IdRefId")));
+                             mIdentRefSpinner.bringToFront();
+                             setSpinnerSelection(mIdentMethodSpinner, c.getLong(c.getColumnIndexOrThrow("IdMethodId")));
+                             mIdentMethodSpinner.bringToFront();
+                             setSpinnerSelection(mIdentCFSpinner, c.getLong(c.getColumnIndexOrThrow("IdLevelId")));
+                         }
+                    }
                 } else { // no record to edit yet, set up new record
                     mViewPlaceholderCode.setText(mPlaceholderCode);
                 }
