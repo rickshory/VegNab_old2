@@ -444,12 +444,6 @@ public class MainVNActivity extends ActionBarActivity
                 transaction.addToBackStack(null);
                 transaction.commit();
                 break;
-
-            case VNContract.PhActions.SAVE: // attempt to force-save the Placeholder information
-                break;
-
-            case VNContract.PhActions.CANCEL: // cancel creating the Placeholder
-                break;
         }
     }
 

@@ -299,10 +299,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         } else {
             p.setVisibility(View.GONE);
         }
-        Button s = (Button) rootView.findViewById(R.id.placeholder_save_button);
-        s.setOnClickListener(this);
-        Button c = (Button) rootView.findViewById(R.id.placeholder_cancel_button);
-        c.setOnClickListener(this);
+
         mBtnIdent = (Button) rootView.findViewById(R.id.ph_identify_button);
         mBtnIdent.setOnClickListener(this);
         // if more, loop through all the child items of the ViewGroup rootView and
@@ -502,34 +499,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onPlaceholderActionButtonClicked(PICTURES)'");
                 mButtonCallback.onPlaceholderActionButtonClicked(args);
                 Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onPlaceholderActionButtonClicked(PICTURES)'");
-                break;
-
-            case R.id.placeholder_save_button:
-                // create or update the Placeholder record in the database, if everything is valid
-                mValidationLevel = Validation.CRITICAL; // save if possible, and announce anything invalid
-                numUpdated = savePlaceholderRecord();
-                if (numUpdated == 0) {
-                    Log.d(LOG_TAG, "Failed to save record in onClick; mValues: " + mValues.toString());
-                } else {
-                    Log.d(LOG_TAG, "Saved record in onClick; mValues: " + mValues.toString());
-                }
-                if (numUpdated == 0) {
-                    break;
-                }
-                args.putInt(BUTTON_KEY, VNContract.PhActions.SAVE);
-                args.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
-                Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onPlaceholderActionButtonClicked(SAVE)'");
-                mButtonCallback.onPlaceholderActionButtonClicked(args);
-                Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onPlaceholderActionButtonClicked(SAVE)'");
-                break;
-
-            case R.id.placeholder_cancel_button:
-                Log.d(LOG_TAG, "in onClick, placeholder_cancel_button");
-                args.putInt(BUTTON_KEY, VNContract.PhActions.CANCEL);
-                args.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
-                Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
-                mButtonCallback.onPlaceholderActionButtonClicked(args);
-                Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
                 break;
 
             case R.id.ph_identify_button:

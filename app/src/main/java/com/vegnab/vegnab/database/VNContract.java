@@ -130,8 +130,6 @@ public final class VNContract {
     // putting them all together here allows consistent usage throughout
     public static abstract class PhActions {
         public static final int GO_TO_PICTURES = 0; // go to the show/take/edit photos screen
-        public static final int SAVE = 1; // attempt to force-save the Placeholder information
-        public static final int CANCEL = 2; // cancel creating the Placeholder
     }
 
     // inner class to define Validation levels
