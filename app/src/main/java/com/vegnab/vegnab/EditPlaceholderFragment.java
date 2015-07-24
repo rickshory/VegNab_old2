@@ -79,20 +79,16 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mPhScribe = null, mPhLocText = null;
     Boolean mCodeWasShortened = false, mIdPlaceholder = false;
     HashSet<String> mExistingPlaceholderCodes = new HashSet<String>();
-    HashSet<String> mPreviouslyEnteredHabitats = new HashSet<String>();
 
     private Button mBtnIdent;
-//    private TextView mLblIdentNamer, mLblIdentRef, mLblIdentMethod, mLblIdentCF;
     private Spinner mIdentNamerSpinner, mIdentRefSpinner, mIdentMethodSpinner, mIdentCFSpinner;
     private TextView mLblIdentNamerSpinnerCover, mLblIdentRefSpinnerCover, mLblIdentMethodSpinnerCover;
     SimpleCursorAdapter mPhHabitatAdapter, mIdentNamerAdapter, mIdentRefAdapter, mIdentMethodAdapter, mIdentCFAdapter;
-
 
     private ViewGroup mViewGroupIdent; // the set of views involved with identify-species
 
     Uri mUri;
     Uri mPlaceholdersUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "placeholders");
-    Uri mLocationsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "locations");
     ContentValues mValues = new ContentValues();
 
     private EditText mViewPlaceholderCode, mViewPlaceholderDescription,
@@ -112,15 +108,11 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     final static String ARG_PLACEHOLDER_DESCRIPTION = "placeholderDescription";
     final static String ARG_PLACEHOLDER_HABITAT = "placeholderHabitat";
     final static String ARG_PLACEHOLDER_LABELNUMBER = "placeholderLabelnumber";
-    final static String ARG_PH_PROJID = "phProjId";
-    final static String ARG_PH_VISITID = "phVisitId";
     final static String ARG_PH_VISIT_NAME = "phVisitName";
     final static String ARG_PH_LOCID = "phLocId";
     final static String ARG_PH_LOC_TEXT = "phLocText";
-    final static String ARG_PH_NAMERID = "phNamerId";
     final static String ARG_PH_NAMER_NAME = "phNamerName";
     final static String ARG_PH_SCRIBE = "phScribe";
-    final static String ARG_PLACEHOLDER_TIME = "phTimeStamp";
     final static String BUTTON_KEY = "buttonKey";
     final static String ARG_ID_PLACEHOLDER = "identifyPh";
     final static String ARG_IDENT_NAMER_ID = "identNamerId";
@@ -217,7 +209,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         FragmentManager fm = getActivity().getSupportFragmentManager();
-//		DialogFragment editProjDlg;
         switch (item.getItemId()) { // the Activity has first opportunity to handle these
         // any not handled come here to this Fragment
         case R.id.action_ph_photo:
@@ -254,10 +245,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mPlaceholderDescription = savedInstanceState.getString(ARG_PLACEHOLDER_DESCRIPTION);
             mPlaceholderHabitat = savedInstanceState.getString(ARG_PLACEHOLDER_HABITAT);
             mPlaceholderLabelNumber = savedInstanceState.getString(ARG_PLACEHOLDER_LABELNUMBER);
-//			mPhProjId = savedInstanceState.getLong(ARG_PH_PROJID, 0);
-//			mPhVisitId = savedInstanceState.getLong(ARG_PH_VISITID, 0);
             mPhLocId = savedInstanceState.getLong(ARG_PH_LOCID, 0);
-//			mPhNamerId = savedInstanceState.getLong(ARG_PH_NAMERID, 0);
             mPhVisitName = savedInstanceState.getString(ARG_PH_VISIT_NAME);
             mPhLocText = savedInstanceState.getString(ARG_PH_LOC_TEXT);
             mPhNamerName = savedInstanceState.getString(ARG_PH_NAMER_NAME);
@@ -271,7 +259,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             Log.d(LOG_TAG, "In onCreateView, retrieved mPlaceholderId: " + mPlaceholderId);
             Log.d(LOG_TAG, "In onCreateView, retrieved mPlaceholderCode: " + mPlaceholderCode);
             Log.d(LOG_TAG, "In onCreateView, retrieved mPhVisitId: " + mPhVisitId);
-//			mCurLocation = savedInstanceState.getParcelable(ARG_CUR_LOCATION);
         } else {
             Log.d(LOG_TAG, "In onCreateView, savedInstanceState == null, mPlaceholderId: " + mPlaceholderId);
         }
@@ -292,11 +279,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 new int[] {android.R.id.text1}, 0);
         mPhHabitatAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         mAutoCompletePlaceholderHabitat.setAdapter(mPhHabitatAdapter);
-//                mIdentSppAdapter = new SimpleCursorAdapter(getActivity(),
-//                android.R.layout.simple_dropdown_item_1line, null,
-//                new String[] {"MatchTxt"},
-//                new int[] {android.R.id.text1}, 0);
-//        mIdentSppAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         mAutoCompletePlaceholderHabitat.addTextChangedListener(habitatTextWatcher);
         mAutoCompletePlaceholderHabitat.setOnFocusChangeListener(this);
         mAutoCompletePlaceholderHabitat.setThreshold(1); // match from 1st character
@@ -328,7 +310,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
         // set up spinners
         // Namer spinner
-//        mLblIdentNamer = (TextView) rootView.findViewById(R.id.lbl_ph_ident_namer);
         mIdentNamerSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_namer);
         mIdentNamerSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
         mIdentNamerSpinner.setEnabled(false); // will enable when data ready
@@ -346,7 +327,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mLblIdentNamerSpinnerCover.setOnClickListener(this);
         registerForContextMenu(mLblIdentNamerSpinnerCover); // enable long-press
         // Ref spinner
-//        mLblIdentRef = (TextView) rootView.findViewById(R.id.lbl_ph_ident_ref);
         mIdentRefSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_ref);
         mIdentRefSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
         mIdentRefSpinner.setEnabled(false); // will enable when data ready
@@ -364,7 +344,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mLblIdentRefSpinnerCover.setOnClickListener(this);
         registerForContextMenu(mLblIdentRefSpinnerCover); // enable long-press
         // Method spinner
-//        mLblIdentMethod = (TextView) rootView.findViewById(R.id.lbl_ph_ident_method);
         mIdentMethodSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_method);
         mIdentMethodSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
         mIdentMethodSpinner.setEnabled(false); // will enable when data ready
@@ -382,7 +361,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mLblIdentMethodSpinnerCover.setOnClickListener(this);
         registerForContextMenu(mLblIdentMethodSpinnerCover); // enable long-press
         // CF spinner
-//        mLblIdentCF = (TextView) rootView.findViewById(R.id.lbl_ph_ident_cf);
         mIdentCFSpinner = (Spinner) rootView.findViewById(R.id.spn_ph_ident_cf);
         mIdentCFSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
         mIdentCFSpinner.setEnabled(false); // will enable when data ready
@@ -399,39 +377,19 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mSppIdentResultsAdapter = new SelSppIdentAdapter(getActivity(),
                 R.layout.list_spp_search_item, null, 0);
 
-        /*mAdapter.setCursorToStringConverter(new CursorToStringConverter() {
-
-    @Override
-    public CharSequence convertToString(Cursor c) {
-
-        return c.getString(c.getColumnIndexOrThrow(DbConstants.Tags.KEY_TAG));
-    }
-});*/
-        /*        mSppIdentResultsAdapter
-        mSppResultsAdapter = new SelSppItemAdapter(getActivity(),
-                R.layout.list_spp_search_item, null, 0);
-        setListAdapter(mSppResultsAdapter);*/
-//        mIdentSppAdapter = new SimpleCursorAdapter(getActivity(),
-//                android.R.layout.simple_dropdown_item_1line, null,
-//                new String[] {"MatchTxt"},
-//                new int[] {android.R.id.text1}, 0);
-//        mIdentSppAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         mSppIdentAutoComplete.setAdapter(mSppIdentResultsAdapter);
-//        mSppIdentAutoComplete.setOnClickListener(mSppIdentClickListener);
         mSppIdentAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 mSppIdentCursor.moveToPosition(position);
-//                String stItem = mSppIdentResultsAdapter.getItem(position).toString();
                 String stItem = mSppIdentCursor.getString(mSppIdentCursor.getColumnIndexOrThrow("MatchTxt"));
                 mSppIdentAutoComplete.setText(stItem);
             }
         });
 
         mSppIdentAutoComplete.setThreshold(1); // see if search from 1st char is too slow
-//        mSppIdentAutoComplete.setAdapter(mIdentSppAdapter);
         mSppIdentAutoComplete.addTextChangedListener(sppIdentTextWatcher);
         // try to turn off spell check, for scientific names
         mSppIdentAutoComplete.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
@@ -500,10 +458,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         outState.putString(ARG_PLACEHOLDER_DESCRIPTION, mPlaceholderDescription);
         outState.putString(ARG_PLACEHOLDER_HABITAT, mPlaceholderHabitat);
         outState.putString(ARG_PLACEHOLDER_LABELNUMBER, mPlaceholderLabelNumber);
-//		outState.putLong(ARG_PH_PROJID, mPhProjId);
-//		outState.putLong(ARG_PH_VISITID, mPhVisitId);
         outState.putLong(ARG_PH_LOCID, mPhLocId);
-//		outState.putLong(ARG_PH_NAMERID, mPhNamerId);
         outState.putString(ARG_PH_VISIT_NAME, mPhVisitName);
         outState.putString(ARG_PH_LOC_TEXT, mPhLocText);
         outState.putString(ARG_PH_NAMER_NAME, mPhNamerName);
@@ -541,11 +496,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                     flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
                     flexHlpDlg.show(getFragmentManager(), "frg_ph_pix_not_ready");
                     return;
-//                } else {
-//                    helpTitle = "Take Pictures";
-//                    helpMessage = "Not implemented yet, but this will allow you to photograph your plants";
-//                    flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-//                    flexHlpDlg.show(getFragmentManager(), "frg_ph_pix_ready");
                 }
                 args.putInt(BUTTON_KEY, VNContract.PhActions.GO_TO_PICTURES);
                 args.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
@@ -580,7 +530,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
                 mButtonCallback.onPlaceholderActionButtonClicked(args);
                 Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
-//                super.onBackPressed();
                 break;
 
             case R.id.ph_identify_button:
@@ -596,12 +545,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                     }
                 }
                 configureIdViews();
-//                args.putInt(BUTTON_KEY, VNContract.PhActions.CANCEL);
-//                args.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
-//                Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
-//                mButtonCallback.onPlaceholderActionButtonClicked(args);
-//                Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onPlaceholderActionButtonClicked(CANCEL)'");
-//                super.onBackPressed();
                 break;
 
             case R.id.lbl_ident_namer_spinner_cover:
@@ -744,14 +687,10 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             case Loaders.PLACEHOLDER_TO_EDIT:
                 Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_TO_EDIT, records: " + c.getCount());
                 if (c.moveToFirst()) {
-    //				mPlaceholderId = c.getLong(c.getColumnIndexOrThrow("_id"));
                     mViewPlaceholderCode.setText(c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
                     mViewPlaceholderDescription.setText(c.getString(c.getColumnIndexOrThrow("Description")));
                     mAutoCompletePlaceholderHabitat.setText(c.getString(c.getColumnIndexOrThrow("Habitat")));
                     mViewPlaceholderIdentifier.setText(c.getString(c.getColumnIndexOrThrow("LabelNum")));
-    //				mPhVisitId = c.getLong(c.getColumnIndexOrThrow("VisitIdWhereFirstFound"));
-    //				mPhProjId = c.getLong(c.getColumnIndexOrThrow("ProjID"));
-    //				mPhNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
                 } else { // no record to edit yet, set up new record
                     mViewPlaceholderCode.setText(mPlaceholderCode);
                 }
@@ -770,16 +709,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             case Loaders.PLACEHOLDER_HABITATS:
 //                if (rowCt > 0) {
                 mPhHabitatAdapter.setStringConversionColumn(c.getColumnIndexOrThrow("Habitat"));
-//                mSppIdentCursor = c; // save a global reference
                 mPhHabitatAdapter.swapCursor(c);
-//                }
-//                mPreviouslyEnteredHabitats.clear();
-//                while (c.moveToNext()) {
-//                    Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("Habitat")));
-//                    mPreviouslyEnteredHabitats.add(c.getString(c.getColumnIndexOrThrow("Habitat")));
-//                }
-//                Log.d(LOG_TAG, "onLoadFinished, number of items in mPreviouslyEnteredHabitats: " + mPreviouslyEnteredHabitats.size());
-//                Log.d(LOG_TAG, "onLoadFinished, items in mPreviouslyEnteredHabitats: " + mPreviouslyEnteredHabitats.toString());
                 break;
 
             case Loaders.PH_IDENT_NAMERS:
@@ -849,7 +779,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                     }
                     mIdentMethodSpinner.setEnabled(true);
                 }
-
                 break;
 
             case Loaders.PH_IDENT_CONFIDENCS:
@@ -872,12 +801,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                     mSppIdentCursor = c; // save a global reference
                     mSppIdentResultsAdapter.swapCursor(c);
                 }
-//                if (rowCt == 0) { // would not happen unless tables are hacked & items deleted
-//                    mIdentCFSpinner.setEnabled(false);
-//                } else {
-//                    mIdentCFSpinner.setSelection(0); // default is always 'no doubt...'
-//                    mIdentCFSpinner.setEnabled(true);
-//                }
                 break;
         }
     }
@@ -1272,15 +1195,9 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         return args;
     }
 
-
-
-
-
     @Override
     public void onNothingSelected(AdapterView<?> arg0) {
-//        setNamerSpinnerSelectionFromDefaultNamer();
     }
-
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
@@ -1403,11 +1320,4 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         return super.onContextItemSelected(item);
        }
     }
-
-//    // no Override
-//    public static void onBackPressed() {
-//        Log.d(LOG_TAG, "Placeholder, caught 'onBackPressed'");
-//    return;
-//    }
-
 }
