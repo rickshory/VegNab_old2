@@ -973,7 +973,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 
     @Override
     public void onNothingSelected(AdapterView<?> arg0) {
-        setNamerSpinnerSelectionFromDefaultNamer();
+//        setNamerSpinnerSelectionFromDefaultNamer();
     }
 
     @Override

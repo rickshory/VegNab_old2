@@ -469,7 +469,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         // fire off loaders that depend on layout being ready to receive results
         getLoaderManager().initLoader(Loaders.PLACEHOLDER_TO_EDIT, null, this);
         getLoaderManager().initLoader(Loaders.PLACEHOLDERS_EXISTING, null, this); // Any existing placeholders
-        getLoaderManager().initLoader(Loaders.PLACEHOLDER_BACKSTORY, null, this); // text of other fields
+//        getLoaderManager().initLoader(Loaders.PLACEHOLDER_BACKSTORY, null, this); // text of other fields
         // loaders for species identification items
         getLoaderManager().initLoader(Loaders.PH_IDENT_NAMERS, null, this);
         getLoaderManager().initLoader(Loaders.PH_IDENT_REFS, null, this);
@@ -813,11 +813,11 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 break;
 
             case Loaders.PLACEHOLDER_HABITATS:
-                if (rowCt > 0) {
-                    mPhHabitatAdapter.setStringConversionColumn(c.getColumnIndexOrThrow("Habitat"));
+//                if (rowCt > 0) {
+                mPhHabitatAdapter.setStringConversionColumn(c.getColumnIndexOrThrow("Habitat"));
 //                mSppIdentCursor = c; // save a global reference
-                    mPhHabitatAdapter.swapCursor(c);
-                }
+                mPhHabitatAdapter.swapCursor(c);
+//                }
 //                mPreviouslyEnteredHabitats.clear();
 //                while (c.moveToNext()) {
 //                    Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("Habitat")));
