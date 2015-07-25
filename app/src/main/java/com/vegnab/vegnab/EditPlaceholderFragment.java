@@ -74,9 +74,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mIdentNamerId = 0, mIdentRefId = 0, mIdentMethodId = 0, mIdentCFId = 1;
     String mPlaceholderCode = null, mPlaceholderDescription = null, mPlaceholderHabitat = null,
             mPlaceholderLabelNumber = null, mPhIdentSppCode = null, mPhIdentSppDescr = null,
-            mStSearchHabitat = "", mStSearch = "",
-            mPhVisitName = null, mPhNamerName = null,
-            mPhScribe = null, mPhLocText = null;
+            mPhIdentNotes = null,
+            mStSearchHabitat = "", mStSearch = "";
     Boolean mCodeWasShortened = false, mIdPlaceholder = false;
     HashSet<String> mExistingPlaceholderCodes = new HashSet<String>();
 
@@ -92,7 +91,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     ContentValues mValues = new ContentValues();
 
     private EditText mViewPlaceholderCode, mViewPlaceholderDescription,
-            mViewPlaceholderIdentifier, mPhIdentNotes;
+            mViewPlaceholderIdentifier, mViewPlaceholderIdentNotes;
     AutoCompleteTextView mAutoCompletePlaceholderHabitat, mSppIdentAutoComplete;
 
     SelSppIdentAdapter mSppIdentResultsAdapter;
@@ -108,17 +107,13 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     final static String ARG_PLACEHOLDER_DESCRIPTION = "placeholderDescription";
     final static String ARG_PLACEHOLDER_HABITAT = "placeholderHabitat";
     final static String ARG_PLACEHOLDER_LABELNUMBER = "placeholderLabelnumber";
-    final static String ARG_PH_VISIT_NAME = "phVisitName";
-    final static String ARG_PH_LOCID = "phLocId";
-    final static String ARG_PH_LOC_TEXT = "phLocText";
-    final static String ARG_PH_NAMER_NAME = "phNamerName";
-    final static String ARG_PH_SCRIBE = "phScribe";
     final static String BUTTON_KEY = "buttonKey";
     final static String ARG_ID_PLACEHOLDER = "identifyPh";
     final static String ARG_IDENT_NAMER_ID = "identNamerId";
     final static String ARG_IDENT_REF_ID = "identRefId";
     final static String ARG_IDENT_METHOD_ID = "identMethodId";
     final static String ARG_IDENT_CF_ID = "identCFId";
+    final static String ARG_IDENT_NOTES = "identNotes";
 
     OnButtonListener mButtonCallback; // declare the interface
     // declare that the container Activity must implement this interface
@@ -245,11 +240,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mPlaceholderDescription = savedInstanceState.getString(ARG_PLACEHOLDER_DESCRIPTION);
             mPlaceholderHabitat = savedInstanceState.getString(ARG_PLACEHOLDER_HABITAT);
             mPlaceholderLabelNumber = savedInstanceState.getString(ARG_PLACEHOLDER_LABELNUMBER);
-            mPhLocId = savedInstanceState.getLong(ARG_PH_LOCID, 0);
-            mPhVisitName = savedInstanceState.getString(ARG_PH_VISIT_NAME);
-            mPhLocText = savedInstanceState.getString(ARG_PH_LOC_TEXT);
-            mPhNamerName = savedInstanceState.getString(ARG_PH_NAMER_NAME);
-            mPhScribe = savedInstanceState.getString(ARG_PH_SCRIBE);
             mIdPlaceholder = savedInstanceState.getBoolean(ARG_ID_PLACEHOLDER);
             mIdentNamerId = savedInstanceState.getLong(ARG_IDENT_NAMER_ID, 0);
             mIdentRefId = savedInstanceState.getLong(ARG_IDENT_REF_ID, 0);
@@ -391,7 +381,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         // try to turn off spell check, for scientific names
         mSppIdentAutoComplete.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 
-        mPhIdentNotes = (EditText) rootView.findViewById(R.id.txt_ph_ident_notes);
+        mViewPlaceholderIdentNotes = (EditText) rootView.findViewById(R.id.txt_ph_ident_notes);
 
         // the views for identify-species, to show or hide as a group
         mViewGroupIdent = (ViewGroup) rootView.findViewById(R.id.ident_veiw_group);
@@ -455,11 +445,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         outState.putString(ARG_PLACEHOLDER_DESCRIPTION, mPlaceholderDescription);
         outState.putString(ARG_PLACEHOLDER_HABITAT, mPlaceholderHabitat);
         outState.putString(ARG_PLACEHOLDER_LABELNUMBER, mPlaceholderLabelNumber);
-        outState.putLong(ARG_PH_LOCID, mPhLocId);
-        outState.putString(ARG_PH_VISIT_NAME, mPhVisitName);
-        outState.putString(ARG_PH_LOC_TEXT, mPhLocText);
-        outState.putString(ARG_PH_NAMER_NAME, mPhNamerName);
-        outState.putString(ARG_PH_SCRIBE, mPhScribe);
         outState.putBoolean(ARG_ID_PLACEHOLDER, mIdPlaceholder);
         outState.putLong(ARG_IDENT_NAMER_ID, mIdentNamerId);
         outState.putLong(ARG_IDENT_REF_ID, mIdentRefId);
@@ -672,10 +657,44 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                     } else { // "IdSppCode" not null
                         // presence of this code is the essential criteria that a Placeholder is identified
                         // however, the other fields must be present or the ident is not valid
-                         if ((c.isNull(c.getColumnIndexOrThrow("IdNamerId"))) ||
-                                 (c.isNull(c.getColumnIndexOrThrow("IdRefId"))) ||
-                                 (c.isNull(c.getColumnIndexOrThrow("IdMethodId"))) ||
-                                 (c.isNull(c.getColumnIndexOrThrow("IdLevelId")))) {
+                        mPhIdentSppCode = c.getString(c.getColumnIndexOrThrow("IdSppCode"));
+                        if (c.isNull(c.getColumnIndexOrThrow("IdSppDescription"))) {
+                            mPhIdentSppDescr = null;
+                        } else {
+                            mPhIdentSppDescr = c.getString(c.getColumnIndexOrThrow("IdSppDescription"));
+                        }
+                        if (c.isNull(c.getColumnIndexOrThrow("IdNamerId"))) {
+                            mIdentNamerId = 0;
+                        } else {
+                            mIdentNamerId = c.getLong(c.getColumnIndexOrThrow("IdNamerId"));
+                        }
+                        if (c.isNull(c.getColumnIndexOrThrow("IdRefId"))) {
+                            mIdentRefId = 0;
+                        } else {
+                            mIdentRefId = c.getLong(c.getColumnIndexOrThrow("IdRefId"));
+                        }
+                        if (c.isNull(c.getColumnIndexOrThrow("IdMethodId"))) {
+                            mIdentMethodId = 0;
+                        } else {
+                            mIdentMethodId = c.getLong(c.getColumnIndexOrThrow("IdMethodId"));
+                        }
+                        if (c.isNull(c.getColumnIndexOrThrow("IdLevelId"))) {
+                            mIdentCFId = 0;
+                        } else {
+                            mIdentCFId = c.getLong(c.getColumnIndexOrThrow("IdLevelId"));
+                        }
+                        if (!(c.isNull(c.getColumnIndexOrThrow("IdNotes")))) {
+                            mViewPlaceholderIdentNotes.setText(c.getString(c.getColumnIndexOrThrow("IdNotes")));
+                        }
+                        if (c.isNull(c.getColumnIndexOrThrow("IdNotes"))) {
+                            mPhIdentNotes = null;
+                        } else {
+                            mPhIdentNotes = c.getString(c.getColumnIndexOrThrow("IdNotes"));
+                        }
+                         if ((mIdentNamerId == 0) ||
+                                 (mIdentRefId == 0) ||
+                                 (mIdentMethodId == 0) ||
+                                 (mIdentCFId == 0)) {
                              // do not fill in code, will null other fields on next save
                              mSppIdentAutoComplete.setText("");
                              setSpinnerSelectionFromDefault(mIdentNamerSpinner);
@@ -683,22 +702,22 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                              setSpinnerSelectionFromDefault(mIdentMethodSpinner);
                              setSpinnerSelectionFromDefault(mIdentCFSpinner);
                          } else { // fill in the code, and other fields, from saved values
-                             String spp = c.getString(c.getColumnIndexOrThrow("IdSppCode"));
+                             String spp = mPhIdentSppCode;
                              // there will normally be a Description, but not required
-                             if (!(c.isNull(c.getColumnIndexOrThrow("IdSppDescription")))) {
-                                 spp = spp + ": " + (c.getString(c.getColumnIndexOrThrow("IdSppDescription")));
+                             if (mPhIdentSppDescr != null) {
+                                 spp = spp + ": " + mPhIdentSppDescr;
                              }
                              mSppIdentAutoComplete.setText(spp);
-                             setSpinnerSelection(mIdentNamerSpinner, c.getLong(c.getColumnIndexOrThrow("IdNamerId")));
+                             setSpinnerSelection(mIdentNamerSpinner, mIdentNamerId);
                              mIdentNamerSpinner.bringToFront();
-                             setSpinnerSelection(mIdentRefSpinner, c.getLong(c.getColumnIndexOrThrow("IdRefId")));
+                             setSpinnerSelection(mIdentRefSpinner, mIdentRefId);
                              mIdentRefSpinner.bringToFront();
-                             setSpinnerSelection(mIdentMethodSpinner, c.getLong(c.getColumnIndexOrThrow("IdMethodId")));
+                             setSpinnerSelection(mIdentMethodSpinner, mIdentMethodId);
                              mIdentMethodSpinner.bringToFront();
-                             setSpinnerSelection(mIdentCFSpinner, c.getLong(c.getColumnIndexOrThrow("IdLevelId")));
+                             setSpinnerSelection(mIdentCFSpinner, mIdentCFId);
                              if (!(c.isNull(c.getColumnIndexOrThrow("IdNotes")))) {
-                                 mPhIdentNotes.setText(c.getString(c.getColumnIndexOrThrow("IdNotes")));
-                             }//IdNotes
+                                 mViewPlaceholderIdentNotes.setText(c.getString(c.getColumnIndexOrThrow("IdNotes")));
+                             }
                          }
                     }
                 } else { // no record to edit yet, set up new record
@@ -1059,20 +1078,27 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         // when in Ident mode
         if ((mIdPlaceholder) && (mPlaceholderId != 0)) {
             // this will always be an Update, not a New Record
-            // continue if there is a species code and it is like an NRCS code
-            String sppCode, sppDescr = null,
-                    sppIdent = mSppIdentAutoComplete.getText().toString().trim();
+            // continue if the species code is like an NRCS code
+            String sppIdent = mSppIdentAutoComplete.getText().toString().trim();
             // if exists, will usually be combined code & sciname, like "JUCO5: Juniperus communis..."
             if (sppIdent.contains(":")) {
                 String[] segs = sppIdent.split(":");
-                sppCode = segs[0];
-                sppDescr = segs[1].trim();
+                mPhIdentSppCode = segs[0];
+                mPhIdentSppDescr = segs[1].trim();
             } else { // allow a raw NRCS code
-                sppCode = sppIdent;
+                mPhIdentSppCode = sppIdent;
             }
-            if (sppCode.matches(VNRegex.NRCS_CODE)) {
+            mIdentNamerId = mIdentNamerSpinner.getSelectedItemId();
+            mIdentRefId = mIdentRefSpinner.getSelectedItemId();
+            mIdentMethodId = mIdentMethodSpinner.getSelectedItemId();
+            mIdentCFId = mIdentCFSpinner.getSelectedItemId();
 
-            } else { // code is not valid, null out all the ident fields
+            if ((!mPhIdentSppCode.matches(VNRegex.NRCS_CODE)) ||
+                    (mIdentNamerId == 0) || (mIdentNamerId == AdapterView.INVALID_ROW_ID) ||
+                    (mIdentRefId == 0) || (mIdentRefId == AdapterView.INVALID_ROW_ID) ||
+                    (mIdentMethodId == 0) || (mIdentMethodId == AdapterView.INVALID_ROW_ID) ||
+                    (mIdentCFId == 0) || (mIdentCFId == AdapterView.INVALID_ROW_ID)) {
+                // ident is not valid, null out all the ident fields
                 mValues.putNull("IdSppCode");
                 mValues.putNull("IdSppDescription");
                 mValues.putNull("IdNamerID");
@@ -1080,6 +1106,23 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 mValues.putNull("IdMethodID");
                 mValues.putNull("IdLevelID");
                 mValues.putNull("IdNotes");
+            } else { // put the values to update
+                mValues.put("IdSppCode", mPhIdentSppCode);
+                if (mPhIdentSppDescr == null) {
+                    mValues.putNull("IdSppDescription");
+                } else {
+                    mValues.put("IdSppDescription", mPhIdentSppDescr);
+                }
+                mValues.put("IdNamerID", mIdentNamerId);
+                mValues.put("IdRefID", mIdentRefId);
+                mValues.put("IdMethodID", mIdentMethodId);
+                mValues.put("IdLevelID", mIdentCFId);
+                mPhIdentNotes = mViewPlaceholderIdentNotes.getText().toString().trim();
+                if (mPhIdentNotes.length() == 0) {
+                    mValues.putNull("IdNotes");
+                } else {
+                    mValues.put("IdNotes", mPhIdentNotes);
+                }
             }
         }
         return true;
