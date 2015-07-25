@@ -1075,10 +1075,10 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         }
 
         // following ident components are only serviced on an Update, record ID != 0,
-        // when in Ident mode
+        // and when in Ident mode
         if ((mIdPlaceholder) && (mPlaceholderId != 0)) {
             // this will always be an Update, not a New Record
-            // continue if the species code is like an NRCS code
+            // continue if the species code is like an NRCS code...
             String sppIdent = mSppIdentAutoComplete.getText().toString().trim();
             // if exists, will usually be combined code & sciname, like "JUCO5: Juniperus communis..."
             if (sppIdent.contains(":")) {
@@ -1088,6 +1088,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             } else { // allow a raw NRCS code
                 mPhIdentSppCode = sppIdent;
             }
+            // ... and all the spinners are set
             mIdentNamerId = mIdentNamerSpinner.getSelectedItemId();
             mIdentRefId = mIdentRefSpinner.getSelectedItemId();
             mIdentMethodId = mIdentMethodSpinner.getSelectedItemId();
@@ -1106,6 +1107,23 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 mValues.putNull("IdMethodID");
                 mValues.putNull("IdLevelID");
                 mValues.putNull("IdNotes");
+                String identProblem = "unknown";
+                if (!mPhIdentSppCode.matches(VNRegex.NRCS_CODE)) {
+                    identProblem = "mPhIdentSppCode: " + mPhIdentSppCode;
+                }
+                if ((mIdentNamerId == 0) || (mIdentNamerId == AdapterView.INVALID_ROW_ID)) {
+                    identProblem = "mIdentNamerId: " + mIdentNamerId;
+                }
+                if ((mIdentRefId == 0) || (mIdentRefId == AdapterView.INVALID_ROW_ID)) {
+                    identProblem = "mIdentRefId: " + mIdentRefId;
+                }
+                if ((mIdentMethodId == 0) || (mIdentMethodId == AdapterView.INVALID_ROW_ID)) {
+                    identProblem = "mIdentMethodId: " + mIdentMethodId;
+                }
+                if ((mIdentCFId == 0) || (mIdentCFId == AdapterView.INVALID_ROW_ID)) {
+                    identProblem = "mIdentCFId: " + mIdentCFId;
+                }
+                Log.d(LOG_TAG, "invalid ident, " + identProblem);
             } else { // put the values to update
                 mValues.put("IdSppCode", mPhIdentSppCode);
                 if (mPhIdentSppDescr == null) {
