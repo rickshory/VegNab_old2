@@ -717,15 +717,16 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                              }
                              mSppIdentAutoComplete.setText(spp);
                              setSpinnerSelection(mIdentNamerSpinner, mIdentNamerId);
-                             mIdentNamerSpinner.bringToFront();
+                             mNamerViewGroup.bringChildToFront(mIdentNamerSpinner);
                              setSpinnerSelection(mIdentRefSpinner, mIdentRefId);
-                             mIdentRefSpinner.bringToFront();
+                             mRefViewGroup.bringChildToFront(mIdentRefSpinner);
                              setSpinnerSelection(mIdentMethodSpinner, mIdentMethodId);
-                             mIdentMethodSpinner.bringToFront();
+                             mMethodViewGroup.bringChildToFront(mIdentMethodSpinner);
                              setSpinnerSelection(mIdentCFSpinner, mIdentCFId);
                              if (!(c.isNull(c.getColumnIndexOrThrow("IdNotes")))) {
                                  mViewPlaceholderIdentNotes.setText(c.getString(c.getColumnIndexOrThrow("IdNotes")));
                              }
+
                          }
                     }
                 } else { // no record to edit yet, set up new record
@@ -760,12 +761,12 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                     if (rowCt == 1) { // only the "add new" record
                         mIdentNamerSpinner.setSelection(0);
                         // user sees '(add new)', blank TextView receives click;
-                        mLblIdentNamerSpinnerCover.bringToFront();
+                        mNamerViewGroup.bringChildToFront(mLblIdentNamerSpinnerCover);
                     } else {
                         if (sharedPref.contains(Prefs.DEFAULT_IDENT_NAMER_ID)) {
                             setSpinnerSelection(mIdentNamerSpinner, identNamerId);
                             // user can operate the spinner
-                            mIdentNamerSpinner.bringToFront();
+                            mNamerViewGroup.bringChildToFront(mIdentNamerSpinner);
                         }
                     }
                     mIdentNamerSpinner.setEnabled(true);
@@ -783,12 +784,12 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                     if (rowCt == 1) { // only the "add new" record
                         mIdentRefSpinner.setSelection(0);
                         // user sees '(add new)', blank TextView receives click;
-                        mLblIdentRefSpinnerCover.bringToFront();
+                        mRefViewGroup.bringChildToFront(mLblIdentRefSpinnerCover);
                     } else {
                         if (sharedPref.contains(Prefs.DEFAULT_IDENT_REF_ID)) {
                             setSpinnerSelection(mIdentRefSpinner, identRefId);
                             // user can operate the spinner
-                            mIdentRefSpinner.bringToFront();
+                            mRefViewGroup.bringChildToFront(mIdentRefSpinner);
                         }
                     }
                     mIdentRefSpinner.setEnabled(true);
@@ -806,12 +807,12 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                     if (rowCt == 1) { // only the "add new" record
                         mIdentMethodSpinner.setSelection(0);
                         // user sees '(add new)', blank TextView receives click;
-                        mLblIdentMethodSpinnerCover.bringToFront();
+                        mMethodViewGroup.bringChildToFront(mLblIdentMethodSpinnerCover);
                     } else {
                         if (sharedPref.contains(Prefs.DEFAULT_IDENT_REF_ID)) {
                             setSpinnerSelection(mIdentMethodSpinner, identMethodId);
                             // user can operate the spinner
-                            mIdentMethodSpinner.bringToFront();
+                            mMethodViewGroup.bringChildToFront(mIdentMethodSpinner);
                         }
                     }
                     mIdentMethodSpinner.setEnabled(true);
@@ -887,31 +888,38 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
     public void setSpinnerSelectionFromDefault(Spinner spn) {
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        ViewGroup vg = null; // a possible viewgroup that pairs a spinner with its cover
         TextView spnCover = null; // a possible cover for the spinner to receive clicks
         long itemId = 0; // if none yet, use _id = 0, generated in query as '(add new)'
         if (spn.getId() == mIdentNamerSpinner.getId()) {
             itemId = sharedPref.getLong(Prefs.DEFAULT_IDENT_NAMER_ID, 0);
+            vg = mNamerViewGroup;
             spnCover = mLblIdentNamerSpinnerCover;
         }
         if (spn.getId() == mIdentRefSpinner.getId()) {
             itemId = sharedPref.getLong(Prefs.DEFAULT_IDENT_REF_ID, 0);
+            vg = mRefViewGroup;
             spnCover = mLblIdentRefSpinnerCover;
         }
         if (spn.getId() == mIdentMethodSpinner.getId()) {
             itemId = sharedPref.getLong(Prefs.DEFAULT_IDENT_METHOD_ID, 0);
+            vg = mMethodViewGroup;
             spnCover = mLblIdentMethodSpinnerCover;
         }
         if (spn.getId() == mIdentCFSpinner.getId()) {
             itemId = 1;
         }
         setSpinnerSelection(spn, itemId);
-        if ((itemId == 0) && (spn.getCount() == 1) && (spnCover != null)) {
-            // user sees '(add new)', blank TextView receives click;
-            spnCover.bringToFront();
-        } else {
-            // user can operate the spinner
-            spn.bringToFront();
+        if (vg != null) { // if null, no spinner/cover pair and so nothing to do
+            if ((itemId == 0) && (spn.getCount() == 1)) {
+                // user sees '(add new)', blank TextView receives click;
+                vg.bringChildToFront(spnCover);
+            } else {
+                // user can operate the spinner
+                vg.bringChildToFront(spn);
+            }
         }
+
     }
 
     public void setSpinnerSelection(Spinner spn, long recId) {
