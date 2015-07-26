@@ -85,6 +85,11 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     SimpleCursorAdapter mPhHabitatAdapter, mIdentNamerAdapter, mIdentRefAdapter, mIdentMethodAdapter, mIdentCFAdapter;
 
     private ViewGroup mViewGroupIdent; // the set of views involved with identify-species
+    // viewgroups that pair a spinner with its cover (to receive clicks)
+    // in groups to manage which of the pair is in front, without interfering with the whole layout
+    private ViewGroup mNamerViewGroup, mRefViewGroup, mMethodViewGroup;
+
+    //ident_method_veiw_group
 
     Uri mUri;
     Uri mPlaceholdersUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "placeholders");
@@ -385,6 +390,9 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
         // the views for identify-species, to show or hide as a group
         mViewGroupIdent = (ViewGroup) rootView.findViewById(R.id.ident_veiw_group);
+        mNamerViewGroup = (ViewGroup) rootView.findViewById(R.id.ident_namer_veiw_group);
+        mRefViewGroup = (ViewGroup) rootView.findViewById(R.id.ident_ref_veiw_group);
+        mMethodViewGroup = (ViewGroup) rootView.findViewById(R.id.ident_method_veiw_group);
 
         return rootView;
     }

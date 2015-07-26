@@ -132,94 +132,114 @@
             android:text="@string/edit_placeholder_label_ident_namer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             />
 
-        <Spinner
-            android:id="@+id/spn_ph_ident_namer"
+        <RelativeLayout
+            android:id="@+id/ident_namer_veiw_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@id/lbl_ph_ident_namer"
             android:layout_below="@id/lbl_ph_ident_namer"
-            android:prompt="@string/edit_placeholder_hint_ident_namer"
-            />
+            >
 
-        <TextView
-            android:id="@+id/lbl_ident_namer_spinner_cover"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/spn_ph_ident_namer"
-            android:layout_alignRight="@id/spn_ph_ident_namer"
-            android:layout_alignTop="@id/spn_ph_ident_namer"
-            android:layout_alignBottom="@id/spn_ph_ident_namer"
-            android:text="@string/empty_string"
-            />
+            <Spinner
+                android:id="@+id/spn_ph_ident_namer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:prompt="@string/edit_placeholder_hint_ident_namer"
+                />
+
+            <TextView
+                android:id="@+id/lbl_ident_namer_spinner_cover"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/spn_ph_ident_namer"
+                android:layout_alignRight="@id/spn_ph_ident_namer"
+                android:layout_alignTop="@id/spn_ph_ident_namer"
+                android:layout_alignBottom="@id/spn_ph_ident_namer"
+                android:text="@string/empty_string"
+                />
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/lbl_ph_ident_ref"
             android:text="@string/edit_placeholder_label_ident_reference"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/spn_ph_ident_namer"
-            android:layout_below="@id/spn_ph_ident_namer"
+            android:layout_alignLeft="@id/ident_namer_veiw_group"
+            android:layout_below="@id/ident_namer_veiw_group"
             />
 
-        <Spinner
-            android:id="@+id/spn_ph_ident_ref"
+        <RelativeLayout
+            android:id="@+id/ident_ref_veiw_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@id/lbl_ph_ident_ref"
             android:layout_below="@id/lbl_ph_ident_ref"
-            android:prompt="@string/edit_placeholder_hint_ident_reference"
-            />
+            >
 
-        <TextView
-            android:id="@+id/lbl_ident_ref_spinner_cover"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/spn_ph_ident_ref"
-            android:layout_alignRight="@id/spn_ph_ident_ref"
-            android:layout_alignTop="@id/spn_ph_ident_ref"
-            android:layout_alignBottom="@id/spn_ph_ident_ref"
-            android:text="@string/empty_string"
-            />
+            <Spinner
+                android:id="@+id/spn_ph_ident_ref"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:prompt="@string/edit_placeholder_hint_ident_reference"
+                />
+
+            <TextView
+                android:id="@+id/lbl_ident_ref_spinner_cover"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/spn_ph_ident_ref"
+                android:layout_alignRight="@id/spn_ph_ident_ref"
+                android:layout_alignTop="@id/spn_ph_ident_ref"
+                android:layout_alignBottom="@id/spn_ph_ident_ref"
+                android:text="@string/empty_string"
+                />
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/lbl_ph_ident_method"
             android:text="@string/edit_placeholder_label_ident_method"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/spn_ph_ident_ref"
-            android:layout_below="@id/spn_ph_ident_ref"
+            android:layout_alignLeft="@id/ident_ref_veiw_group"
+            android:layout_below="@id/ident_ref_veiw_group"
             />
 
-        <Spinner
-            android:id="@+id/spn_ph_ident_method"
+        <RelativeLayout
+            android:id="@+id/ident_method_veiw_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@id/lbl_ph_ident_method"
             android:layout_below="@id/lbl_ph_ident_method"
-            android:prompt="@string/edit_placeholder_hint_ident_method"
-            />
+            >
 
-        <TextView
-            android:id="@+id/lbl_ident_method_spinner_cover"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/spn_ph_ident_method"
-            android:layout_alignRight="@id/spn_ph_ident_method"
-            android:layout_alignTop="@id/spn_ph_ident_method"
-            android:layout_alignBottom="@id/spn_ph_ident_method"
-            android:text="@string/empty_string"
-            />
+            <Spinner
+                android:id="@+id/spn_ph_ident_method"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:prompt="@string/edit_placeholder_hint_ident_method"
+                />
+
+            <TextView
+                android:id="@+id/lbl_ident_method_spinner_cover"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/spn_ph_ident_method"
+                android:layout_alignRight="@id/spn_ph_ident_method"
+                android:layout_alignTop="@id/spn_ph_ident_method"
+                android:layout_alignBottom="@id/spn_ph_ident_method"
+                android:text="@string/empty_string"
+                />
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/lbl_ph_ident_cf"
             android:text="@string/edit_placeholder_label_ident_confidence"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/spn_ph_ident_method"
-            android:layout_below="@id/spn_ph_ident_method"
+            android:layout_alignLeft="@id/ident_method_veiw_group"
+            android:layout_below="@id/ident_method_veiw_group"
             />
 
         <Spinner
