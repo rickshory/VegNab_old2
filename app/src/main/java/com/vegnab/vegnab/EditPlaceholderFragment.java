@@ -332,7 +332,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         registerForContextMenu(mIdentRefSpinner); // enable long-press
         // also need click, if no items & therefore selection cannot be changed
         // use a TextView on top of the spinner, named "..._spinner_cover"
-        mLblIdentRefSpinnerCover = (TextView) rootView.findViewById(R.id.lbl_ident_namer_spinner_cover);
+        mLblIdentRefSpinnerCover = (TextView) rootView.findViewById(R.id.lbl_ident_ref_spinner_cover);
         mLblIdentRefSpinnerCover.setOnClickListener(this);
         registerForContextMenu(mLblIdentRefSpinnerCover); // enable long-press
         // Method spinner
@@ -349,7 +349,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         registerForContextMenu(mIdentMethodSpinner); // enable long-press
         // also need click, if no items & therefore selection cannot be changed
         // use a TextView on top of the spinner, named "..._spinner_cover"
-        mLblIdentMethodSpinnerCover = (TextView) rootView.findViewById(R.id.lbl_ident_namer_spinner_cover);
+        mLblIdentMethodSpinnerCover = (TextView) rootView.findViewById(R.id.lbl_ident_method_spinner_cover);
         mLblIdentMethodSpinnerCover.setOnClickListener(this);
         registerForContextMenu(mLblIdentMethodSpinnerCover); // enable long-press
         // CF spinner
