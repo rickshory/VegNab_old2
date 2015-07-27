@@ -671,25 +671,25 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                         } else {
                             mPhIdentSppDescr = c.getString(c.getColumnIndexOrThrow("IdSppDescription"));
                         }
-                        if (c.isNull(c.getColumnIndexOrThrow("IdNamerId"))) {
+                        if (c.isNull(c.getColumnIndexOrThrow("IdNamerID"))) {
                             mIdentNamerId = 0;
                         } else {
-                            mIdentNamerId = c.getLong(c.getColumnIndexOrThrow("IdNamerId"));
+                            mIdentNamerId = c.getLong(c.getColumnIndexOrThrow("IdNamerID"));
                         }
-                        if (c.isNull(c.getColumnIndexOrThrow("IdRefId"))) {
+                        if (c.isNull(c.getColumnIndexOrThrow("IdRefID"))) {
                             mIdentRefId = 0;
                         } else {
-                            mIdentRefId = c.getLong(c.getColumnIndexOrThrow("IdRefId"));
+                            mIdentRefId = c.getLong(c.getColumnIndexOrThrow("IdRefID"));
                         }
-                        if (c.isNull(c.getColumnIndexOrThrow("IdMethodId"))) {
+                        if (c.isNull(c.getColumnIndexOrThrow("IdMethodID"))) {
                             mIdentMethodId = 0;
                         } else {
-                            mIdentMethodId = c.getLong(c.getColumnIndexOrThrow("IdMethodId"));
+                            mIdentMethodId = c.getLong(c.getColumnIndexOrThrow("IdMethodID"));
                         }
-                        if (c.isNull(c.getColumnIndexOrThrow("IdLevelId"))) {
+                        if (c.isNull(c.getColumnIndexOrThrow("IdLevelID"))) {
                             mIdentCFId = 0;
                         } else {
-                            mIdentCFId = c.getLong(c.getColumnIndexOrThrow("IdLevelId"));
+                            mIdentCFId = c.getLong(c.getColumnIndexOrThrow("IdLevelID"));
                         }
                         if (!(c.isNull(c.getColumnIndexOrThrow("IdNotes")))) {
                             mViewPlaceholderIdentNotes.setText(c.getString(c.getColumnIndexOrThrow("IdNotes")));
