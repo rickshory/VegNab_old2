@@ -309,6 +309,14 @@
     <string name="placeholder_validate_habitat_none">Need a Habitat for this Placeholder, long-press for more info</string>
     <string name="placeholder_validate_habitat_short">Habitat must be at least 3 characters</string>
 
+
+    <string name="placeholder_validate_ident_bad_code">Species identification must be a valid NRCS code</string>
+    <string name="placeholder_validate_ident_bad_namer">Missing or invalid identification Namer</string>
+    <string name="placeholder_validate_ident_bad_ref">Missing or invalid identification Reference</string>
+    <string name="placeholder_validate_ident_bad_method">Missing or invalid identification Method</string>
+    <string name="placeholder_validate_ident_bad_level">Missing or invalid identification Level</string>
+    <string name="placeholder_validate_ident_bad_generic">Missing or invalid identification information</string>
+
     <string name="ph_pix_grid_pic_button_message">New Picture</string>
 
     <string name="ph_pix_grid_pic_button_err">No Placeholder defined, can\'t take pictures.</string>

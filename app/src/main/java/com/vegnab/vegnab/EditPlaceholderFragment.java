@@ -500,12 +500,16 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                     // message that Placeholder must be defined first
                     mIdPlaceholder = false;
                 } else {
-                    if (mIdPlaceholder) {
+                    if (mIdPlaceholder) { // toggle
                         mIdPlaceholder = false;
+                        // going out of identification mode, check for validity and try to save record
+                        mValidationLevel = Validation.CRITICAL;
                     } else {
                         mIdPlaceholder = true;
+                        mValidationLevel = Validation.QUIET;
                     }
                 }
+                savePlaceholderRecord();
                 configureIdViews();
                 break;
 
@@ -1123,23 +1127,36 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 mValues.putNull("IdMethodID");
                 mValues.putNull("IdLevelID");
                 mValues.putNull("IdNotes");
-                String identProblem = "unknown";
-                if (!mPhIdentSppCode.matches(VNRegex.NRCS_CODE)) {
-                    identProblem = "mPhIdentSppCode: " + mPhIdentSppCode;
+                if (mValidationLevel > Validation.SILENT) {
+                    // test all the errors, but only show the user the latest one on each try
+                    stringProblem = c.getResources().getString(R.string.placeholder_validate_ident_bad_generic);
+                    if ((mIdentCFId == 0) || (mIdentCFId == AdapterView.INVALID_ROW_ID)) {
+                        stringProblem = c.getResources().getString(R.string.placeholder_validate_ident_bad_level);
+                    }
+                    if ((mIdentMethodId == 0) || (mIdentMethodId == AdapterView.INVALID_ROW_ID)) {
+                        stringProblem = c.getResources().getString(R.string.placeholder_validate_ident_bad_method);
+                    }
+                    if ((mIdentRefId == 0) || (mIdentRefId == AdapterView.INVALID_ROW_ID)) {
+                        stringProblem = c.getResources().getString(R.string.placeholder_validate_ident_bad_ref);
+                    }
+                    if ((mIdentNamerId == 0) || (mIdentNamerId == AdapterView.INVALID_ROW_ID)) {
+                        stringProblem = c.getResources().getString(R.string.placeholder_validate_ident_bad_namer);
+                    }
+                    if (!mPhIdentSppCode.matches(VNRegex.NRCS_CODE)) {
+                        stringProblem = c.getResources().getString(R.string.placeholder_validate_ident_bad_code);
+                    }
+                    if (mValidationLevel == Validation.QUIET) {
+                        Toast.makeText(this.getActivity(),
+                                stringProblem,
+                                Toast.LENGTH_LONG).show();
+                    }
+                    if (mValidationLevel == Validation.CRITICAL) {
+                        flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
+                        flexErrDlg.show(getFragmentManager(), "frg_err_ph_code_none");
+                        mViewPlaceholderCode.requestFocus();
+                    }
                 }
-                if ((mIdentNamerId == 0) || (mIdentNamerId == AdapterView.INVALID_ROW_ID)) {
-                    identProblem = "mIdentNamerId: " + mIdentNamerId;
-                }
-                if ((mIdentRefId == 0) || (mIdentRefId == AdapterView.INVALID_ROW_ID)) {
-                    identProblem = "mIdentRefId: " + mIdentRefId;
-                }
-                if ((mIdentMethodId == 0) || (mIdentMethodId == AdapterView.INVALID_ROW_ID)) {
-                    identProblem = "mIdentMethodId: " + mIdentMethodId;
-                }
-                if ((mIdentCFId == 0) || (mIdentCFId == AdapterView.INVALID_ROW_ID)) {
-                    identProblem = "mIdentCFId: " + mIdentCFId;
-                }
-                Log.d(LOG_TAG, "invalid ident, " + identProblem);
+                // do not break; continue and update record with these null fields
             } else { // put the values to update
                 mValues.put("IdSppCode", mPhIdentSppCode);
                 if (mPhIdentSppDescr == null) {
