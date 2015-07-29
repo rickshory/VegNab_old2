@@ -74,7 +74,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mIdentNamerId = 0, mIdentRefId = 0, mIdentMethodId = 0, mIdentCFId = 1;
     String mPlaceholderCode = null, mPlaceholderDescription = null, mPlaceholderHabitat = null,
             mPlaceholderLabelNumber = null, mPhIdentSppCode = null, mPhIdentSppDescr = null,
-            mPhIdentNotes = null,
+            mPhIdentNotes = null, mPhIdentTimeStamp = null,
             mStSearchHabitat = "", mStSearch = "";
     Boolean mCodeWasShortened = false, mIdPlaceholder = false;
     HashSet<String> mExistingPlaceholderCodes = new HashSet<String>();
@@ -119,6 +119,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     final static String ARG_IDENT_METHOD_ID = "identMethodId";
     final static String ARG_IDENT_CF_ID = "identCFId";
     final static String ARG_IDENT_NOTES = "identNotes";
+    final static String ARG_IDENT_TIMESTAMP = "identTimeStamp";
 
     OnButtonListener mButtonCallback; // declare the interface
     // declare that the container Activity must implement this interface
@@ -250,6 +251,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mIdentRefId = savedInstanceState.getLong(ARG_IDENT_REF_ID, 0);
             mIdentMethodId = savedInstanceState.getLong(ARG_IDENT_METHOD_ID, 0);
             mIdentCFId = savedInstanceState.getLong(ARG_IDENT_CF_ID, 1);
+            mPhIdentTimeStamp = savedInstanceState.getString(ARG_IDENT_TIMESTAMP);
 
             Log.d(LOG_TAG, "In onCreateView, retrieved mPlaceholderId: " + mPlaceholderId);
             Log.d(LOG_TAG, "In onCreateView, retrieved mPlaceholderCode: " + mPlaceholderCode);
@@ -458,6 +460,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         outState.putLong(ARG_IDENT_REF_ID, mIdentRefId);
         outState.putLong(ARG_IDENT_METHOD_ID, mIdentMethodId);
         outState.putLong(ARG_IDENT_CF_ID, mIdentCFId);
+        outState.putString(ARG_IDENT_TIMESTAMP, mPhIdentTimeStamp);
     }
 
     @Override
@@ -732,8 +735,15 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                              if (!(c.isNull(c.getColumnIndexOrThrow("IdNotes")))) {
                                  mViewPlaceholderIdentNotes.setText(c.getString(c.getColumnIndexOrThrow("IdNotes")));
                              }
-
                          }
+                    }
+                    // maintain the ident timestamp fields independently of the other ident fields
+                    // e.g. "TimeIdFirstEntered" and "TimeIdLastWorkedOn" retain valid timestamps
+                    // even if the other ident fields are wiped away as invalid
+                    // "TimeIdFirstEntered", if present, flags that there has been an ident
+                    // and therefore to leave this field as it is on the next Save
+                    if (!(c.isNull(c.getColumnIndexOrThrow("TimeIdFirstEntered")))) {
+                        mPhIdentTimeStamp = c.getString(c.getColumnIndexOrThrow("TimeIdFirstEntered"));
                     }
                 } else { // no record to edit yet, set up new record
                     mViewPlaceholderCode.setText(mPlaceholderCode);
@@ -1130,7 +1140,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 mValues.putNull("IdLevelID");
                 mValues.putNull("IdNotes");
                 if (mValidationLevel > Validation.SILENT) {
-                    // test all the errors, but only show the user the latest one on each try
+                    // test all the errors, but show the user only the latest one on each try
                     stringProblem = c.getResources().getString(R.string.placeholder_validate_ident_bad_generic);
                     if ((mIdentCFId == 0) || (mIdentCFId == AdapterView.INVALID_ROW_ID)) {
                         stringProblem = c.getResources().getString(R.string.placeholder_validate_ident_bad_level);
@@ -1177,6 +1187,17 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                     mValues.put("IdNotes", mPhIdentNotes);
                 }
             }
+            // maintain the ident timestamp fields independently of the other ident fields
+            // e.g. "TimeIdFirstEntered" and "TimeIdLastWorkedOn" retain valid timestamps
+            // even if the other ident fields are wiped away as invalid
+            // this can give clues to previous work and errors
+            // "mPhIdentTimeStamp", globally stored from any previous "TimeIdFirstEntered", flags
+            // that there has been an ident and therefore to leave this field as it is
+            if (mPhIdentTimeStamp == null) {
+                mValues.put("TimeIdFirstEntered", mTimeFormat.format(new Date()));
+            }
+            // always update this one, even if the rest of the ident is being cleared
+            mValues.put("TimeIdLastWorkedOn", mTimeFormat.format(new Date()));
         }
         return true;
     }
