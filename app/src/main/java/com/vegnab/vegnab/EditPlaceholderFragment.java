@@ -839,7 +839,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 // Swap the new cursor in.
                 // The framework will take care of closing the old cursor once we return.
 //                mIdentSppAdapter.setStringConversionColumn(c.getColumnIndexOrThrow("MatchTxt"));
-                if (rowCt > 0) {
+                if (!c.isClosed()) {
                     mSppIdentCursor = c; // save a global reference
                     mSppIdentResultsAdapter.swapCursor(c);
                 }
