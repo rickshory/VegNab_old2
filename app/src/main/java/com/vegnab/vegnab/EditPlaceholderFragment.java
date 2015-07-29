@@ -501,16 +501,18 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                     mIdPlaceholder = false;
                 } else {
                     if (mIdPlaceholder) { // toggle
-                        mIdPlaceholder = false;
-                        // going out of identification mode, check for validity and try to save record
-                        mValidationLevel = Validation.CRITICAL;
+                        // since mIdPlaceholder == true, attempt to save idents as well as the rest of the record
+                        mValidationLevel = Validation.CRITICAL; // give warnings about any invalid fields
+                        savePlaceholderRecord();
+                        mIdPlaceholder = false; // go out of identification mode
                     } else {
-                        mIdPlaceholder = true;
-                        mValidationLevel = Validation.QUIET;
+                        mValidationLevel = Validation.QUIET; // show only Toasts, rather than pop up dialogs
+                        // since mIdPlaceholder == false, save only the main fields, not the ident fields
+                        savePlaceholderRecord();
+                        mIdPlaceholder = true; // go into ident mode
                     }
                 }
-                savePlaceholderRecord();
-                configureIdViews();
+                configureIdViews(); // hide or show the ident views
                 break;
 
             case R.id.lbl_ident_namer_spinner_cover:
