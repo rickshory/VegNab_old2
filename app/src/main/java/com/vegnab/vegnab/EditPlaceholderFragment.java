@@ -418,6 +418,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 // it will flag to create a second copy of the same placeholder.
                 mPlaceholderId = args.getLong(ARG_PLACEHOLDER_ID, 0);
                 mPlaceholderCode = args.getString(ARG_PLACEHOLDER_CODE);
+                mCodeWasShortened = args.getBoolean(ARG_CODE_WAS_SHORTENED, false);
             }
         // also use for special arguments like screen layout
         }
@@ -430,6 +431,18 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         getLoaderManager().initLoader(Loaders.PH_IDENT_METHODS, null, this);
         getLoaderManager().initLoader(Loaders.PH_IDENT_CONFIDENCS, null, this);
         getLoaderManager().initLoader(Loaders.PH_IDENT_SPECIES, null, this);
+
+        if (mCodeWasShortened) {
+            Context c = getActivity();
+            String sTitle = c.getResources().getString(R.string.new_placeholder_was_shortened_title);
+            String sIssue = c.getResources().getString(R.string.new_placeholder_was_shortened_msg_pre)
+                    + " " + VNContract.VNConstraints.PLACEHOLDER_MAX_LENGTH + " "
+                    + c.getResources().getString(R.string.new_placeholder_was_shortened_msg_post);
+            ConfigurableMsgDialog flexMsgDlg = new ConfigurableMsgDialog();
+            flexMsgDlg = ConfigurableMsgDialog.newInstance(sTitle, sIssue);
+            flexMsgDlg.show(getFragmentManager(), "frg_msg_ph_code_shortened");
+            mCodeWasShortened = false; // only show once
+        }
         //  hide views dealing with identifying the species
         configureIdViews();
     }

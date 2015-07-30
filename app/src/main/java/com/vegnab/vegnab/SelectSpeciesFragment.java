@@ -328,7 +328,7 @@ public class SelectSpeciesFragment extends ListFragment
                   phCode = wholeContents;
                     wasShortened = false;
                 } else {
-                    phCode = wholeContents.substring(0, VNConstraints.PLACEHOLDER_MAX_LENGTH);
+                    phCode = wholeContents.substring(0, VNConstraints.PLACEHOLDER_MAX_LENGTH).trim();
                     wasShortened = true;
                 }
 

@@ -154,7 +154,7 @@
 
     <string name="vis_hdr_validate_generic_title">Critical Error</string>
     <string name="vis_hdr_validate_name_none">No Name for this Visit</string>
-    <string name="vis_hdr_validate_name_short">Visit Name must be at least 2 characters</string>
+    <string name="vis_hdr_validate_name_short">Visit Name must be at least 3 characters</string>
     <string name="vis_hdr_validate_name_dup">Duplicate Name for this Visit, already used.</string>
     <string name="vis_hdr_validate_date_none">Need a Date for this Visit</string>
     <string name="vis_hdr_validate_date_bad">Invalid Date for this Visit</string>
@@ -219,6 +219,10 @@
     
     <string name="edit_spp_item_validate_height_bad">Need a number for Height, in centimeters</string>
     <string name="edit_spp_item_validate_cover_bad">Need a number for Cover between 1 and 100 percent</string>
+
+    <string name="new_placeholder_was_shortened_title">Code Shortened</string>
+    <string name="new_placeholder_was_shortened_msg_pre">Placeholder Code was shortened to</string>
+    <string name="new_placeholder_was_shortened_msg_post">characters.\r\n\r\nIf result is not acceptable, edit it manually. </string>
 
     <string name="edit_placeholder_title">Placeholder</string>
     <string name="edit_placeholder_pix_button_msg">Pictures</string>
