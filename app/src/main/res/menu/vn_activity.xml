@@ -14,5 +14,11 @@
         android:orderInCategory="150"
         android:title="@string/action_settings"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_legal_notices"
+        android:orderInCategory="1000"
+        android:title="@string/action_legal_notices"
+        app:showAsAction="never"/>
     
 </menu>

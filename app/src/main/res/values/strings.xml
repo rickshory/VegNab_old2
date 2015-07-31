@@ -6,6 +6,7 @@
     <string name="under_construction">Not implemented yet</string>
     <string name="action_settings">Settings</string>
     <string name="action_app_info">App info</string>
+    <string name="action_legal_notices">Legal Notices</string>
     <string name="action_edit_proj">Edit Project</string>
     <string name="action_new_proj">New Project</string>
     <string name="action_delete_proj">Delete Project</string>

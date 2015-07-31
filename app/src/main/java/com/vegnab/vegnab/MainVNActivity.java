@@ -13,11 +13,13 @@ import java.util.UUID;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.vegnab.vegnab.BuildConfig;
 import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.Prefs;
 import com.vegnab.vegnab.database.VNContract.Tags;
 
+import android.app.AlertDialog;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.support.v4.app.DialogFragment;
@@ -185,6 +187,16 @@ public class MainVNActivity extends ActionBarActivity
         case R.id.action_app_info:
             Toast.makeText(getApplicationContext(), "''App Info'' is not implemented yet", Toast.LENGTH_SHORT).show();
             return true;
+
+        case R.id.action_legal_notices:
+            // following is required, to use Drive API
+            String legalInfo = GooglePlayServicesUtil.getOpenSourceSoftwareLicenseInfo(this);
+            AlertDialog.Builder legalInfoDialog = new AlertDialog.Builder(this);
+            legalInfoDialog.setTitle(this.getResources().getString(R.string.action_legal_notices));
+            legalInfoDialog.setMessage(legalInfo);
+            legalInfoDialog.show();
+            return true;
+        
         case R.id.action_edit_proj:
 //			EditProjectDialog editProjDlg = new EditProjectDialog();
             /*
