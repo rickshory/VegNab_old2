@@ -1391,9 +1391,11 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 return;
             }
             final DriveContents driveContents = result.getDriveContents();
+//            String appName = "VegNab Alpha Test";
+            String appName = getActivity().getResources().getString(R.string.app_name);
             String visName = "" + mViewVisitName.getText().toString().trim();
             SimpleDateFormat fileNameFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
-            final String fileName = "VegNab" + " " + ((visName == "" ? "" : visName + " "))
+            final String fileName = appName + " " + ((visName == "" ? "" : visName + " "))
                     + fileNameFormat.format(new Date());
             final long visId = mVisitId;
             // perform i/o off the ui thread
