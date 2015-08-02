@@ -80,6 +80,8 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
     long mIDConfidence = 1; // default 'no doubt of ID'
     Cursor mCFCursor, mDupSppCursor;
     boolean mAutoVerifyPresence = false;
+    // following flags are used to auto verify
+    boolean mOKToAutoAcceptItem = false, mUIIsReady = false, mNoDupCodes = false;
     private int mValidationLevel = Validation.SILENT;
     Uri mUri, mVegItemsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "vegitems");
     ContentValues mValues = new ContentValues();
@@ -206,8 +208,27 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
                 mTxtSppCFLabel.setVisibility(View.GONE);
                 mSpinnerSpeciesConfidence.setVisibility(View.GONE);
         }
+
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        if ((sharedPref.getBoolean(Prefs.VERIFY_VEG_ITEMS_PRESENCE, true)) == false) {
+            mOKToAutoAcceptItem = true;
+        }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // happens just before fragment becomes active
+        // in 50ms, flag that the UI is ready, and then check if everything else is ready to auto verify
+        mCkDontVerifyPresence.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mUIIsReady = true;
+                checkAutoAcceptSppItem();
+            }
+        }, 50);
+    }
+            
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if(!hasFocus) { // something lost focus
@@ -233,10 +254,30 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
             int numUpdated = saveVegItemRecord();
             Log.d(LOG_TAG, "Saved record in onCancel; numUpdated: " + numUpdated);
             if (numUpdated > 0) {
+                if (mCkDontVerifyPresence.isChecked()) {
+                    SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                    SharedPreferences.Editor prefEditor;
+                    prefEditor = sharedPref.edit();
+                    prefEditor.putBoolean(Prefs.VERIFY_VEG_ITEMS_PRESENCE, false);
+                    prefEditor.commit();
+                }
                 mEditVegItemListener.onEditVegItemComplete(EditSppItemDialog.this);
             }
         }
     }
+            
+    private void checkAutoAcceptSppItem() {
+        if (!mPresenceOnly) return; // can only auto accept presence-only items
+        if (!mOKToAutoAcceptItem) return; // only if this is OKd in Preferences
+        if (!mUIIsReady) return; // only if the user interface is complete
+        if (!mNoDupCodes) return; // only if we have checked for duplicate codes and there are none
+        if (mVegItemRecId != 0) return; // only applies to new records, id=0
+        if (saveVegItemRecord() > 0) { // if item is correctly saved
+            Log.d(LOG_TAG, "Saved record in checkAutoAcceptSppItem");
+            mEditVegItemListener.onEditVegItemComplete(EditSppItemDialog.this);
+            this.dismiss();
+        }
+    }        
 
     private int saveVegItemRecord() {
         Context c = getActivity();
@@ -333,6 +374,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
             Log.d(LOG_TAG, "Saved record in saveVegItemRecord; numUpdated: " + numUpdated);
             return numUpdated;
         }
+
     }
 
     private boolean validateVegItemValues() {
@@ -562,7 +604,9 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
             mDupSppCursor = c;
             if (mDupSppCursor.getCount() == 0) {
                 mTxtSppDupLabel.setVisibility(View.GONE);
+                mNoDupCodes = true;
             }
+            checkAutoAcceptSppItem(); // see if we can auto accept this item
             break;
         }
     }

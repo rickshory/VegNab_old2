@@ -196,7 +196,7 @@ public class MainVNActivity extends ActionBarActivity
             legalInfoDialog.setMessage(legalInfo);
             legalInfoDialog.show();
             return true;
-        
+
         case R.id.action_edit_proj:
 //			EditProjectDialog editProjDlg = new EditProjectDialog();
             /*
