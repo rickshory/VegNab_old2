@@ -272,6 +272,8 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
         if (!mUIIsReady) return; // only if the user interface is complete
         if (!mNoDupCodes) return; // only if we have checked for duplicate codes and there are none
         if (mVegItemRecId != 0) return; // only applies to new records, id=0
+        // try the following line to avoid occasional crashes from (?) race conditions
+        mOKToAutoAcceptItem = false; // assure only runs once
         if (saveVegItemRecord() > 0) { // if item is correctly saved
             Log.d(LOG_TAG, "Saved record in checkAutoAcceptSppItem");
             mEditVegItemListener.onEditVegItemComplete(EditSppItemDialog.this);
