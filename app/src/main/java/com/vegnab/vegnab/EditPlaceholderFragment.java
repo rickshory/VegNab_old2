@@ -496,12 +496,16 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                         .setLabel("Pictures button")
                         .setValue(mPlaceholderId)
                         .build());
-                if (mPlaceholderId == 0) { // record not defined yet
-                    helpTitle = c.getResources().getString(R.string.placeholder_pix_btn_no_descr_title);
-                    helpMessage = c.getResources().getString(R.string.placeholder_pix_btn_no_descr_msg);
-                    flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-                    flexHlpDlg.show(getFragmentManager(), "frg_ph_pix_not_ready");
-                    return;
+                if (mPlaceholderId == 0) { // record not defined yet, try once to save it
+                    mValidationLevel = Validation.SILENT;
+                    numUpdated = savePlaceholderRecord();
+                    if (numUpdated == 0) { // still not complete
+                        helpTitle = c.getResources().getString(R.string.placeholder_pix_btn_no_descr_title);
+                        helpMessage = c.getResources().getString(R.string.placeholder_pix_btn_no_descr_msg);
+                        flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+                        flexHlpDlg.show(getFragmentManager(), "frg_ph_pix_not_ready");
+                        return;
+                    }
                 }
                 args.putInt(BUTTON_KEY, VNContract.PhActions.GO_TO_PICTURES);
                 args.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
@@ -512,10 +516,19 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
             case R.id.ph_identify_button:
                 Log.d(LOG_TAG, "in onClick, ph_identify_button");
-                if (mPlaceholderId == 0) {
-                    // message that Placeholder must be defined first
-                    mIdPlaceholder = false;
-                } else {
+                if (mPlaceholderId == 0) { // record not defined yet
+                    mValidationLevel = Validation.SILENT;
+                    mIdPlaceholder = false; // assure not in identification mode
+                    numUpdated = savePlaceholderRecord(); // save only the main fields, not the ident fields
+                    if (numUpdated == 0) { // still not complete
+                        // message that Placeholder must be defined first
+                        helpTitle = c.getResources().getString(R.string.placeholder_ident_btn_no_descr_title);
+                        helpMessage = c.getResources().getString(R.string.placeholder_ident_btn_no_descr_msg);
+                        flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+                        flexHlpDlg.show(getFragmentManager(), "frg_ph_ident_not_ready");
+                        return;
+                    }
+                    // main fields of record OK
                     if (mIdPlaceholder) { // toggle
                         // since mIdPlaceholder == true, attempt to save idents as well as the rest of the record
                         mValidationLevel = Validation.CRITICAL; // give warnings about any invalid fields
@@ -1418,7 +1431,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             case R.id.txt_placeholder_description:
             case R.id.autocomplete_placeholder_habitat:
             case R.id.txt_placeholder_labelnumber:
-                mValidationLevel = Validation.QUIET; // save if possible, but notify minimally
+                mValidationLevel = Validation.SILENT; // save if possible, but do not notify
                 int numUpdated = savePlaceholderRecord();
                 if (numUpdated == 0) {
                     Log.d(LOG_TAG, "Failed to save record in onFocusChange; mValues: " + mValues.toString());
