@@ -528,18 +528,18 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                         flexHlpDlg.show(getFragmentManager(), "frg_ph_ident_not_ready");
                         return;
                     }
-                    // main fields of record OK
-                    if (mIdPlaceholder) { // toggle
-                        // since mIdPlaceholder == true, attempt to save idents as well as the rest of the record
-                        mValidationLevel = Validation.CRITICAL; // give warnings about any invalid fields
-                        savePlaceholderRecord();
-                        mIdPlaceholder = false; // go out of identification mode
-                    } else {
-                        mValidationLevel = Validation.QUIET; // show only Toasts, rather than pop up dialogs
-                        // since mIdPlaceholder == false, save only the main fields, not the ident fields
-                        savePlaceholderRecord();
-                        mIdPlaceholder = true; // go into ident mode
-                    }
+                }
+                // main fields of record OK, record ID would still be zero
+                if (mIdPlaceholder) { // toggle
+                    // since mIdPlaceholder == true, attempt to save idents as well as the rest of the record
+                    mValidationLevel = Validation.CRITICAL; // give warnings about any invalid fields
+                    savePlaceholderRecord();
+                    mIdPlaceholder = false; // go out of identification mode
+                } else {
+                    mValidationLevel = Validation.QUIET; // show only Toasts, rather than pop up dialogs
+                    // since mIdPlaceholder == false, save only the main fields, not the ident fields
+                    savePlaceholderRecord();
+                    mIdPlaceholder = true; // go into ident mode
                 }
                 configureIdViews(); // hide or show the ident views
                 break;
