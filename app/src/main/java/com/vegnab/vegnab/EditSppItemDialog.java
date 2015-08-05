@@ -608,7 +608,16 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
                 mTxtSppDupLabel.setVisibility(View.GONE);
                 mNoDupCodes = true;
             }
-            checkAutoAcceptSppItem(); // see if we can auto accept this item
+//            checkAutoAcceptSppItem();
+
+            // in 50ms, check if we can auto verify
+            mCkDontVerifyPresence.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    checkAutoAcceptSppItem(); // see if we can auto accept this item
+                }
+            }, 50);
+
             break;
         }
     }
