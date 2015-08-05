@@ -81,7 +81,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
     Cursor mCFCursor, mDupSppCursor;
     boolean mAutoVerifyPresence = false;
     // following flags are used to auto verify
-    boolean mOKToAutoAcceptItem = false, mUIIsReady = false, mNoDupCodes = false;
+    boolean mOKToAutoAcceptItem = false, mNoDupCodes = false; //, mUIIsReady = false
     private int mValidationLevel = Validation.SILENT;
     Uri mUri, mVegItemsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "vegitems");
     ContentValues mValues = new ContentValues();
@@ -183,8 +183,6 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
         // fire off these database requests
         getLoaderManager().initLoader(Loaders.VEG_ITEM_CONFIDENCE_LEVELS, null, this);
         getLoaderManager().initLoader(Loaders.VEGITEM_TO_EDIT, null, this);
-        // try this loader here
-        getLoaderManager().initLoader(Loaders.VEG_ITEM_DUP_CODES, null, this);
 
         // adjust UI depending on whether we want Height/Cover information, or only Presence/Absence
         if (mPresenceOnly) { // hide the Height/Cover views
@@ -213,6 +211,8 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
         if ((sharedPref.getBoolean(Prefs.VERIFY_VEG_ITEMS_PRESENCE, true)) == false) {
             mOKToAutoAcceptItem = true;
         }
+        // try this loader here
+        getLoaderManager().initLoader(Loaders.VEG_ITEM_DUP_CODES, null, this);
     }
 
     @Override
@@ -220,13 +220,13 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
         super.onResume();
         // happens just before fragment becomes active
         // in 50ms, flag that the UI is ready, and then check if everything else is ready to auto verify
-        mCkDontVerifyPresence.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mUIIsReady = true;
-                checkAutoAcceptSppItem();
-            }
-        }, 50);
+//        mCkDontVerifyPresence.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                mUIIsReady = true;
+//                checkAutoAcceptSppItem();
+//            }
+//        }, 50);
     }
             
     @Override
@@ -269,7 +269,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
     private void checkAutoAcceptSppItem() {
         if (!mPresenceOnly) return; // can only auto accept presence-only items
         if (!mOKToAutoAcceptItem) return; // only if this is OKd in Preferences
-        if (!mUIIsReady) return; // only if the user interface is complete
+//        if (!mUIIsReady) return; // only if the user interface is complete
         if (!mNoDupCodes) return; // only if we have checked for duplicate codes and there are none
         if (mVegItemRecId != 0) return; // only applies to new records, id=0
         // try the following line to avoid occasional crashes from (?) race conditions
