@@ -86,6 +86,7 @@
         android:layout_alignTop="@id/sel_spp_namer_spinner"
         android:layout_alignBottom="@id/sel_spp_namer_spinner"
         android:text="@string/empty_string"
+        android:focusable="false"
         />
 
     <TextView

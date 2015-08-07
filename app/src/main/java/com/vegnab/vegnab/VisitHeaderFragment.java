@@ -523,15 +523,18 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             Log.d(LOG_TAG, "onLoadFinished, number of items in mExistingProjCodes: " + mExistingVisitNames.size());
             Log.d(LOG_TAG, "onLoadFinished, items in mExistingProjCodes: " + mExistingVisitNames.toString());
             break;
+
         case Loaders.VISIT_TO_EDIT:
             Log.d(LOG_TAG, "onLoadFinished, VISIT_TO_EDIT, records: " + c.getCount());
             if (c.moveToFirst()) {
                 mViewVisitName.setText(c.getString(c.getColumnIndexOrThrow("VisitName")));
                 mViewVisitDate.setText(c.getString(c.getColumnIndexOrThrow("VisitDate")));
                 mNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
-                // set the retrieved Namer as the default, will usually be who
-                saveDefaultNamerId(mNamerId);
-                setNamerSpinnerSelectionFromDefaultNamer();
+                setNamerSpinnerSelection();
+//                // set the retrieved Namer as the default, will usually be who
+//                saveDefaultNamerId(mNamerId);
+//                setNamerSpinnerSelectionFromDefaultNamer();
+                mNamerSpinner.setEnabled(false); // disable, because existing record
                 mViewVisitScribe.setText(c.getString(c.getColumnIndexOrThrow("Scribe")));
                 // write code to save/retrieve Locations
                 mLocIsGood = (c.getInt(c.getColumnIndexOrThrow("RefLocIsGood")) != 0);
@@ -552,6 +555,10 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                     mViewAzimuth.setText("" + c.getInt(c.getColumnIndexOrThrow("Azimuth")));
                 }
                 mViewVisitNotes.setText(c.getString(c.getColumnIndexOrThrow("VisitNotes")));
+            } else { // a new record
+                setNamerSpinnerSelectionFromDefaultNamer();
+                mLblNewNamerSpinnerCover.setFocusableInTouchMode(true); // allow Namer to be changed
+                mNamerSpinner.setEnabled(true);
             }
             break;
 
@@ -870,6 +877,9 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 return 0;
             }
             mVisitId = newRecId;
+            saveDefaultNamerId(mNamerId); // save the current Namer as the default for future Visits
+            mNamerSpinner.setEnabled(false); // do not allow changing the Namer now that this Visit is saved
+            mLblNewNamerSpinnerCover.setFocusableInTouchMode(false); // disable the Cover too
             getLoaderManager().restartLoader(Loaders.EXISTING_VISITS, null, this);
 
             mUri = ContentUris.withAppendedId(mVisitsUri, mVisitId);
@@ -910,6 +920,10 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             numUpdated = 1;
         } else { // update the existing record
             Log.d(LOG_TAG, "saveVisitRecord; updating existing record with mVisitId = " + mVisitId);
+            if (mValues.containsKey("NamerID")) {
+                // do not allow changing the Namer for existing records
+                mValues.remove("NamerID");
+            }
             mValues.put("LastChanged", mTimeFormat.format(new Date())); // update the last-changed time
             mUri = ContentUris.withAppendedId(mVisitsUri, mVisitId);
             numUpdated = rs.update(mUri, mValues, null, null);
