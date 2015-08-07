@@ -773,6 +773,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                     }
                 } else { // no record to edit yet, set up new record
                     mViewPlaceholderCode.setText(mPlaceholderCode);
+                    mViewPlaceholderCode.setFocusableInTouchMode(true); // allow editing the code
+                    // for now, only allow editing the code here, may allow other places later
                 }
                 break;
 
@@ -1258,6 +1260,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mUri = ContentUris.withAppendedId(mPlaceholdersUri, mPlaceholderId);
             Log.d(LOG_TAG, "new record in savePlaceholderRecord; URI re-parsed: " + mUri.toString());
             numUpdated = 1;
+            mViewPlaceholderCode.setFocusableInTouchMode(false); // disable editing the code
         } else { // update the existing record
             Log.d(LOG_TAG, "savePlaceholderRecord; updating existing record with mVisitId = " + mPlaceholderId);
             mValues.put("TimeLastEdited", mTimeFormat.format(new Date())); // update the last-changed time

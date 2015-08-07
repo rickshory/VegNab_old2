@@ -47,6 +47,7 @@
         android:layout_below="@id/lbl_placeholder_code"
         android:hint="@string/edit_placeholder_hint_code"
         android:inputType="text"
+        android:focusable="false"
         android:maxLength="10" />
 
     <TextView
