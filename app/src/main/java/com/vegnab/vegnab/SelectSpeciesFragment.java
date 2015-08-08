@@ -183,8 +183,10 @@ public class SelectSpeciesFragment extends ListFragment
     final static String ARG_USE_FULLTEXT_SEARCH = "fulltext_search";
 */
         }
-        // get following to disallow duplicate Placeholder definitions
-        getLoaderManager().initLoader(Loaders.EXISTING_PLACEHOLDER_CODES, null, this);
+        // get the ProjectID and NamerID for this Visit
+        getLoaderManager().initLoader(Loaders.VISIT_INFO, null, this);
+        // when above is done, will call fetchExistingPlaceholders();
+
         mViewSearchChars.requestFocus();
 
         mViewSearchChars.postDelayed(new Runnable() {
@@ -197,6 +199,12 @@ public class SelectSpeciesFragment extends ListFragment
 
         // set up the list to receive long-press
         registerForContextMenu(getListView());
+    }
+
+    private void fetchExistingPlaceholders() {
+        // get these to disallow duplicate Placeholder definitions
+        // will be called after Loader that gets ProjectID and NamerID
+        getLoaderManager().initLoader(Loaders.EXISTING_PLACEHOLDER_CODES, null, this);
     }
 
     @Override
@@ -507,6 +515,15 @@ public class SelectSpeciesFragment extends ListFragment
         String[] params = null;
         switch (id) {
 
+        case Loaders.VISIT_INFO:
+            baseUri = ContentProvider_VegNab.SQL_URI;
+            select = "SELECT Visits.ProjID, Visits.NamerID "
+                    + "FROM Visits "
+                    + "WHERE Visits._id = ?;";
+            cl = new CursorLoader(getActivity(), baseUri, null, select,
+                    new String[] { "" + mCurVisitRecId }, null);
+            break;
+
         case Loaders.SPP_MATCHES:
             baseUri = ContentProvider_VegNab.SQL_URI;
             if (mPickPlaceholder) { // show only the Placeholders, most recent first
@@ -636,7 +653,22 @@ public class SelectSpeciesFragment extends ListFragment
         // there will be various loaders, switch them out here
         mRowCt = finishedCursor.getCount();
         switch (loader.getId()) {
-        case Loaders.SPP_MATCHES:
+
+            case Loaders.VISIT_INFO:
+                if (finishedCursor.moveToFirst()) {
+                    mProjectId = finishedCursor.getLong(finishedCursor.getColumnIndexOrThrow("ProjID"));
+                    mNamerId = finishedCursor.getLong(finishedCursor.getColumnIndexOrThrow("NamerID"));
+                    // now that NamerID is valid, get existing Placeholders to disallow duplicates
+                    mViewSearchChars.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            fetchExistingPlaceholders();
+                        }
+                    }, 50);
+                }
+                break;
+
+            case Loaders.SPP_MATCHES:
             mSppResultsAdapter.swapCursor(finishedCursor);
             mSppMatchCursor = finishedCursor;
             if ((mPickPlaceholder) && (mRowCt == 0)) {
@@ -669,6 +701,8 @@ public class SelectSpeciesFragment extends ListFragment
         // This is called when the last Cursor provided to onLoadFinished()
         // is about to be closed. Need to make sure it is no longer is use.
         switch (loader.getId()) {
+            case Loaders.VISIT_INFO:
+                break;
         case Loaders.SPP_MATCHES:
             mSppResultsAdapter.swapCursor(null);
             break;

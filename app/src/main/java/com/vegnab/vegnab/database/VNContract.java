@@ -71,6 +71,7 @@ public final class VNContract {
         // in Species Select
         public static final int SPP_MATCHES = 71; // Species that match the search string
         public static final int EXISTING_PLACEHOLDER_CODES = 72; // Placeholder codes already defined by this Namer
+        public static final int VISIT_INFO = 73; // Fields needed from the Visit
 
         // in Main Activity
         // in Edit VegItem
