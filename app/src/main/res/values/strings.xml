@@ -123,6 +123,8 @@
     
     <string name="edit_namer_title_edit">Edit Namer</string>
     <string name="edit_namer_label_namername">This will change the spelling in any Visits this Namer has already done.</string>
+    <string name="namer_locked_title">Locked</string>
+    <string name="namer_locked_message">Can\'t change Namer after entering Placeholders because they are specific to a Namer.</string>
 
     <string name="del_namer_details">Can\'t delete the current Namer, or any Namer who has done Visits</string>
     <string name="del_namer_confirm">Delete Namer?</string>

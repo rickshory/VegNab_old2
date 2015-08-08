@@ -121,7 +121,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     long mVisitId = 0, mNamerId = 0, mLocId = 0; // zero default means new or not specified yet
     long mCtPlaceholders = -1; // count of Placeholders entered on this visit
-    // if there are any, do not allow Namer to be changed because Placeholders belong to a certain Namer
+    // if there are any, do not allow Namer to be changed because Placeholders belong to that specific Namer
     // -1 = not set, 0 = none, >0 = some
     Uri mUri;
     Uri mVisitsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "visits");
@@ -346,6 +346,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         // fire off loaders that depend on layout being ready to receive results
         getLoaderManager().initLoader(Loaders.VISIT_TO_EDIT, null, this);
         getLoaderManager().initLoader(Loaders.EXISTING_VISITS, null, this);
+        getLoaderManager().initLoader(Loaders.VISIT_PLACEHOLDERS_ENTERED, null, this);
     }
 
     @Override
@@ -423,8 +424,15 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 //			FragmentManager fm = getActivity().getSupportFragmentManager();
             Log.d(LOG_TAG, "Starting 'add new' for Namer from onClick of 'lbl_spp_namer_spinner_cover'");
 //			addSppNamerDlg.show(fm, "sppNamerDialog_TextClick");
-            EditNamerDialog newNmrDlg = EditNamerDialog.newInstance(0);
-            newNmrDlg.show(getFragmentManager(), "frg_new_namer_fromCover");
+            if (mCtPlaceholders == 0) { // no placeholders entered for this Visit, allowed to edit Namer
+                EditNamerDialog newNmrDlg = EditNamerDialog.newInstance(0);
+                newNmrDlg.show(getFragmentManager(), "frg_new_namer_fromCover");
+            } else {
+                ConfigurableMsgDialog nmrLockDlg = ConfigurableMsgDialog.newInstance(
+                        getActivity().getResources().getString(R.string.namer_locked_title),
+                        getActivity().getResources().getString(R.string.namer_locked_message));
+                nmrLockDlg.show(getFragmentManager(), "frg_err_namer_lock");
+            }
 
             break;
         case R.id.visit_header_go_button:
@@ -512,6 +520,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             break;
 
         case Loaders.VISIT_PLACEHOLDERS_ENTERED:
+            Log.d(LOG_TAG, "onCreateLoader, VISIT_PLACEHOLDERS_ENTERED");
             baseUri = ContentProvider_VegNab.SQL_URI;
             select = "SELECT COUNT(_id) AS PhCount FROM VegItems "
                     + "WHERE VisitID = ? AND SourceID = 2;";
@@ -604,7 +613,11 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             break;
 
         case Loaders.VISIT_PLACEHOLDERS_ENTERED:
-            long mCtPlaceholders = c.getLong(c.getColumnIndexOrThrow("PhCount"));
+            Log.d(LOG_TAG, "onLoadFinished, VISIT_PLACEHOLDERS_ENTERED, records: " + mRowCt);
+            if (c.moveToFirst()) {
+                mCtPlaceholders = c.getLong(0); // only one field
+//                mCtPlaceholders = c.getLong(c.getColumnIndexOrThrow("PhCount"));
+            }
             if (mCtPlaceholders == 0) {
                 // no placeholders entered yet on this visit, allow the Namer to be changed
                 mNamerSpinner.setEnabled(true);
