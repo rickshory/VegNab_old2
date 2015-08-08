@@ -120,6 +120,9 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     private static final String STATE_RESOLVING_ERROR = "resolving_error";
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     long mVisitId = 0, mNamerId = 0, mLocId = 0; // zero default means new or not specified yet
+    long mCtPlaceholders = -1; // count of Placeholders entered on this visit
+    // if there are any, do not allow Namer to be changed because Placeholders belong to a certain Namer
+    // -1 = not set, 0 = none, >0 = some
     Uri mUri;
     Uri mVisitsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "visits");
     Uri mLocationsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "locations");
@@ -152,6 +155,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     final static String ARG_LOC_LONGITUDE = "locLongitude";
     final static String ARG_LOC_ACCURACY = "locAccuracy";
     final static String ARG_LOC_TIME = "locTimeStamp";
+    final static String ARG_PH_COUNT = "phCount";
 
     int mCurrentSubplot = -1;
     OnButtonListener mButtonCallback; // declare the interface
@@ -249,6 +253,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             mLocIsGood = savedInstanceState.getBoolean(ARG_LOC_GOOD_FLAG, false);
             mCurLocation = savedInstanceState.getParcelable(ARG_CUR_LOCATION);
             mPrevLocation = savedInstanceState.getParcelable(ARG_PREV_LOCATION);
+            mCtPlaceholders = savedInstanceState.getLong(ARG_PH_COUNT);
             if (mLocIsGood) {
                 mLatitude = savedInstanceState.getDouble(ARG_LOC_LATITUDE);
                 mLongitude = savedInstanceState.getDouble(ARG_LOC_LONGITUDE);
@@ -395,6 +400,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         outState.putBoolean(ARG_LOC_GOOD_FLAG, mLocIsGood);
         outState.putParcelable(ARG_CUR_LOCATION, mCurLocation);
         outState.putParcelable(ARG_PREV_LOCATION, mPrevLocation);
+        outState.putLong(ARG_PH_COUNT, mCtPlaceholders);
         if (mLocIsGood) {
             outState.putDouble(ARG_LOC_LATITUDE, mLatitude);
             outState.putDouble(ARG_LOC_LONGITUDE, mLongitude);
@@ -504,6 +510,14 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             cl = new CursorLoader(getActivity(), oneLocUri,
                     null, select, null, null);
             break;
+
+        case Loaders.VISIT_PLACEHOLDERS_ENTERED:
+            baseUri = ContentProvider_VegNab.SQL_URI;
+            select = "SELECT COUNT(_id) AS PhCount FROM VegItems "
+                    + "WHERE VisitID = ? AND SourceID = 2;";
+            cl = new CursorLoader(getActivity(), baseUri,
+                    null, select, new String[] { "" + mVisitId }, null);
+            break;
         }
         return cl;
     }
@@ -569,9 +583,8 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 mLongitude = c.getDouble(c.getColumnIndexOrThrow("Longitude"));
                 mAccuracy = c.getFloat(c.getColumnIndexOrThrow("Accuracy"));
                 mViewVisitLocation.setText("" + mLatitude + ", " + mLongitude
-                    + "\naccuracy " + mAccuracy + "m");
+                        + "\naccuracy " + mAccuracy + "m");
             }
-
             break;
 
         case Loaders.NAMERS:
@@ -579,10 +592,22 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             // The framework will take care of closing the old cursor once we return.
             mNamerAdapter.swapCursor(c);
             if (mRowCt > 0) {
-                setNamerSpinnerSelectionFromDefaultNamer(); // internally sets mNamerId
-                mNamerSpinner.setEnabled(true);
+                if (mVisitId == 0) {
+                    setNamerSpinnerSelectionFromDefaultNamer(); // internally sets mNamerId
+                } else {
+                    setNamerSpinnerSelection(); // set from mNamerId
+                }
+//                mNamerSpinner.setEnabled(true);
             } else {
-                mNamerSpinner.setEnabled(false);
+//                mNamerSpinner.setEnabled(false);
+            }
+            break;
+
+        case Loaders.VISIT_PLACEHOLDERS_ENTERED:
+            long mCtPlaceholders = c.getLong(c.getColumnIndexOrThrow("PhCount"));
+            if (mCtPlaceholders == 0) {
+                // no placeholders entered yet on this visit, allow the Namer to be changed
+                mNamerSpinner.setEnabled(true);
             }
             break;
         }
@@ -636,6 +661,10 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             Log.d(LOG_TAG, "onLoaderReset, VISIT_REF_LOCATION.");
 //			don't need to do anything here, no cursor adapter
             break;
+
+        case Loaders.VISIT_PLACEHOLDERS_ENTERED:
+            break;
+        
         }
     }
 
@@ -920,9 +949,11 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             numUpdated = 1;
         } else { // update the existing record
             Log.d(LOG_TAG, "saveVisitRecord; updating existing record with mVisitId = " + mVisitId);
-            if (mValues.containsKey("NamerID")) {
-                // do not allow changing the Namer for existing records
-                mValues.remove("NamerID");
+            if (mCtPlaceholders != 0) { // if there are any Placeholders entered for this visit,
+                // do not allow the Namer to be changed
+                if (mValues.containsKey("NamerID")) {
+                    mValues.remove("NamerID");
+                }
             }
             mValues.put("LastChanged", mTimeFormat.format(new Date())); // update the last-changed time
             mUri = ContentUris.withAppendedId(mVisitsUri, mVisitId);

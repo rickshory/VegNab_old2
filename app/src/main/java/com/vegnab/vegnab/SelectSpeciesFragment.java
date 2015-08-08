@@ -126,6 +126,8 @@ public class SelectSpeciesFragment extends ListFragment
         if (savedInstanceState != null) {
             // restore search text and any search options
             mStSearch = savedInstanceState.getString(ARG_SEARCH_TEXT);
+            mProjectId = savedInstanceState.getLong(ARG_PROJECT_ID);
+            mNamerId = savedInstanceState.getLong(ARG_NAMER_ID);
         }
         // inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_sel_species, container, false);
@@ -139,10 +141,10 @@ public class SelectSpeciesFragment extends ListFragment
                 R.layout.list_spp_search_item, null, 0);
         setListAdapter(mSppResultsAdapter);
 
-        // get current Project and Namer Id's from preferences
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        mProjectId = sharedPref.getLong(Prefs.DEFAULT_PROJECT_ID, 0);
-        mNamerId = sharedPref.getLong(Prefs.DEFAULT_NAMER_ID, 0);
+//        // get current Project and Namer Id's from preferences
+//        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+//        mProjectId = sharedPref.getLong(Prefs.DEFAULT_PROJECT_ID, 0);
+//        mNamerId = sharedPref.getLong(Prefs.DEFAULT_NAMER_ID, 0);
 
         getLoaderManager().initLoader(Loaders.SPP_MATCHES, null, this);
 
@@ -167,11 +169,11 @@ public class SelectSpeciesFragment extends ListFragment
             mCurSubplotTypeRecId = args.getLong(ARG_SUBPLOT_TYPE_ID);
             mPresenceOnly = args.getBoolean(ARG_PRESENCE_ONLY_SUBPLOT);
             mPickPlaceholder = args.getBoolean(ARG_PICK_PLACEHOLDER);
-//            mProjectId = args.getLong(ARG_PROJECT_ID);
-//            mNamerId = args.getLong(ARG_NAMER_ID);
-            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-            mProjectId = sharedPref.getLong(Prefs.DEFAULT_PROJECT_ID, 0);
-            mNamerId = sharedPref.getLong(Prefs.DEFAULT_NAMER_ID, 0);
+            mProjectId = args.getLong(ARG_PROJECT_ID);
+            mNamerId = args.getLong(ARG_NAMER_ID);
+//            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+//            mProjectId = sharedPref.getLong(Prefs.DEFAULT_PROJECT_ID, 0);
+//            mNamerId = sharedPref.getLong(Prefs.DEFAULT_NAMER_ID, 0);
             /*	final static String ARG_VISIT_ID = "visId";
     final static String ARG_SUBPLOT_TYPE_ID = "sbpId";
     final static String ARG_PRESENCE_ONLY_SUBPLOT = "presenceOnly";
