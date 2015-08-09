@@ -145,7 +145,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             mViewVisitDate.setText(mDateFormat.format(mCalendar.getTime()));
         }
     };
-    int mRowCt;
+    int mRowCt, mNamersCt = 0;
     final static String ARG_SUBPLOT = "subplot"; // dummy value, eventually get rid of this one
     final static String ARG_VISIT_ID = "visitId";
     final static String ARG_LOC_GOOD_FLAG = "locGood";
@@ -594,6 +594,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             // The framework will take care of closing the old cursor once we return.
             mNamerAdapter.swapCursor(c);
             if (mRowCt > 0) {
+                mNamersCt = mRowCt;
                 setupNamerSpinner(); // this can run multiple times, latest will be most correct
             }
             break;
@@ -644,7 +645,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 
     public void setNamerSpinnerSelection() {
         // set the current Namer to show in its spinner
-        for (int i=0; i<mRowCt; i++) {
+        for (int i=0; i<mNamersCt; i++) {
             Log.d(LOG_TAG, "Setting mNamerSpinner; testing index " + i);
             if (mNamerSpinner.getItemIdAtPosition(i) == mNamerId) {
                 Log.d(LOG_TAG, "Setting mNamerSpinner; found matching index " + i);
