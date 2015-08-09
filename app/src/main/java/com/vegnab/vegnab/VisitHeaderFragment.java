@@ -353,6 +353,8 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     public void onResume() {
         super.onResume();
 //	    do other setup here if needed
+        // re-check this every time the fragment is entered
+        getLoaderManager().restartLoader(Loaders.VISIT_PLACEHOLDERS_ENTERED, null, this);
         switch (mGACState) {
         case GAC_STATE_LOCATION:
             if (!mLocIsGood) {
