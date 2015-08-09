@@ -553,11 +553,6 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 mViewVisitName.setText(c.getString(c.getColumnIndexOrThrow("VisitName")));
                 mViewVisitDate.setText(c.getString(c.getColumnIndexOrThrow("VisitDate")));
                 mNamerId = c.getLong(c.getColumnIndexOrThrow("NamerID"));
-                setNamerSpinnerSelection();
-//                // set the retrieved Namer as the default, will usually be who
-//                saveDefaultNamerId(mNamerId);
-//                setNamerSpinnerSelectionFromDefaultNamer();
-                mNamerSpinner.setEnabled(false); // disable, because existing record
                 mViewVisitScribe.setText(c.getString(c.getColumnIndexOrThrow("Scribe")));
                 // write code to save/retrieve Locations
                 mLocIsGood = (c.getInt(c.getColumnIndexOrThrow("RefLocIsGood")) != 0);
@@ -578,11 +573,9 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                     mViewAzimuth.setText("" + c.getInt(c.getColumnIndexOrThrow("Azimuth")));
                 }
                 mViewVisitNotes.setText(c.getString(c.getColumnIndexOrThrow("VisitNotes")));
-            } else { // a new record
-                setNamerSpinnerSelectionFromDefaultNamer();
-                mLblNewNamerSpinnerCover.setFocusableInTouchMode(true); // allow Namer to be changed
-                mNamerSpinner.setEnabled(true);
             }
+            // if no record retrieved, recID and other defaults remain zero
+            setupNamerSpinner(); // this can run multiple times, latest will be most correct
             break;
 
         case Loaders.VISIT_REF_LOCATION:
@@ -601,14 +594,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             // The framework will take care of closing the old cursor once we return.
             mNamerAdapter.swapCursor(c);
             if (mRowCt > 0) {
-                if (mVisitId == 0) {
-                    setNamerSpinnerSelectionFromDefaultNamer(); // internally sets mNamerId
-                } else {
-                    setNamerSpinnerSelection(); // set from mNamerId
-                }
-//                mNamerSpinner.setEnabled(true);
-            } else {
-//                mNamerSpinner.setEnabled(false);
+                setupNamerSpinner(); // this can run multiple times, latest will be most correct
             }
             break;
 
@@ -618,11 +604,27 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 mCtPlaceholders = c.getLong(0); // only one field
 //                mCtPlaceholders = c.getLong(c.getColumnIndexOrThrow("PhCount"));
             }
-            if (mCtPlaceholders == 0) {
-                // no placeholders entered yet on this visit, allow the Namer to be changed
-                mNamerSpinner.setEnabled(true);
-            }
+            setupNamerSpinner(); // this can run multiple times, latest will be most correct
             break;
+        }
+    }
+
+    public void setupNamerSpinner() {
+        if (mVisitId == 0) { // new record
+            // assumes there are no placeholders entered
+            mNamerSpinner.setEnabled(true); // no placeholders means spinner can be activated
+            setNamerSpinnerSelectionFromDefaultNamer();
+        } else { // existing record
+            // assumes record has a valid NamerId that corresponds to a saved Namer
+            setNamerSpinnerSelection();
+            if (mCtPlaceholders == 0) { // verified no placeholders, spinner active
+                mNamerSpinner.setEnabled(true);
+                mNamerSpinner.bringToFront();
+            } else { // placeholders entered on visit (or not yet verified there are none)
+                mNamerSpinner.setEnabled(false); // lock spinner to prevent Namer/Placeholder mismatch
+                mLblNewNamerSpinnerCover.bringToFront(); // user sees Namer, but click brings up message
+            }
+
         }
     }
 
