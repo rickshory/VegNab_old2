@@ -541,16 +541,16 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         case Loaders.EXISTING_VISITS:
             mExistingVisitNames.clear();
             while (c.moveToNext()) {
-                Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("VisitName")));
+//                Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("VisitName")));
                 mExistingVisitNames.put(c.getLong(c.getColumnIndexOrThrow("_id")),
                         c.getString(c.getColumnIndexOrThrow("VisitName")));
             }
-            Log.d(LOG_TAG, "onLoadFinished, number of items in mExistingProjCodes: " + mExistingVisitNames.size());
-            Log.d(LOG_TAG, "onLoadFinished, items in mExistingProjCodes: " + mExistingVisitNames.toString());
+//            Log.d(LOG_TAG, "onLoadFinished, number of items in mExistingProjCodes: " + mExistingVisitNames.size());
+//            Log.d(LOG_TAG, "onLoadFinished, items in mExistingProjCodes: " + mExistingVisitNames.toString());
             break;
 
         case Loaders.VISIT_TO_EDIT:
-            Log.d(LOG_TAG, "onLoadFinished, VISIT_TO_EDIT, records: " + c.getCount());
+//            Log.d(LOG_TAG, "onLoadFinished, VISIT_TO_EDIT, records: " + c.getCount());
             if (c.moveToFirst()) {
                 mViewVisitName.setText(c.getString(c.getColumnIndexOrThrow("VisitName")));
                 mViewVisitDate.setText(c.getString(c.getColumnIndexOrThrow("VisitDate")));
@@ -581,7 +581,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             break;
 
         case Loaders.VISIT_REF_LOCATION:
-            Log.d(LOG_TAG, "onLoadFinished, VISIT_REF_LOCATION, records: " + c.getCount());
+//            Log.d(LOG_TAG, "onLoadFinished, VISIT_REF_LOCATION, records: " + c.getCount());
             if (c.moveToFirst()) {
                 mLatitude = c.getDouble(c.getColumnIndexOrThrow("Latitude"));
                 mLongitude = c.getDouble(c.getColumnIndexOrThrow("Longitude"));
@@ -602,7 +602,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             break;
 
         case Loaders.VISIT_PLACEHOLDERS_ENTERED:
-            Log.d(LOG_TAG, "onLoadFinished, VISIT_PLACEHOLDERS_ENTERED, records: " + mRowCt);
+//            Log.d(LOG_TAG, "onLoadFinished, VISIT_PLACEHOLDERS_ENTERED, records: " + mRowCt);
             if (c.moveToFirst()) {
                 mCtPlaceholders = c.getLong(0); // only one field
 //                mCtPlaceholders = c.getLong(c.getColumnIndexOrThrow("PhCount"));
@@ -648,9 +648,9 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     public void setNamerSpinnerSelection() {
         // set the current Namer to show in its spinner
         for (int i=0; i<mNamersCt; i++) {
-            Log.d(LOG_TAG, "Setting mNamerSpinner; testing index " + i);
+//            Log.d(LOG_TAG, "Setting mNamerSpinner; testing index " + i);
             if (mNamerSpinner.getItemIdAtPosition(i) == mNamerId) {
-                Log.d(LOG_TAG, "Setting mNamerSpinner; found matching index " + i);
+//                Log.d(LOG_TAG, "Setting mNamerSpinner; found matching index " + i);
                 mNamerSpinner.setSelection(i);
                 break;
             }
@@ -663,11 +663,11 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         // is about to be closed. Need to make sure it is no longer is use.
         switch (loader.getId()) {
         case Loaders.EXISTING_VISITS:
-            Log.d(LOG_TAG, "onLoaderReset, EXISTING_VISITS.");
+//            Log.d(LOG_TAG, "onLoaderReset, EXISTING_VISITS.");
 //			don't need to do anything here, no cursor adapter
             break;
         case Loaders.VISIT_TO_EDIT:
-            Log.d(LOG_TAG, "onLoaderReset, VISIT_TO_EDIT.");
+//            Log.d(LOG_TAG, "onLoaderReset, VISIT_TO_EDIT.");
 //			don't need to do anything here, no cursor adapter
             break;
 
@@ -676,7 +676,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             break;
 
         case Loaders.VISIT_REF_LOCATION:
-            Log.d(LOG_TAG, "onLoaderReset, VISIT_REF_LOCATION.");
+//            Log.d(LOG_TAG, "onLoaderReset, VISIT_REF_LOCATION.");
 //			don't need to do anything here, no cursor adapter
             break;
 
@@ -1331,17 +1331,22 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     public void onConnectionFailed(ConnectionResult connectionResult) {
         // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
         // onConnectionFailed.
+        Log.d(LOG_TAG, "Connection failed, will try resolution");
         if (mResolvingError) { // already working on this
+            Log.d(LOG_TAG, "Currently working on failed connection");
             return;
         } else  if (connectionResult.hasResolution()) {
+            Log.d(LOG_TAG, "Failed connection has resolution, about to try");
             try {
                 mResolvingError = true;
                 // Start an Activity that tries to resolve the error
+                Log.d(LOG_TAG, "About to send Intent to resolve failed connection");
                 connectionResult.startResolutionForResult(getActivity(), REQUEST_RESOLVE_ERROR);
             } catch (IntentSender.SendIntentException e) {
                 mGoogleApiClient.connect(); // error with resolution intent, try again
             }
         } else {
+            Log.d(LOG_TAG, "Connection, evidently no resolution, about to try to show error dialog");
             GooglePlayServicesUtil.getErrorDialog(connectionResult.getErrorCode(),getActivity(),2000).show();
             // Show dialog using GooglePlayServicesUtil.getErrorDialog()
 //        	showErrorDialog(connectionResult.getErrorCode());
@@ -1661,8 +1666,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 
         if (ConnectionResult.SUCCESS == resultCode) {
             return true;
-        }
-        else {
+        } else {
             GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(), 0).show();
             return false;
         }
