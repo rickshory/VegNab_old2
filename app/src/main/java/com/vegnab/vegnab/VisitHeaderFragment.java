@@ -118,6 +118,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     // Bool to track whether the app is already resolving an error
     private boolean mResolvingError = false;
     private static final String STATE_RESOLVING_ERROR = "resolving_error";
+    private int mResolveTryCount = 0;
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     long mVisitId = 0, mNamerId = 0, mLocId = 0; // zero default means new or not specified yet
     long mCtPlaceholders = -1; // count of Placeholders entered on this visit
@@ -1333,7 +1334,8 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         // onConnectionFailed.
         Log.d(LOG_TAG, "Connection failed, will try resolution");
         if (mResolvingError) { // already working on this
-            Log.d(LOG_TAG, "Currently working on failed connection");
+            mResolveTryCount++;
+            Log.d(LOG_TAG, "Currently working on failed connection, attempt " + mResolveTryCount);
             return;
         } else  if (connectionResult.hasResolution()) {
             Log.d(LOG_TAG, "Failed connection has resolution, about to try");
@@ -1380,6 +1382,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     // Called from ErrorDialogFragment when the dialog is dismissed.
     public void onDialogDismissed() {
         mResolvingError = false;
+        mResolveTryCount = 0;
     }
 
     // A fragment to display an error dialog
