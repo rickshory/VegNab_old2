@@ -212,9 +212,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         FragmentManager fm = getActivity().getSupportFragmentManager();
         switch (item.getItemId()) { // the Activity has first opportunity to handle these
         // any not handled come here to this Fragment
-        case R.id.action_ph_photo:
-            Toast.makeText(getActivity(), "''Take Photo'' of Placeholder is not implemented yet", Toast.LENGTH_SHORT).show();
-            return true;
 
         case R.id.action_ph_details:
             Toast.makeText(getActivity(), "''Details'' of Placeholder is not implemented yet", Toast.LENGTH_SHORT).show();

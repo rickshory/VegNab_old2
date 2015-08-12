@@ -282,7 +282,6 @@
     <string name="edit_placeholder_label_ident_notes">Notes</string>
     <string name="edit_placeholder_hint_ident_notes">Optional, notes on this identification</string>
 
-    <string name="placeholder_menu_takephoto">Take photo</string>
     <string name="placeholder_menu_details">Details</string>
     <string name="placeholder_menu_help">Help</string>
 

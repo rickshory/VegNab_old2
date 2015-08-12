@@ -4,12 +4,6 @@
     >
 
     <item
-        android:id="@+id/action_ph_photo"
-        android:orderInCategory="20"
-        android:title="@string/placeholder_menu_takephoto"
-        app:showAsAction="ifRoom"/>
-
-    <item
         android:id="@+id/action_ph_details"
         android:orderInCategory="30"
         android:title="@string/placeholder_menu_details"
