@@ -1614,8 +1614,6 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             Log.d(LOG_TAG, "about to do 'mGoogleApiClient.connect()'");
             mGoogleApiClient.connect();
         }
-
-
     };
 
     // Called by Google Play services if the connection to GoogleApiClient drops because of an error.

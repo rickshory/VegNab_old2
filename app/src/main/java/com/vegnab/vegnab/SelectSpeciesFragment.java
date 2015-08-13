@@ -292,6 +292,14 @@ public class SelectSpeciesFragment extends ListFragment
         switch (v.getId()) {
         case R.id.txt_search_chars:
             inflater.inflate(R.menu.context_sel_spp_search_chars, menu);
+            if (mStSearch.trim().length() == 0) {
+                // can't add placeholder if no text yet to use
+                menu.removeItem(R.id.sel_spp_search_add_placeholder);
+            }
+            if (mPlaceholderCodesForThisNamer.size() == 0) {
+                // if no placeholders, don't show option to pick from them
+                menu.removeItem(R.id.sel_spp_search_pick_placeholder);
+            }
             break;
 		case android.R.id.list:
 			inflater.inflate(R.menu.context_sel_spp_list_items, menu);
