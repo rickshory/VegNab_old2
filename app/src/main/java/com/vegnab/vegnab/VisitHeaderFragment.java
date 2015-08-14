@@ -372,6 +372,11 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     @Override
     public void onPause() {
         super.onPause();
+        // if namer spinner has been changed
+        if (mNamerSpinner.getId() != mNamerId) {
+            // attempt to save record
+            saveVisitRecord();
+        }
         if (mGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             mGoogleApiClient.disconnect();
