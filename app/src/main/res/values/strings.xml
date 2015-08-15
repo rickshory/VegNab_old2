@@ -13,6 +13,7 @@
     <string name="action_new_plottype">New Plot Type</string>
     <string name="action_get_species">Get species</string>
     <string name="action_export_db">Export database</string>
+    <string name="action_hide_visit">Hide Visit</string>
     <string name="action_unhide_visits">Un-hide Visits</string>
     <string name="action_visit_info">Visit details</string>
     <string name="action_delete_visit">Delete Visit</string>

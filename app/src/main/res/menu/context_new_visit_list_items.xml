@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <item android:id="@+id/new_visit_list_item_export"
+        android:title="@string/action_export_visit" />
+    <item android:id="@+id/new_visit_list_item_hide"
+        android:title="@string/action_hide_visit" />
+    <item android:id="@+id/new_visit_list_item_help"
+          android:title="@string/msg_help" />
+</menu>
