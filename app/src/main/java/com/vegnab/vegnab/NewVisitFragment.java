@@ -9,6 +9,7 @@ import com.vegnab.vegnab.database.VNContract.Prefs;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -50,6 +51,8 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
     int mCurrentSubplot = -1;
     Spinner mProjSpinner, mPlotTypeSpinner;
     SimpleCursorAdapter mProjAdapter, mPlotTypeAdapter, mVisitListAdapter;
+    Cursor mVisitCursor;
+    ContentValues mValues = new ContentValues();
     // declare that the container Activity must implement this interface
     public interface OnButtonListener {
         // methods that must be implemented in the container Activity
@@ -233,9 +236,11 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
         }
     }
 
+    // This is executed when the user selects an option
+
 /*
 
-    // This is executed when the user selects an option
+
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 //    AdapterViewCompat.AdapterContextMenuInfo info = (AdapterViewCompat.AdapterContextMenuInfo) item.getMenuInfo();
@@ -463,6 +468,26 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
         "_id", "ProjCode",
     };
 
+    public void setVisitVisibility(long visRecId, boolean showVisit) {
+        Context c = getActivity();
+        if (showVisit) {
+            Log.d(LOG_TAG, "About to show Visit, record id=" + visRecId);
+        } else {
+            Log.d(LOG_TAG, "About to hide Visit, record id=" + visRecId);
+        }
+        Uri uri, sUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "visits");
+        uri = ContentUris.withAppendedId(sUri, visRecId);
+        mValues.clear();
+        mValues.put("ShowOnMobile", (showVisit ? 1 : 0));
+        ContentResolver rs = c.getContentResolver();
+        int numUpdated = rs.update(uri, mValues, null, null);
+        Log.d(LOG_TAG, "Updated visit to ShowOnMobile=" + showVisit + "; numUpdated: " + numUpdated);
+        String msg = (showVisit ? c.getResources().getString(R.string.new_visit_show_visit_done) :
+                c.getResources().getString(R.string.new_visit_hide_visit_done));
+        Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+        refreshVisitsList();
+    }
+
     public void refreshVisitsList() {
         // when the referred Loader callback returns, will update the list of Visits
         getLoaderManager().restartLoader(Loaders.PREV_VISITS, null, this);
@@ -630,6 +655,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
             break;
 
         case Loaders.PREV_VISITS:
+            mVisitCursor = finishedCursor; // save a reference
             mVisitListAdapter.swapCursor(finishedCursor);
             break;
         }
