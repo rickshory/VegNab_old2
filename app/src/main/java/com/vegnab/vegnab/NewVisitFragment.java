@@ -434,6 +434,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
             cl = new CursorLoader(getActivity(), baseUri,
                     null, select, null, null);
             break;
+
         case Loaders.PREV_VISITS:
             baseUri = ContentProvider_VegNab.SQL_URI;
             select = "SELECT _id, VisitName, VisitDate FROM Visits "
@@ -443,8 +444,15 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
                     null, select, null, null);
             break;
 
+        case Loaders.HIDDEN_VISITS:
+            baseUri = ContentProvider_VegNab.SQL_URI;
+            select = "SELECT _id, VisitName, VisitDate FROM Visits "
+                    + "WHERE ShowOnMobile = 0 AND IsDeleted = 0 "
+                    + "ORDER BY VisitDate DESC;";
+            cl = new CursorLoader(getActivity(), baseUri,
+                    null, select, null, null);
+            break;
 
-//Loaders.		
         }
         return cl;
     }
@@ -568,6 +576,11 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
             mVisitCursor = finishedCursor; // save a reference
             mVisitListAdapter.swapCursor(finishedCursor);
             break;
+
+        case Loaders.HIDDEN_VISITS:
+//            mVisitCursor = finishedCursor; // save a reference
+//            mVisitListAdapter.swapCursor(finishedCursor);
+            break;
         }
     }
 
@@ -585,6 +598,8 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
         case Loaders.PREV_VISITS:
             mVisitListAdapter.swapCursor(null);
             break;
+        case Loaders.HIDDEN_VISITS:
+            break; // nothing to do with this one
     }
 }
 

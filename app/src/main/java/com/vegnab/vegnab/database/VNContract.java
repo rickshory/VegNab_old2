@@ -46,6 +46,7 @@ public final class VNContract {
         public static final int PLOTTYPES = 2; // Loader Id for Plot Types
         public static final int PREV_VISITS = 3; // Loader ID for previous Visits
         public static final int VALID_DEL_PROJECTS = 4; // Loader Id for the list of Projects that are valid to delete
+        public static final int HIDDEN_VISITS = 5; // visits that are flagged hidden and can be un-hidden
         // in Edit Project
         public static final int EXISTING_PROJCODES = 11; // to disallow duplicates
         public static final int PROJECT_TO_EDIT = 12; //

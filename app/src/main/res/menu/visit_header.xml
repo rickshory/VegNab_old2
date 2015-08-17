@@ -23,10 +23,10 @@
 
     <item
         android:id="@+id/action_unhide_visit"
-        android:orderInCategory="320"
+        android:orderInCategory="330"
         android:title="@string/action_unhide_visit"
         app:showAsAction="never"/>
-    
+
     <item
         android:id="@+id/action_visit_help"
         android:orderInCategory="340"
