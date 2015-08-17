@@ -20,6 +20,12 @@
         android:orderInCategory="320"
         android:title="@string/action_export_visit"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_unhide_visit"
+        android:orderInCategory="320"
+        android:title="@string/action_unhide_visit"
+        app:showAsAction="never"/>
     
     <item
         android:id="@+id/action_visit_help"

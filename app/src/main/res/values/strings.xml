@@ -18,6 +18,7 @@
     <string name="action_visit_info">Visit details</string>
     <string name="action_delete_visit">Delete Visit</string>
     <string name="action_export_visit">Export Visit</string>
+    <string name="action_unhide_visit">Un-hide Visit</string>
     <string name="action_delete_namer">Delete Namer</string>
    
     <string name="default_project">MyProject</string>
