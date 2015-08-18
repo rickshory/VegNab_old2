@@ -21,6 +21,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -49,12 +51,13 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
         LoaderManager.LoaderCallbacks<Cursor>{
     private static final String LOG_TAG = NewVisitFragment.class.getSimpleName();
     long mProjectId, mPlotTypeId;
-    int mRowCt;
+    int mRowCt = 0, mCtHiddenVisits = 0;
     final static String ARG_SUBPLOT = "subplot";
+    final static String ARG_CT_HIDDEN_VISITS = "ctHiddenVisits";
     int mCurrentSubplot = -1;
     Spinner mProjSpinner, mPlotTypeSpinner;
     SimpleCursorAdapter mProjAdapter, mPlotTypeAdapter, mVisitListAdapter;
-    Cursor mVisitCursor;
+    Cursor mVisitCursor, mHiddenVisitsCursor;
     ContentValues mValues = new ContentValues();
     // declare that the container Activity must implement this interface
     public interface OnButtonListener {
@@ -81,6 +84,33 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+//		DialogFragment editProjDlg;
+        switch (item.getItemId()) { // the Activity has first opportunity to handle these
+        // any not handled come here to this Fragment
+            // items specific to New Visit menu
+            // action_edit_proj: currently handled by Activity, change to Context menu of Projects spinner
+            // action_new_proj: currently handled by Activity, change to 'new item' in Projects spinner
+            // action_del_proj: currently handled by Activity, change to Context menu of Projects spinner
+            // action_new_plottype: not implemented yet, msg handled by Activity
+            // action_get_species: handled by Activity
+            // action_export_db: handled by Activity
+            // action_unhide_visits: handled in this fragment
+
+        case R.id.action_unhide_visits:
+            Toast.makeText(getActivity(), "''Un-hide Visits'' of New Visit screen is not implemented yet", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         // if the activity was re-created (e.g. from a screen rotate)
@@ -88,6 +118,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
         // This is mostly needed in fixed-pane layouts
         if (savedInstanceState != null) {
             mCurrentSubplot = savedInstanceState.getInt(ARG_SUBPLOT);
+            mCtHiddenVisits = savedInstanceState.getInt(ARG_CT_HIDDEN_VISITS);
         }
         // inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_new_visit, container, false);
@@ -207,6 +238,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
         super.onSaveInstanceState(outState);
         // save the current subplot arguments in case we need to re-create the fragment
         outState.putInt(ARG_SUBPLOT, mCurrentSubplot);
+        outState.putInt(ARG_CT_HIDDEN_VISITS, mCtHiddenVisits);
     }
 
     @Override
@@ -578,7 +610,8 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
             break;
 
         case Loaders.HIDDEN_VISITS:
-//            mVisitCursor = finishedCursor; // save a reference
+            mHiddenVisitsCursor = finishedCursor; // save a reference
+            mCtHiddenVisits = mRowCt;
 //            mVisitListAdapter.swapCursor(finishedCursor);
             break;
         }
