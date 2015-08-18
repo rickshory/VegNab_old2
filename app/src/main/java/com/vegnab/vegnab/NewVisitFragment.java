@@ -103,6 +103,14 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
 
         case R.id.action_unhide_visits:
             Toast.makeText(getActivity(), "''Un-hide Visits'' of New Visit screen is not implemented yet", Toast.LENGTH_SHORT).show();
+            if (mCtHiddenVisits == 0) {
+                Toast.makeText(getActivity(),
+                        getActivity().getResources().getString(R.string.new_visit_unhide_visit_none),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+
+            }
+/*  <string name="new_visit_unhide_visit_hdr">Visit to un-hide</string> */
             return true;
         }
         return super.onOptionsItemSelected(item);
