@@ -202,39 +202,43 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 //		DialogFragment editProjDlg;
         switch (item.getItemId()) { // the Activity has first opportunity to handle these
         // any not handled come here to this Fragment
-        case R.id.action_app_info:
-            Toast.makeText(getActivity(), "''App Info'' of Visit Header is not implemented yet", Toast.LENGTH_SHORT).show();
-            return true;
-        case R.id.action_visit_info:
-            Toast.makeText(getActivity(), "''Visit Details'' of Visit Header is not implemented yet", Toast.LENGTH_SHORT).show();
-            return true;
-        case R.id.action_export_visit:
-            exportVisit();
-            return true;
+            case R.id.action_app_info:
+                Toast.makeText(getActivity(), "''App Info'' of Visit Header is not implemented yet", Toast.LENGTH_SHORT).show();
+                return true;
 
-        case R.id.action_delete_visit:
-            Toast.makeText(getActivity(), "''Delete Visit'' is not fully implemented yet", Toast.LENGTH_SHORT).show();
-            Fragment newVisFragment = fm.findFragmentByTag("new_visit");
-            if (newVisFragment == null) {
-                Log.d(LOG_TAG, "newVisFragment == null");
-            } else {
-                Log.d(LOG_TAG, "newVisFragment: " + newVisFragment.toString());
-                FragmentTransaction transaction = fm.beginTransaction();
-                // replace the fragment in the fragment container with the stored New Visit fragment
-                transaction.replace(R.id.fragment_container, newVisFragment);
-                // we are deleting this record, so do not put the present fragment on the backstack
-                transaction.commit();
-            }
+            case R.id.action_visit_info:
+                Toast.makeText(getActivity(), "''Visit Details'' of Visit Header is not implemented yet", Toast.LENGTH_SHORT).show();
+                return true;
 
-//			DelProjectDialog delProjDlg = new DelProjectDialog();
-//			delProjDlg.show(fm, "frg_del_proj");
-            return true;
-        case R.id.action_visit_help:
-            Toast.makeText(getActivity(), "''Visit Help'' is not implemented yet", Toast.LENGTH_SHORT).show();
-            return true;
-        case R.id.action_settings:
-            Toast.makeText(getActivity(), "''Settings'' of Visit Header is not implemented yet", Toast.LENGTH_SHORT).show();
-            return true;
+            case R.id.action_export_visit:
+                exportVisit();
+                return true;
+
+            case R.id.action_delete_visit:
+                Toast.makeText(getActivity(), "''Delete Visit'' is not fully implemented yet", Toast.LENGTH_SHORT).show();
+                Fragment newVisFragment = fm.findFragmentByTag("new_visit");
+                if (newVisFragment == null) {
+                    Log.d(LOG_TAG, "newVisFragment == null");
+                } else {
+                    Log.d(LOG_TAG, "newVisFragment: " + newVisFragment.toString());
+                    FragmentTransaction transaction = fm.beginTransaction();
+                    // replace the fragment in the fragment container with the stored New Visit fragment
+                    transaction.replace(R.id.fragment_container, newVisFragment);
+                    // we are deleting this record, so do not put the present fragment on the backstack
+                    transaction.commit();
+                }
+
+    //			DelProjectDialog delProjDlg = new DelProjectDialog();
+    //			delProjDlg.show(fm, "frg_del_proj");
+                return true;
+
+            case R.id.action_visit_help:
+                Toast.makeText(getActivity(), "''Visit Help'' is not implemented yet", Toast.LENGTH_SHORT).show();
+                return true;
+
+            case R.id.action_settings:
+                Toast.makeText(getActivity(), "''Settings'' of Visit Header is not implemented yet", Toast.LENGTH_SHORT).show();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
