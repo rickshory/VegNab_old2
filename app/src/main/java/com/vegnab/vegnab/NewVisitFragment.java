@@ -49,6 +49,13 @@ import android.widget.Toast;
 public class NewVisitFragment extends ListFragment implements OnClickListener,
         android.widget.AdapterView.OnItemSelectedListener,
         LoaderManager.LoaderCallbacks<Cursor>{
+
+    public interface ShowHiddenVisitDialogListener {
+        void onVisitVisibilityChangeComplete(NewVisitFragment newVisitFragment);
+    }
+    ShowHiddenVisitDialogListener mShowVisitListener;
+
+
     private static final String LOG_TAG = NewVisitFragment.class.getSimpleName();
     long mProjectId, mPlotTypeId;
     int mRowCt = 0, mCtHiddenVisits = 0;
@@ -419,6 +426,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
     };
 
     public void setVisitVisibility(long visRecId, boolean showVisit) {
+        if (visRecId == 0) return; // default bailout
         Context c = getActivity();
         if (showVisit) {
             Log.d(LOG_TAG, "About to show Visit, record id=" + visRecId);

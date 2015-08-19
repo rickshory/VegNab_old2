@@ -88,7 +88,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         LocationListener {
 
     public interface EditVisitDialogListener {
-        public void onEditVisitComplete(VisitHeaderFragment visitHeaderFragment);
+        void onEditVisitComplete(VisitHeaderFragment visitHeaderFragment);
     }
     EditVisitDialogListener mEditVisitListener;
 
