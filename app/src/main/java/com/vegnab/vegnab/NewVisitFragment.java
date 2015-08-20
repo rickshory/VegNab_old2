@@ -60,7 +60,6 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
     long mProjectId, mPlotTypeId;
     int mRowCt = 0, mCtHiddenVisits = 0;
     final static String ARG_SUBPLOT = "subplot";
-    final static String ARG_CT_HIDDEN_VISITS = "ctHiddenVisits";
     int mCurrentSubplot = -1;
     Spinner mProjSpinner, mPlotTypeSpinner;
     SimpleCursorAdapter mProjAdapter, mPlotTypeAdapter, mVisitListAdapter;
@@ -132,7 +131,6 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
         // This is mostly needed in fixed-pane layouts
         if (savedInstanceState != null) {
             mCurrentSubplot = savedInstanceState.getInt(ARG_SUBPLOT);
-            mCtHiddenVisits = savedInstanceState.getInt(ARG_CT_HIDDEN_VISITS);
         }
         // inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_new_visit, container, false);
@@ -252,7 +250,6 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
         super.onSaveInstanceState(outState);
         // save the current subplot arguments in case we need to re-create the fragment
         outState.putInt(ARG_SUBPLOT, mCurrentSubplot);
-        outState.putInt(ARG_CT_HIDDEN_VISITS, mCtHiddenVisits);
     }
 
     @Override
@@ -490,16 +487,6 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
             cl = new CursorLoader(getActivity(), baseUri,
                     null, select, null, null);
             break;
-
-        case Loaders.HIDDEN_VISITS:
-            baseUri = ContentProvider_VegNab.SQL_URI;
-            select = "SELECT _id, VisitName, VisitDate FROM Visits "
-                    + "WHERE ShowOnMobile = 0 AND IsDeleted = 0 "
-                    + "ORDER BY VisitDate DESC;";
-            cl = new CursorLoader(getActivity(), baseUri,
-                    null, select, null, null);
-            break;
-
         }
         return cl;
     }
@@ -624,11 +611,6 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
             mVisitListAdapter.swapCursor(finishedCursor);
             break;
 
-        case Loaders.HIDDEN_VISITS:
-            mHiddenVisitsCursor = finishedCursor; // save a reference
-            mCtHiddenVisits = mRowCt;
-//            mVisitListAdapter.swapCursor(finishedCursor);
-            break;
         }
     }
 
@@ -646,8 +628,6 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
         case Loaders.PREV_VISITS:
             mVisitListAdapter.swapCursor(null);
             break;
-        case Loaders.HIDDEN_VISITS:
-            break; // nothing to do with this one
     }
 }
 
