@@ -39,10 +39,10 @@ public class UnHideVisitDialog extends DialogFragment implements View.OnClickLis
         View view = inflater.inflate(R.layout.fragment_unhide_visit, root);
         mHiddenVisitsList = (ListView) view.findViewById(R.id.list_hidden_visits);
 
-        String[] fromColumns = {"VisitName"}; // VisitName, VisitDate
-        int[] toViews = {android.R.id.text1};
+        String[] fromColumns = {"VisitName", "VisitDate"}; // VisitName, VisitDate
+        int[] toViews = {android.R.id.text1, android.R.id.text2};
         mListAdapter = new SimpleCursorAdapter(getActivity(),
-                android.R.layout.simple_list_item_1, null,
+                android.R.layout.simple_list_item_2, null,
                 fromColumns, toViews, 0);
         mHiddenVisitsList.setAdapter(mListAdapter);
         getLoaderManager().initLoader(Loaders.HIDDEN_VISITS, null, this);
