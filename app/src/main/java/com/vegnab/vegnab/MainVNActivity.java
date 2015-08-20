@@ -253,15 +253,16 @@ public class MainVNActivity extends ActionBarActivity
             exportDB();
             return true;
 
-        case R.id.action_unhide_visits:
+        case R.id.action_unhide_visits: // from New Visit fragment
             if (mCtHiddenVisits == 0) {
                 Toast.makeText(this,
                         this.getResources().getString(R.string.new_visit_unhide_visit_none),
                         Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(getApplicationContext(), mCtHiddenVisits + " hidden visit(s), but "
-                        + "''Un-hide Visits'' is not implemented yet", Toast.LENGTH_SHORT).show();
-
+//                Toast.makeText(getApplicationContext(), mCtHiddenVisits + " hidden visit(s), but "
+//                        + "''Un-hide Visits'' is not implemented yet", Toast.LENGTH_SHORT).show();
+                UnHideVisitDialog unHideVisDlg = new UnHideVisitDialog();
+                unHideVisDlg.show(fm, "frg_unhide_vis");
             }
             return true;
 
