@@ -97,29 +97,28 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
         // as you specify a parent activity in AndroidManifest.xml.
         FragmentManager fm = getActivity().getSupportFragmentManager();
 //		DialogFragment editProjDlg;
-        switch (item.getItemId()) { // the Activity has first opportunity to handle these
-        // any not handled come here to this Fragment
-            // items specific to New Visit menu
-            // action_edit_proj: currently handled by Activity, change to Context menu of Projects spinner
-            // action_new_proj: currently handled by Activity, change to 'new item' in Projects spinner
-            // action_del_proj: currently handled by Activity, change to Context menu of Projects spinner
-            // action_new_plottype: not implemented yet, msg handled by Activity
-            // action_get_species: handled by Activity
-            // action_export_db: handled by Activity
-            // action_unhide_visits: handled in this fragment
-
-        case R.id.action_unhide_visits:
-            Toast.makeText(getActivity(), "''Un-hide Visits'' of New Visit screen is not implemented yet", Toast.LENGTH_SHORT).show();
-            if (mCtHiddenVisits == 0) {
-                Toast.makeText(getActivity(),
-                        getActivity().getResources().getString(R.string.new_visit_unhide_visit_none),
-                        Toast.LENGTH_SHORT).show();
-            } else {
-
-            }
-/*  <string name="new_visit_unhide_visit_hdr">Visit to un-hide</string> */
-            return true;
-        }
+//        switch (item.getItemId()) { // the Activity has first opportunity to handle these
+//        // any not handled come here to this Fragment
+//            // items specific to New Visit menu
+//            // action_edit_proj: currently handled by Activity, change to Context menu of Projects spinner
+//            // action_new_proj: currently handled by Activity, change to 'new item' in Projects spinner
+//            // action_del_proj: currently handled by Activity, change to Context menu of Projects spinner
+//            // action_new_plottype: not implemented yet, msg handled by Activity
+//            // action_get_species: handled by Activity
+//            // action_export_db: handled by Activity
+//            // action_unhide_visits: handled by Activity
+//
+//        case R.id.action_unhide_visits:
+//            Toast.makeText(getActivity(), "''Un-hide Visits'' of New Visit screen is not implemented yet", Toast.LENGTH_SHORT).show();
+//            if (mCtHiddenVisits == 0) {
+//                Toast.makeText(getActivity(),
+//                        getActivity().getResources().getString(R.string.new_visit_unhide_visit_none),
+//                        Toast.LENGTH_SHORT).show();
+//            } else {
+//
+//            }
+//            return true;
+//        }
         return super.onOptionsItemSelected(item);
     }
 

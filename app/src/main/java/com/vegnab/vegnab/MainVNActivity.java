@@ -15,17 +15,24 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.vegnab.vegnab.BuildConfig;
+import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.Prefs;
 import com.vegnab.vegnab.database.VNContract.Tags;
 
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.telephony.TelephonyManager;
@@ -56,11 +63,14 @@ public class MainVNActivity extends ActionBarActivity
         SelectSpeciesFragment.OnEditPlaceholderListener,
         EditSppItemDialog.EditSppItemDialogListener,
         EditPlaceholderFragment.OnButtonListener,
-        ConfirmDelVegItemDialog.ConfirmDeleteVegItemDialogListener {
+        ConfirmDelVegItemDialog.ConfirmDeleteVegItemDialogListener,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String LOG_TAG = MainVNActivity.class.getSimpleName();
     static String mUniqueDeviceId, mDeviceIdSource;
     long mRowCt, mVisitId = 0, mSubplotTypeId = 0, mProjectId = 0, mNamerId = 0  ;
+    Cursor mHiddenVisitsCursor;
+    long mCtHiddenVisits = 0;
 
     final static String ARG_SUBPLOT_TYPE_ID = "subplotTypeId";
     final static String ARG_VISIT_ID = "visitId";
@@ -70,6 +80,8 @@ public class MainVNActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // start following loader, does not use UI, but only gets a value to have ready for a menu action
+        getSupportLoaderManager().initLoader(VNContract.Loaders.HIDDEN_VISITS, null, this);
         //Get a Tracker (should auto-report)
         ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
         // set up some default Preferences
@@ -173,6 +185,11 @@ public class MainVNActivity extends ActionBarActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.vn_activity, menu);
+        /*  // will mCtHiddenVisits be retrieved in time?, or will it always ==0 & therefore never show?
+        if (mCtHiddenVisits == 0) {
+        menu.removeItem(R.id.action_unhide_visits);
+            }
+            */
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -237,7 +254,15 @@ public class MainVNActivity extends ActionBarActivity
             return true;
 
         case R.id.action_unhide_visits:
-            Toast.makeText(getApplicationContext(), "''Un-hide Visits'' is not implemented yet", Toast.LENGTH_SHORT).show();
+            if (mCtHiddenVisits == 0) {
+                Toast.makeText(this,
+                        this.getResources().getString(R.string.new_visit_unhide_visit_none),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getApplicationContext(), mCtHiddenVisits + " hidden visit(s), but "
+                        + "''Un-hide Visits'' is not implemented yet", Toast.LENGTH_SHORT).show();
+
+            }
             return true;
 
         case R.id.action_settings:
@@ -731,5 +756,176 @@ public class MainVNActivity extends ActionBarActivity
         // must do following or file is not visible externally
         MediaScannerConnection.scanFile(getApplicationContext(), new String[] { dst.getAbsolutePath() }, null, null);
     }
+
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        // This is called when a new Loader needs to be created.
+        // switch out based on id
+        CursorLoader cl = null;
+        Uri baseUri;
+        String select = null; // default for all-columns, unless re-assigned or overridden by raw SQL
+        switch (id) {
+/*            case VNContract.Loaders.TEST_SQL:
+                baseUri = ContentProvider_VegNab.SQL_URI;
+                select = "SELECT StartDate FROM Projects WHERE _id = 1;";
+                cl = new CursorLoader(getActivity(), baseUri,
+                        null, select, null, null);
+                break;
+            case VNContract.Loaders.PROJECTS:
+                // First, create the base URI
+                // could test here, based on e.g. filters
+                baseUri = ContentProvider_VegNab.CONTENT_URI;
+                // Now create and return a CursorLoader that will take care of
+                // creating a Cursor for the dataset being displayed
+                // select is the WHERE clause
+                select = "(IsDeleted = 0)";
+                cl = new CursorLoader(getActivity(), Uri.parse(baseUri + "/projects"),
+                        PROJECTS_PROJCODES, select, null, null);
+                break;
+            case VNContract.Loaders.PLOTTYPES:
+                baseUri = ContentProvider_VegNab.SQL_URI;
+                select = "SELECT _id, PlotTypeDescr FROM PlotTypes;";
+                cl = new CursorLoader(getActivity(), baseUri,
+                        null, select, null, null);
+                break;
+
+            case VNContract.Loaders.PREV_VISITS:
+                baseUri = ContentProvider_VegNab.SQL_URI;
+                select = "SELECT _id, VisitName, VisitDate FROM Visits "
+                        + "WHERE ShowOnMobile = 1 AND IsDeleted = 0 "
+                        + "ORDER BY LastChanged DESC;";
+                cl = new CursorLoader(getActivity(), baseUri,
+                        null, select, null, null);
+                break;
+*/
+            case VNContract.Loaders.HIDDEN_VISITS:
+                baseUri = ContentProvider_VegNab.SQL_URI;
+                select = "SELECT _id, VisitName, VisitDate FROM Visits "
+                        + "WHERE ShowOnMobile = 0 AND IsDeleted = 0 "
+                        + "ORDER BY VisitDate DESC;";
+                cl = new CursorLoader(this, baseUri,
+                        null, select, null, null);
+                break;
+
+        }
+        return cl;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor finishedCursor) {
+        // there will be various loaders, switch them out here
+        mRowCt = finishedCursor.getCount();
+        switch (loader.getId()) {
+/*            case VNContract.Loaders.TEST_SQL:
+                Log.d(LOG_TAG, "Loaders.TEST_SQL returned cursor ");
+                finishedCursor.moveToFirst();
+                String d = finishedCursor.getString(0);
+                Log.d(LOG_TAG, "Loaders.TEST_SQL value returned: " + d);
+
+                break;
+            case VNContract.Loaders.PROJECTS:
+                // Swap the new cursor in.
+                // The framework will take care of closing the old cursor once we return.
+                mProjAdapter.swapCursor(finishedCursor);
+                if (mRowCt > 0) {
+                    mProjSpinner.setEnabled(true);
+                    // get default Project from app Preferences, to set spinner
+                    // this must wait till the spinner is populated
+                    SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                    // database comes pre-loaded with one Project record that has _id = 1
+                    // default ProjCode = "MyProject', but may be renamed
+                    mProjectId = sharedPref.getLong(Prefs.DEFAULT_PROJECT_ID, 1);
+                    if (!sharedPref.contains(Prefs.DEFAULT_PROJECT_ID)) {
+                        // this will only happen once, when the app is first installed
+
+                        Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PROJECT_ID + "' does not exist yet.");
+                        // update the create time in the database from when the DB file was created to 'now'
+                        String sql = "UPDATE Projects SET StartDate = DATETIME('now') WHERE _id = 1;";
+                        ContentResolver resolver = this.getContentResolver();
+                        // use raw SQL, to make use of SQLite internal "DATETIME('now')"
+                        Uri uri = ContentProvider_VegNab.SQL_URI;
+                        int numUpdated = resolver.update(uri, null, sql, null);
+                        saveDefaultProjectId(mProjectId);
+
+                        Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PROJECT_ID + "' set for the first time.");
+                    } else {
+
+                        Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PROJECT_ID + "' = " + mProjectId);
+                    }
+                    // set the default Project to show in its spinner
+                    // for a generalized fn, try: mProjSpinner.getAdapter().getCount()
+                    for (int i=0; i<mRowCt; i++) {
+                        Log.d(LOG_TAG, "Setting mProjSpinner default; testing index " + i);
+                        if (mProjSpinner.getItemIdAtPosition(i) == mProjectId) {
+                            Log.d(LOG_TAG, "Setting mProjSpinner default; found matching index " + i);
+                            mProjSpinner.setSelection(i);
+                            break;
+                        }
+                    }
+                } else {
+                    mProjSpinner.setEnabled(false);
+                }
+                break;
+
+            case VNContract.Loaders.PLOTTYPES:
+                // Swap the new cursor in.
+                // The framework will take care of closing the old cursor once we return.
+                mPlotTypeAdapter.swapCursor(finishedCursor);
+                if (mRowCt > 0) {
+                    mPlotTypeSpinner.setEnabled(true);
+                    // get default Plot Type from app Preferences, to set spinner
+                    // this must wait till the spinner is populated
+                    SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                    // database comes pre-loaded with one Plot Type record that has _id = 1
+                    // default PlotTypeDescr = "Species List'
+                    mPlotTypeId = sharedPref.getLong(Prefs.DEFAULT_PLOTTYPE_ID, 1);
+                    if (!sharedPref.contains(Prefs.DEFAULT_PLOTTYPE_ID)) {
+                        // this will only happen once, when the app is first installed
+                        Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' does not exist yet.");
+                        saveDefaultPlotTypeId(mPlotTypeId);
+                        Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' set for the first time.");
+                    } else { // default plot type already exisits
+                        Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' = " + mPlotTypeId);
+                    }
+                    // set the default Plot Type to show in its spinner
+                    // for a generalized fn, try: mySpinner.getAdapter().getCount()
+                    for (int i=0; i<mRowCt; i++) {
+                        Log.d(LOG_TAG, "Setting mPlotTypeSpinner default; testing index " + i);
+                        if (mPlotTypeSpinner.getItemIdAtPosition(i) == mPlotTypeId) {
+                            Log.d(LOG_TAG, "Setting mPlotTypeSpinner default; found matching index " + i);
+                            mPlotTypeSpinner.setSelection(i);
+                            break;
+                        }
+                    }
+                } else {
+                    mPlotTypeSpinner.setEnabled(false);
+                }
+                break;
+
+            case VNContract.Loaders.PREV_VISITS:
+                mVisitCursor = finishedCursor; // save a reference
+                mVisitListAdapter.swapCursor(finishedCursor);
+                break;
+*/
+            case VNContract.Loaders.HIDDEN_VISITS:
+                mHiddenVisitsCursor = finishedCursor; // save a reference
+                mCtHiddenVisits = mRowCt;
+//            mVisitListAdapter.swapCursor(finishedCursor);
+                break;
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // This is called when the last Cursor provided to onLoadFinished()
+        // is about to be closed. Need to make sure it is no longer is use.
+        switch (loader.getId()) {
+            case VNContract.Loaders.HIDDEN_VISITS:
+                break; // nothing to do with this one
+        }
+    }
+
+
 
 }
