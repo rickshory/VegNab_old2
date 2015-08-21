@@ -81,6 +81,8 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        // start this loader that does not use the UI
+        getLoaderManager().initLoader(VNContract.Loaders.HIDDEN_VISITS, null, this);
     }
 
     @Override
@@ -445,6 +447,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
     public void refreshVisitsList() {
         // when the referred Loader callback returns, will update the list of Visits
         getLoaderManager().restartLoader(VNContract.Loaders.PREV_VISITS, null, this);
+        getLoaderManager().restartLoader(VNContract.Loaders.HIDDEN_VISITS, null, this);
     }
 
     @Override
