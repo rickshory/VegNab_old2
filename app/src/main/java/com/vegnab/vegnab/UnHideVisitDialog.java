@@ -30,9 +30,34 @@ import com.vegnab.vegnab.database.VegNabDbHelper;
 public class UnHideVisitDialog extends DialogFragment implements View.OnClickListener,
         LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = UnHideVisitDialog.class.getSimpleName();
+    final static String ARG_VISIT_ID_TO_UNHIDE = "visIdUnHide";
+    long mVisitToUnHideRecId = 0;
     ListView mHiddenVisitsList;
+    public interface ConfirmUnHideVisitDialogListener {
+        void onUnHideVisitConfirm(DialogFragment dialog);
+    }
+    ConfirmUnHideVisitDialogListener mConfirmUnHideVisitListener;
+
     SimpleCursorAdapter mListAdapter; // to link the list's data
     ContentValues mValues = new ContentValues();
+
+    // don't receive anything yet, maybe pass cursor?
+    static UnHideVisitDialog newInstance(Bundle args) {
+        UnHideVisitDialog f = new UnHideVisitDialog();
+        f.setArguments(args);
+        return f;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        try {
+            mConfirmUnHideVisitListener = (ConfirmUnHideVisitDialogListener) getActivity();
+            Log.d(LOG_TAG, "(ConfirmUnHideVisitDialogListener) getActivity()");
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Main Activity must implement ConfirmUnHideVisitDialogListener interface");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup root, Bundle savedInstanceState) {
@@ -52,23 +77,30 @@ public class UnHideVisitDialog extends DialogFragment implements View.OnClickLis
                     long id) {
                 Cursor cr = ((SimpleCursorAdapter) mHiddenVisitsList.getAdapter()).getCursor();
                 cr.moveToPosition(position);
-                String visNm = cr.getString(cr.getColumnIndexOrThrow("VisitName"));
-//				Toast.makeText(getActivity(), 
-//						"VisitName: " + visNm, 
-//						Toast.LENGTH_LONG).show();
-                // if we needed to confirm, could do something like this:
-//                FragmentManager fm = getActivity().getSupportFragmentManager();
-//                ConfirmDelProjDialog  confDelProjDlg = ConfirmDelProjDialog.newInstance(id, visNm);
-//                confDelProjDlg.show(fm, "frg_conf_del_proj");
-                mValues.clear();
-                mValues.put("ShowOnMobile", 1);
-                Uri uri = ContentUris.withAppendedId(
-                        Uri.withAppendedPath(
-                                ContentProvider_VegNab.CONTENT_URI, "visits"), id);
-                Log.d(LOG_TAG, "In UnHideVisitDialog, URI: " + uri.toString());
-                ContentResolver rs = getActivity().getContentResolver();
-                int numUpdated = rs.update(uri, mValues, null, null);
-                Log.d(LOG_TAG, "In UnHideVisitDialog, numUpdated: " + numUpdated);
+                Log.d(LOG_TAG, "In onCreateView setOnItemClickListener, list item clicked, id = " + id);
+                mVisitToUnHideRecId = id;
+                Bundle args = getArguments();
+                if (args != null) {
+                    args.putLong(ARG_VISIT_ID_TO_UNHIDE, mVisitToUnHideRecId);
+                    Log.d(LOG_TAG, "put ARG_VISIT_ID_TO_UNHIDE =" + mVisitToUnHideRecId);
+                } else {
+                    Log.d(LOG_TAG, "getArguments() returned null");
+                }
+
+                Log.d(LOG_TAG, "About to call onUnHideVisitConfirm=" + mVisitToUnHideRecId);
+                mConfirmUnHideVisitListener.onUnHideVisitConfirm(UnHideVisitDialog.this);
+
+//                String visNm = cr.getString(cr.getColumnIndexOrThrow("VisitName"));
+//
+//                mValues.clear();
+//                mValues.put("ShowOnMobile", 1);
+//                Uri uri = ContentUris.withAppendedId(
+//                        Uri.withAppendedPath(
+//                                ContentProvider_VegNab.CONTENT_URI, "visits"), id);
+//                Log.d(LOG_TAG, "In UnHideVisitDialog, URI: " + uri.toString());
+//                ContentResolver rs = getActivity().getContentResolver();
+//                int numUpdated = rs.update(uri, mValues, null, null);
+//                Log.d(LOG_TAG, "In UnHideVisitDialog, numUpdated: " + numUpdated);
                 dismiss();
             }
         });

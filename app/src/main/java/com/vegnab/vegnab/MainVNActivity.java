@@ -63,7 +63,8 @@ public class MainVNActivity extends ActionBarActivity
         SelectSpeciesFragment.OnEditPlaceholderListener,
         EditSppItemDialog.EditSppItemDialogListener,
         EditPlaceholderFragment.OnButtonListener,
-        ConfirmDelVegItemDialog.ConfirmDeleteVegItemDialogListener {
+        ConfirmDelVegItemDialog.ConfirmDeleteVegItemDialogListener,
+        UnHideVisitDialog.ConfirmUnHideVisitDialogListener {
         // LoaderManager.LoaderCallbacks<Cursor>
 
     private static final String LOG_TAG = MainVNActivity.class.getSimpleName();
@@ -571,6 +572,15 @@ public class MainVNActivity extends ActionBarActivity
         } catch (ClassCastException e) {
             // if not the right class of fragment, fail silently
         }
+    }
+
+    public void onUnHideVisitConfirm(DialogFragment dialog) {
+        Log.d(LOG_TAG, "onUnHideVisitConfirm(DialogFragment dialog)");
+        Bundle args = dialog.getArguments();
+        long recIdToUnhide = args.getLong(UnHideVisitDialog.ARG_VISIT_ID_TO_UNHIDE);
+        NewVisitFragment nvFrag = (NewVisitFragment)
+                getSupportFragmentManager().findFragmentByTag(Tags.NEW_VISIT);
+        nvFrag.setVisitVisibility(recIdToUnhide, true); // fn refreshes lists
     }
 
     @Override
