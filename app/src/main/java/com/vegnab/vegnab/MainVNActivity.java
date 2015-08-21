@@ -63,8 +63,8 @@ public class MainVNActivity extends ActionBarActivity
         SelectSpeciesFragment.OnEditPlaceholderListener,
         EditSppItemDialog.EditSppItemDialogListener,
         EditPlaceholderFragment.OnButtonListener,
-        ConfirmDelVegItemDialog.ConfirmDeleteVegItemDialogListener,
-        LoaderManager.LoaderCallbacks<Cursor> {
+        ConfirmDelVegItemDialog.ConfirmDeleteVegItemDialogListener {
+        // LoaderManager.LoaderCallbacks<Cursor>
 
     private static final String LOG_TAG = MainVNActivity.class.getSimpleName();
     static String mUniqueDeviceId, mDeviceIdSource;
@@ -80,8 +80,8 @@ public class MainVNActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // start following loader, does not use UI, but only gets a value to have ready for a menu action
-        getSupportLoaderManager().initLoader(VNContract.Loaders.HIDDEN_VISITS, null, this);
+//        // start following loader, does not use UI, but only gets a value to have ready for a menu action
+//        getSupportLoaderManager().initLoader(VNContract.Loaders.HIDDEN_VISITS, null, this);
         //Get a Tracker (should auto-report)
         ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
         // set up some default Preferences
@@ -758,7 +758,7 @@ public class MainVNActivity extends ActionBarActivity
         MediaScannerConnection.scanFile(getApplicationContext(), new String[] { dst.getAbsolutePath() }, null, null);
     }
 
-
+/*
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // This is called when a new Loader needs to be created.
@@ -767,7 +767,7 @@ public class MainVNActivity extends ActionBarActivity
         Uri baseUri;
         String select = null; // default for all-columns, unless re-assigned or overridden by raw SQL
         switch (id) {
-/*            case VNContract.Loaders.TEST_SQL:
+            case VNContract.Loaders.TEST_SQL:
                 baseUri = ContentProvider_VegNab.SQL_URI;
                 select = "SELECT StartDate FROM Projects WHERE _id = 1;";
                 cl = new CursorLoader(getActivity(), baseUri,
@@ -799,7 +799,7 @@ public class MainVNActivity extends ActionBarActivity
                 cl = new CursorLoader(getActivity(), baseUri,
                         null, select, null, null);
                 break;
-*/
+
             case VNContract.Loaders.HIDDEN_VISITS:
                 baseUri = ContentProvider_VegNab.SQL_URI;
                 select = "SELECT _id, VisitName, VisitDate FROM Visits "
@@ -812,13 +812,15 @@ public class MainVNActivity extends ActionBarActivity
         }
         return cl;
     }
+*/
 
+/*
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor finishedCursor) {
         // there will be various loaders, switch them out here
         mRowCt = finishedCursor.getCount();
         switch (loader.getId()) {
-/*            case VNContract.Loaders.TEST_SQL:
+            case VNContract.Loaders.TEST_SQL:
                 Log.d(LOG_TAG, "Loaders.TEST_SQL returned cursor ");
                 finishedCursor.moveToFirst();
                 String d = finishedCursor.getString(0);
@@ -908,7 +910,7 @@ public class MainVNActivity extends ActionBarActivity
                 mVisitCursor = finishedCursor; // save a reference
                 mVisitListAdapter.swapCursor(finishedCursor);
                 break;
-*/
+
             case VNContract.Loaders.HIDDEN_VISITS:
                 mHiddenVisitsCursor = finishedCursor; // save a reference
                 mCtHiddenVisits = mRowCt;
@@ -916,7 +918,8 @@ public class MainVNActivity extends ActionBarActivity
                 break;
         }
     }
-
+    */
+/*
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         // This is called when the last Cursor provided to onLoadFinished()
@@ -926,7 +929,7 @@ public class MainVNActivity extends ActionBarActivity
                 break; // nothing to do with this one
         }
     }
-
+*/
 
 
 }
