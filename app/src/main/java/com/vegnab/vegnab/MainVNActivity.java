@@ -69,8 +69,8 @@ public class MainVNActivity extends ActionBarActivity
     private static final String LOG_TAG = MainVNActivity.class.getSimpleName();
     static String mUniqueDeviceId, mDeviceIdSource;
     long mRowCt, mVisitId = 0, mSubplotTypeId = 0, mProjectId = 0, mNamerId = 0  ;
-    Cursor mHiddenVisitsCursor;
-    long mCtHiddenVisits = 0;
+//    Cursor mHiddenVisitsCursor;
+//    long mCtHiddenVisits = 0;
 
     final static String ARG_SUBPLOT_TYPE_ID = "subplotTypeId";
     final static String ARG_VISIT_ID = "visitId";
@@ -185,11 +185,6 @@ public class MainVNActivity extends ActionBarActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.vn_activity, menu);
-        /*  // will mCtHiddenVisits be retrieved in time?, or will it always ==0 & therefore never show?
-        if (mCtHiddenVisits == 0) {
-        menu.removeItem(R.id.action_unhide_visits);
-            }
-            */
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -253,18 +248,19 @@ public class MainVNActivity extends ActionBarActivity
             exportDB();
             return true;
 
-        case R.id.action_unhide_visits: // from New Visit fragment
-            if (mCtHiddenVisits == 0) {
-                Toast.makeText(this,
-                        this.getResources().getString(R.string.new_visit_unhide_visit_none),
-                        Toast.LENGTH_SHORT).show();
-            } else {
-//                Toast.makeText(getApplicationContext(), mCtHiddenVisits + " hidden visit(s), but "
-//                        + "''Un-hide Visits'' is not implemented yet", Toast.LENGTH_SHORT).show();
-                UnHideVisitDialog unHideVisDlg = new UnHideVisitDialog();
-                unHideVisDlg.show(fm, "frg_unhide_vis");
-            }
-            return true;
+        // following, moved to NewVisit fragment
+//        case R.id.action_unhide_visits: // from New Visit fragment
+//            if (mCtHiddenVisits == 0) {
+//                Toast.makeText(this,
+//                        this.getResources().getString(R.string.new_visit_unhide_visit_none),
+//                        Toast.LENGTH_SHORT).show();
+//            } else {
+////                Toast.makeText(getApplicationContext(), mCtHiddenVisits + " hidden visit(s), but "
+////                        + "''Un-hide Visits'' is not implemented yet", Toast.LENGTH_SHORT).show();
+//                UnHideVisitDialog unHideVisDlg = new UnHideVisitDialog();
+//                unHideVisDlg.show(fm, "frg_unhide_vis");
+//            }
+//            return true;
 
         case R.id.action_settings:
             Toast.makeText(getApplicationContext(), "''Settings'' is not implemented yet", Toast.LENGTH_SHORT).show();

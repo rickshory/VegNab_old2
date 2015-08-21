@@ -88,6 +88,11 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.new_visit, menu);
+                /*  // will mCtHiddenVisits be retrieved in time?, or will it always ==0 & therefore never show?
+        if (mCtHiddenVisits == 0) {
+        menu.removeItem(R.id.action_unhide_visits);
+            }
+            */
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -98,7 +103,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
         // as you specify a parent activity in AndroidManifest.xml.
         FragmentManager fm = getActivity().getSupportFragmentManager();
 //		DialogFragment editProjDlg;
-//        switch (item.getItemId()) { // the Activity has first opportunity to handle these
+        switch (item.getItemId()) { // the Activity has first opportunity to handle these
 //        // any not handled come here to this Fragment
 //            // items specific to New Visit menu
 //            // action_edit_proj: currently handled by Activity, change to Context menu of Projects spinner
@@ -107,19 +112,22 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
 //            // action_new_plottype: not implemented yet, msg handled by Activity
 //            // action_get_species: handled by Activity
 //            // action_export_db: handled by Activity
-//            // action_unhide_visits: handled by Activity
-//
-//        case R.id.action_unhide_visits:
-//            Toast.makeText(getActivity(), "''Un-hide Visits'' of New Visit screen is not implemented yet", Toast.LENGTH_SHORT).show();
-//            if (mCtHiddenVisits == 0) {
-//                Toast.makeText(getActivity(),
-//                        getActivity().getResources().getString(R.string.new_visit_unhide_visit_none),
-//                        Toast.LENGTH_SHORT).show();
-//            } else {
-//
-//            }
-//            return true;
-//        }
+//            // action_unhide_visits: handled here
+
+            case R.id.action_unhide_visits:
+                if (mCtHiddenVisits == 0) {
+                    Toast.makeText(getActivity(),
+                            getActivity().getResources().getString(R.string.new_visit_unhide_visit_none),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+//                Toast.makeText(getApplicationContext(), mCtHiddenVisits + " hidden visit(s), but "
+//                        + "''Un-hide Visits'' is not implemented yet", Toast.LENGTH_SHORT).show();
+                    UnHideVisitDialog unHideVisDlg = new UnHideVisitDialog();
+                    unHideVisDlg.show(fm, "frg_unhide_vis");
+                }
+                return true;
+
+        }
         return super.onOptionsItemSelected(item);
     }
 
