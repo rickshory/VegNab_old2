@@ -31,7 +31,6 @@ public class UnHideVisitDialog extends DialogFragment implements View.OnClickLis
         LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = UnHideVisitDialog.class.getSimpleName();
     final static String ARG_VISIT_ID_TO_UNHIDE = "visIdUnHide";
-    long mVisitToUnHideRecId = 0;
     ListView mHiddenVisitsList;
     public interface ConfirmUnHideVisitDialogListener {
         void onUnHideVisitConfirm(DialogFragment dialog);
@@ -39,7 +38,6 @@ public class UnHideVisitDialog extends DialogFragment implements View.OnClickLis
     ConfirmUnHideVisitDialogListener mConfirmUnHideVisitListener;
 
     SimpleCursorAdapter mListAdapter; // to link the list's data
-    ContentValues mValues = new ContentValues();
 
     // don't receive anything yet, maybe pass cursor?
     static UnHideVisitDialog newInstance(Bundle args) {
@@ -78,29 +76,15 @@ public class UnHideVisitDialog extends DialogFragment implements View.OnClickLis
                 Cursor cr = ((SimpleCursorAdapter) mHiddenVisitsList.getAdapter()).getCursor();
                 cr.moveToPosition(position);
                 Log.d(LOG_TAG, "In onCreateView setOnItemClickListener, list item clicked, id = " + id);
-                mVisitToUnHideRecId = id;
                 Bundle args = getArguments();
                 if (args != null) {
-                    args.putLong(ARG_VISIT_ID_TO_UNHIDE, mVisitToUnHideRecId);
-                    Log.d(LOG_TAG, "put ARG_VISIT_ID_TO_UNHIDE =" + mVisitToUnHideRecId);
+                    args.putLong(ARG_VISIT_ID_TO_UNHIDE, id);
+                    Log.d(LOG_TAG, "put ARG_VISIT_ID_TO_UNHIDE =" + id);
                 } else {
                     Log.d(LOG_TAG, "getArguments() returned null");
                 }
-
-                Log.d(LOG_TAG, "About to call onUnHideVisitConfirm=" + mVisitToUnHideRecId);
+                Log.d(LOG_TAG, "About to call onUnHideVisitConfirm=" + id);
                 mConfirmUnHideVisitListener.onUnHideVisitConfirm(UnHideVisitDialog.this);
-
-//                String visNm = cr.getString(cr.getColumnIndexOrThrow("VisitName"));
-//
-//                mValues.clear();
-//                mValues.put("ShowOnMobile", 1);
-//                Uri uri = ContentUris.withAppendedId(
-//                        Uri.withAppendedPath(
-//                                ContentProvider_VegNab.CONTENT_URI, "visits"), id);
-//                Log.d(LOG_TAG, "In UnHideVisitDialog, URI: " + uri.toString());
-//                ContentResolver rs = getActivity().getContentResolver();
-//                int numUpdated = rs.update(uri, mValues, null, null);
-//                Log.d(LOG_TAG, "In UnHideVisitDialog, numUpdated: " + numUpdated);
                 dismiss();
             }
         });

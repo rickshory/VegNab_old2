@@ -120,8 +120,6 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
                             getActivity().getResources().getString(R.string.new_visit_unhide_visit_none),
                             Toast.LENGTH_SHORT).show();
                 } else {
-//                Toast.makeText(getApplicationContext(), mCtHiddenVisits + " hidden visit(s), but "
-//                        + "''Un-hide Visits'' is not implemented yet", Toast.LENGTH_SHORT).show();
                     Bundle args = new Bundle();
                     // don't put anything in the bundle yet, following line only shows format
                     //args.putLong(UnHideVisitDialog.ARG_VISIT_ID_TO_UNHIDE, mCtHiddenVisits);
