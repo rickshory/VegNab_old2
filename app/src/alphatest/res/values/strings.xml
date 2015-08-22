@@ -2,4 +2,7 @@
 <resources>
 
     <string name="app_name">VegNab Alpha Test</string>
+    <string name="app_id">id=338680132435</string>
+    <string name="drive_sdk_id">application/vnd.google-apps.drive-sdk.338680132435</string>
+
 </resources>
