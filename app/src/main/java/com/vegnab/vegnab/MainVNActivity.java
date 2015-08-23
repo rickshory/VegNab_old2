@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,7 +19,12 @@ import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.drive.Drive;
+import com.google.android.gms.drive.DriveApi;
+import com.google.android.gms.drive.DriveContents;
+import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.drive.MetadataChangeSet;
 import com.vegnab.vegnab.BuildConfig;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract;
@@ -983,25 +991,23 @@ public class MainVNActivity extends ActionBarActivity
         super.onPause();
     }
 
-    /**
-     * Called when {@code mGoogleApiClient} is connected.
-     */
-    @Override
-    public void onConnected(Bundle connectionHint) {
-        Log.i(LOG_TAG, "GoogleApiClient connected");
-    }
+    // Called when {@code mGoogleApiClient} is connected.
+//    @Override
+//    public void onConnected(Bundle connectionHint) {
+//        Log.d(LOG_TAG, "GoogleApiClient connected");
+//    }
 
     // Called when {@code mGoogleApiClient} is disconnected
     @Override
     public void onConnectionSuspended(int cause) {
-        Log.i(LOG_TAG, "GoogleApiClient connection suspended");
+        Log.d(LOG_TAG, "GoogleApiClient connection suspended");
     }
 
     // Called when {@code mGoogleApiClient} is trying to connect but failed.
     // Handle {@code result.getResolution()} if there is a resolution is available.
     @Override
     public void onConnectionFailed(ConnectionResult result) {
-        Log.i(LOG_TAG, "GoogleApiClient connection failed: " + result.toString());
+        Log.d(LOG_TAG, "GoogleApiClient connection failed: " + result.toString());
         if (!result.hasResolution()) {
             // show the localized error dialog.
             GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), this, 0).show();
@@ -1026,67 +1032,65 @@ public class MainVNActivity extends ActionBarActivity
 
     // end of Google Drive API boilerplate
 
-    /*
-
-
     @Override
     public void onConnected(Bundle connectionHint) {
-        super.onConnected(connectionHint);
+ //       super.onConnected(connectionHint);
+        Log.d(LOG_TAG, "GoogleApiClient connected");
         // create new contents resource
         Drive.DriveApi.newDriveContents(getGoogleApiClient())
                 .setResultCallback(driveContentsCallback);
     }
 
-    final private ResultCallback<DriveContentsResult> driveContentsCallback = new
-            ResultCallback<DriveContentsResult>() {
-        @Override
-        public void onResult(DriveContentsResult result) {
-            if (!result.getStatus().isSuccess()) {
-                showMessage("Error while trying to create new file contents");
-                return;
-            }
-            final DriveContents driveContents = result.getDriveContents();
 
-            // Perform I/O off the UI thread.
-            new Thread() {
+    final private ResultCallback<DriveApi.DriveContentsResult> driveContentsCallback = new
+            ResultCallback<DriveApi.DriveContentsResult>() {
                 @Override
-                public void run() {
-                    // write content to DriveContents
-                    OutputStream outputStream = driveContents.getOutputStream();
-                    Writer writer = new OutputStreamWriter(outputStream);
-                    try {
-                        writer.write("Hello World!");
-                        writer.close();
-                    } catch (IOException e) {
-                        Log.e(TAG, e.getMessage());
+                public void onResult(DriveApi.DriveContentsResult result) {
+                    if (!result.getStatus().isSuccess()) {
+                        showMessage("Error while trying to create new file contents");
+                        return;
                     }
+                    final DriveContents driveContents = result.getDriveContents();
 
-                    MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
-                            .setTitle("New file")
-                            .setMimeType("text/plain")
-                            .setStarred(true).build();
+                    // Perform I/O off the UI thread.
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            // write content to DriveContents
+                            OutputStream outputStream = driveContents.getOutputStream();
+                            Writer writer = new OutputStreamWriter(outputStream);
+                            try {
+                                writer.write("Hello World!");
+                                writer.close();
+                            } catch (IOException e) {
+                                Log.e(LOG_TAG, e.getMessage());
+                            }
 
-                    // create a file on root folder
-                    Drive.DriveApi.getRootFolder(getGoogleApiClient())
-                            .createFile(getGoogleApiClient(), changeSet, driveContents)
-                            .setResultCallback(fileCallback);
+                            MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+                                    .setTitle("New file")
+                                    .setMimeType("text/plain")
+                                    .setStarred(true).build();
+
+                            // create a file on root folder
+                            Drive.DriveApi.getRootFolder(getGoogleApiClient())
+                                    .createFile(getGoogleApiClient(), changeSet, driveContents)
+                                    .setResultCallback(fileCallback);
+                        }
+                    }.start();
                 }
-            }.start();
-        }
-    };
-
-    final private ResultCallback<DriveFileResult> fileCallback = new
-            ResultCallback<DriveFileResult>() {
-        @Override
-        public void onResult(DriveFileResult result) {
-            if (!result.getStatus().isSuccess()) {
-                showMessage("Error while trying to create the file");
-                return;
-            }
-            showMessage("Created a file with content: " + result.getDriveFile().getDriveId());
-        }
-    };
-*/
+            };
+    
+    final private ResultCallback<DriveFolder.DriveFileResult> fileCallback = new
+            ResultCallback<DriveFolder.DriveFileResult>() {
+                @Override
+                public void onResult(DriveFolder.DriveFileResult result) {
+                    if (!result.getStatus().isSuccess()) {
+                        showMessage("Error while trying to create the file");
+                        return;
+                    }
+                    showMessage("Created a file with content: " + result.getDriveFile().getDriveId());
+                }
+            };
 
 
 /*
