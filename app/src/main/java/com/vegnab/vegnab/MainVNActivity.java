@@ -943,7 +943,8 @@ public class MainVNActivity extends ActionBarActivity
     */
         @Override
         public void onExportVisitRequest(Bundle paramsBundle) {
-//            mVisitId = visitId;
+            long visitID = paramsBundle.getLong(NewVisitFragment.ARG_VISIT_ID);
+            Log.d(LOG_TAG, "visitID received in 'onExportVisitRequest' = " + visitID);
         }
 
     /*        buildGoogleApiClient();

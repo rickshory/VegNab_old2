@@ -55,6 +55,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
     long mProjectId, mPlotTypeId;
     int mRowCt = 0, mCtHiddenVisits = 0;
     final static String ARG_SUBPLOT = "subplot";
+    final static String ARG_VISIT_ID = "visitId";
     int mCurrentSubplot = -1;
     Spinner mProjSpinner, mPlotTypeSpinner;
     SimpleCursorAdapter mProjAdapter, mPlotTypeAdapter, mVisitListAdapter;
@@ -333,25 +334,19 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
                         .setLabel("Export Visit")
                         .setValue(1)
                         .build());
-                notYetDlg.show(getFragmentManager(), null);
-
-/*
-
-                // Export visit information
+//                notYetDlg.show(getFragmentManager(), null);
+                // Call a method in the main activity to export the visit information
                 if (info == null) {
                     Toast.makeText(getActivity(),
-                            c.getResources().getString(R.string.sel_spp_list_ctx_edit_ph_not),
+                            c.getResources().getString(R.string.new_vis_ctx_export_no_info),
                             Toast.LENGTH_SHORT).show();
                     return true;
                 }
-
-                nvArgs.putLong(EditPlaceholderFragment.ARG_PLACEHOLDER_ID, info.id);
-                nvArgs.putString(EditPlaceholderFragment.ARG_PLACEHOLDER_CODE, mSppMatchCursor.getString(
-                        mSppMatchCursor.getColumnIndexOrThrow("Code")));
-                nvArgs.putBoolean(EditPlaceholderFragment.ARG_CODE_WAS_SHORTENED, false);
-                mEditPlaceholderCallback.onEditPlaceholder(nvArgs);
-
-*/
+                Bundle expArgs = new Bundle();
+                expArgs.putLong(NewVisitFragment.ARG_VISIT_ID, info.id);
+                // put any other parameters in, such as
+                // format of output, whether to resolve Placeholders, etc.
+                mExpVisListener.onExportVisitRequest(expArgs);
                 return true;
 
             case R.id.new_visit_list_item_hide:
