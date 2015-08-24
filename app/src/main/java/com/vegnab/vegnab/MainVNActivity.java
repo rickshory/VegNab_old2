@@ -79,7 +79,8 @@ public class MainVNActivity extends ActionBarActivity
         ConfirmDelVegItemDialog.ConfirmDeleteVegItemDialogListener,
         UnHideVisitDialog.ConfirmUnHideVisitDialogListener,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener{
+        GoogleApiClient.OnConnectionFailedListener,
+        NewVisitFragment.ExportVisitListener {
         // LoaderManager.LoaderCallbacks<Cursor>
 
     private static final String LOG_TAG = MainVNActivity.class.getSimpleName();
@@ -940,6 +941,63 @@ public class MainVNActivity extends ActionBarActivity
         }
     }
     */
+        @Override
+        public void onExportVisitRequest(Bundle paramsBundle) {
+//            mVisitId = visitId;
+        }
+
+    /*        buildGoogleApiClient();
+        Log.d(LOG_TAG, "about to do 'mGoogleApiClient.connect()'");
+        mGoogleApiClient.connect();
+        Log.d(LOG_TAG, "just after 'mGoogleApiClient.connect()'");
+        // file is actually created by a callback, search in this code for:
+        // ResultCallback<DriveContentsResult> driveContentsCallback
+
+    // Builds a GoogleApiClient.
+    protected synchronized void buildGoogleApiClient() {
+        try {
+            mGoogleApiClient.disconnect();
+        } catch (NullPointerException e) {
+            Log.d(LOG_TAG, "'mGoogleApiClient' is still null");
+        }
+        if (servicesAvailable()) {
+            // for testing, separate the states to isolate errors
+            switch (mGACState) {
+            case GAC_STATE_LOCATION:
+                //  Uses the addApi() method to request the LocationServices API.
+                // documented under FusedLocationProviderApi
+                mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+                break;
+
+            case GAC_STATE_DRIVE: // testing this
+                mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                    .addApi(Drive.API)
+                    .addScope(Drive.SCOPE_FILE)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+                break;
+            }
+        }
+    }
+
+    private boolean servicesAvailable() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
+
+        if (ConnectionResult.SUCCESS == resultCode) {
+            return true;
+        } else {
+            GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(), 0).show();
+            return false;
+        }
+    }
+
+*/
+
 
     // Google Drive API boilerplate, could be in separate class
 
@@ -1079,7 +1137,7 @@ public class MainVNActivity extends ActionBarActivity
                     }.start();
                 }
             };
-    
+
     final private ResultCallback<DriveFolder.DriveFileResult> fileCallback = new
             ResultCallback<DriveFolder.DriveFileResult>() {
                 @Override

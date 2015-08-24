@@ -50,10 +50,10 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
         android.widget.AdapterView.OnItemSelectedListener,
         LoaderManager.LoaderCallbacks<Cursor>{
 
-    public interface ShowHiddenVisitDialogListener {
-        void onVisitVisibilityChangeComplete(NewVisitFragment newVisitFragment);
+    public interface ExportVisitListener {
+        void onExportVisitRequest(Bundle paramsBundle);
     }
-    ShowHiddenVisitDialogListener mShowVisitListener;
+    ExportVisitListener mExpVisListener;
 
 
     private static final String LOG_TAG = NewVisitFragment.class.getSimpleName();
