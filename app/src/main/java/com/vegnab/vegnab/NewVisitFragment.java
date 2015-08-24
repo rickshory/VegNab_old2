@@ -50,11 +50,6 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
         android.widget.AdapterView.OnItemSelectedListener,
         LoaderManager.LoaderCallbacks<Cursor>{
 
-    public interface ExportVisitListener {
-        void onExportVisitRequest(Bundle paramsBundle);
-    }
-    ExportVisitListener mExpVisListener;
-
 
     private static final String LOG_TAG = NewVisitFragment.class.getSimpleName();
     long mProjectId, mPlotTypeId;
@@ -76,10 +71,22 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
         public void onExistingVisitListClicked(long visitId);
     }
     OnVisitClickListener mListClickCallback;
+    public interface ExportVisitListener {
+        void onExportVisitRequest(Bundle paramsBundle);
+    }
+    ExportVisitListener mExpVisListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Get a Tracker (should auto-report)
+        ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+        try {
+            mExpVisListener = (ExportVisitListener) getActivity();
+            Log.d(LOG_TAG, "set up (ExportVisitListener) getActivity()");
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Main Activity must implement ExportVisitListener interface");
+        }
         setHasOptionsMenu(true);
         // start this loader that does not use the UI
         getLoaderManager().initLoader(VNContract.Loaders.HIDDEN_VISITS, null, this);
