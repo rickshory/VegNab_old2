@@ -781,7 +781,7 @@ public class MainVNActivity extends ActionBarActivity
         in.close();
         out.close();
         // must do following or file is not visible externally
-        MediaScannerConnection.scanFile(getApplicationContext(), new String[] { dst.getAbsolutePath() }, null, null);
+        MediaScannerConnection.scanFile(getApplicationContext(), new String[]{dst.getAbsolutePath()}, null, null);
     }
 
 /*
@@ -949,6 +949,14 @@ public class MainVNActivity extends ActionBarActivity
         public void onExportVisitRequest(Bundle paramsBundle) {
             long visitID = paramsBundle.getLong(NewVisitFragment.ARG_VISIT_ID);
             Log.d(LOG_TAG, "visitID received in 'onExportVisitRequest' = " + visitID);
+            mConnectionRequested = true;
+            buildGoogleApiClient();
+            mGoogleApiClient.connect();
+            // is this what initiates creation of the file?
+            // create new contents resource
+            Drive.DriveApi.newDriveContents(getGoogleApiClient())
+                    .setResultCallback(driveContentsCallback);
+
         }
 
     /*        buildGoogleApiClient();
@@ -1012,7 +1020,7 @@ public class MainVNActivity extends ActionBarActivity
 //                        .addOnConnectionFailedListener(this)
 //                        .build();
 //            }
-//            mGoogleApiClient.connect();
+            mGoogleApiClient.connect();
         }
     }
 
@@ -1021,10 +1029,12 @@ public class MainVNActivity extends ActionBarActivity
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d(LOG_TAG, "in 'onActivityResult' resolution callback before any validity testing");
         // we come here if connection first failed, such as if we needed to get the user login
         // the failure sent off the login request as an intent, which then
         // sent back another intent, which arrives here
         if (requestCode == REQUEST_CODE_RESOLUTION && resultCode == RESULT_OK) {
+            Log.d(LOG_TAG, "in 'onActivityResult' resolution callback (requestCode == REQUEST_CODE_RESOLUTION && resultCode == RESULT_OK)");
             mGoogleApiClient.connect();
             // do we need to re-initiate the file creation request here?
 
@@ -1080,12 +1090,11 @@ public class MainVNActivity extends ActionBarActivity
     public void onConnected(Bundle connectionHint) {
  //       super.onConnected(connectionHint);
         Log.d(LOG_TAG, "GoogleApiClient connected");
-        // is this what initiates creation of the file?
-        // create new contents resource
-        Drive.DriveApi.newDriveContents(getGoogleApiClient())
-                .setResultCallback(driveContentsCallback);
+//        // is this what initiates creation of the file?
+//        // create new contents resource
+//        Drive.DriveApi.newDriveContents(getGoogleApiClient())
+//                .setResultCallback(driveContentsCallback);
     }
-
 
     final private ResultCallback<DriveApi.DriveContentsResult> driveContentsCallback = new
             ResultCallback<DriveApi.DriveContentsResult>() {
@@ -1129,6 +1138,7 @@ public class MainVNActivity extends ActionBarActivity
             ResultCallback<DriveFolder.DriveFileResult>() {
                 @Override
                 public void onResult(DriveFolder.DriveFileResult result) {
+                    mConnectionRequested = false; // for testing
                     if (!result.getStatus().isSuccess()) {
                         showMessage("Error while trying to create the file");
                         return;
