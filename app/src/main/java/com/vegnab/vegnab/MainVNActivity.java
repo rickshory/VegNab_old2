@@ -88,9 +88,11 @@ public class MainVNActivity extends ActionBarActivity
     long mRowCt, mVisitId = 0, mSubplotTypeId = 0, mProjectId = 0, mNamerId = 0  ;
 //    Cursor mHiddenVisitsCursor;
 //    long mCtHiddenVisits = 0;
+    boolean mConnectionRequested = false;
 
     final static String ARG_SUBPLOT_TYPE_ID = "subplotTypeId";
     final static String ARG_VISIT_ID = "visitId";
+    final static String ARG_CONNECTION_REQUESTED = "connRequested";
 
     ViewPager viewPager = null;
 
@@ -162,6 +164,7 @@ public class MainVNActivity extends ActionBarActivity
         if (true) {
             if (savedInstanceState != null) {
                 mVisitId = savedInstanceState.getLong(ARG_VISIT_ID);
+                mConnectionRequested = savedInstanceState.getBoolean(ARG_CONNECTION_REQUESTED);
                 mSubplotTypeId = savedInstanceState.getLong(ARG_SUBPLOT_TYPE_ID, 0);
                 // if restoring from a previous state, do not create view
                 // could end up with overlapping views
@@ -336,6 +339,7 @@ public class MainVNActivity extends ActionBarActivity
         // save the current subplot arguments in case we need to re-create the activity
         outState.putLong(ARG_SUBPLOT_TYPE_ID, mSubplotTypeId);
         outState.putLong(ARG_VISIT_ID, mVisitId);
+        outState.putBoolean(ARG_CONNECTION_REQUESTED, mConnectionRequested);
     }
 
     @Override
@@ -953,52 +957,37 @@ public class MainVNActivity extends ActionBarActivity
         Log.d(LOG_TAG, "just after 'mGoogleApiClient.connect()'");
         // file is actually created by a callback, search in this code for:
         // ResultCallback<DriveContentsResult> driveContentsCallback
+*/
 
     // Builds a GoogleApiClient.
     protected synchronized void buildGoogleApiClient() {
-        try {
-            mGoogleApiClient.disconnect();
-        } catch (NullPointerException e) {
-            Log.d(LOG_TAG, "'mGoogleApiClient' is still null");
-        }
+//        try {
+//            mGoogleApiClient.disconnect();
+//        } catch (NullPointerException e) {
+//            Log.d(LOG_TAG, "'mGoogleApiClient' is still null");
+//        }
         if (servicesAvailable()) {
-            // for testing, separate the states to isolate errors
-            switch (mGACState) {
-            case GAC_STATE_LOCATION:
-                //  Uses the addApi() method to request the LocationServices API.
-                // documented under FusedLocationProviderApi
-                mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                    .addApi(LocationServices.API)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .build();
-                break;
-
-            case GAC_STATE_DRIVE: // testing this
-                mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                    .addApi(Drive.API)
-                    .addScope(Drive.SCOPE_FILE)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .build();
-                break;
+            if (mGoogleApiClient == null) {
+                mGoogleApiClient = new GoogleApiClient.Builder(this)
+                        .addApi(Drive.API)
+                        .addScope(Drive.SCOPE_FILE)
+                        .addScope(Drive.SCOPE_APPFOLDER) // required for App Folder sample
+                        .addConnectionCallbacks(this)
+                        .addOnConnectionFailedListener(this)
+                        .build();
             }
         }
     }
 
     private boolean servicesAvailable() {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
-
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (ConnectionResult.SUCCESS == resultCode) {
             return true;
         } else {
-            GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(), 0).show();
+            GooglePlayServicesUtil.getErrorDialog(resultCode, this, 0).show();
             return false;
         }
     }
-
-*/
-
 
     // Google Drive API boilerplate, could be in separate class
 
@@ -1009,25 +998,22 @@ public class MainVNActivity extends ActionBarActivity
     // Google API client.
     private GoogleApiClient mGoogleApiClient;
 
-
-// Called when activity gets visible. A connection to Drive services need to
-// be initiated as soon as the activity is visible. Registers
-// {@code ConnectionCallbacks} and {@code OnConnectionFailedListener} on the
-// activities itself.
-
     @Override
     protected void onResume() {
         super.onResume();
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addApi(Drive.API)
-                    .addScope(Drive.SCOPE_FILE)
-                    .addScope(Drive.SCOPE_APPFOLDER) // required for App Folder sample
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .build();
+        if (mConnectionRequested) {
+            buildGoogleApiClient();
+//            if (mGoogleApiClient == null) {
+//                mGoogleApiClient = new GoogleApiClient.Builder(this)
+//                        .addApi(Drive.API)
+//                        .addScope(Drive.SCOPE_FILE)
+//                        .addScope(Drive.SCOPE_APPFOLDER) // required for App Folder sample
+//                        .addConnectionCallbacks(this)
+//                        .addOnConnectionFailedListener(this)
+//                        .build();
+//            }
+//            mGoogleApiClient.connect();
         }
-        mGoogleApiClient.connect();
     }
 
     // Handles resolution callbacks.
@@ -1035,8 +1021,13 @@ public class MainVNActivity extends ActionBarActivity
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        // we come here if connection first failed, such as if we needed to get the user login
+        // the failure sent off the login request as an intent, which then
+        // sent back another intent, which arrives here
         if (requestCode == REQUEST_CODE_RESOLUTION && resultCode == RESULT_OK) {
             mGoogleApiClient.connect();
+            // do we need to re-initiate the file creation request here?
+
         }
     }
 
@@ -1049,12 +1040,6 @@ public class MainVNActivity extends ActionBarActivity
         }
         super.onPause();
     }
-
-    // Called when {@code mGoogleApiClient} is connected.
-//    @Override
-//    public void onConnected(Bundle connectionHint) {
-//        Log.d(LOG_TAG, "GoogleApiClient connected");
-//    }
 
     // Called when {@code mGoogleApiClient} is disconnected
     @Override
@@ -1095,6 +1080,7 @@ public class MainVNActivity extends ActionBarActivity
     public void onConnected(Bundle connectionHint) {
  //       super.onConnected(connectionHint);
         Log.d(LOG_TAG, "GoogleApiClient connected");
+        // is this what initiates creation of the file?
         // create new contents resource
         Drive.DriveApi.newDriveContents(getGoogleApiClient())
                 .setResultCallback(driveContentsCallback);
