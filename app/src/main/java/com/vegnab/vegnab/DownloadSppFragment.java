@@ -109,7 +109,8 @@ public class DownloadSppFragment extends Fragment
 			DownloadManager.Request request = new DownloadManager.Request(Download_Uri);
 				
 			//Restrict the types of networks over which this download may proceed.
-			request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+			request.setAllowedNetworkTypes((DownloadManager.Request.NETWORK_WIFI)
+					| (DownloadManager.Request.NETWORK_MOBILE));
 			//Set whether this download may proceed over a roaming connection.
 			request.setAllowedOverRoaming(true);
 			//Set the title of this download, to be displayed in notifications (if enabled).
