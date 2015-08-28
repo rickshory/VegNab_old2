@@ -345,6 +345,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 // Do not allow that zero to overwrite a new (nonzero) Visit ID, or
                 // it will flag to create a second copy of the same header.
                 mVisitId = args.getLong(ARG_VISIT_ID, 0);
+                mViewVisitName.requestFocus();
             }
         // also use for special arguments like screen layout
         }
