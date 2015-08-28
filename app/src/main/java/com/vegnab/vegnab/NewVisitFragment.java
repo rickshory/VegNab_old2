@@ -56,6 +56,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
     int mRowCt = 0, mCtHiddenVisits = 0;
     final static String ARG_SUBPLOT = "subplot";
     final static String ARG_VISIT_ID = "visitId";
+    final static String ARG_VISIT_NAME = "visitName";
     int mCurrentSubplot = -1;
     Spinner mProjSpinner, mPlotTypeSpinner;
     SimpleCursorAdapter mProjAdapter, mPlotTypeAdapter, mVisitListAdapter;
@@ -344,6 +345,10 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
                 }
                 Bundle expArgs = new Bundle();
                 expArgs.putLong(NewVisitFragment.ARG_VISIT_ID, info.id);
+                Cursor cur = (Cursor)mVisitListAdapter.getCursor();
+                cur.moveToPosition(info.position);
+                String visName = cur.getString(cur.getColumnIndex("VisitName"));
+                expArgs.putString(NewVisitFragment.ARG_VISIT_NAME, visName);
                 // put any other parameters in, such as
                 // format of output, whether to resolve Placeholders, etc.
                 mExpVisListener.onExportVisitRequest(expArgs);

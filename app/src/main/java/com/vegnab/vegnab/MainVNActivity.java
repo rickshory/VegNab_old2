@@ -86,9 +86,9 @@ public class MainVNActivity extends ActionBarActivity
     private static final String LOG_TAG = MainVNActivity.class.getSimpleName();
     static String mUniqueDeviceId, mDeviceIdSource;
     long mRowCt, mVisitId = 0, mSubplotTypeId = 0, mProjectId = 0, mNamerId = 0  ;
-//    Cursor mHiddenVisitsCursor;
-//    long mCtHiddenVisits = 0;
     boolean mConnectionRequested = false;
+
+    String mExportFileName = "";
 
     final static String ARG_SUBPLOT_TYPE_ID = "subplotTypeId";
     final static String ARG_VISIT_ID = "visitId";
@@ -945,27 +945,28 @@ public class MainVNActivity extends ActionBarActivity
         }
     }
     */
-        @Override
-        public void onExportVisitRequest(Bundle paramsBundle) {
-            long visitID = paramsBundle.getLong(NewVisitFragment.ARG_VISIT_ID);
-            Log.d(LOG_TAG, "visitID received in 'onExportVisitRequest' = " + visitID);
-            mConnectionRequested = true;
-            buildGoogleApiClient();
-            mGoogleApiClient.connect();
-            // is this what initiates creation of the file?
-            // create new contents resource
-            Drive.DriveApi.newDriveContents(getGoogleApiClient())
-                    .setResultCallback(driveContentsCallback);
-
-        }
-
-    /*        buildGoogleApiClient();
-        Log.d(LOG_TAG, "about to do 'mGoogleApiClient.connect()'");
+    @Override
+    public void onExportVisitRequest(Bundle paramsBundle) {
+        long visitID = paramsBundle.getLong(NewVisitFragment.ARG_VISIT_ID);
+        Log.d(LOG_TAG, "visitID received in 'onExportVisitRequest' = " + visitID);
+        mConnectionRequested = true;
+        buildGoogleApiClient();
         mGoogleApiClient.connect();
-        Log.d(LOG_TAG, "just after 'mGoogleApiClient.connect()'");
+
+        // generate a unique filename, ultimately user will get to choose/edit
+        String appName = this.getResources().getString(R.string.app_name);
+        String visName = paramsBundle.getString(NewVisitFragment.ARG_VISIT_NAME);
+        SimpleDateFormat fileNameFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
+        mExportFileName = appName + " " + ((visName == "" ? "" : visName + " "))
+                + fileNameFormat.format(new Date());
+        final String fileName = appName + " " + ((visName == "" ? "" : visName + " "))
+                + fileNameFormat.format(new Date());
+        // create new contents resource
+        Drive.DriveApi.newDriveContents(getGoogleApiClient())
+                .setResultCallback(driveContentsCallback);
         // file is actually created by a callback, search in this code for:
         // ResultCallback<DriveContentsResult> driveContentsCallback
-*/
+    }
 
     // Builds a GoogleApiClient.
     protected synchronized void buildGoogleApiClient() {
@@ -1011,15 +1012,6 @@ public class MainVNActivity extends ActionBarActivity
         super.onResume();
         if (mConnectionRequested) {
             buildGoogleApiClient();
-//            if (mGoogleApiClient == null) {
-//                mGoogleApiClient = new GoogleApiClient.Builder(this)
-//                        .addApi(Drive.API)
-//                        .addScope(Drive.SCOPE_FILE)
-//                        .addScope(Drive.SCOPE_APPFOLDER) // required for App Folder sample
-//                        .addConnectionCallbacks(this)
-//                        .addOnConnectionFailedListener(this)
-//                        .build();
-//            }
             mGoogleApiClient.connect();
         }
     }
@@ -1036,13 +1028,10 @@ public class MainVNActivity extends ActionBarActivity
         if (requestCode == REQUEST_CODE_RESOLUTION && resultCode == RESULT_OK) {
             Log.d(LOG_TAG, "in 'onActivityResult' resolution callback (requestCode == REQUEST_CODE_RESOLUTION && resultCode == RESULT_OK)");
             mGoogleApiClient.connect();
-            // do we need to re-initiate the file creation request here?
-
         }
     }
 
-    // Called when activity gets invisible. Connection to Drive service needs to
-    // be disconnected as soon as an activity is invisible.
+    // disconnect Drive service when activity is invisible.
     @Override
     protected void onPause() {
         if (mGoogleApiClient != null) {
@@ -1090,49 +1079,48 @@ public class MainVNActivity extends ActionBarActivity
     public void onConnected(Bundle connectionHint) {
  //       super.onConnected(connectionHint);
         Log.d(LOG_TAG, "GoogleApiClient connected");
-//        // is this what initiates creation of the file?
-//        // create new contents resource
-//        Drive.DriveApi.newDriveContents(getGoogleApiClient())
-//                .setResultCallback(driveContentsCallback);
     }
 
     final private ResultCallback<DriveApi.DriveContentsResult> driveContentsCallback = new
             ResultCallback<DriveApi.DriveContentsResult>() {
+        @Override
+        public void onResult(DriveApi.DriveContentsResult result) {
+            if (!result.getStatus().isSuccess()) {
+                showMessage("Error while trying to create new file contents");
+                return;
+            }
+            final DriveContents driveContents = result.getDriveContents();
+            // mExportFileName generated in export request, and copied to a Final string here to be accessible by other thread
+            final String fileName = mExportFileName;
+            final long visId = mVisitId;
+
+            // Perform I/O off the UI thread.
+            new Thread() {
                 @Override
-                public void onResult(DriveApi.DriveContentsResult result) {
-                    if (!result.getStatus().isSuccess()) {
-                        showMessage("Error while trying to create new file contents");
-                        return;
-                    }
-                    final DriveContents driveContents = result.getDriveContents();
+                public void run() {
+            // write content to DriveContents
+            OutputStream outputStream = driveContents.getOutputStream();
+            Writer writer = new OutputStreamWriter(outputStream);
+            try {
+                writer.write("Hello World!");
+                writer.close();
+            } catch (IOException e) {
+                Log.e(LOG_TAG, e.getMessage());
+            }
 
-                    // Perform I/O off the UI thread.
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            // write content to DriveContents
-                            OutputStream outputStream = driveContents.getOutputStream();
-                            Writer writer = new OutputStreamWriter(outputStream);
-                            try {
-                                writer.write("Hello World!");
-                                writer.close();
-                            } catch (IOException e) {
-                                Log.e(LOG_TAG, e.getMessage());
-                            }
+            MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+                    .setTitle(fileName + ".txt")
+                    .setMimeType("text/plain")
+                    .build();
 
-                            MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
-                                    .setTitle("New file")
-                                    .setMimeType("text/plain")
-                                    .setStarred(true).build();
-
-                            // create a file on root folder
-                            Drive.DriveApi.getRootFolder(getGoogleApiClient())
-                                    .createFile(getGoogleApiClient(), changeSet, driveContents)
-                                    .setResultCallback(fileCallback);
-                        }
-                    }.start();
+            // create file in root folder
+            Drive.DriveApi.getRootFolder(getGoogleApiClient())
+                    .createFile(getGoogleApiClient(), changeSet, driveContents)
+                    .setResultCallback(fileCallback);
                 }
-            };
+            }.start();
+        }
+    };
 
     final private ResultCallback<DriveFolder.DriveFileResult> fileCallback = new
             ResultCallback<DriveFolder.DriveFileResult>() {
