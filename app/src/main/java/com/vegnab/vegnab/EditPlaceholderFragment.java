@@ -416,6 +416,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 mPlaceholderId = args.getLong(ARG_PLACEHOLDER_ID, 0);
                 mPlaceholderCode = args.getString(ARG_PLACEHOLDER_CODE);
                 mCodeWasShortened = args.getBoolean(ARG_CODE_WAS_SHORTENED, false);
+                mViewPlaceholderDescription.requestFocus();
             }
         // also use for special arguments like screen layout
         }
