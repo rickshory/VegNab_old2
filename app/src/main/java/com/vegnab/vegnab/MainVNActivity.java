@@ -86,7 +86,7 @@ public class MainVNActivity extends ActionBarActivity
 
     private static final String LOG_TAG = MainVNActivity.class.getSimpleName();
     static String mUniqueDeviceId, mDeviceIdSource;
-    long mRowCt, mVisitId = 0, mSubplotTypeId = 0, mProjectId = 0, mNamerId = 0  ;
+    long mRowCt, mVisitId = 0, mSubplotTypeId = 0, mProjectId = 0, mNamerId = 0, mVisitIdToExport = 0;
     boolean mConnectionRequested = false;
 
     String mExportFileName = "";
@@ -948,8 +948,8 @@ public class MainVNActivity extends ActionBarActivity
     */
     @Override
     public void onExportVisitRequest(Bundle paramsBundle) {
-        long visitID = paramsBundle.getLong(NewVisitFragment.ARG_VISIT_ID);
-        Log.d(LOG_TAG, "visitID received in 'onExportVisitRequest' = " + visitID);
+        mVisitIdToExport = paramsBundle.getLong(NewVisitFragment.ARG_VISIT_ID);
+        Log.d(LOG_TAG, "mVisitIdToExport received in 'onExportVisitRequest' = " + mVisitIdToExport);
         mConnectionRequested = true;
         buildGoogleApiClient();
         mGoogleApiClient.connect();
@@ -1093,7 +1093,7 @@ public class MainVNActivity extends ActionBarActivity
             final DriveContents driveContents = result.getDriveContents();
             // mExportFileName generated in export request, and copied to a Final string here to be accessible by other thread
             final String fileName = mExportFileName;
-            final long visId = mVisitId;
+            final long visId = mVisitIdToExport;
 
             // Perform I/O off the UI thread.
             new Thread() {
