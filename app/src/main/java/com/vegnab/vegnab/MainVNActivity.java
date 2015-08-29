@@ -30,6 +30,7 @@ import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.Prefs;
 import com.vegnab.vegnab.database.VNContract.Tags;
+import com.vegnab.vegnab.database.VegNabDbHelper;
 
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -1096,18 +1097,120 @@ public class MainVNActivity extends ActionBarActivity
 
             // Perform I/O off the UI thread.
             new Thread() {
+//                @SuppressLint("NewApi")
                 @Override
                 public void run() {
             // write content to DriveContents
             OutputStream outputStream = driveContents.getOutputStream();
             Writer writer = new OutputStreamWriter(outputStream);
             try {
-                writer.write("Hello World!");
+                // \n writes only a '0x0a' character to the file (newline)
+                // 'normal' text files contain '0x0d' '0x0a' (carriage return and then newline)
+                writer.write("This is the output of a Visit's data.\r\n");
+                // temporarily comment out the following
+//	    				if (visId == 0) {
+//	    					writer.write("\nNo data yet for this Visit.\r\n");
+//	    				} else {
+
+                if (true) { // for testing
+                    writer.write("\r\nVisit ID = " + visId + "\r\n");
+                    // test getting data from the database
+                    VegNabDbHelper thdDb = new VegNabDbHelper(getApplicationContext());
+                    ContentResolver thdRs = getApplicationContext().getContentResolver();
+                    Cursor thdCs, thdSb, thdVg;
+                    String sSQL;
+                    // get the Visit Header information
+                    sSQL = "SELECT Visits.VisitName, Visits.VisitDate, Projects.ProjCode, "
+                            + "PlotTypes.PlotTypeDescr, Visits.StartTime, Visits.LastChanged, "
+                            + "Namers.NamerName, Visits.Scribe, Locations.LocName, "
+                            + "Locations.VisitID, Locations.SubplotID, Locations.ListingOrder, "
+                            + "Locations.Latitude, Locations.Longitude, Locations.TimeStamp, "
+                            + "Locations.Accuracy, Locations.Altitude, LocationSources.LocationSource, "
+                            + "Visits.Azimuth, Visits.VisitNotes, Visits.DeviceType, "
+                            + "Visits.DeviceID, Visits.DeviceIDSource, Visits.IsComplete, "
+                            + "Visits.ShowOnMobile, Visits.Include, Visits.IsDeleted, "
+                            + "Visits.NumAdditionalLocations, Visits.AdditionalLocationsType, "
+                            + "Visits.AdditionalLocationSelected "
+                            + "FROM ((((Visits LEFT JOIN Projects "
+                            + "ON Visits.ProjID = Projects._id) "
+                            + "LEFT JOIN PlotTypes ON Visits.PlotTypeID = PlotTypes._id) "
+                            + "LEFT JOIN Namers ON Visits.NamerID = Namers._id) "
+                            + "LEFT JOIN Locations ON Visits.RefLocID = Locations._id) "
+                            + "LEFT JOIN LocationSources ON Locations.SourceID = LocationSources._id "
+                            + "WHERE Visits._id = " + visId + ";";
+                    thdCs = thdDb.getReadableDatabase().rawQuery(sSQL, null);
+                    int numCols = thdCs.getColumnCount();
+                    while (thdCs.moveToNext()) {
+                        for (int i=0; i<numCols; i++) {
+                            writer.write(thdCs.getColumnName(i) + "\t");
+                            try {
+//	    								writer.write(thdCs.getType(i) + "\r\n");
+                                writer.write(thdCs.getString(i) + "\r\n");
+                            } catch (Exception e) {
+                                writer.write("\r\n");
+                            }
+                        }
+//	    						Log.d(LOG_TAG, "wrote a record");
+                    }
+                    Log.d(LOG_TAG, "cursor done");
+                    thdCs.close();
+                    Log.d(LOG_TAG, "cursor closed");
+                    // get the Subplots for this Visit
+                    long sbId;
+                    String sbName, spCode, spDescr, spParams;
+                    sSQL = "SELECT Visits._id, PlotTypes.PlotTypeDescr, PlotTypes.Code, "
+                            + "SubplotTypes.[_id] AS SubplotTypeId, "
+                            + "SubplotTypes.SubplotDescription, SubplotTypes.OrderDone, "
+                            + "SubplotTypes.PresenceOnly, SubplotTypes.HasNested, "
+                            + "SubplotTypes.SubPlotAngle, SubplotTypes.XOffset, SubplotTypes.YOffset, "
+                            + "SubplotTypes.SbWidth, SubplotTypes.SbLength, SubplotTypes.SbShape, "
+                            + "SubplotTypes.NestParam1, SubplotTypes.NestParam2, "
+                            + "SubplotTypes.NestParam3, SubplotTypes.NestParam4 "
+                            + "FROM (Visits LEFT JOIN PlotTypes ON Visits.PlotTypeID = PlotTypes._id) "
+                            + "LEFT JOIN SubplotTypes ON PlotTypes._id = SubplotTypes.PlotTypeID "
+                            + "WHERE (((Visits._id)=" + visId + ")) "
+                            + "ORDER BY SubplotTypes.OrderDone;";
+                    thdSb = thdDb.getReadableDatabase().rawQuery(sSQL, null);
+                    while (thdSb.moveToNext()) {
+                        sbName = thdSb.getString(thdSb.getColumnIndexOrThrow("SubplotDescription"));
+                        sbId = thdSb.getLong(thdSb.getColumnIndexOrThrow("SubplotTypeId"));
+                        writer.write("\r\n" + sbName + "\r\n");
+                        // get the data for each subplot
+                        sSQL = "SELECT VegItems._id, VegItems.VisitID, VegItems.SubPlotID, "
+                                + "VegItems.OrigCode, VegItems.OrigDescr, VegItems.Height, VegItems.Cover, "
+                                + "VegItems.Presence, VegItems.IdLevelID, "
+                                + "VegItems.TimeCreated, VegItems.TimeLastChanged FROM VegItems "
+                                + "WHERE (((VegItems.VisitID)=" + visId + ") "
+                                + "AND ((VegItems.SubPlotID)=" + sbId + ")) "
+                                + "ORDER BY VegItems.TimeLastChanged DESC;";
+                        thdVg = thdDb.getReadableDatabase().rawQuery(sSQL, null);
+                        while (thdVg.moveToNext()) {
+                            spCode = thdVg.getString(thdVg.getColumnIndexOrThrow("OrigCode"));
+                            spDescr = thdVg.getString(thdVg.getColumnIndexOrThrow("OrigDescr"));
+                            if (thdVg.isNull(thdVg.getColumnIndexOrThrow("Presence"))) {
+                                // we should have Height and Cover
+                                spParams = "\t\t" + thdVg.getString(thdVg.getColumnIndexOrThrow("Height")) + "cm, "
+                                        + thdVg.getString(thdVg.getColumnIndexOrThrow("Cover")) + "%";
+                            } else {
+                                // we should have Presence = 1 (true) or 0 (false)
+                                spParams = "\t\t"
+                                        + ((thdVg.getInt(thdVg.getColumnIndexOrThrow("Presence")) == 0)
+                                        ? "Absent" : "Present");
+                            }
+                            writer.write("\t" + spCode + ": " + spDescr + "\r\n");
+                            writer.write(spParams + "\r\n");
+                        }
+                        thdVg.close();
+                    }
+                    thdSb.close();
+                    thdDb.close();
+                    Log.d(LOG_TAG, "database closed");
+                }
+
                 writer.close();
             } catch (IOException e) {
                 Log.e(LOG_TAG, e.getMessage());
             }
-
             MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
                     .setTitle(fileName + ".txt")
                     .setMimeType("text/plain")

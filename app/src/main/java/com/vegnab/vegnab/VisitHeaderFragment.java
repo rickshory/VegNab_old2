@@ -1606,7 +1606,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         }.start();
         }
     };
-    
+
     final private ResultCallback<DriveFileResult> fileCallback = new
             ResultCallback<DriveFileResult> () {
         @Override
