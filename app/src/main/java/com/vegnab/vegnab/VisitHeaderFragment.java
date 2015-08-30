@@ -100,11 +100,6 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     private static final int USER_OKD_ACCURACY = 4;
     private int mLocationSource = INTERNAL_GPS; // default till changed
     protected GoogleApiClient mGoogleApiClient;
-    // track the state of Google API Client, to isolate errors
-    private static final int GAC_STATE_LOCATION = 1;
-    private static final int GAC_STATE_DRIVE = 2;
-    // we use LocationServices, and Drive, but not at the same time; start with LocationServices
-    private int mGACState = GAC_STATE_LOCATION;
     private LocationRequest mLocationRequest;
     private boolean mLocIsGood = false, mLocIsSaved = false; // default until retrieved or established true
     private double mLatitude, mLongitude;
@@ -129,7 +124,8 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     Uri mLocationsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "locations");
     ContentValues mValues = new ContentValues();
     HashMap<Long, String> mExistingVisitNames = new HashMap<Long, String>();
-    private EditText mViewVisitName, mViewVisitDate, mViewVisitScribe, mViewVisitLocation, mViewAzimuth, mViewVisitNotes;
+    private EditText mViewVisitName, mViewVisitDate, mViewVisitScribe, mViewVisitLocation,
+            mViewAzimuth, mViewVisitNotes;
     private Spinner mNamerSpinner;
     private TextView mLblNewNamerSpinnerCover;
     SimpleCursorAdapter mVisitAdapter, mNamerAdapter;
@@ -206,14 +202,6 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 Toast.makeText(getActivity(), "''App Info'' of Visit Header is not implemented yet", Toast.LENGTH_SHORT).show();
                 return true;
 
-            case R.id.action_visit_info:
-                Toast.makeText(getActivity(), "''Visit Details'' of Visit Header is not implemented yet", Toast.LENGTH_SHORT).show();
-                return true;
-
-            case R.id.action_export_visit:
-                exportVisit();
-                return true;
-
             case R.id.action_delete_visit:
                 Toast.makeText(getActivity(), "''Delete Visit'' is not fully implemented yet", Toast.LENGTH_SHORT).show();
                 Fragment newVisFragment = fm.findFragmentByTag("new_visit");
@@ -233,11 +221,13 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 return true;
 
             case R.id.action_visit_help:
-                Toast.makeText(getActivity(), "''Visit Help'' is not implemented yet", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "''Visit Help'' is not implemented yet",
+                        Toast.LENGTH_SHORT).show();
                 return true;
 
             case R.id.action_settings:
-                Toast.makeText(getActivity(), "''Settings'' of Visit Header is not implemented yet", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "''Settings'' of Visit Header is not implemented yet",
+                        Toast.LENGTH_SHORT).show();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -361,16 +351,8 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 //	    do other setup here if needed
         // re-check this every time the fragment is entered
         getLoaderManager().restartLoader(Loaders.VISIT_PLACEHOLDERS_ENTERED, null, this);
-        switch (mGACState) {
-        case GAC_STATE_LOCATION:
-            if (!mLocIsGood) {
-                mGoogleApiClient.connect();
-            }
-            break;
-
-        case GAC_STATE_DRIVE:
+        if (!mLocIsGood) {
             mGoogleApiClient.connect();
-            break;
         }
     }
 
@@ -917,20 +899,24 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             // wait on 'RefLocID', location record cannot be created until the Visit record has an ID assigned
 //			mValues.put("RefLocID", ); // save the Location to get this ID
 //			mValues.put("RefLocIsGood", mLocIsGood ? 1 : 0);
-            mValues.put("DeviceType", 2); // 1='unknown', 2='Android', this may be redundant, but flags that this was explicitly set
+            mValues.put("DeviceType", 2); // 1='unknown', 2='Android', this may be redundant, but
+                // flags that this was explicitly set
             mValues.put("DeviceID", sharedPref.getString(Prefs.UNIQUE_DEVICE_ID, "")); // set on first app start
             mValues.put("DeviceIDSource", sharedPref.getString(Prefs.DEVICE_ID_SOURCE, ""));
             // don't actually need the following 6 as the fields have default values
-            mValues.put("IsComplete", 0); // flag to sync to cloud storage, if subscribed; option to automatically set following flag to 0 after sync
+            mValues.put("IsComplete", 0); // flag to sync to cloud storage, if subscribed; option to
+                // automatically set following flag to 0 after sync
             mValues.put("ShowOnMobile", 1); // allow masking out, to reduce clutter
             mValues.put("Include", 1); // include in analysis, not used on mobile but here for completeness
-            mValues.put("IsDeleted", 0); // don't allow user to actually delete a visit, just flag it; this by hard experience
+            mValues.put("IsDeleted", 0); // don't allow user to actually delete a visit, just
+                // flag it; this by hard experience
             mValues.put("NumAdditionalLocations", 0); // if additional locations are mapped, maintain the count
             mValues.put("AdditionalLocationsType", 1); // 1=points, 2=line, 3=polygon
             mUri = rs.insert(mVisitsUri, mValues);
             Log.d(LOG_TAG, "new record in saveVisitRecord; returned URI: " + mUri.toString());
             long newRecId = Long.parseLong(mUri.getLastPathSegment());
-            if (newRecId < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
+            if (newRecId < 1) { // returns -1 on error, e.g. if not valid to save because of
+                // missing required field
                 Log.d(LOG_TAG, "new record in saveVisitRecord has Id == " + newRecId + "); canceled");
                 return 0;
             }
@@ -959,7 +945,8 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 mUri = rs.insert(mLocationsUri, mValues);
                 long newLocID = Long.parseLong(mUri.getLastPathSegment());
                 if (newLocID < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
-                    Log.d(LOG_TAG, "new Location record in saveVisitRecord has Id == " + newLocID + "); canceled");
+                    Log.d(LOG_TAG, "new Location record in saveVisitRecord has Id == " +
+                            newLocID + "); canceled");
                 } else {
                     mLocId = newLocID;
                     Log.d(LOG_TAG, "saveVisitRecord; new Location record created, locID = " + mLocId);
@@ -1062,9 +1049,11 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 mValidationLevel = Validation.QUIET; // save if possible, but notify minimally
                 int numUpdated = saveVisitRecord();
                 if (numUpdated == 0) {
-                    Log.d(LOG_TAG, "Failed to save record in onFocusChange; mValues: " + mValues.toString());
+                    Log.d(LOG_TAG, "Failed to save record in onFocusChange; mValues: "
+                            + mValues.toString());
                 } else {
-                    Log.d(LOG_TAG, "Saved record in onFocusChange; mValues: " + mValues.toString());
+                    Log.d(LOG_TAG, "Saved record in onFocusChange; mValues: "
+                            + mValues.toString());
                 }
                 break;
             }
@@ -1117,7 +1106,8 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     ConfigurableMsgDialog flexHlpDlg = new ConfigurableMsgDialog();
     String helpTitle, helpMessage;
         // get an Analytics event tracker
-    Tracker headerContextTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+    Tracker headerContextTracker = ((VNApplication) getActivity().getApplication())
+            .getTracker(VNApplication.TrackerName.APP_TRACKER);
 
     switch (item.getItemId()) {
     case R.id.vis_hdr_visname_help:
@@ -1364,14 +1354,8 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 //        	showErrorDialog(connectionResult.getErrorCode());
             mResolvingError = true;
             Log.d(LOG_TAG, "Connection failed with code " + connectionResult.getErrorCode());
-            switch (mGACState) {
-            case GAC_STATE_LOCATION:
-                mViewVisitLocation.setText("Location services connection failed with code " + connectionResult.getErrorCode());
-                break;
-            case GAC_STATE_DRIVE: // make this show somewhere else
-                mViewVisitLocation.setText("Google Drive connection failed with code " + connectionResult.getErrorCode());
-                break;
-            }            
+            mViewVisitLocation.setText("Location services connection failed with code "
+                    + connectionResult.getErrorCode());
         }
     }
     
@@ -1428,206 +1412,13 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     // Runs when a GoogleApiClient object successfully connects.
     @Override
     public void onConnected(Bundle connectionHint) {
-        switch (mGACState) {
-        case GAC_STATE_LOCATION:
-            if (!mLocIsGood) {
-                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-            }
-            break;
-
-        case GAC_STATE_DRIVE: // this state is set by a menu action, for testing
-            // test, create new contents resource
-            Drive.DriveApi.newDriveContents(mGoogleApiClient).setResultCallback(driveContentsCallback);
-
-            break;
+        if (!mLocIsGood) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+                    mLocationRequest, this);
         }
     }
-    
-    private void exportVisit() {
-        Toast.makeText(getActivity(), "''Export Visit'' of Visit Header is not fully implemented yet", Toast.LENGTH_SHORT).show();
-        // test, create new contents resource
-        try {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        } catch (Exception e) {
-            Log.d(LOG_TAG, "GoogleApiClient may not be connected yet, error code " + e);
-        }
-        mGACState = GAC_STATE_DRIVE;
-        Log.d(LOG_TAG, "about to call 'buildGoogleApiClient()'");
-        buildGoogleApiClient();
-        Log.d(LOG_TAG, "about to do 'mGoogleApiClient.connect()'");
-        mGoogleApiClient.connect();
-        Log.d(LOG_TAG, "just after 'mGoogleApiClient.connect()'");
-        // file is actually created by a callback, search in this code for:
-        // ResultCallback<DriveContentsResult> driveContentsCallback
-    }
-
-    final private ResultCallback<DriveContentsResult> driveContentsCallback = new
-            ResultCallback<DriveContentsResult>() {
-        @Override
-        public void onResult(DriveContentsResult result) {
-            if (!result.getStatus().isSuccess()) {
-                Log.d(LOG_TAG, "Error while trying to create new file contents");
-//    			showMessage("Error while trying to create new file contents");
-                Toast.makeText(getActivity(), "Error while trying to create new file contents", Toast.LENGTH_LONG).show();
-                return;
-            }
-            final DriveContents driveContents = result.getDriveContents();
-//            String appName = "VegNab Alpha Test";
-            String appName = getActivity().getResources().getString(R.string.app_name);
-            String visName = "" + mViewVisitName.getText().toString().trim();
-            SimpleDateFormat fileNameFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
-            final String fileName = appName + " " + ((visName == "" ? "" : visName + " "))
-                    + fileNameFormat.format(new Date());
-            final long visId = mVisitId;
-            // perform i/o off the ui thread
-            new Thread() {
-                @SuppressLint("NewApi")
-                @Override
-                public void run() {
-                                    // write content to DriveContents
-                    OutputStream outputStream = driveContents.getOutputStream();
-                    Writer writer = new OutputStreamWriter(outputStream);
-                    try {
-                        // \n writes only a '0x0a' character to the file (newline)
-                        // 'normal' text files contain '0x0d' '0x0a' (carriage return and then newline)
-                        writer.write("This is the output of a Visit's data.\r\n");
-                        // temporarily comment out the following
-//	    				if (visId == 0) {
-//	    					writer.write("\nNo data yet for this Visit.\n");
-//	    				} else {
-                        if (true) { // for testing
-                            writer.write("\r\nVisit ID = " + visId + "\r\n");
-                            // test getting data from the database
-                            VegNabDbHelper thdDb = new VegNabDbHelper(getActivity());
-//	    					ContentResolver thdRs = getActivity().getContentResolver();
-                            Cursor thdCs, thdSb, thdVg;
-                            String sSQL;
-                            // get the Visit Header information
-                            sSQL = "SELECT Visits.VisitName, Visits.VisitDate, Projects.ProjCode, "
-                                    + "PlotTypes.PlotTypeDescr, Visits.StartTime, Visits.LastChanged, "
-                                    + "Namers.NamerName, Visits.Scribe, Locations.LocName, "
-                                    + "Locations.VisitID, Locations.SubplotID, Locations.ListingOrder, "
-                                    + "Locations.Latitude, Locations.Longitude, Locations.TimeStamp, "
-                                    + "Locations.Accuracy, Locations.Altitude, LocationSources.LocationSource, "
-                                    + "Visits.Azimuth, Visits.VisitNotes, Visits.DeviceType, "
-                                    + "Visits.DeviceID, Visits.DeviceIDSource, Visits.IsComplete, "
-                                    + "Visits.ShowOnMobile, Visits.Include, Visits.IsDeleted, "
-                                    + "Visits.NumAdditionalLocations, Visits.AdditionalLocationsType, "
-                                    + "Visits.AdditionalLocationSelected "
-                                    + "FROM ((((Visits LEFT JOIN Projects "
-                                    + "ON Visits.ProjID = Projects._id) "
-                                    + "LEFT JOIN PlotTypes ON Visits.PlotTypeID = PlotTypes._id) "
-                                    + "LEFT JOIN Namers ON Visits.NamerID = Namers._id) "
-                                    + "LEFT JOIN Locations ON Visits.RefLocID = Locations._id) "
-                                    + "LEFT JOIN LocationSources ON Locations.SourceID = LocationSources._id "
-                                    + "WHERE Visits._id = " + visId + ";";
-                            thdCs = thdDb.getReadableDatabase().rawQuery(sSQL, null);
-                            int numCols = thdCs.getColumnCount();
-                            while (thdCs.moveToNext()) {
-                                for (int i=0; i<numCols; i++) {
-                                    writer.write(thdCs.getColumnName(i) + "\t");
-                                    try {
-//	    								writer.write(thdCs.getType(i) + "\r\n");
-                                        writer.write(thdCs.getString(i) + "\r\n");
-                                    } catch (Exception e) {
-                                        writer.write("\r\n");
-                                    }
-                                }
-//	    						Log.d(LOG_TAG, "wrote a record");
-                            }
-                            Log.d(LOG_TAG, "cursor done");
-                            thdCs.close();
-                            Log.d(LOG_TAG, "cursor closed");
-                            // get the Subplots for this Visit
-                            long sbId;
-                            String sbName, spCode, spDescr, spParams;
-                            sSQL = "SELECT Visits._id, PlotTypes.PlotTypeDescr, PlotTypes.Code, "
-                                    + "SubplotTypes.[_id] AS SubplotTypeId, "
-                                    + "SubplotTypes.SubplotDescription, SubplotTypes.OrderDone, "
-                                    + "SubplotTypes.PresenceOnly, SubplotTypes.HasNested, "
-                                    + "SubplotTypes.SubPlotAngle, SubplotTypes.XOffset, SubplotTypes.YOffset, "
-                                    + "SubplotTypes.SbWidth, SubplotTypes.SbLength, SubplotTypes.SbShape, "
-                                    + "SubplotTypes.NestParam1, SubplotTypes.NestParam2, "
-                                    + "SubplotTypes.NestParam3, SubplotTypes.NestParam4 "
-                                    + "FROM (Visits LEFT JOIN PlotTypes ON Visits.PlotTypeID = PlotTypes._id) "
-                                    + "LEFT JOIN SubplotTypes ON PlotTypes._id = SubplotTypes.PlotTypeID "
-                                    + "WHERE (((Visits._id)=" + visId + ")) "
-                                    + "ORDER BY SubplotTypes.OrderDone;";
-                            thdSb = thdDb.getReadableDatabase().rawQuery(sSQL, null);
-                            while (thdSb.moveToNext()) {
-                                sbName = thdSb.getString(thdSb.getColumnIndexOrThrow("SubplotDescription"));
-                                sbId = thdSb.getLong(thdSb.getColumnIndexOrThrow("SubplotTypeId"));
-                                writer.write("\r\n" + sbName + "\r\n");
-                                // get the data for each subplot
-                                sSQL = "SELECT VegItems._id, VegItems.VisitID, VegItems.SubPlotID, "
-                                        + "VegItems.OrigCode, VegItems.OrigDescr, VegItems.Height, VegItems.Cover, "
-                                        + "VegItems.Presence, VegItems.IdLevelID, "
-                                        + "VegItems.TimeCreated, VegItems.TimeLastChanged FROM VegItems "
-                                        + "WHERE (((VegItems.VisitID)=" + visId + ") "
-                                        + "AND ((VegItems.SubPlotID)=" + sbId + ")) "
-                                        + "ORDER BY VegItems.TimeLastChanged DESC;";
-                                thdVg = thdDb.getReadableDatabase().rawQuery(sSQL, null);
-                                while (thdVg.moveToNext()) {
-                                    spCode = thdVg.getString(thdVg.getColumnIndexOrThrow("OrigCode"));
-                                    spDescr = thdVg.getString(thdVg.getColumnIndexOrThrow("OrigDescr"));
-                                    if (thdVg.isNull(thdVg.getColumnIndexOrThrow("Presence"))) {
-                                        // we should have Height and Cover
-                                        spParams = "\t\t" + thdVg.getString(thdVg.getColumnIndexOrThrow("Height")) + "cm, "
-                                                + thdVg.getString(thdVg.getColumnIndexOrThrow("Cover")) + "%";
-                                    } else {
-                                        // we should have Presence = 1 (true) or 0 (false)
-                                        spParams = "\t\t"
-                                                + ((thdVg.getInt(thdVg.getColumnIndexOrThrow("Presence")) == 0)
-                                                ? "Absent" : "Present");
-                                    }
-                                    writer.write("\t" + spCode + ": " + spDescr + "\r\n");
-                                    writer.write(spParams + "\r\n");
-                                }
-                                thdVg.close();
-                            }
-                            thdSb.close();
-                            thdDb.close();
-                            Log.d(LOG_TAG, "database closed");
-                        }
-                        writer.close();
-                    } catch (IOException e) {
-                        Log.d(LOG_TAG, "Error writing file: " + e.getMessage());
-                    }
-                    MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
-                        .setTitle(fileName + ".txt")
-                        .setMimeType("text/plain")
-                        .setStarred(true).build();
-
-                    // create file on root folder
-                    Drive.DriveApi.getRootFolder(mGoogleApiClient)
-                        .createFile(mGoogleApiClient, changeSet, driveContents)
-                        .setResultCallback(fileCallback);
-                }
-        }.start();
-        }
-    };
-
-    final private ResultCallback<DriveFileResult> fileCallback = new
-            ResultCallback<DriveFileResult> () {
-        @Override
-        public void onResult(DriveFileResult result) {
-            if (!result.getStatus().isSuccess()) {
-                Log.d(LOG_TAG, "Error trying to create the file");
-//    			showMessage("Error while trying to create new file contents");
-                Toast.makeText(getActivity(), "Error trying to create the file", Toast.LENGTH_LONG).show();
-                return;
-            }
-            Toast.makeText(getActivity(), "Created file, content: " + result.getDriveFile().getDriveId(), Toast.LENGTH_LONG).show();
-            mGACState = GAC_STATE_LOCATION;
-            Log.d(LOG_TAG, "about to call 'buildGoogleApiClient()' to change back to Location");
-            buildGoogleApiClient();
-            Log.d(LOG_TAG, "about to do 'mGoogleApiClient.connect()'");
-            mGoogleApiClient.connect();
-        }
-    };
 
     // Called by Google Play services if the connection to GoogleApiClient drops because of an error.
-
     public void onDisconnected() {
         Log.d(LOG_TAG, "Disconnected");
     }
@@ -1642,32 +1433,15 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 
     // Builds a GoogleApiClient.
     protected synchronized void buildGoogleApiClient() {
-        try {
-            mGoogleApiClient.disconnect();
-        } catch (NullPointerException e) {
-            Log.d(LOG_TAG, "'mGoogleApiClient' is still null");
-        }
         if (servicesAvailable()) {
-            // for testing, separate the states to isolate errors
-            switch (mGACState) {
-            case GAC_STATE_LOCATION:
-                //  Uses the addApi() method to request the LocationServices API.
-                // documented under FusedLocationProviderApi
+            //  Uses the addApi() method to request the LocationServices API.
+            // documented under FusedLocationProviderApi
+            if (mGoogleApiClient == null){
                 mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                    .addApi(LocationServices.API)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .build();
-                break;
-
-            case GAC_STATE_DRIVE: // testing this
-                mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                    .addApi(Drive.API)
-                    .addScope(Drive.SCOPE_FILE)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .build();
-                break;
+                        .addApi(LocationServices.API)
+                        .addConnectionCallbacks(this)
+                        .addOnConnectionFailedListener(this)
+                        .build();
             }
         }
     }
