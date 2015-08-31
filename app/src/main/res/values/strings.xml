@@ -372,5 +372,8 @@
     <string name="configurable_edit_err_short">Need at least 2 characters</string>
     <string name="configurable_edit_err_dup">Duplicate item</string>
 
+    <string name="export_visit_dlg_title">Export Visit data to Google Drive</string>
+    <string name="export_visit_dlg_lbl">Export?</string>
+
 
 </resources>
