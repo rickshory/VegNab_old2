@@ -956,16 +956,6 @@ public class MainVNActivity extends ActionBarActivity
         mConnectionRequested = true;
         buildGoogleApiClient();
         mGoogleApiClient.connect();
-/*
-        // generate a unique filename, ultimately user will get to choose/edit
-        String appName = this.getResources().getString(R.string.app_name);
-        String visName = paramsBundle.getString(NewVisitFragment.ARG_VISIT_NAME);
-        SimpleDateFormat fileNameFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
-        mExportFileName = appName + " " + ((visName == "" ? "" : visName + " "))
-                + fileNameFormat.format(new Date());
-        final String fileName = appName + " " + ((visName == "" ? "" : visName + " "))
-                + fileNameFormat.format(new Date());
-*/
         // create new contents resource
         Drive.DriveApi.newDriveContents(getGoogleApiClient())
                 .setResultCallback(driveContentsCallback);
@@ -975,11 +965,6 @@ public class MainVNActivity extends ActionBarActivity
 
     // Builds a GoogleApiClient.
     protected synchronized void buildGoogleApiClient() {
-//        try {
-//            mGoogleApiClient.disconnect();
-//        } catch (NullPointerException e) {
-//            Log.d(LOG_TAG, "'mGoogleApiClient' is still null");
-//        }
         if (servicesAvailable()) {
             if (mGoogleApiClient == null) {
                 mGoogleApiClient = new GoogleApiClient.Builder(this)
