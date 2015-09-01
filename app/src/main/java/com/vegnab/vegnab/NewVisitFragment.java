@@ -1,6 +1,9 @@
 package com.vegnab.vegnab;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -57,6 +60,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
     final static String ARG_SUBPLOT = "subplot";
     final static String ARG_VISIT_ID = "visitId";
     final static String ARG_VISIT_NAME = "visitName";
+    final static String ARG_EXPORT_FILENAME = "exportFileName";
     int mCurrentSubplot = -1;
     Spinner mProjSpinner, mPlotTypeSpinner;
     SimpleCursorAdapter mProjAdapter, mPlotTypeAdapter, mVisitListAdapter;
@@ -349,6 +353,13 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
                 cur.moveToPosition(info.position);
                 String visName = cur.getString(cur.getColumnIndex("VisitName"));
                 expArgs.putString(NewVisitFragment.ARG_VISIT_NAME, visName);
+                // generate a unique filename
+                // ultimately user will get to choose/edit in Confirm dialog
+                String appName = getActivity().getResources().getString(R.string.app_name);
+                SimpleDateFormat fileNameFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
+                String exportFileName = appName + " " + ((visName == "" ? "" : visName + " "))
+                        + fileNameFormat.format(new Date());
+                expArgs.putString(NewVisitFragment.ARG_EXPORT_FILENAME, exportFileName);
                 // put any other parameters in, such as
                 // format of output, whether to resolve Placeholders, etc.
                 mExpVisListener.onExportVisitRequest(expArgs);

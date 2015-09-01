@@ -950,10 +950,13 @@ public class MainVNActivity extends ActionBarActivity
     public void onExportVisitRequest(Bundle paramsBundle) {
         mVisitIdToExport = paramsBundle.getLong(NewVisitFragment.ARG_VISIT_ID);
         Log.d(LOG_TAG, "mVisitIdToExport received in 'onExportVisitRequest' = " + mVisitIdToExport);
+        // get filename, either default or overridden in Confirm dialog
+        mExportFileName = paramsBundle.getString(NewVisitFragment.ARG_EXPORT_FILENAME);
+        Log.d(LOG_TAG, "mExportFileName received in 'onExportVisitRequest': " + mExportFileName);
         mConnectionRequested = true;
         buildGoogleApiClient();
         mGoogleApiClient.connect();
-
+/*
         // generate a unique filename, ultimately user will get to choose/edit
         String appName = this.getResources().getString(R.string.app_name);
         String visName = paramsBundle.getString(NewVisitFragment.ARG_VISIT_NAME);
@@ -962,6 +965,7 @@ public class MainVNActivity extends ActionBarActivity
                 + fileNameFormat.format(new Date());
         final String fileName = appName + " " + ((visName == "" ? "" : visName + " "))
                 + fileNameFormat.format(new Date());
+*/
         // create new contents resource
         Drive.DriveApi.newDriveContents(getGoogleApiClient())
                 .setResultCallback(driveContentsCallback);
