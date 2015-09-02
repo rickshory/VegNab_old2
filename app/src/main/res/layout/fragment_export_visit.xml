@@ -15,12 +15,59 @@
     >
 
     <TextView
-        android:id="@+id/lbl_export_visit"
-        android:text="@string/export_visit_dlg_lbl"
+        android:id="@+id/lbl_export_visit_title"
+        android:text="@string/export_visit_dlg_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         />
 
+    <TextView
+        android:id="@+id/lbl_export_visit_msg"
+        android:text="@string/export_visit_dlg_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/lbl_export_visit_title"
+        android:layout_below="@id/lbl_export_visit_title"
+        />
+
+    <TextView
+        android:id="@+id/lbl_export_visit_filename"
+        android:text=""
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/lbl_export_visit_msg"
+        android:layout_below="@id/lbl_export_visit_msg"
+        />
+
+    <TextView
+        android:id="@+id/lbl_export_visit"
+        android:text="@string/export_visit_dlg_lbl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/lbl_export_visit_filename"
+        android:layout_below="@id/lbl_export_visit_filename"
+        />
+
+
+    <Button
+        android:id="@+id/export_visit_export_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/export_visit_dlg_btn_positive"
+        android:padding="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/lbl_export_visit"
+        />
+
+    <Button
+        android:id="@+id/export_visit_cancel_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/export_visit_dlg_btn_negative"
+        android:padding="10dp"
+        android:layout_alignTop="@id/export_visit_export_button"
+        android:layout_toLeftOf="@id/export_visit_export_button"
+        />
 </RelativeLayout>
 </ScrollView>
