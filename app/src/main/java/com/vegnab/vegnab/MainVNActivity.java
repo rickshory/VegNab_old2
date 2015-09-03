@@ -952,10 +952,11 @@ public class MainVNActivity extends ActionBarActivity
     */
     @Override
     public void onExportVisitRequest(Bundle paramsBundle) {
-        mVisitIdToExport = paramsBundle.getLong(NewVisitFragment.ARG_VISIT_ID);
+        mVisitIdToExport = paramsBundle.getLong(ARG_VISIT_TO_EXPORT_ID);
         Log.d(LOG_TAG, "mVisitIdToExport received in 'onExportVisitRequest' = " + mVisitIdToExport);
+        // ARG_VISIT_TO_EXPORT_NAME); // currently unused
         // get filename, either default or overridden in Confirm dialog
-        mExportFileName = paramsBundle.getString(NewVisitFragment.ARG_EXPORT_FILENAME);
+        mExportFileName = paramsBundle.getString(ARG_VISIT_TO_EXPORT_FILENAME);
         Log.d(LOG_TAG, "mExportFileName received in 'onExportVisitRequest': " + mExportFileName);
         mConnectionRequested = true;
         buildGoogleApiClient();

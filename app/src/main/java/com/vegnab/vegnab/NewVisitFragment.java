@@ -348,18 +348,18 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
                     return true;
                 }
                 Bundle expArgs = new Bundle();
-                expArgs.putLong(NewVisitFragment.ARG_VISIT_ID, info.id);
+                expArgs.putLong(MainVNActivity.ARG_VISIT_TO_EXPORT_ID, info.id);
                 Cursor cur = (Cursor)mVisitListAdapter.getCursor();
                 cur.moveToPosition(info.position);
                 String visName = cur.getString(cur.getColumnIndex("VisitName"));
-                expArgs.putString(NewVisitFragment.ARG_VISIT_NAME, visName);
+                expArgs.putString(MainVNActivity.ARG_VISIT_TO_EXPORT_NAME, visName);
                 // generate a unique filename
                 // ultimately user will get to choose/edit in Confirm dialog
                 String appName = getActivity().getResources().getString(R.string.app_name);
                 SimpleDateFormat fileNameFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
                 String exportFileName = appName + " " + ((visName == "" ? "" : visName + " "))
                         + fileNameFormat.format(new Date());
-                expArgs.putString(NewVisitFragment.ARG_EXPORT_FILENAME, exportFileName);
+                expArgs.putString(MainVNActivity.ARG_VISIT_TO_EXPORT_FILENAME, exportFileName);
                 // put any other parameters in, such as
                 // format of output, whether to resolve Placeholders, etc.
                 mExpVisListener.onExportVisitRequest(expArgs);
