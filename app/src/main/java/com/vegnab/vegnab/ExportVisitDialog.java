@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class ExportVisitDialog extends DialogFragment {
+public class ExportVisitDialog extends DialogFragment implements android.view.View.OnClickListener {
     private static final String LOG_TAG = ExportVisitDialog.class.getSimpleName();
 
     public interface ExportVisitListener {
@@ -69,5 +69,37 @@ public class ExportVisitDialog extends DialogFragment {
 //            mVegItemRecId = args.getLong(VEG_ITEM_REC_ID);
 //            mStrVegCode = args.getString(VEG_CODE);
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.export_visit_cancel_button:
+                this.dismiss();
+                break;
+
+            case R.id.export_visit_export_button:
+/*
+                Bundle expArgs = new Bundle();
+                expArgs.putLong(NewVisitFragment.ARG_VISIT_ID, info.id);
+                Cursor cur = (Cursor)mVisitListAdapter.getCursor();
+                cur.moveToPosition(info.position);
+                String visName = cur.getString(cur.getColumnIndex("VisitName"));
+                expArgs.putString(NewVisitFragment.ARG_VISIT_NAME, visName);
+                // generate a unique filename
+                // ultimately user will get to choose/edit in Confirm dialog
+                String appName = getActivity().getResources().getString(R.string.app_name);
+                SimpleDateFormat fileNameFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
+                String exportFileName = appName + " " + ((visName == "" ? "" : visName + " "))
+                        + fileNameFormat.format(new Date());
+                expArgs.putString(NewVisitFragment.ARG_EXPORT_FILENAME, exportFileName);
+                // put any other parameters in, such as
+                // format of output, whether to resolve Placeholders, etc.
+                mExpVisListener.onExportVisitRequest(expArgs);
+ */
+                break;
+
+        }
+
     }
 }
