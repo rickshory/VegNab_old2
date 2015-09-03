@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -25,6 +26,7 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
 
     private TextView mTxtHeader, mTxtFileNameToExport;
     SimpleDateFormat mTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+    Button mBtnCancel, mBtnExport;
 
     static ExportVisitDialog newInstance(Bundle args) {
         ExportVisitDialog f = new ExportVisitDialog();
@@ -44,11 +46,16 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup root, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_export_visit, root);
+    public View onCreateView(LayoutInflater inflater, ViewGroup rootView, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_export_visit, rootView);
 
         mTxtHeader = (TextView) view.findViewById(R.id.lbl_export_visit);
         mTxtFileNameToExport = (TextView) view.findViewById(R.id.lbl_export_visit_filename);
+
+        mBtnCancel = (Button) view.findViewById(R.id.export_visit_cancel_button);
+        mBtnCancel.setOnClickListener(this);
+        mBtnExport = (Button) view.findViewById(R.id.export_visit_export_button);
+        mBtnExport.setOnClickListener(this);
 
         getDialog().setTitle(R.string.export_visit_dlg_title);
         return view;
