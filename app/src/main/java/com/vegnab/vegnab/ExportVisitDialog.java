@@ -94,6 +94,7 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
                 // put any other parameters in, such as
                 // format of output, whether to resolve Placeholders, etc.
                 mExpVisListener.onExportVisitRequest(expArgs);
+                this.dismiss();
                 break;
         }
     }
