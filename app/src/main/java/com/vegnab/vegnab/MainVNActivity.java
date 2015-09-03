@@ -95,6 +95,10 @@ public class MainVNActivity extends ActionBarActivity
     final static String ARG_VISIT_ID = "visitId";
     final static String ARG_CONNECTION_REQUESTED = "connRequested";
 
+    final static String ARG_VISIT_TO_EXPORT_ID = "visToExportId";
+    final static String ARG_VISIT_TO_EXPORT_NAME = "visToExportName";
+    final static String ARG_VISIT_TO_EXPORT_FILENAME = "visToExportFileName";
+
     ViewPager viewPager = null;
 
     @Override

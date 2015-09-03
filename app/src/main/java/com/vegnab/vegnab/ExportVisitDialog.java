@@ -19,9 +19,10 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
     }
     ExportVisitListener mExpVisListener;
 
-    public static final String VISIT_TO_EXPORT_ID = "VisToExportId";
+    public static final String VIS_TO_EXPORT_ID = "VisToExportId";
     private long mVisToExportRecId = 0; // zero default means new or not specified yet
-
+    public static final String VIS_EXPORT_VISNAME = "VisExportVisName";
+    private String mVisExportVisName = null;
     public static final String VIS_EXPORT_FILENAME = "VisExportFileName";
     private String mVisExportFileName = null;
 
@@ -56,7 +57,6 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
         return view;
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
@@ -66,8 +66,9 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
         Bundle args = getArguments();
 
         if (args != null) {
-//            mVegItemRecId = args.getLong(VEG_ITEM_REC_ID);
-//            mStrVegCode = args.getString(VEG_CODE);
+            mVisToExportRecId = args.getLong(VIS_TO_EXPORT_ID);
+            mVisExportVisName = args.getString(VIS_EXPORT_VISNAME);
+            mVisExportFileName = args.getString(VIS_EXPORT_FILENAME);
         }
     }
 
@@ -79,27 +80,16 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
                 break;
 
             case R.id.export_visit_export_button:
-/*
                 Bundle expArgs = new Bundle();
-                expArgs.putLong(NewVisitFragment.ARG_VISIT_ID, info.id);
-                Cursor cur = (Cursor)mVisitListAdapter.getCursor();
-                cur.moveToPosition(info.position);
-                String visName = cur.getString(cur.getColumnIndex("VisitName"));
-                expArgs.putString(NewVisitFragment.ARG_VISIT_NAME, visName);
-                // generate a unique filename
-                // ultimately user will get to choose/edit in Confirm dialog
-                String appName = getActivity().getResources().getString(R.string.app_name);
-                SimpleDateFormat fileNameFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
-                String exportFileName = appName + " " + ((visName == "" ? "" : visName + " "))
-                        + fileNameFormat.format(new Date());
-                expArgs.putString(NewVisitFragment.ARG_EXPORT_FILENAME, exportFileName);
+                // for testing, send same args as received
+                // in future, allow user to override
+                expArgs.putLong(MainVNActivity.ARG_VISIT_TO_EXPORT_ID, mVisToExportRecId);
+                expArgs.putString(MainVNActivity.ARG_VISIT_TO_EXPORT_NAME, mVisExportVisName);
+                expArgs.putString(MainVNActivity.ARG_VISIT_TO_EXPORT_FILENAME, mVisExportFileName);
                 // put any other parameters in, such as
                 // format of output, whether to resolve Placeholders, etc.
                 mExpVisListener.onExportVisitRequest(expArgs);
- */
                 break;
-
         }
-
     }
 }
