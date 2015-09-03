@@ -363,6 +363,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
                 // put any other parameters in, such as
                 // format of output, whether to resolve Placeholders, etc.
                 mExpVisListener.onExportVisitRequest(expArgs);
+
                 return true;
 
             case R.id.new_visit_list_item_hide:

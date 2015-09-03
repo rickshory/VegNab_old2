@@ -18,12 +18,9 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
         void onExportVisitRequest(Bundle paramsBundle);
     }
     ExportVisitListener mExpVisListener;
-
-    public static final String VIS_TO_EXPORT_ID = "VisToExportId";
+    
     private long mVisToExportRecId = 0; // zero default means new or not specified yet
-    public static final String VIS_EXPORT_VISNAME = "VisExportVisName";
     private String mVisExportVisName = null;
-    public static final String VIS_EXPORT_FILENAME = "VisExportFileName";
     private String mVisExportFileName = null;
 
     private TextView mTxtHeader, mTxtFileNameToExport;
@@ -51,7 +48,7 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
         View view = inflater.inflate(R.layout.fragment_export_visit, root);
 
         mTxtHeader = (TextView) view.findViewById(R.id.lbl_export_visit);
-//        mTxtFileNameToExport = (TextView) view.findViewById(R.id.lbl_spp_item);
+        mTxtFileNameToExport = (TextView) view.findViewById(R.id.lbl_export_visit_filename);
 
         getDialog().setTitle(R.string.export_visit_dlg_title);
         return view;
@@ -66,9 +63,10 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
         Bundle args = getArguments();
 
         if (args != null) {
-            mVisToExportRecId = args.getLong(VIS_TO_EXPORT_ID);
-            mVisExportVisName = args.getString(VIS_EXPORT_VISNAME);
-            mVisExportFileName = args.getString(VIS_EXPORT_FILENAME);
+            mVisToExportRecId = args.getLong(MainVNActivity.ARG_VISIT_TO_EXPORT_ID);
+            mVisExportVisName = args.getString(MainVNActivity.ARG_VISIT_TO_EXPORT_NAME);
+            mVisExportFileName = args.getString(MainVNActivity.ARG_VISIT_TO_EXPORT_FILENAME);
+            mTxtFileNameToExport.setText(mVisExportFileName);
         }
     }
 
