@@ -58,9 +58,9 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
     long mProjectId, mPlotTypeId;
     int mRowCt = 0, mCtHiddenVisits = 0;
     final static String ARG_SUBPLOT = "subplot";
-    final static String ARG_VISIT_ID = "visitId";
-    final static String ARG_VISIT_NAME = "visitName";
-    final static String ARG_EXPORT_FILENAME = "exportFileName";
+//    final static String ARG_VISIT_ID = "visitId";
+//    final static String ARG_VISIT_NAME = "visitName";
+//    final static String ARG_EXPORT_FILENAME = "exportFileName";
     int mCurrentSubplot = -1;
     Spinner mProjSpinner, mPlotTypeSpinner;
     SimpleCursorAdapter mProjAdapter, mPlotTypeAdapter, mVisitListAdapter;
@@ -80,19 +80,19 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
     public interface ExportVisitListener {
         void onExportVisitRequest(Bundle paramsBundle);
     }
-    ExportVisitListener mExpVisListener;
+//    ExportVisitListener mExpVisListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Get a Tracker (should auto-report)
         ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
-        try {
-            mExpVisListener = (ExportVisitListener) getActivity();
-            Log.d(LOG_TAG, "set up (ExportVisitListener) getActivity()");
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Main Activity must implement ExportVisitListener interface");
-        }
+//        try {
+//            mExpVisListener = (ExportVisitListener) getActivity();
+//            Log.d(LOG_TAG, "set up (ExportVisitListener) getActivity()");
+//        } catch (ClassCastException e) {
+//            throw new ClassCastException("Main Activity must implement ExportVisitListener interface");
+//        }
         setHasOptionsMenu(true);
         // start this loader that does not use the UI
         getLoaderManager().initLoader(VNContract.Loaders.HIDDEN_VISITS, null, this);
@@ -362,8 +362,9 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
                 expArgs.putString(MainVNActivity.ARG_VISIT_TO_EXPORT_FILENAME, exportFileName);
                 // put any other parameters in, such as
                 // format of output, whether to resolve Placeholders, etc.
-                mExpVisListener.onExportVisitRequest(expArgs);
-
+//                mExpVisListener.onExportVisitRequest(expArgs);
+                ExportVisitDialog expVisDlg = ExportVisitDialog.newInstance(expArgs);
+                expVisDlg.show(getFragmentManager(), "frg_new_exp_visit");
                 return true;
 
             case R.id.new_visit_list_item_hide:

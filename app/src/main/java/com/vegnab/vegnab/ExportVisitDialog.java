@@ -18,7 +18,7 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
         void onExportVisitRequest(Bundle paramsBundle);
     }
     ExportVisitListener mExpVisListener;
-    
+
     private long mVisToExportRecId = 0; // zero default means new or not specified yet
     private String mVisExportVisName = null;
     private String mVisExportFileName = null;

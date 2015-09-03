@@ -81,7 +81,8 @@ public class MainVNActivity extends ActionBarActivity
         UnHideVisitDialog.ConfirmUnHideVisitDialogListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        NewVisitFragment.ExportVisitListener {
+//        NewVisitFragment.ExportVisitListener,
+        ExportVisitDialog.ExportVisitListener{
         // LoaderManager.LoaderCallbacks<Cursor>
 
     private static final String LOG_TAG = MainVNActivity.class.getSimpleName();
