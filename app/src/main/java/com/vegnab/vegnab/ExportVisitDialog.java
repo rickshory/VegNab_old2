@@ -57,7 +57,7 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
         mBtnExport = (Button) view.findViewById(R.id.export_visit_export_button);
         mBtnExport.setOnClickListener(this);
 
-        getDialog().setTitle(R.string.export_visit_dlg_title);
+        getDialog().setTitle(R.string.export_visit_dlg_title_pre);
         return view;
     }
 
@@ -73,6 +73,8 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
             mVisToExportRecId = args.getLong(MainVNActivity.ARG_VISIT_TO_EXPORT_ID);
             mVisExportVisName = args.getString(MainVNActivity.ARG_VISIT_TO_EXPORT_NAME);
             mVisExportFileName = args.getString(MainVNActivity.ARG_VISIT_TO_EXPORT_FILENAME);
+            getDialog().setTitle(getText(R.string.export_visit_dlg_title_pre)
+                    + " \"" + mVisExportVisName + "\"");
             mTxtFileNameToExport.setText(mVisExportFileName);
         }
     }

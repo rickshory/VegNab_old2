@@ -372,6 +372,7 @@
     <string name="configurable_edit_err_short">Need at least 2 characters</string>
     <string name="configurable_edit_err_dup">Duplicate item</string>
 
+    <string name="export_visit_dlg_title_pre">Export</string>
     <string name="export_visit_dlg_title">Export this Visit\'s data to Google Drive</string>
     <string name="export_visit_dlg_msg">This will creates a Drive file in the background, and can take several seconds to complete. It requires Google login, if you have not logged in already.</string>
     <string name="export_visit_dlg_lbl">Export?</string>
