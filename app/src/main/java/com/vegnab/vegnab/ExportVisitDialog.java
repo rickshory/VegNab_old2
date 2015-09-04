@@ -49,7 +49,7 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
     public View onCreateView(LayoutInflater inflater, ViewGroup rootView, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_export_visit, rootView);
 
-        mTxtHeader = (TextView) view.findViewById(R.id.lbl_export_visit);
+//        mTxtHeader = (TextView) view.findViewById(R.id.lbl_export_visit);
         mTxtFileNameToExport = (TextView) view.findViewById(R.id.lbl_export_visit_filename);
 
         mBtnCancel = (Button) view.findViewById(R.id.export_visit_cancel_button);

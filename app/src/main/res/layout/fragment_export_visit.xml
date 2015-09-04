@@ -15,11 +15,13 @@
     >
 
     <TextView
-        android:id="@+id/lbl_export_visit_title"
+        android:id="@+id/lbl_export_visit_header"
         android:text="@string/export_visit_dlg_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_marginBottom="12dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         />
 
     <TextView
@@ -27,8 +29,9 @@
         android:text="@string/export_visit_dlg_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/lbl_export_visit_title"
-        android:layout_below="@id/lbl_export_visit_title"
+        android:layout_marginBottom="12dp"
+        android:layout_alignLeft="@id/lbl_export_visit_header"
+        android:layout_below="@id/lbl_export_visit_header"
         />
 
     <TextView
@@ -36,19 +39,10 @@
         android:text=""
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
         android:layout_alignLeft="@id/lbl_export_visit_msg"
         android:layout_below="@id/lbl_export_visit_msg"
         />
-
-    <TextView
-        android:id="@+id/lbl_export_visit"
-        android:text="@string/export_visit_dlg_lbl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/lbl_export_visit_filename"
-        android:layout_below="@id/lbl_export_visit_filename"
-        />
-
 
     <Button
         android:id="@+id/export_visit_export_button"
@@ -57,7 +51,7 @@
         android:text="@string/export_visit_dlg_btn_positive"
         android:padding="10dp"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/lbl_export_visit"
+        android:layout_below="@id/lbl_export_visit_filename"
         />
 
     <Button
