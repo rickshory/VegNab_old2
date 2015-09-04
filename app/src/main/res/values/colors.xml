@@ -11,4 +11,5 @@
     <color name="match_placeholder_text">#117744cc</color>
     <color name="match_nonlocal_species_code">#ffbea585</color>
     <color name="match_nonlocal_species_text">#ffbea585</color>
+    <color name="background_export_filename">#f2ebff</color>
 </resources>
