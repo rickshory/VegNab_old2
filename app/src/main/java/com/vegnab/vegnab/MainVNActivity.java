@@ -1178,25 +1178,25 @@ public class MainVNActivity extends ActionBarActivity
                         // get the data for each subplot
                         if (resolvePh) { // for testing, both are still the same
                             sSQL = "SELECT VegItems._id, VegItems.VisitID, VegItems.SubPlotID, "
-                                    + "VegItems.OrigCode, VegItems.OrigDescr, VegItems.Height, VegItems.Cover, "
+                                    + "VegItems.OrigCode AS Code, VegItems.OrigDescr AS Descr, VegItems.Height, VegItems.Cover, "
                                     + "VegItems.Presence, VegItems.IdLevelID, "
                                     + "VegItems.TimeCreated, VegItems.TimeLastChanged FROM VegItems "
                                     + "WHERE (((VegItems.VisitID)=" + visId + ") "
                                     + "AND ((VegItems.SubPlotID)=" + sbId + ")) "
-                                    + "ORDER BY VegItems.TimeLastChanged DESC;";
+                                    + "ORDER BY VegItems.TimeLastChanged;";
                         } else {
                             sSQL = "SELECT VegItems._id, VegItems.VisitID, VegItems.SubPlotID, "
-                                    + "VegItems.OrigCode, VegItems.OrigDescr, VegItems.Height, VegItems.Cover, "
+                                    + "VegItems.OrigCode AS Code, VegItems.OrigDescr AS Descr, VegItems.Height, VegItems.Cover, "
                                     + "VegItems.Presence, VegItems.IdLevelID, "
                                     + "VegItems.TimeCreated, VegItems.TimeLastChanged FROM VegItems "
                                     + "WHERE (((VegItems.VisitID)=" + visId + ") "
                                     + "AND ((VegItems.SubPlotID)=" + sbId + ")) "
-                                    + "ORDER BY VegItems.TimeLastChanged DESC;";
+                                    + "ORDER BY VegItems.TimeLastChanged;";
                         }
                         thdVg = thdDb.getReadableDatabase().rawQuery(sSQL, null);
                         while (thdVg.moveToNext()) {
-                            spCode = thdVg.getString(thdVg.getColumnIndexOrThrow("OrigCode"));
-                            spDescr = thdVg.getString(thdVg.getColumnIndexOrThrow("OrigDescr"));
+                            spCode = thdVg.getString(thdVg.getColumnIndexOrThrow("Code"));
+                            spDescr = thdVg.getString(thdVg.getColumnIndexOrThrow("Descr"));
                             if (thdVg.isNull(thdVg.getColumnIndexOrThrow("Presence"))) {
                                 // we should have Height and Cover
                                 spParams = "\t\t" + thdVg.getString(thdVg.getColumnIndexOrThrow("Height")) + "cm, "
