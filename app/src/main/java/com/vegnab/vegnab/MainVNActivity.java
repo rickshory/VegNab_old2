@@ -91,6 +91,7 @@ public class MainVNActivity extends ActionBarActivity
     boolean mConnectionRequested = false;
 
     String mExportFileName = "";
+    boolean mResolvePlaceholders = true;
 
     final static String ARG_SUBPLOT_TYPE_ID = "subplotTypeId";
     final static String ARG_VISIT_ID = "visitId";
@@ -99,6 +100,7 @@ public class MainVNActivity extends ActionBarActivity
     final static String ARG_VISIT_TO_EXPORT_ID = "visToExportId";
     final static String ARG_VISIT_TO_EXPORT_NAME = "visToExportName";
     final static String ARG_VISIT_TO_EXPORT_FILENAME = "visToExportFileName";
+    final static String ARG_RESOLVE_PLACEHOLDERS = "resolvePlaceholders";
 
     ViewPager viewPager = null;
 
@@ -959,6 +961,7 @@ public class MainVNActivity extends ActionBarActivity
         // get filename, either default or overridden in Confirm dialog
         mExportFileName = paramsBundle.getString(ARG_VISIT_TO_EXPORT_FILENAME);
         Log.d(LOG_TAG, "mExportFileName received in 'onExportVisitRequest': " + mExportFileName);
+        mResolvePlaceholders = paramsBundle.getBoolean(ARG_RESOLVE_PLACEHOLDERS, true);
         mConnectionRequested = true;
         buildGoogleApiClient();
         mGoogleApiClient.connect();
@@ -1086,9 +1089,11 @@ public class MainVNActivity extends ActionBarActivity
                 return;
             }
             final DriveContents driveContents = result.getDriveContents();
-            // mExportFileName generated in export request, and copied to a Final string here to be accessible by other thread
-            final String fileName = mExportFileName;
+            // global members generated in export request, and copied to Final vars here to be accessible by other thread
             final long visId = mVisitIdToExport;
+            final String fileName = mExportFileName;
+            final boolean resolvePh = mResolvePlaceholders;
+
 
             // Perform I/O off the UI thread.
             new Thread() {
@@ -1171,13 +1176,23 @@ public class MainVNActivity extends ActionBarActivity
                         sbId = thdSb.getLong(thdSb.getColumnIndexOrThrow("SubplotTypeId"));
                         writer.write("\r\n" + sbName + "\r\n");
                         // get the data for each subplot
-                        sSQL = "SELECT VegItems._id, VegItems.VisitID, VegItems.SubPlotID, "
-                                + "VegItems.OrigCode, VegItems.OrigDescr, VegItems.Height, VegItems.Cover, "
-                                + "VegItems.Presence, VegItems.IdLevelID, "
-                                + "VegItems.TimeCreated, VegItems.TimeLastChanged FROM VegItems "
-                                + "WHERE (((VegItems.VisitID)=" + visId + ") "
-                                + "AND ((VegItems.SubPlotID)=" + sbId + ")) "
-                                + "ORDER BY VegItems.TimeLastChanged DESC;";
+                        if (resolvePh) { // for testing, both are still the same
+                            sSQL = "SELECT VegItems._id, VegItems.VisitID, VegItems.SubPlotID, "
+                                    + "VegItems.OrigCode, VegItems.OrigDescr, VegItems.Height, VegItems.Cover, "
+                                    + "VegItems.Presence, VegItems.IdLevelID, "
+                                    + "VegItems.TimeCreated, VegItems.TimeLastChanged FROM VegItems "
+                                    + "WHERE (((VegItems.VisitID)=" + visId + ") "
+                                    + "AND ((VegItems.SubPlotID)=" + sbId + ")) "
+                                    + "ORDER BY VegItems.TimeLastChanged DESC;";
+                        } else {
+                            sSQL = "SELECT VegItems._id, VegItems.VisitID, VegItems.SubPlotID, "
+                                    + "VegItems.OrigCode, VegItems.OrigDescr, VegItems.Height, VegItems.Cover, "
+                                    + "VegItems.Presence, VegItems.IdLevelID, "
+                                    + "VegItems.TimeCreated, VegItems.TimeLastChanged FROM VegItems "
+                                    + "WHERE (((VegItems.VisitID)=" + visId + ") "
+                                    + "AND ((VegItems.SubPlotID)=" + sbId + ")) "
+                                    + "ORDER BY VegItems.TimeLastChanged DESC;";
+                        }
                         thdVg = thdDb.getReadableDatabase().rawQuery(sSQL, null);
                         while (thdVg.moveToNext()) {
                             spCode = thdVg.getString(thdVg.getColumnIndexOrThrow("OrigCode"));
