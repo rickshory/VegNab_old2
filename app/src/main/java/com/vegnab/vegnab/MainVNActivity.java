@@ -1119,7 +1119,18 @@ public class MainVNActivity extends ActionBarActivity
                     ContentResolver thdRs = getApplicationContext().getContentResolver();
                     Cursor thdCs, thdSb, thdVg;
                     String sSQL;
+                    long pjId =0, nmId=0;
                     // get the Visit Header information
+                    // first get some numeric fields used in later queries
+                    sSQL = "SELECT Visits.ProjID, Visits.NamerID "
+                            + "FROM Visits WHERE Visits._id = " + visId + ";";
+                    thdCs = thdDb.getReadableDatabase().rawQuery(sSQL, null);
+                    while (thdCs.moveToNext()) { // should be just one record
+                        pjId = thdCs.getLong(thdCs.getColumnIndexOrThrow("ProjID"));
+                        nmId = thdCs.getLong(thdCs.getColumnIndexOrThrow("NamerID"));
+                    }
+                    thdCs.close();
+                    // now get the fields to display
                     sSQL = "SELECT Visits.VisitName, Visits.VisitDate, Projects.ProjCode, "
                             + "PlotTypes.PlotTypeDescr, Visits.StartTime, Visits.LastChanged, "
                             + "Namers.NamerName, Visits.Scribe, Locations.LocName, "
@@ -1176,18 +1187,24 @@ public class MainVNActivity extends ActionBarActivity
                         sbId = thdSb.getLong(thdSb.getColumnIndexOrThrow("SubplotTypeId"));
                         writer.write("\r\n" + sbName + "\r\n");
                         // get the data for each subplot
-                        if (resolvePh) { // for testing, both are still the same
+                        if (resolvePh) {
                             sSQL = "SELECT VegItems._id, VegItems.VisitID, VegItems.SubPlotID, "
-                                    + "VegItems.OrigCode AS Code, VegItems.OrigDescr AS Descr, VegItems.Height, VegItems.Cover, "
-                                    + "VegItems.Presence, VegItems.IdLevelID, "
-                                    + "VegItems.TimeCreated, VegItems.TimeLastChanged FROM VegItems "
+                                    + "COALESCE(PlaceHolders.IdSppCode, VegItems.OrigCode) AS Code, "
+                                    + "COALESCE(PlaceHolders.IdSppDescription, VegItems.OrigDescr) AS Descr, "
+                                    + "VegItems.Height, VegItems.Cover, VegItems.Presence, "
+                                    + "MAX(IFNULL(VegItems.IdLevelID,0), IFNULL(PlaceHolders.IdLevelID,0)) AS IdLev, "
+                                    + "VegItems.TimeCreated, VegItems.TimeLastChanged "
+                                    + "FROM VegItems LEFT JOIN PlaceHolders "
+                                    + "ON VegItems.OrigCode = PlaceHolders.PlaceHolderCode "
                                     + "WHERE (((VegItems.VisitID)=" + visId + ") "
-                                    + "AND ((VegItems.SubPlotID)=" + sbId + ")) "
+                                    + "AND ((VegItems.SubPlotID)=" + sbId + ") "
+                                    + "AND ((PlaceHolders.ProjID) Is Null Or (PlaceHolders.ProjID)=" + pjId + ") "
+                                    + "AND ((PlaceHolders.NamerID) Is Null Or (PlaceHolders.NamerID)=" + nmId + ")) "
                                     + "ORDER BY VegItems.TimeLastChanged;";
                         } else {
                             sSQL = "SELECT VegItems._id, VegItems.VisitID, VegItems.SubPlotID, "
                                     + "VegItems.OrigCode AS Code, VegItems.OrigDescr AS Descr, VegItems.Height, VegItems.Cover, "
-                                    + "VegItems.Presence, VegItems.IdLevelID, "
+                                    + "VegItems.Presence, VegItems.IdLevelID AS IdLev, "
                                     + "VegItems.TimeCreated, VegItems.TimeLastChanged FROM VegItems "
                                     + "WHERE (((VegItems.VisitID)=" + visId + ") "
                                     + "AND ((VegItems.SubPlotID)=" + sbId + ")) "
