@@ -537,10 +537,25 @@ public class SelectSpeciesFragment extends ListFragment
             if (mPickPlaceholder) { // show only the Placeholders, most recent first
                 select = "SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
                         + "'' AS SubsppVar, Description AS Vernacular, "
-                        + "PlaceHolderCode || ': ' || Description AS MatchTxt, 1 AS SubListOrder, 1 AS IsPlaceholder "
+                        + "PlaceHolderCode || ': ' || Description || "
+                        + "IFNULL((' = ' || IdSppCode || (IFNULL((': ' || IdSppDescription), ''))), '') "
+                        + "AS MatchTxt, "
+                        + "1 AS SubListOrder, "
+                        + "1 AS IsPlaceholder, "
+                        + "CASE WHEN IFNULL(IdSppCode, 0) = 0 THEN 0 ELSE 1 END AS IsIdentified "
                         + "FROM PlaceHolders "
                         + "WHERE ProjID=? AND PlaceHolders.NamerID=? "
                         + "ORDER BY TimeFirstInput DESC;";
+                /*SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species,
+'' AS SubsppVar,
+Description AS Vernacular,
+PlaceHolderCode || ': ' || Description || IFNULL((' = ' || IdSppCode || (IFNULL((': ' || IdSppDescription), ''))), '')
+ AS MatchTxt,
+1 AS SubListOrder,
+1 AS IsPlaceholder, CASE WHEN IFNULL(IdSppCode, 0) = 0 THEN 0 ELSE 1 END AS IsIdentified
+FROM PlaceHolders
+WHERE ProjID=1 AND PlaceHolders.NamerID=1
+ORDER BY TimeFirstInput DESC;*/
                 params = new String[] {"" + mProjectId, "" + mNamerId };
             } else {
                 if (mStSearch.trim().length() == 0) {
