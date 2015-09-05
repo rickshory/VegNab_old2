@@ -29,11 +29,20 @@ public class SelSppItemAdapter extends ResourceCursorAdapter {
         sppText.setText(c.getString(c.getColumnIndexOrThrow("MatchTxt")));
         int lstN = c.getInt(c.getColumnIndexOrThrow("SubListOrder"));
         int isPh = c.getInt(c.getColumnIndexOrThrow("IsPlaceholder"));
+        int isId = c.getInt(c.getColumnIndexOrThrow("IsIdentified"));
         if (isPh == 1) { // a placeholder, assign a color for easier spotting
-            if (lstN == 1) {
-                v.setBackgroundColor(ctx.getResources().getColor(R.color.match_placeholder_code));
-            } else {
-                v.setBackgroundColor(ctx.getResources().getColor(R.color.match_placeholder_text));
+            if (lstN == 1) { // matched by Placeholder code
+                if (isId == 0) { // not identified yet
+                    v.setBackgroundColor(ctx.getResources().getColor(R.color.match_placeholder_code));
+                } else { // has been identified
+                    v.setBackgroundColor(ctx.getResources().getColor(R.color.match_placeholder_code_identified));
+                }
+            } else { // matched by Placeholder description
+                if (isId == 0) { // not identified yet
+                    v.setBackgroundColor(ctx.getResources().getColor(R.color.match_placeholder_text));
+                } else { // has been identified
+                    v.setBackgroundColor(ctx.getResources().getColor(R.color.match_placeholder_text_identified));
+                }
             }
         } else { // not a placeholder, assign distinctive colors
             switch (lstN) {

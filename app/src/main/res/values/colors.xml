@@ -9,8 +9,8 @@
     <color name="match_local_species_text">#ffcfffd1</color>
     <color name="match_placeholder_code">#dfd4f0</color>
     <color name="match_placeholder_text">#e9defa</color>
-    <color name="match_placeholder_identified_code">#4070d4ff</color>
-    <color name="match_placeholder_identified_text">#4078deff</color>
+    <color name="match_placeholder_code_identified">#4070d4ff</color>
+    <color name="match_placeholder_text_identified">#4078deff</color>
     <color name="match_nonlocal_species_code">#80bea585</color>
     <color name="match_nonlocal_species_text">#80bea585</color>
     <color name="background_export_filename">#f2ebff</color>
