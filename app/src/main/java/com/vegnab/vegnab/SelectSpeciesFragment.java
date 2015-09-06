@@ -105,14 +105,13 @@ public class SelectSpeciesFragment extends ListFragment
         }
     };
 
+/*
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(LOG_TAG, "in 'onCreate'");
         this.setRetainInstance(true);
     }
-
-/*
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -236,6 +235,8 @@ public class SelectSpeciesFragment extends ListFragment
     public void onResume(){
         super.onResume();
         Log.d(LOG_TAG, "in 'onResume'");
+//        getLoaderManager().restartLoader(Loaders.VISIT_INFO, null, this);
+        getLoaderManager().restartLoader(Loaders.EXISTING_PLACEHOLDER_CODES, null, this);
     }
 
     @Override
