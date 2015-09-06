@@ -2,6 +2,7 @@ package com.vegnab.vegnab;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -53,6 +54,7 @@ public class SelectSpeciesFragment extends ListFragment
     final static String ARG_PROJECT_ID = "projectId";
     final static String ARG_NAMER_ID = "namerId";
     final static String ARG_SEARCH_TEXT = "search_text";
+    final static String ARG_PLACEHOLDER_CODES = "phCodes";
 
     long mCurVisitRecId = 0;
     long mCurSubplotTypeRecId = 0;
@@ -60,7 +62,7 @@ public class SelectSpeciesFragment extends ListFragment
     boolean mPickPlaceholder = false;
     long mProjectId = 0;
     long mNamerId = 0;
-    HashMap<String, Long> mPlaceholderCodesForThisNamer = new HashMap<String, Long>();
+    ConcurrentHashMap<String, Long> mPlaceholderCodesForThisNamer = new ConcurrentHashMap<String, Long>();
     Cursor mSppMatchCursor;
     ContentValues mValues = new ContentValues();
 
@@ -128,6 +130,7 @@ public class SelectSpeciesFragment extends ListFragment
             mStSearch = savedInstanceState.getString(ARG_SEARCH_TEXT);
             mProjectId = savedInstanceState.getLong(ARG_PROJECT_ID);
             mNamerId = savedInstanceState.getLong(ARG_NAMER_ID);
+            mPlaceholderCodesForThisNamer = (ConcurrentHashMap<String, Long>)savedInstanceState.getSerializable(ARG_PLACEHOLDER_CODES);
         }
         // inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_sel_species, container, false);
@@ -219,6 +222,20 @@ public class SelectSpeciesFragment extends ListFragment
     }
 
     @Override
+    public void onPause(){
+        Log.d(LOG_TAG, "in 'onPause'");
+
+        super.onPause();
+    }
+
+//    wv.saveState(outState);
+
+    @Override
+    public void onResume(){
+        Log.d(LOG_TAG, "in 'onResume'");
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         // save the current search text and any options
@@ -229,6 +246,7 @@ public class SelectSpeciesFragment extends ListFragment
         outState.putBoolean(ARG_PRESENCE_ONLY_SUBPLOT, mPresenceOnly);
         outState.putLong(ARG_PROJECT_ID, mProjectId);
         outState.putLong(ARG_NAMER_ID, mNamerId);
+        outState.putSerializable(ARG_PLACEHOLDER_CODES, mPlaceholderCodesForThisNamer);
     }
 
     @Override
