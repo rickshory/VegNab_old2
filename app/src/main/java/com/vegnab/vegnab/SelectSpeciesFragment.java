@@ -235,8 +235,8 @@ public class SelectSpeciesFragment extends ListFragment
     public void onResume(){
         super.onResume();
         Log.d(LOG_TAG, "in 'onResume'");
-//        getLoaderManager().restartLoader(Loaders.VISIT_INFO, null, this);
-        getLoaderManager().restartLoader(Loaders.EXISTING_PLACEHOLDER_CODES, null, this);
+        getLoaderManager().restartLoader(Loaders.VISIT_INFO, null, this);
+//        getLoaderManager().restartLoader(Loaders.EXISTING_PLACEHOLDER_CODES, null, this);
     }
 
     @Override
