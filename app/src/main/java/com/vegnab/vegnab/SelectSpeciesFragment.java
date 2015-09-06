@@ -211,7 +211,7 @@ public class SelectSpeciesFragment extends ListFragment
     private void fetchExistingPlaceholders() {
         // get these to disallow duplicate Placeholder definitions
         // will be called after Loader that gets ProjectID and NamerID
-        getLoaderManager().initLoader(Loaders.EXISTING_PLACEHOLDER_CODES, null, this);
+        getLoaderManager().initLoader(Loaders.EXISTING_PH_CODES_PRECHECK, null, this);
     }
 
     @Override
@@ -239,7 +239,7 @@ public class SelectSpeciesFragment extends ListFragment
         super.onResume();
         Log.d(LOG_TAG, "in 'onResume'");
 //        getLoaderManager().restartLoader(Loaders.VISIT_INFO, null, this);
-//        getLoaderManager().restartLoader(Loaders.EXISTING_PLACEHOLDER_CODES, null, this);
+//        getLoaderManager().restartLoader(Loaders.EXISTING_PH_CODES_PRECHECK, null, this);
     }
 
     @Override
@@ -693,7 +693,7 @@ public class SelectSpeciesFragment extends ListFragment
                     null, select, params, null);
             break;
 
-            case Loaders.EXISTING_PLACEHOLDER_CODES:
+            case Loaders.EXISTING_PH_CODES_PRECHECK:
                 baseUri = ContentProvider_VegNab.SQL_URI;
                 select = "SELECT PlaceHolders._id, PlaceHolders.PlaceHolderCode "
                     + "FROM PlaceHolders LEFT JOIN Visits ON PlaceHolders.VisitIdWhereFirstFound = Visits._id "
@@ -737,7 +737,7 @@ public class SelectSpeciesFragment extends ListFragment
             }
             break;
 
-        case Loaders.EXISTING_PLACEHOLDER_CODES:
+        case Loaders.EXISTING_PH_CODES_PRECHECK:
             mPlaceholderCodesForThisNamer.clear();
             while (finishedCursor.moveToNext()) {
 /*				String code;
@@ -766,7 +766,7 @@ public class SelectSpeciesFragment extends ListFragment
         case Loaders.SPP_MATCHES:
             mSppResultsAdapter.swapCursor(null);
             break;
-        case Loaders.EXISTING_PLACEHOLDER_CODES:
+        case Loaders.EXISTING_PH_CODES_PRECHECK:
             // not an adapter, nothing to do here
             break;
         }

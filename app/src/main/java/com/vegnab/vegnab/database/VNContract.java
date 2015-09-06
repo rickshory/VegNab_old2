@@ -71,7 +71,7 @@ public final class VNContract {
         public static final int BASE_SUBPLOT_SPP = 2000; // Veg species for the current subplot; base number, instances will increment
         // in Species Select
         public static final int SPP_MATCHES = 71; // Species that match the search string
-        public static final int EXISTING_PLACEHOLDER_CODES = 72; // Placeholder codes already defined by this Namer
+        public static final int EXISTING_PH_CODES_PRECHECK = 72; // Placeholder codes already defined by this Namer, checked before add/edit
         public static final int VISIT_INFO = 73; // Fields needed from the Visit
 
         // in Main Activity
@@ -89,6 +89,7 @@ public final class VNContract {
         public static final int PH_IDENT_METHODS = 96; // For spinner
         public static final int PH_IDENT_CONFIDENCS = 97; // For spinner
         public static final int PH_IDENT_SPECIES = 98; // For auto complete
+        public static final int EXISTING_PLACEHOLDER_CODES = 99; // Placeholder codes already defined by this Namer
 
         // in Placeholder Pictures Grid
         public static final int PLACEHOLDER_OF_PIX = 110; // The current placeholder
