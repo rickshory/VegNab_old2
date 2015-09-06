@@ -55,6 +55,7 @@ public class SelectSpeciesFragment extends ListFragment
     final static String ARG_NAMER_ID = "namerId";
     final static String ARG_SEARCH_TEXT = "search_text";
     final static String ARG_PLACEHOLDER_CODES = "phCodes";
+    final static String ARG_PH_CODES_CT = "phCodesCt";
 
     long mCurVisitRecId = 0;
     long mCurSubplotTypeRecId = 0;
@@ -62,6 +63,7 @@ public class SelectSpeciesFragment extends ListFragment
     boolean mPickPlaceholder = false;
     long mProjectId = 0;
     long mNamerId = 0;
+    long mCtExistingPlaceholderCodes = 0;
     ConcurrentHashMap<String, Long> mPlaceholderCodesForThisNamer = new ConcurrentHashMap<String, Long>();
     Cursor mSppMatchCursor;
     ContentValues mValues = new ContentValues();
@@ -132,6 +134,7 @@ public class SelectSpeciesFragment extends ListFragment
             mProjectId = savedInstanceState.getLong(ARG_PROJECT_ID);
             mNamerId = savedInstanceState.getLong(ARG_NAMER_ID);
             mPlaceholderCodesForThisNamer = (ConcurrentHashMap<String, Long>)savedInstanceState.getSerializable(ARG_PLACEHOLDER_CODES);
+            mCtExistingPlaceholderCodes = savedInstanceState.getLong(ARG_PH_CODES_CT);
         }
         // inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_sel_species, container, false);
@@ -235,7 +238,7 @@ public class SelectSpeciesFragment extends ListFragment
     public void onResume(){
         super.onResume();
         Log.d(LOG_TAG, "in 'onResume'");
-        getLoaderManager().restartLoader(Loaders.VISIT_INFO, null, this);
+//        getLoaderManager().restartLoader(Loaders.VISIT_INFO, null, this);
 //        getLoaderManager().restartLoader(Loaders.EXISTING_PLACEHOLDER_CODES, null, this);
     }
 
@@ -251,6 +254,7 @@ public class SelectSpeciesFragment extends ListFragment
         outState.putLong(ARG_PROJECT_ID, mProjectId);
         outState.putLong(ARG_NAMER_ID, mNamerId);
         outState.putSerializable(ARG_PLACEHOLDER_CODES, mPlaceholderCodesForThisNamer);
+        outState.putLong(ARG_PH_CODES_CT, mCtExistingPlaceholderCodes);
     }
 
     @Override
@@ -318,7 +322,8 @@ public class SelectSpeciesFragment extends ListFragment
                 // can't add placeholder if no text yet to use
                 menu.removeItem(R.id.sel_spp_search_add_placeholder);
             }
-            if (mPlaceholderCodesForThisNamer.size() == 0) {
+//            if (mPlaceholderCodesForThisNamer.size() == 0) {
+            if (mCtExistingPlaceholderCodes == 0) {
                 // if no placeholders, don't show option to pick from them
                 menu.removeItem(R.id.sel_spp_search_pick_placeholder);
             }
@@ -746,6 +751,7 @@ public class SelectSpeciesFragment extends ListFragment
                         finishedCursor.getLong(
                         finishedCursor.getColumnIndexOrThrow("_id")));
             }
+            mCtExistingPlaceholderCodes = mPlaceholderCodesForThisNamer.size();
             break;
         }
     }
