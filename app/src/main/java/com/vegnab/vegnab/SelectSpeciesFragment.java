@@ -105,12 +105,14 @@ public class SelectSpeciesFragment extends ListFragment
         }
     };
 
-/*
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+        Log.d(LOG_TAG, "in 'onCreate'");
+        this.setRetainInstance(true);
     }
+
+/*
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -232,6 +234,7 @@ public class SelectSpeciesFragment extends ListFragment
 
     @Override
     public void onResume(){
+        super.onResume();
         Log.d(LOG_TAG, "in 'onResume'");
     }
 
