@@ -41,6 +41,10 @@ public final class VNContract {
     // putting them all together here helps avoid conflicts in various fragments
     public static abstract class Loaders {
         public static final int TEST_SQL = 0; // test loading from raw SQL
+
+        // in Main Activity
+        public static final int EXISTING_PH_CODES = 5000; // Placeholder codes already defined, to check before add/edit
+
         // in New Visit
         public static final int PROJECTS = 1; // Loader Id for Projects
         public static final int PLOTTYPES = 2; // Loader Id for Plot Types
@@ -74,7 +78,7 @@ public final class VNContract {
         public static final int EXISTING_PH_CODES_PRECHECK = 72; // Placeholder codes already defined by this Namer, checked before add/edit
         public static final int VISIT_INFO = 73; // Fields needed from the Visit
 
-        // in Main Activity
+
         // in Edit VegItem
         public static final int VEGITEM_TO_EDIT = 81; // The current veg item
         public static final int VEG_ITEM_CONFIDENCE_LEVELS = 82; //
@@ -82,14 +86,13 @@ public final class VNContract {
 
         // in Edit Placeholder
         public static final int PLACEHOLDER_TO_EDIT = 91; // The current placeholder
-        public static final int PLACEHOLDERS_EXISTING = 92; // The current placeholder
+        public static final int PLACEHOLDERS_EXISTING = 92; // Placeholder codes already defined by this Namer
         public static final int PLACEHOLDER_HABITATS = 93; // Recall these as options to re-select
         public static final int PH_IDENT_NAMERS = 94; // For spinner
         public static final int PH_IDENT_REFS = 95; // For spinner
         public static final int PH_IDENT_METHODS = 96; // For spinner
         public static final int PH_IDENT_CONFIDENCS = 97; // For spinner
         public static final int PH_IDENT_SPECIES = 98; // For auto complete
-        public static final int EXISTING_PLACEHOLDER_CODES = 99; // Placeholder codes already defined by this Namer
 
         // in Placeholder Pictures Grid
         public static final int PLACEHOLDER_OF_PIX = 110; // The current placeholder
