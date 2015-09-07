@@ -92,7 +92,7 @@ public class MainVNActivity extends ActionBarActivity
     static String mUniqueDeviceId, mDeviceIdSource;
     long mRowCt, mVisitId = 0, mSubplotTypeId = 0, mProjectId = 0, mNamerId = 0, mVisitIdToExport = 0;
     boolean mConnectionRequested = false;
-    long mPhProjID = 0, mPhNameId =0, mPhExistingCt = 0;
+    long mPhProjID = 0, mPhNameId =0;
     ConcurrentHashMap<String, Long> mExistingPhCodes = new ConcurrentHashMap<String, Long>();
 
     String mExportFileName = "";
@@ -110,7 +110,6 @@ public class MainVNActivity extends ActionBarActivity
     final static String ARG_PH_PROJ_ID = "phProjId";
     final static String ARG_PH_NAMER_ID = "phNamerId";
     final static String ARG_PH_EXISTING_SET = "phExistingSet";
-    final static String ARG_PH_EXISTING_COUNT = "phExistingCount";
 
     ViewPager viewPager = null;
 
@@ -358,6 +357,18 @@ public class MainVNActivity extends ActionBarActivity
         outState.putLong(ARG_SUBPLOT_TYPE_ID, mSubplotTypeId);
         outState.putLong(ARG_VISIT_ID, mVisitId);
         outState.putBoolean(ARG_CONNECTION_REQUESTED, mConnectionRequested);
+        outState.putSerializable(ARG_PH_EXISTING_SET, mExistingPhCodes);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.d(LOG_TAG, "In 'onRestoreInstanceState'");
+        mSubplotTypeId = savedInstanceState.getLong(ARG_SUBPLOT_TYPE_ID);
+        mVisitId = savedInstanceState.getLong(ARG_VISIT_ID);
+        mConnectionRequested = savedInstanceState.getBoolean(ARG_CONNECTION_REQUESTED);
+        mExistingPhCodes = (ConcurrentHashMap<String, Long>) savedInstanceState.getSerializable(ARG_PH_EXISTING_SET);
+
     }
 
     @Override
@@ -524,7 +535,15 @@ public class MainVNActivity extends ActionBarActivity
         Log.d(LOG_TAG, "In onRequestGenerateExistingPlaceholders");
         mPhProjID = args.getLong(ARG_PH_PROJ_ID, 0);
         mPhNameId = args.getLong(ARG_PH_NAMER_ID, 0);
-        getLoaderManager().initLoader(VNContract.Loaders.EXISTING_PH_CODES, null, getBaseContext());
+        getSupportLoaderManager().initLoader(VNContract.Loaders.EXISTING_PH_CODES, null, this);
+    }
+
+    public long onRequestGetCountOfExistingPlaceholders () {
+        return (long) mExistingPhCodes.size();
+    }
+
+    public boolean onRequestMatchCheckOfExistingPlaceholders (String ph) {
+        return (mExistingPhCodes.containsKey(ph));
     }
 
     @Override
@@ -850,8 +869,6 @@ public class MainVNActivity extends ActionBarActivity
                             finishedCursor.getLong(
                                     finishedCursor.getColumnIndexOrThrow("_id")));
                 }
-                mPhExistingCt = mExistingPhCodes.size();
-
                 break;
         }
     }
