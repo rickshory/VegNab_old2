@@ -536,7 +536,7 @@ public class MainVNActivity extends ActionBarActivity
         Log.d(LOG_TAG, "In onRequestGenerateExistingPlaceholders");
         mPhProjID = args.getLong(ARG_PH_PROJ_ID, 0);
         mPhNameId = args.getLong(ARG_PH_NAMER_ID, 0);
-        getSupportLoaderManager().initLoader(VNContract.Loaders.EXISTING_PH_CODES, null, this);
+        getSupportLoaderManager().restartLoader(VNContract.Loaders.EXISTING_PH_CODES, null, this);
     }
 
     public long onRequestGetCountOfExistingPlaceholders () {
