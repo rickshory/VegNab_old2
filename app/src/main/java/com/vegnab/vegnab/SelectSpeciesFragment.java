@@ -54,8 +54,6 @@ public class SelectSpeciesFragment extends ListFragment
     final static String ARG_PROJECT_ID = "projectId";
     final static String ARG_NAMER_ID = "namerId";
     final static String ARG_SEARCH_TEXT = "search_text";
-    final static String ARG_PLACEHOLDER_CODES = "phCodes";
-    final static String ARG_PH_CODES_CT = "phCodesCt";
 
     long mCurVisitRecId = 0;
     long mCurSubplotTypeRecId = 0;
@@ -63,8 +61,6 @@ public class SelectSpeciesFragment extends ListFragment
     boolean mPickPlaceholder = false;
     long mProjectId = 0;
     long mNamerId = 0;
-    long mCtExistingPlaceholderCodes = 0;
-    ConcurrentHashMap<String, Long> mPlaceholderCodesForThisNamer = new ConcurrentHashMap<String, Long>();
     Cursor mSppMatchCursor;
     ContentValues mValues = new ContentValues();
 
@@ -115,21 +111,6 @@ public class SelectSpeciesFragment extends ListFragment
         }
     };
 
-/*
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.d(LOG_TAG, "in 'onCreate'");
-        this.setRetainInstance(true);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.new_visit, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-*/
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
@@ -141,8 +122,6 @@ public class SelectSpeciesFragment extends ListFragment
             mStSearch = savedInstanceState.getString(ARG_SEARCH_TEXT);
             mProjectId = savedInstanceState.getLong(ARG_PROJECT_ID);
             mNamerId = savedInstanceState.getLong(ARG_NAMER_ID);
-            mPlaceholderCodesForThisNamer = (ConcurrentHashMap<String, Long>)savedInstanceState.getSerializable(ARG_PLACEHOLDER_CODES);
-            mCtExistingPlaceholderCodes = savedInstanceState.getLong(ARG_PH_CODES_CT);
         }
         // inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_sel_species, container, false);
@@ -155,19 +134,7 @@ public class SelectSpeciesFragment extends ListFragment
         mSppResultsAdapter = new SelSppItemAdapter(getActivity(),
                 R.layout.list_spp_search_item, null, 0);
         setListAdapter(mSppResultsAdapter);
-
-//        // get current Project and Namer Id's from preferences
-//        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-//        mProjectId = sharedPref.getLong(Prefs.DEFAULT_PROJECT_ID, 0);
-//        mNamerId = sharedPref.getLong(Prefs.DEFAULT_NAMER_ID, 0);
-
         getLoaderManager().initLoader(Loaders.SPP_MATCHES, null, this);
-
-//		mSppItemsList = (ListView) rootView.findViewById(android.R.id.list);
-//		registerForContextMenu(mSppItemsList);
-//		mSppItemsList.setOnItemClickListener(this);
-
-
         return rootView;
     }
 
@@ -186,17 +153,6 @@ public class SelectSpeciesFragment extends ListFragment
             mPickPlaceholder = args.getBoolean(ARG_PICK_PLACEHOLDER);
             mProjectId = args.getLong(ARG_PROJECT_ID);
             mNamerId = args.getLong(ARG_NAMER_ID);
-//            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-//            mProjectId = sharedPref.getLong(Prefs.DEFAULT_PROJECT_ID, 0);
-//            mNamerId = sharedPref.getLong(Prefs.DEFAULT_NAMER_ID, 0);
-            /*	final static String ARG_VISIT_ID = "visId";
-    final static String ARG_SUBPLOT_TYPE_ID = "sbpId";
-    final static String ARG_PRESENCE_ONLY_SUBPLOT = "presenceOnly";
-    final static String ARG_SEARCH_TEXT = "search_text";
-    final static String ARG_SQL_TEXT = "sql_text";
-    final static String ARG_SEARCH_FULL_LIST = "regional_list";
-    final static String ARG_USE_FULLTEXT_SEARCH = "fulltext_search";
-*/
         }
         // get the ProjectID and NamerID for this Visit
         getLoaderManager().initLoader(Loaders.VISIT_INFO, null, this);
@@ -215,12 +171,6 @@ public class SelectSpeciesFragment extends ListFragment
         // set up the list to receive long-press
         registerForContextMenu(getListView());
     }
-
-//    private void fetchExistingPlaceholders() {
-//        // get these to disallow duplicate Placeholder definitions
-//        // will be called after Loader that gets ProjectID and NamerID
-//        getLoaderManager().initLoader(Loaders.EXISTING_PH_CODES_PRECHECK, null, this);
-//    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -245,16 +195,6 @@ public class SelectSpeciesFragment extends ListFragment
         super.onPause();
     }
 
-//    wv.saveState(outState);
-
-//    @Override
-//    public void onResume(){
-//        super.onResume();
-//        Log.d(LOG_TAG, "in 'onResume'");
-////        getLoaderManager().restartLoader(Loaders.VISIT_INFO, null, this);
-////        getLoaderManager().restartLoader(Loaders.EXISTING_PH_CODES_PRECHECK, null, this);
-//    }
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -266,8 +206,6 @@ public class SelectSpeciesFragment extends ListFragment
         outState.putBoolean(ARG_PRESENCE_ONLY_SUBPLOT, mPresenceOnly);
         outState.putLong(ARG_PROJECT_ID, mProjectId);
         outState.putLong(ARG_NAMER_ID, mNamerId);
-        outState.putSerializable(ARG_PLACEHOLDER_CODES, mPlaceholderCodesForThisNamer);
-        outState.putLong(ARG_PH_CODES_CT, mCtExistingPlaceholderCodes);
     }
 
     @Override
@@ -410,14 +348,6 @@ public class SelectSpeciesFragment extends ListFragment
                             Toast.LENGTH_SHORT).show();
                     return true;
                 }
-
-
-//// for menu testing, pop us some Help
-//        helpTitle = "New Placeholder";
-//        helpMessage = "This will open the Placeholder screem for code\"" + phCode
-//            +"\"" + (wasShortened ? ", which was shortened from \"" + wholeContents + "\"" : "");
-//        flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-//        flexHlpDlg.show(getFragmentManager(), "frg_help_phld_dlg");
 
                 phArgs.putLong(EditPlaceholderFragment.ARG_PLACEHOLDER_ID, 0); // new, may not be needed
                 phArgs.putString(EditPlaceholderFragment.ARG_PLACEHOLDER_CODE, phCode);
@@ -709,15 +639,6 @@ public class SelectSpeciesFragment extends ListFragment
                     null, select, params, null);
             break;
 
-//            case Loaders.EXISTING_PH_CODES_PRECHECK:
-//                baseUri = ContentProvider_VegNab.SQL_URI;
-//                select = "SELECT PlaceHolders._id, PlaceHolders.PlaceHolderCode "
-//                    + "FROM PlaceHolders LEFT JOIN Visits ON PlaceHolders.VisitIdWhereFirstFound = Visits._id "
-//                    + "WHERE Visits.ProjID = ? "
-//                    + "AND Visits.NamerID = ?;";
-//                cl = new CursorLoader(getActivity(), baseUri, null, select,
-//                        new String[] { "" + mProjectId, "" + mNamerId }, null);
-//                break;
         }
         return cl;
 
@@ -733,23 +654,13 @@ public class SelectSpeciesFragment extends ListFragment
                 if (finishedCursor.moveToFirst()) {
                     mProjectId = finishedCursor.getLong(finishedCursor.getColumnIndexOrThrow("ProjID"));
                     mNamerId = finishedCursor.getLong(finishedCursor.getColumnIndexOrThrow("NamerID"));
-                    Log.d(LOG_TAG, "finished Loader VISIT_INFO: mProjectId=" + mProjectId + ", mNamerId=" + mNamerId);
                     // now that NamerID is valid, get existing Placeholders to disallow duplicates
                     // they will exist as a hashmap in the Main activity
                     Bundle args = new Bundle();
                     args.putLong(MainVNActivity.ARG_PH_PROJ_ID, mProjectId);
                     args.putLong(MainVNActivity.ARG_PH_NAMER_ID, mNamerId);
-                    Log.d(LOG_TAG, "about to call 'onRequestGenerateExistingPlaceholders'");
                     mPlaceholderRequestListener
                             .onRequestGenerateExistingPlaceholders(args);
-                    Log.d(LOG_TAG, "called 'onRequestGenerateExistingPlaceholders'");
-//
-//                    mViewSearchChars.postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            fetchExistingPlaceholders();
-//                        }
-//                    }, 50);
                 }
                 break;
 
@@ -762,23 +673,6 @@ public class SelectSpeciesFragment extends ListFragment
                         Toast.LENGTH_SHORT).show();
             }
             break;
-
-//        case Loaders.EXISTING_PH_CODES_PRECHECK:
-//            mPlaceholderCodesForThisNamer.clear();
-//            while (finishedCursor.moveToNext()) {
-///*				String code;
-//                Log.d(LOG_TAG, "Namer already used code: '" + code + "'");
-//                code = finishedCursor.getString(
-//                        finishedCursor.getColumnIndexOrThrow("PlaceHolderCode"));
-//                mVegCodesAlreadyOnSubplot.add(code);
-//*/
-//                mPlaceholderCodesForThisNamer.put(finishedCursor.getString(
-//                        finishedCursor.getColumnIndexOrThrow("PlaceHolderCode")),
-//                        finishedCursor.getLong(
-//                        finishedCursor.getColumnIndexOrThrow("_id")));
-//            }
-//            mCtExistingPlaceholderCodes = mPlaceholderCodesForThisNamer.size();
-//            break;
         }
     }
 
@@ -792,19 +686,6 @@ public class SelectSpeciesFragment extends ListFragment
         case Loaders.SPP_MATCHES:
             mSppResultsAdapter.swapCursor(null);
             break;
-//        case Loaders.EXISTING_PH_CODES_PRECHECK:
-//            // not an adapter, nothing to do here
-//            break;
         }
     }
-
-/*
-    // no Override
-    public static void onBackPressed() {
-        Log.d("NewVist", "In NewVisitFragment, caught 'onBackPressed'");
-    return;
-    }
-*/	
-
-
 }

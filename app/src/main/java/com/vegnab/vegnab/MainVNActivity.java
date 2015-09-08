@@ -540,13 +540,10 @@ public class MainVNActivity extends ActionBarActivity
     }
 
     public long onRequestGetCountOfExistingPlaceholders () {
-        Log.d(LOG_TAG, "In onRequestGetCountOfExistingPlaceholders, hashmap size = " + mExistingPhCodes.size());
         return (long) mExistingPhCodes.size();
     }
 
     public boolean onRequestMatchCheckOfExistingPlaceholders (String ph) {
-        Log.d(LOG_TAG, "In onRequestMatchCheckOfExistingPlaceholders, testing key '"
-                + ph + "', result " + (mExistingPhCodes.containsKey(ph) ? "true" : "false"));
         return (mExistingPhCodes.containsKey(ph));
     }
 
@@ -855,19 +852,12 @@ public class MainVNActivity extends ActionBarActivity
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor finishedCursor) {
-        // there will be various loaders, switch them out here
         mRowCt = finishedCursor.getCount();
+        // there will be various loaders, switch them out here
         switch (loader.getId()) {
             case VNContract.Loaders.EXISTING_PH_CODES:
                 mExistingPhCodes.clear();
                 while (finishedCursor.moveToNext()) {
-/*
-//				String code;
-//                Log.d(LOG_TAG, "Namer already used code: '" + code + "'");
-//                code = finishedCursor.getString(
-//                        finishedCursor.getColumnIndexOrThrow("PlaceHolderCode"));
-//                mVegCodesAlreadyOnSubplot.add(code);
-*/
                     mExistingPhCodes.put(finishedCursor.getString(
                                     finishedCursor.getColumnIndexOrThrow("PlaceHolderCode")),
                             finishedCursor.getLong(
