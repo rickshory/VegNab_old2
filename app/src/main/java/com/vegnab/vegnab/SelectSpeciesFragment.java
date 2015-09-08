@@ -216,11 +216,11 @@ public class SelectSpeciesFragment extends ListFragment
         registerForContextMenu(getListView());
     }
 
-    private void fetchExistingPlaceholders() {
-        // get these to disallow duplicate Placeholder definitions
-        // will be called after Loader that gets ProjectID and NamerID
-        getLoaderManager().initLoader(Loaders.EXISTING_PH_CODES_PRECHECK, null, this);
-    }
+//    private void fetchExistingPlaceholders() {
+//        // get these to disallow duplicate Placeholder definitions
+//        // will be called after Loader that gets ProjectID and NamerID
+//        getLoaderManager().initLoader(Loaders.EXISTING_PH_CODES_PRECHECK, null, this);
+//    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -247,13 +247,13 @@ public class SelectSpeciesFragment extends ListFragment
 
 //    wv.saveState(outState);
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        Log.d(LOG_TAG, "in 'onResume'");
-//        getLoaderManager().restartLoader(Loaders.VISIT_INFO, null, this);
-//        getLoaderManager().restartLoader(Loaders.EXISTING_PH_CODES_PRECHECK, null, this);
-    }
+//    @Override
+//    public void onResume(){
+//        super.onResume();
+//        Log.d(LOG_TAG, "in 'onResume'");
+////        getLoaderManager().restartLoader(Loaders.VISIT_INFO, null, this);
+////        getLoaderManager().restartLoader(Loaders.EXISTING_PH_CODES_PRECHECK, null, this);
+//    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -709,15 +709,15 @@ public class SelectSpeciesFragment extends ListFragment
                     null, select, params, null);
             break;
 
-            case Loaders.EXISTING_PH_CODES_PRECHECK:
-                baseUri = ContentProvider_VegNab.SQL_URI;
-                select = "SELECT PlaceHolders._id, PlaceHolders.PlaceHolderCode "
-                    + "FROM PlaceHolders LEFT JOIN Visits ON PlaceHolders.VisitIdWhereFirstFound = Visits._id "
-                    + "WHERE Visits.ProjID = ? "
-                    + "AND Visits.NamerID = ?;";
-                cl = new CursorLoader(getActivity(), baseUri, null, select,
-                        new String[] { "" + mProjectId, "" + mNamerId }, null);
-                break;
+//            case Loaders.EXISTING_PH_CODES_PRECHECK:
+//                baseUri = ContentProvider_VegNab.SQL_URI;
+//                select = "SELECT PlaceHolders._id, PlaceHolders.PlaceHolderCode "
+//                    + "FROM PlaceHolders LEFT JOIN Visits ON PlaceHolders.VisitIdWhereFirstFound = Visits._id "
+//                    + "WHERE Visits.ProjID = ? "
+//                    + "AND Visits.NamerID = ?;";
+//                cl = new CursorLoader(getActivity(), baseUri, null, select,
+//                        new String[] { "" + mProjectId, "" + mNamerId }, null);
+//                break;
         }
         return cl;
 
@@ -738,7 +738,10 @@ public class SelectSpeciesFragment extends ListFragment
                     Bundle args = new Bundle();
                     args.putLong(MainVNActivity.ARG_PH_PROJ_ID, mProjectId);
                     args.putLong(MainVNActivity.ARG_PH_NAMER_ID, mNamerId);
-                    mPlaceholderRequestListener.onRequestGenerateExistingPlaceholders(args);
+                    Log.d(LOG_TAG, "about to call 'onRequestGenerateExistingPlaceholders'");
+                    mPlaceholderRequestListener
+                            .onRequestGenerateExistingPlaceholders(args);
+                    Log.d(LOG_TAG, "called 'onRequestGenerateExistingPlaceholders'");
 //
 //                    mViewSearchChars.postDelayed(new Runnable() {
 //                        @Override
@@ -759,22 +762,22 @@ public class SelectSpeciesFragment extends ListFragment
             }
             break;
 
-        case Loaders.EXISTING_PH_CODES_PRECHECK:
-            mPlaceholderCodesForThisNamer.clear();
-            while (finishedCursor.moveToNext()) {
-/*				String code;
-                Log.d(LOG_TAG, "Namer already used code: '" + code + "'");
-                code = finishedCursor.getString(
-                        finishedCursor.getColumnIndexOrThrow("PlaceHolderCode"));
-                mVegCodesAlreadyOnSubplot.add(code);
-*/
-                mPlaceholderCodesForThisNamer.put(finishedCursor.getString(
-                        finishedCursor.getColumnIndexOrThrow("PlaceHolderCode")),
-                        finishedCursor.getLong(
-                        finishedCursor.getColumnIndexOrThrow("_id")));
-            }
-            mCtExistingPlaceholderCodes = mPlaceholderCodesForThisNamer.size();
-            break;
+//        case Loaders.EXISTING_PH_CODES_PRECHECK:
+//            mPlaceholderCodesForThisNamer.clear();
+//            while (finishedCursor.moveToNext()) {
+///*				String code;
+//                Log.d(LOG_TAG, "Namer already used code: '" + code + "'");
+//                code = finishedCursor.getString(
+//                        finishedCursor.getColumnIndexOrThrow("PlaceHolderCode"));
+//                mVegCodesAlreadyOnSubplot.add(code);
+//*/
+//                mPlaceholderCodesForThisNamer.put(finishedCursor.getString(
+//                        finishedCursor.getColumnIndexOrThrow("PlaceHolderCode")),
+//                        finishedCursor.getLong(
+//                        finishedCursor.getColumnIndexOrThrow("_id")));
+//            }
+//            mCtExistingPlaceholderCodes = mPlaceholderCodesForThisNamer.size();
+//            break;
         }
     }
 
@@ -788,9 +791,9 @@ public class SelectSpeciesFragment extends ListFragment
         case Loaders.SPP_MATCHES:
             mSppResultsAdapter.swapCursor(null);
             break;
-        case Loaders.EXISTING_PH_CODES_PRECHECK:
-            // not an adapter, nothing to do here
-            break;
+//        case Loaders.EXISTING_PH_CODES_PRECHECK:
+//            // not an adapter, nothing to do here
+//            break;
         }
     }
 

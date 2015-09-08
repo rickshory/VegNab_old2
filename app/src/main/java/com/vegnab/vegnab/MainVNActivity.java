@@ -540,10 +540,13 @@ public class MainVNActivity extends ActionBarActivity
     }
 
     public long onRequestGetCountOfExistingPlaceholders () {
+        Log.d(LOG_TAG, "In onRequestGetCountOfExistingPlaceholders, hashmap size = " + mExistingPhCodes.size());
         return (long) mExistingPhCodes.size();
     }
 
     public boolean onRequestMatchCheckOfExistingPlaceholders (String ph) {
+        Log.d(LOG_TAG, "In onRequestMatchCheckOfExistingPlaceholders, testing key '"
+                + ph + "', result " + (mExistingPhCodes.containsKey(ph) ? "true" : "false"));
         return (mExistingPhCodes.containsKey(ph));
     }
 
