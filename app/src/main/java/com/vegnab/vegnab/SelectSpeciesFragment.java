@@ -733,6 +733,7 @@ public class SelectSpeciesFragment extends ListFragment
                 if (finishedCursor.moveToFirst()) {
                     mProjectId = finishedCursor.getLong(finishedCursor.getColumnIndexOrThrow("ProjID"));
                     mNamerId = finishedCursor.getLong(finishedCursor.getColumnIndexOrThrow("NamerID"));
+                    Log.d(LOG_TAG, "finished Loader VISIT_INFO: mProjectId=" + mProjectId + ", mNamerId=" + mNamerId);
                     // now that NamerID is valid, get existing Placeholders to disallow duplicates
                     // they will exist as a hashmap in the Main activity
                     Bundle args = new Bundle();
