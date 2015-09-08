@@ -77,6 +77,14 @@ public class SelectSpeciesFragment extends ListFragment
     }
     OnEditPlaceholderListener mEditPlaceholderCallback; // declare the interface
 
+    public interface OnPlaceholderRequestListener {
+        // methods that must be implemented in the container Activity
+        void onRequestGenerateExistingPlaceholders(Bundle args);
+        long onRequestGetCountOfExistingPlaceholders();
+        boolean onRequestMatchCheckOfExistingPlaceholders(String ph);
+    }
+    OnPlaceholderRequestListener mPlaceholderRequestListener;
+
     long mRowCt;
     String mStSearch = "";
     EditText mViewSearchChars;
@@ -217,11 +225,16 @@ public class SelectSpeciesFragment extends ListFragment
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        // assure the container activity has implemented the callback interface
+        // assure the container activity has implemented the callback interfaces
         try {
             mEditPlaceholderCallback = (OnEditPlaceholderListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException (activity.toString() + " must implement OnEditPlaceholderListener");
+        }
+        try {
+            mPlaceholderRequestListener = (OnPlaceholderRequestListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException (activity.toString() + " must implement OnPlaceholderRequestListener");
         }
     }
 
