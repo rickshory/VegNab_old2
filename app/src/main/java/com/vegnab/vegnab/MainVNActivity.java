@@ -84,7 +84,8 @@ public class MainVNActivity extends ActionBarActivity
         GoogleApiClient.OnConnectionFailedListener,
 //        NewVisitFragment.ExportVisitListener,
         ExportVisitDialog.ExportVisitListener,
-        LoaderManager.LoaderCallbacks<Cursor>
+        LoaderManager.LoaderCallbacks<Cursor>,
+        SelectSpeciesFragment.OnPlaceholderRequestListener
         {
         //
 

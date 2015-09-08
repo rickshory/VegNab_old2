@@ -335,8 +335,8 @@ public class SelectSpeciesFragment extends ListFragment
                 // can't add placeholder if no text yet to use
                 menu.removeItem(R.id.sel_spp_search_add_placeholder);
             }
-//            if (mPlaceholderCodesForThisNamer.size() == 0) {
-            if (mCtExistingPlaceholderCodes == 0) {
+            if (mPlaceholderRequestListener
+                    .onRequestGetCountOfExistingPlaceholders() == 0) {
                 // if no placeholders, don't show option to pick from them
                 menu.removeItem(R.id.sel_spp_search_pick_placeholder);
             }
@@ -403,11 +403,14 @@ public class SelectSpeciesFragment extends ListFragment
                     return true;
                 }
 
-                if (mPlaceholderCodesForThisNamer.containsKey(phCode)) {
-//                    Toast.makeText(this.getActivity(), "Placeholder code \"" + phCode + "\" is already used.", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(this.getActivity(), c.getResources().getString(R.string.placeholder_validate_code_dup), Toast.LENGTH_SHORT).show();
+                if (mPlaceholderRequestListener
+                        .onRequestMatchCheckOfExistingPlaceholders(phCode)) {
+                    Toast.makeText(this.getActivity(),
+                            c.getResources().getString(R.string.placeholder_validate_code_dup),
+                            Toast.LENGTH_SHORT).show();
                     return true;
                 }
+
 
 //// for menu testing, pop us some Help
 //        helpTitle = "New Placeholder";
@@ -731,12 +734,18 @@ public class SelectSpeciesFragment extends ListFragment
                     mProjectId = finishedCursor.getLong(finishedCursor.getColumnIndexOrThrow("ProjID"));
                     mNamerId = finishedCursor.getLong(finishedCursor.getColumnIndexOrThrow("NamerID"));
                     // now that NamerID is valid, get existing Placeholders to disallow duplicates
-                    mViewSearchChars.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            fetchExistingPlaceholders();
-                        }
-                    }, 50);
+                    // they will exist as a hashmap in the Main activity
+                    Bundle args = new Bundle();
+                    args.putLong(MainVNActivity.ARG_PH_PROJ_ID, mProjectId);
+                    args.putLong(MainVNActivity.ARG_PH_NAMER_ID, mNamerId);
+                    mPlaceholderRequestListener.onRequestGenerateExistingPlaceholders(args);
+//
+//                    mViewSearchChars.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            fetchExistingPlaceholders();
+//                        }
+//                    }, 50);
                 }
                 break;
 
