@@ -61,6 +61,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RadioButton;
 import android.widget.Toast;
 import android.os.Build;
 
@@ -874,6 +876,23 @@ public class MainVNActivity extends ActionBarActivity
         switch (loader.getId()) {
             case VNContract.Loaders.EXISTING_PH_CODES:
                 break; // nothing to do with this one
+        }
+    }
+            
+    public void onRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.radio_resolve_phs:
+                if (checked)
+                    // show resolved placeholders
+                    break;
+            case R.id.radio_phs_asis:
+                if (checked)
+                    // keep placeholders as-is
+                    break;
         }
     }
 
