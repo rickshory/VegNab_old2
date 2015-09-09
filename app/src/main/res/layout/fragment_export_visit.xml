@@ -34,13 +34,31 @@
         android:layout_below="@id/lbl_export_visit_header"
         />
 
+    <RadioGroup
+        android:id="@+id/radio_group_opts_resolve_phs"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignLeft="@id/lbl_export_visit_msg"
+        android:layout_below="@id/lbl_export_visit_msg" >
+        <RadioButton android:id="@+id/radio_resolve_phs"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="@string/export_visit_dlg_opt_resolve"
+                 android:onClick="onRadioButtonClicked"/>
+        <RadioButton android:id="@+id/radio_phs_asis"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="@string/export_visit_dlg_opt_asis"
+                 android:onClick="onRadioButtonClicked"/>
+    </RadioGroup>
+
     <TextView
         android:id="@+id/lbl_export_visit_filename_lbl"
         android:text="@string/export_visit_dlg_filename_lbl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/lbl_export_visit_msg"
-        android:layout_below="@id/lbl_export_visit_msg"
+        android:layout_alignLeft="@id/radio_group_opts_resolve_phs"
+        android:layout_below="@id/radio_group_opts_resolve_phs"
         />
 
     <TextView
@@ -73,5 +91,7 @@
         android:layout_alignTop="@id/export_visit_export_button"
         android:layout_toLeftOf="@id/export_visit_export_button"
         />
+
+
 </RelativeLayout>
 </ScrollView>
