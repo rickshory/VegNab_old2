@@ -39,7 +39,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignLeft="@id/lbl_export_visit_msg"
-        android:layout_below="@id/lbl_export_visit_msg" >
+        android:layout_below="@id/lbl_export_visit_msg"
+        android:checkedButton="@+id/radio_resolve_phs">
         <RadioButton android:id="@+id/radio_resolve_phs"
                  android:layout_width="wrap_content"
                  android:layout_height="wrap_content"

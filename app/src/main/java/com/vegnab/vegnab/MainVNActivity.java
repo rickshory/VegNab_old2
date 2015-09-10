@@ -879,22 +879,22 @@ public class MainVNActivity extends ActionBarActivity
         }
     }
 
-    public void onRadioButtonClicked(View view) {
-        // Is the button now checked?
-        boolean checked = ((RadioButton) view).isChecked();
-
-        // Check which radio button was clicked
-        switch(view.getId()) {
-            case R.id.radio_resolve_phs:
-                if (checked)
-                    // show resolved placeholders
-                    break;
-            case R.id.radio_phs_asis:
-                if (checked)
-                    // keep placeholders as-is
-                    break;
-        }
-    }
+//    public void onRadioButtonClicked(View view) {
+//        // Is the button now checked?
+//        boolean checked = ((RadioButton) view).isChecked();
+//
+//        // Check which radio button was clicked
+//        switch(view.getId()) {
+//            case R.id.radio_resolve_phs:
+//                if (checked)
+//                    // show resolved placeholders
+//                    break;
+//            case R.id.radio_phs_asis:
+//                if (checked)
+//                    // keep placeholders as-is
+//                    break;
+//        }
+//    }
 
     @Override
     public void onExportVisitRequest(Bundle paramsBundle) {

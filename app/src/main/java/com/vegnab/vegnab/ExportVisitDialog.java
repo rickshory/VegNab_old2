@@ -7,7 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -24,6 +26,9 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
     private long mVisToExportRecId = 0; // zero default means new or not specified yet
     private String mVisExportVisName = null;
     private String mVisExportFileName = null;
+    private RadioGroup mResolvePhRadioGp;
+    private RadioButton mResolvePhs;
+    private RadioButton mUsePhsAsIs;
 
     private TextView mTxtHeader, mTxtFileNameToExport;
     SimpleDateFormat mTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
@@ -49,6 +54,43 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup rootView, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_export_visit, rootView);
+        mResolvePhRadioGp = (RadioGroup) view.findViewById(R.id.radio_group_opts_resolve_phs);
+        mResolvePhRadioGp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                // find which radio button is selected
+                if(checkedId == R.id.radio_resolve_phs) {
+                    Log.d(LOG_TAG, "R.id.radio_resolve_phs");
+
+                } else if(checkedId == R.id.radio_phs_asis) {
+                    Log.d(LOG_TAG, "R.id.radio_phs_asis");
+                } else {
+                    Log.d(LOG_TAG, "neither radio button");
+                }
+            }
+        });
+        /*    RadioGroup radioGroup = (RadioGroup) findViewById(R.id.yourRadioGroup);
+
+    radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener()
+    {
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            // checkedId is the RadioButton selected
+
+            switch(checkedId) {
+                  case R.id.radioButton1:
+                       // switch to fragment 1
+                       break;
+                  case R.id.radioButton2:
+                      // Fragment 2
+                      break;
+                  case R.id.radioButton3:
+                      // Fragment 3
+                      break;
+            }
+        }
+    }); */
+        mResolvePhs = (RadioButton) view.findViewById(R.id.radio_resolve_phs);
+        mUsePhsAsIs = (RadioButton) view.findViewById(R.id.radio_phs_asis);
 
 //        mTxtHeader = (TextView) view.findViewById(R.id.lbl_export_visit);
         mTxtFileNameToExport = (TextView) view.findViewById(R.id.lbl_export_visit_filename);
