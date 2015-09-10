@@ -878,7 +878,7 @@ public class MainVNActivity extends ActionBarActivity
                 break; // nothing to do with this one
         }
     }
-            
+
     public void onRadioButtonClicked(View view) {
         // Is the button now checked?
         boolean checked = ((RadioButton) view).isChecked();
@@ -1078,7 +1078,9 @@ public class MainVNActivity extends ActionBarActivity
                             + "PlotTypes.PlotTypeDescr, Visits.StartTime, Visits.LastChanged, "
                             + "Namers.NamerName, Visits.Scribe, Locations.LocName, "
                             + "Locations.VisitID, Locations.SubplotID, Locations.ListingOrder, "
-                            + "Locations.Latitude, Locations.Longitude, Locations.TimeStamp, "
+                            + "'' || Locations.Latitude AS Latitude, "
+                            + "'' || Locations.Longitude AS Longitude, "
+                            + "Locations.TimeStamp, "
                             + "Locations.Accuracy, Locations.Altitude, LocationSources.LocationSource, "
                             + "Visits.Azimuth, Visits.VisitNotes, Visits.DeviceType, "
                             + "Visits.DeviceID, Visits.DeviceIDSource, Visits.IsComplete, "
