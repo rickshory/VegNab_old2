@@ -58,14 +58,16 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
         mResolvePhRadioGp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                // find which radio button is selected
-                if(checkedId == R.id.radio_resolve_phs) {
-                    Log.d(LOG_TAG, "R.id.radio_resolve_phs");
-
-                } else if(checkedId == R.id.radio_phs_asis) {
-                    Log.d(LOG_TAG, "R.id.radio_phs_asis");
-                } else {
-                    Log.d(LOG_TAG, "neither radio button");
+                switch (checkedId) {
+                    case R.id.radio_resolve_phs:
+                        Log.d(LOG_TAG, "R.id.radio_resolve_phs");
+                        break;
+                    case R.id.radio_phs_asis:
+                        Log.d(LOG_TAG, "R.id.radio_phs_asis");
+                        break;
+                    default:
+                        Log.d(LOG_TAG, "neither radio button");
+                        break;
                 }
             }
         });
