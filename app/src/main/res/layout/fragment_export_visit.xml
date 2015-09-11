@@ -45,12 +45,12 @@
                  android:layout_width="wrap_content"
                  android:layout_height="wrap_content"
                  android:text="@string/export_visit_dlg_opt_resolve"
-                 android:onClick="onRadioButtonClicked"/>
+                 />
         <RadioButton android:id="@+id/radio_phs_asis"
                  android:layout_width="wrap_content"
                  android:layout_height="wrap_content"
                  android:text="@string/export_visit_dlg_opt_asis"
-                 android:onClick="onRadioButtonClicked"/>
+                 />
     </RadioGroup>
 
     <TextView
