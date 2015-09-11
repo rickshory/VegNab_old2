@@ -119,8 +119,25 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
                 expArgs.putLong(MainVNActivity.ARG_VISIT_TO_EXPORT_ID, mVisToExportRecId);
                 expArgs.putString(MainVNActivity.ARG_VISIT_TO_EXPORT_NAME, mVisExportVisName);
                 expArgs.putString(MainVNActivity.ARG_VISIT_TO_EXPORT_FILENAME, mVisExportFileName);
+                // flag whether to resolve Placeholders
+                boolean resolvePh = true;
+                switch (mResolvePhRadioGp.getCheckedRadioButtonId()) {
+                    case R.id.radio_resolve_phs:
+                        resolvePh = true;
+                        Log.d(LOG_TAG, "resolvePh radio button selected: R.id.radio_resolve_phs");
+                        break;
+                    case R.id.radio_phs_asis:
+                        resolvePh = false;
+                        Log.d(LOG_TAG, "resolvePh radio button selected: R.id.radio_phs_asis");
+                        break;
+                    default:
+                        resolvePh = true;
+                        Log.d(LOG_TAG, "resolvePh radio button selected: neither radio button");
+                        break;
+                }
+                expArgs.putBoolean(MainVNActivity.ARG_RESOLVE_PLACEHOLDERS, resolvePh);
                 // put any other parameters in, such as
-                // format of output, whether to resolve Placeholders, etc.
+                // format of output, etc.
                 mExpVisListener.onExportVisitRequest(expArgs);
                 this.dismiss();
                 break;
