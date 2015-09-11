@@ -69,26 +69,7 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
                 }
             }
         });
-        /*    RadioGroup radioGroup = (RadioGroup) findViewById(R.id.yourRadioGroup);
 
-    radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener()
-    {
-        public void onCheckedChanged(RadioGroup group, int checkedId) {
-            // checkedId is the RadioButton selected
-
-            switch(checkedId) {
-                  case R.id.radioButton1:
-                       // switch to fragment 1
-                       break;
-                  case R.id.radioButton2:
-                      // Fragment 2
-                      break;
-                  case R.id.radioButton3:
-                      // Fragment 3
-                      break;
-            }
-        }
-    }); */
         mResolvePhs = (RadioButton) view.findViewById(R.id.radio_resolve_phs);
         mUsePhsAsIs = (RadioButton) view.findViewById(R.id.radio_phs_asis);
 
