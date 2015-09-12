@@ -668,7 +668,20 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 cl = new CursorLoader(getActivity(), baseUri,
                         null, select, params, null);
                 break;
-        }
+
+            case Loaders.PLACEHOLDER_USAGE:
+                baseUri = ContentProvider_VegNab.SQL_URI;
+                select = "SELECT PlaceHolderCode FROM PlaceHolders "
+                        + "WHERE ProjID = ? AND NamerID = ? AND _id != ?";
+                select = "SELECT VegItems.OrigCode "
+                        + "FROM VegItems LEFT JOIN Visits "
+                        + "ON VegItems.VisitID = Visits._id "
+                        + "WHERE (((VegItems.OrigCode)=?)"
+                        + "AND ((Visits.ProjID)=?)"
+                        + "AND ((Visits.NamerID)=?));";
+                cl = new CursorLoader(getActivity(), baseUri, null, select,
+                        new String[] {mPlaceholderCode, "" + mPhProjId, "" + mPhNamerId}, null);
+                break;        }
         return cl;
     }
 
@@ -882,6 +895,12 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                     mSppIdentResultsAdapter.swapCursor(c);
                 }
                 break;
+
+            case Loaders.PLACEHOLDER_USAGE:
+                if (rowCt == 0) { // if Placeholde code is not yet used anywhere in the data
+                    mViewPlaceholderCode.setFocusableInTouchMode(true); // allow editing the code
+                }
+                break;
         }
     }
 
@@ -923,6 +942,9 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
             case Loaders.PH_IDENT_SPECIES:
                 mSppIdentResultsAdapter.swapCursor(null);
+                break;
+
+            case Loaders.PLACEHOLDER_USAGE:
                 break;
         }
     }

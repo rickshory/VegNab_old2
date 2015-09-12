@@ -93,6 +93,7 @@ public final class VNContract {
         public static final int PH_IDENT_METHODS = 96; // For spinner
         public static final int PH_IDENT_CONFIDENCS = 97; // For spinner
         public static final int PH_IDENT_SPECIES = 98; // For auto complete
+        public static final int PLACEHOLDER_USAGE = 99; // Usage of this placeholder in the data, to allow/disallow edit
 
         // in Placeholder Pictures Grid
         public static final int PLACEHOLDER_OF_PIX = 110; // The current placeholder
