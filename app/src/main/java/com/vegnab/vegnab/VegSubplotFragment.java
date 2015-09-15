@@ -231,7 +231,7 @@ public class VegSubplotFragment extends ListFragment
         args.putLong(EditSppItemDialog.CUR_SUBPLOT_REC_ID, mSubplotTypeId);
         args.putInt(EditSppItemDialog.REC_SOURCE, VNContract.VegcodeSources.REGIONAL_LIST); // ignored?
         args.putLong(EditSppItemDialog.SOURCE_REC_ID, 0); // ignored?
-        
+
          /*
         Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to create new record");
 
@@ -441,9 +441,12 @@ public class VegSubplotFragment extends ListFragment
         if (id == mSppLoaderId) {
             baseUri = ContentProvider_VegNab.SQL_URI;
             // get any species entries for this subplot of this visit
-            select = "SELECT VegItems._id, VegItems.OrigCode, VegItems.OrigDescr, "
+            select = "SELECT VegItems._id, VegItems.VisitID, "
+                    + "VegItems.SubPlotID, VegItems.SourceID, VegItems.SourceRecID, "
+                    + "VegItems.OrigCode, VegItems.OrigDescr, "
                     + "VegItems.OrigCode || ': ' || VegItems.OrigDescr AS SppLine , "
-                    + "VegItems.Height, VegItems.Cover, VegItems.Presence, VegItems.IdLevelID, "
+                    + "VegItems.Height, VegItems.Cover, VegItems.Presence, "
+                    + "VegItems.IdLevelID, "
                     + "IdLevels.IdLevelDescr, IdLevels.IdLevelLetterCode "
                     + "FROM VegItems LEFT JOIN IdLevels ON VegItems.IdLevelID = IdLevels._id "
                     + "WHERE (((VegItems.VisitID)=?) AND ((VegItems.SubPlotID)=?)) "
