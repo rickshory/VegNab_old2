@@ -223,14 +223,19 @@ public class VegSubplotFragment extends ListFragment
                 mVegItemsCursor.getColumnIndexOrThrow("SubsppVar"));
         String vegVernacular = mVegItemsCursor.getString(
                 mVegItemsCursor.getColumnIndexOrThrow("Vernacular"));
-
-        Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to create new record");
+*/
+        Log.d(LOG_TAG, "about to create bundle to edit VegItem record");
         Bundle args = new Bundle();
-        args.putLong(EditSppItemDialog.VEG_ITEM_REC_ID, 0); // don't need this, default is in class
-        args.putLong(EditSppItemDialog.CUR_VISIT_REC_ID, mCurVisitRecId);
-        args.putLong(EditSppItemDialog.CUR_SUBPLOT_REC_ID, mCurSubplotTypeRecId);
-        args.putInt(EditSppItemDialog.REC_SOURCE, VNContract.VegcodeSources.REGIONAL_LIST);
-        args.putLong(EditSppItemDialog.SOURCE_REC_ID, id);
+        args.putLong(EditSppItemDialog.VEG_ITEM_REC_ID, id);
+        args.putLong(EditSppItemDialog.CUR_VISIT_REC_ID, mVisitId);
+        args.putLong(EditSppItemDialog.CUR_SUBPLOT_REC_ID, mSubplotTypeId);
+        args.putInt(EditSppItemDialog.REC_SOURCE, VNContract.VegcodeSources.REGIONAL_LIST); // ignored?
+        args.putLong(EditSppItemDialog.SOURCE_REC_ID, 0); // ignored?
+        
+         /*
+        Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to create new record");
+
+
         args.putBoolean(EditSppItemDialog.PRESENCE_ONLY, mPresenceOnly);
         // streamline this, get directly from cursor
         args.putString(EditSppItemDialog.VEG_CODE, vegCode);
