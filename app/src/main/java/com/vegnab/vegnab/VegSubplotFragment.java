@@ -229,8 +229,13 @@ public class VegSubplotFragment extends ListFragment
         args.putLong(EditSppItemDialog.VEG_ITEM_REC_ID, id);
         args.putLong(EditSppItemDialog.CUR_VISIT_REC_ID, mVisitId);
         args.putLong(EditSppItemDialog.CUR_SUBPLOT_REC_ID, mSubplotTypeId);
-        args.putInt(EditSppItemDialog.REC_SOURCE, VNContract.VegcodeSources.REGIONAL_LIST); // ignored?
-        args.putLong(EditSppItemDialog.SOURCE_REC_ID, 0); // ignored?
+        args.putInt(EditSppItemDialog.REC_SOURCE, mVegItemsCursor.getInt(
+                mVegItemsCursor.getColumnIndexOrThrow("SourceID")));
+        args.putLong(EditSppItemDialog.SOURCE_REC_ID, mVegItemsCursor.getLong(
+                mVegItemsCursor.getColumnIndexOrThrow("SourceRecID")));
+                /*VegItems._id, VegItems.VisitID, "
+                    + "VegItems.SubPlotID, VegItems.SourceID, VegItems.SourceRecID, "
+                    + "VegItems.OrigCode, VegItems.OrigDescr, "*/
 
          /*
         Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to create new record");
