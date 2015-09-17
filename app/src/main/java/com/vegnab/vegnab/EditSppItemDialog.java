@@ -73,6 +73,12 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
     public static final String VEG_VERNACULAR = "VegVernacular";
     public static final String VEG_SUB_LIST_ORDER = "VegSubListOrder";
     public static final String VEG_IS_PLACEHOLDER = "VegIsPlaceholder";
+    public static final String VEG_SOURCE_ID = "VegSourceId";
+    public static final String VEG_HEIGHT = "VegHeight";
+    public static final String VEG_COVER = "VegCover";
+    public static final String VEG_PRESENCE = "VegPresence";
+    public static final String REC_IS_NEW = "RecIsNew";
+
     private String mStrVegCode = null, mStrDescription = null,
             mStrGenus = null, mStrSpecies = null, mStrSubsppVar = null, mStrVernacular = null;
     private int mHeight, mCover, mSublistOrder, mIsPlaceholder;

@@ -208,22 +208,8 @@ public class VegSubplotFragment extends ListFragment
         // check if selected code is in mVegCodesAlreadyOnSubplot
 //    	getListView().getItemAtPosition(pos).toString(); // not useful, gets cursor wrapper
         mVegItemsCursor.moveToPosition(pos);
-/*
-// available fields: _id, Code, Genus, Species, SubsppVar, Vernacular, MatchTxt
-        String vegCode = mVegItemsCursor.getString(
-                mVegItemsCursor.getColumnIndexOrThrow("Code"));
-        Log.d(LOG_TAG, "mVegItemsCursor, pos = " + pos + " SppCode: " + vegCode);
-        String vegDescr = mVegItemsCursor.getString(
-                mVegItemsCursor.getColumnIndexOrThrow("MatchTxt"));
-        String vegGenus = mVegItemsCursor.getString(
-                mVegItemsCursor.getColumnIndexOrThrow("Genus"));
-        String vegSpecies = mVegItemsCursor.getString(
-                mVegItemsCursor.getColumnIndexOrThrow("Species"));
-        String vegSubsppVar = mVegItemsCursor.getString(
-                mVegItemsCursor.getColumnIndexOrThrow("SubsppVar"));
-        String vegVernacular = mVegItemsCursor.getString(
-                mVegItemsCursor.getColumnIndexOrThrow("Vernacular"));
-*/
+        // available fields: _id, VisitID, SubPlotID, SourceID, SourceRecID, OrigCode, OrigDescr,
+        // SppLine, Height, Cover, Presence, IdLevelID, IdLevelDescr, IdLevelLetterCode
         Log.d(LOG_TAG, "about to create bundle to edit VegItem record");
         Bundle args = new Bundle();
         args.putLong(EditSppItemDialog.VEG_ITEM_REC_ID, id);
@@ -233,27 +219,24 @@ public class VegSubplotFragment extends ListFragment
                 mVegItemsCursor.getColumnIndexOrThrow("SourceID")));
         args.putLong(EditSppItemDialog.SOURCE_REC_ID, mVegItemsCursor.getLong(
                 mVegItemsCursor.getColumnIndexOrThrow("SourceRecID")));
-                /*VegItems._id, VegItems.VisitID, "
-                    + "VegItems.SubPlotID, VegItems.SourceID, VegItems.SourceRecID, "
-                    + "VegItems.OrigCode, VegItems.OrigDescr, "*/
-
-         /*
-        Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to create new record");
-
-
         args.putBoolean(EditSppItemDialog.PRESENCE_ONLY, mPresenceOnly);
-        // streamline this, get directly from cursor
-        args.putString(EditSppItemDialog.VEG_CODE, vegCode);
-        args.putString(EditSppItemDialog.VEG_DESCR, vegDescr);
-        args.putString(EditSppItemDialog.VEG_GENUS, vegGenus);
-        args.putString(EditSppItemDialog.VEG_SPECIES, vegSpecies);
-        args.putString(EditSppItemDialog.VEG_SUBSPP_VAR, vegSubsppVar);
-        args.putString(EditSppItemDialog.VEG_VERNACULAR, vegVernacular);
-
+        args.putString(EditSppItemDialog.VEG_CODE, mVegItemsCursor.getString(
+                mVegItemsCursor.getColumnIndexOrThrow("OrigCode")));
+        args.putString(EditSppItemDialog.VEG_DESCR, mVegItemsCursor.getString(
+                mVegItemsCursor.getColumnIndexOrThrow("OrigDescr")));
+        args.putInt(EditSppItemDialog.VEG_SOURCE_ID, mVegItemsCursor.getInt(
+                mVegItemsCursor.getColumnIndexOrThrow("SourceID")));
+        args.putString(EditSppItemDialog.VEG_HEIGHT, mVegItemsCursor.getString(
+                mVegItemsCursor.getColumnIndexOrThrow("Height")));
+        args.putString(EditSppItemDialog.VEG_COVER, mVegItemsCursor.getString(
+                mVegItemsCursor.getColumnIndexOrThrow("Cover")));
+        args.putInt(EditSppItemDialog.VEG_PRESENCE, mVegItemsCursor.getInt(
+                mVegItemsCursor.getColumnIndexOrThrow("Presence")));
+        args.putBoolean(EditSppItemDialog.REC_IS_NEW, false);
+        Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to edit record");
         EditSppItemDialog newVegItemDlg = EditSppItemDialog.newInstance(args);
-
         newVegItemDlg.show(getFragmentManager(), "frg_edit_veg_item");
-*/
+
     }
 
     // create context menus
