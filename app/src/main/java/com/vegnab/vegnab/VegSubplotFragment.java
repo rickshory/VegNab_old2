@@ -200,6 +200,7 @@ public class VegSubplotFragment extends ListFragment
         // save the current subplot arguments in case we need to re-create the fragment
         outState.putLong(VISIT_ID, mVisitId);
         outState.putLong(SUBPLOT_TYPE_ID, mSubplotTypeId);
+        outState.putBoolean(PRESENCE_ONLY, mPresenceOnly);
     }
 
     @Override
@@ -212,6 +213,7 @@ public class VegSubplotFragment extends ListFragment
         // SppLine, Height, Cover, Presence, IdLevelID, IdLevelDescr, IdLevelLetterCode
         Log.d(LOG_TAG, "about to create bundle to edit VegItem record");
         Bundle args = new Bundle();
+        args.putBoolean(EditSppItemDialog.REC_IS_NEW, false);
         args.putLong(EditSppItemDialog.VEG_ITEM_REC_ID, id);
         args.putLong(EditSppItemDialog.CUR_VISIT_REC_ID, mVisitId);
         args.putLong(EditSppItemDialog.CUR_SUBPLOT_REC_ID, mSubplotTypeId);
@@ -224,15 +226,12 @@ public class VegSubplotFragment extends ListFragment
                 mVegItemsCursor.getColumnIndexOrThrow("OrigCode")));
         args.putString(EditSppItemDialog.VEG_DESCR, mVegItemsCursor.getString(
                 mVegItemsCursor.getColumnIndexOrThrow("OrigDescr")));
-        args.putInt(EditSppItemDialog.VEG_SOURCE_ID, mVegItemsCursor.getInt(
-                mVegItemsCursor.getColumnIndexOrThrow("SourceID")));
         args.putString(EditSppItemDialog.VEG_HEIGHT, mVegItemsCursor.getString(
                 mVegItemsCursor.getColumnIndexOrThrow("Height")));
         args.putString(EditSppItemDialog.VEG_COVER, mVegItemsCursor.getString(
                 mVegItemsCursor.getColumnIndexOrThrow("Cover")));
         args.putInt(EditSppItemDialog.VEG_PRESENCE, mVegItemsCursor.getInt(
                 mVegItemsCursor.getColumnIndexOrThrow("Presence")));
-        args.putBoolean(EditSppItemDialog.REC_IS_NEW, false);
         Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to edit record");
         EditSppItemDialog newVegItemDlg = EditSppItemDialog.newInstance(args);
         newVegItemDlg.show(getFragmentManager(), "frg_edit_veg_item");

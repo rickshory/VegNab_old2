@@ -233,8 +233,8 @@ public class SelectSpeciesFragment extends ListFragment
         int vegIsPlaceholder = mSppMatchCursor.getInt(
                 mSppMatchCursor.getColumnIndexOrThrow("IsPlaceholder"));
 
-        Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to create new record");
         Bundle args = new Bundle();
+        args.putBoolean(EditSppItemDialog.REC_IS_NEW, true);
         args.putLong(EditSppItemDialog.VEG_ITEM_REC_ID, 0); // don't need this, default is in class
         args.putLong(EditSppItemDialog.CUR_VISIT_REC_ID, mCurVisitRecId);
         args.putLong(EditSppItemDialog.CUR_SUBPLOT_REC_ID, mCurSubplotTypeRecId);
@@ -254,6 +254,7 @@ public class SelectSpeciesFragment extends ListFragment
         args.putString(EditSppItemDialog.VEG_VERNACULAR, vegVernacular);
         args.putInt(EditSppItemDialog.VEG_SUB_LIST_ORDER, vegSubListOrder);
         args.putInt(EditSppItemDialog.VEG_IS_PLACEHOLDER, vegIsPlaceholder);
+        Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to create new record");
 
         EditSppItemDialog newVegItemDlg = EditSppItemDialog.newInstance(args);
 
