@@ -76,8 +76,10 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
     public static final String VEG_HEIGHT = "VegHeight";
     public static final String VEG_COVER = "VegCover";
     public static final String VEG_PRESENCE = "VegPresence";
+    public static final String VEG_CF = "VegCF";
     public static final String REC_IS_NEW = "RecIsNew";
 
+    private boolean mRecIsNew = true;
     private String mStrVegCode = null, mStrDescription = null,
             mStrGenus = null, mStrSpecies = null, mStrSubsppVar = null, mStrVernacular = null;
     private int mHeight, mCover, mSublistOrder, mIsPlaceholder;
@@ -167,8 +169,8 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
         // this is where to do this because the layout has been applied
         // to the fragment
         Bundle args = getArguments();
-
         if (args != null) {
+            // these field are always there
             mVegItemRecId = args.getLong(VEG_ITEM_REC_ID);
             mCurVisitRecId = args.getLong(CUR_VISIT_REC_ID);
             mCurSubplotRecId = args.getLong(CUR_SUBPLOT_REC_ID);
@@ -177,12 +179,24 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
             mPresenceOnly = args.getBoolean(PRESENCE_ONLY);
             mStrVegCode = args.getString(VEG_CODE);
             mStrDescription = args.getString(VEG_DESCR);
-            mStrGenus = args.getString(VEG_GENUS);
-            mStrSpecies = args.getString(VEG_SPECIES);
-            mStrSubsppVar = args.getString(VEG_SUBSPP_VAR);
-            mStrVernacular = args.getString(VEG_VERNACULAR);
-            mSublistOrder = args.getInt(VEG_SUB_LIST_ORDER);
-            mIsPlaceholder = args.getInt(VEG_IS_PLACEHOLDER);
+
+            mRecIsNew = args.getBoolean(REC_IS_NEW);
+            if (mRecIsNew) { // plant name comes in pieces
+                mStrGenus = args.getString(VEG_GENUS);
+                mStrSpecies = args.getString(VEG_SPECIES);
+                mStrSubsppVar = args.getString(VEG_SUBSPP_VAR);
+                mStrVernacular = args.getString(VEG_VERNACULAR);
+                mSublistOrder = args.getInt(VEG_SUB_LIST_ORDER);
+                mIsPlaceholder = args.getInt(VEG_IS_PLACEHOLDER);
+            } else { // plant name is already formatted
+                // mIsPlaceholder is int rather than boolean for db compatibility
+                mIsPlaceholder = ((mRecSource == VegcodeSources.PLACE_HOLDERS) ? 1 : 0);
+                // veg item reading are supplied, to edit
+                mHeight = args.getInt(VEG_HEIGHT);
+                mCover = args.getInt(VEG_COVER);
+                isPresent = args.getBoolean(VEG_PRESENCE);
+                mIDConfidence = args.getInt(VEG_CF);
+            }
         }
         mTxtSpeciesItemLabel.setText(mStrDescription);
         // fire off these database requests

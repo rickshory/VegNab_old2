@@ -232,6 +232,8 @@ public class VegSubplotFragment extends ListFragment
                 mVegItemsCursor.getColumnIndexOrThrow("Cover")));
         args.putInt(EditSppItemDialog.VEG_PRESENCE, mVegItemsCursor.getInt(
                 mVegItemsCursor.getColumnIndexOrThrow("Presence")));
+        args.putInt(EditSppItemDialog.VEG_CF, mVegItemsCursor.getInt(
+                mVegItemsCursor.getColumnIndexOrThrow("IdLevelID")));
         Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to edit record");
         EditSppItemDialog newVegItemDlg = EditSppItemDialog.newInstance(args);
         newVegItemDlg.show(getFragmentManager(), "frg_edit_veg_item");
