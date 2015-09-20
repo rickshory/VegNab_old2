@@ -161,59 +161,80 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
         // during startup, check if arguments are passed to the fragment
         // this is where to do this because the layout has been applied
         // to the fragment
+        // fire off this database request
+        getLoaderManager().initLoader(Loaders.VEG_ITEM_CONFIDENCE_LEVELS, null, this);
         Bundle args = getArguments();
-
         if (args != null) {
             mVegItemRecId = args.getLong(VEG_ITEM_REC_ID);
-            mCurVisitRecId = args.getLong(CUR_VISIT_REC_ID);
-            mCurSubplotRecId = args.getLong(CUR_SUBPLOT_REC_ID);
-            mRecSource = args.getInt(REC_SOURCE);
-            mSourceRecId = args.getLong(SOURCE_REC_ID);
-            mPresenceOnly = args.getBoolean(PRESENCE_ONLY);
-            mStrVegCode = args.getString(VEG_CODE);
-            mStrDescription = args.getString(VEG_DESCR);
-            mStrGenus = args.getString(VEG_GENUS);
-            mStrSpecies = args.getString(VEG_SPECIES);
-            mStrSubsppVar = args.getString(VEG_SUBSPP_VAR);
-            mStrVernacular = args.getString(VEG_VERNACULAR);
-            mSublistOrder = args.getInt(VEG_SUB_LIST_ORDER);
-            mIsPlaceholder = args.getInt(VEG_IS_PLACEHOLDER);
+            if (mVegItemRecId == 0) { // new record
+                mCurVisitRecId = args.getLong(CUR_VISIT_REC_ID);
+                mCurSubplotRecId = args.getLong(CUR_SUBPLOT_REC_ID);
+                mRecSource = args.getInt(REC_SOURCE);
+                mSourceRecId = args.getLong(SOURCE_REC_ID);
+                mPresenceOnly = args.getBoolean(PRESENCE_ONLY);
+                mStrVegCode = args.getString(VEG_CODE);
+                mStrDescription = args.getString(VEG_DESCR);
+                mStrGenus = args.getString(VEG_GENUS);
+                mStrSpecies = args.getString(VEG_SPECIES);
+                mStrSubsppVar = args.getString(VEG_SUBSPP_VAR);
+                mStrVernacular = args.getString(VEG_VERNACULAR);
+                mSublistOrder = args.getInt(VEG_SUB_LIST_ORDER);
+                mIsPlaceholder = args.getInt(VEG_IS_PLACEHOLDER);
+                mTxtSpeciesItemLabel.setText(mStrDescription);
+                // try this loader here
+                getLoaderManager().restartLoader(Loaders.VEG_ITEM_DUP_CODES, null, this);
+                setupUI();
+            } else {
+                // fill the fields with defaults
+                mCurVisitRecId = 0;
+                mCurSubplotRecId = 0;
+                mRecSource = 0;
+                mSourceRecId = 0;
+                mPresenceOnly = true;
+                mStrVegCode = "";
+                mStrDescription = "";
+                mStrGenus = "";
+                mStrSpecies = "";
+                mStrSubsppVar = "";
+                mStrVernacular = "";
+                mSublistOrder = 0;
+                mIsPlaceholder = 0;
+                // request the record to be edited
+                getLoaderManager().initLoader(Loaders.VEGITEM_TO_EDIT, null, this);
+                // when loader manager returns, will set up UI
+            }
         }
-        mTxtSpeciesItemLabel.setText(mStrDescription);
-        // fire off these database requests
-        getLoaderManager().initLoader(Loaders.VEG_ITEM_CONFIDENCE_LEVELS, null, this);
-        getLoaderManager().initLoader(Loaders.VEGITEM_TO_EDIT, null, this);
+    }
 
-        // adjust UI depending on whether we want Height/Cover information, or only Presence/Absence
-        if (mPresenceOnly) { // hide the Height/Cover views
-            mTxtHeightLabel.setVisibility(View.GONE);
-            mEditSpeciesHeight.setVisibility(View.GONE);
-            mTxtCoverLabel.setVisibility(View.GONE);
-            mEditSpeciesCover.setVisibility(View.GONE);
-            mCkSpeciesIsPresent.setChecked(isPresent); // set checkmark
-        } else { // hide the Presence/Absence views
-            mCkSpeciesIsPresent.setVisibility(View.GONE);
-            mCkDontVerifyPresence.setVisibility(View.GONE);
-        }
-        switch (mRecSource) {
-            case VegcodeSources.REGIONAL_LIST: // standard NRCS codes from the regional list, first time entered
-            case VegcodeSources.PREVIOUSLY_FOUND: // NRCS code, species previously entered
-                // normally named species; may distinguish above two later
-                break; // allow Confidence selector to show for these
+        void setupUI() {
+            // adjust UI depending on whether we want Height/Cover information, or only Presence/Absence
+            if (mPresenceOnly) { // hide the Height/Cover views
+                mTxtHeightLabel.setVisibility(View.GONE);
+                mEditSpeciesHeight.setVisibility(View.GONE);
+                mTxtCoverLabel.setVisibility(View.GONE);
+                mEditSpeciesCover.setVisibility(View.GONE);
+                mCkSpeciesIsPresent.setChecked(isPresent); // set checkmark
+            } else { // hide the Presence/Absence views
+                mCkSpeciesIsPresent.setVisibility(View.GONE);
+                mCkDontVerifyPresence.setVisibility(View.GONE);
+            }
+            switch (mRecSource) {
+                case VegcodeSources.REGIONAL_LIST: // standard NRCS codes from the regional list, first time entered
+                case VegcodeSources.PREVIOUSLY_FOUND: // NRCS code, species previously entered
+                    // normally named species; may distinguish above two later
+                    break; // allow Confidence selector to show for these
 //            case VegcodeSources.PLACE_HOLDERS: // user-created codes for species not known at the time
 //            case VegcodeSources.SPECIAL_CODES: // e.g. "no veg" (no vegetation on this subplot)
-            default: // otherwise hide Confidence selector, has no meaning
-                mTxtSppCFLabel.setVisibility(View.GONE);
-                mSpinnerSpeciesConfidence.setVisibility(View.GONE);
-        }
+                default: // otherwise hide Confidence selector, has no meaning
+                    mTxtSppCFLabel.setVisibility(View.GONE);
+                    mSpinnerSpeciesConfidence.setVisibility(View.GONE);
+            }
 
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        if ((sharedPref.getBoolean(Prefs.VERIFY_VEG_ITEMS_PRESENCE, true)) == false) {
-            mOKToAutoAcceptItem = true;
+            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+            if ((sharedPref.getBoolean(Prefs.VERIFY_VEG_ITEMS_PRESENCE, true)) == false) {
+                mOKToAutoAcceptItem = true;
+            }
         }
-        // try this loader here
-        getLoaderManager().initLoader(Loaders.VEG_ITEM_DUP_CODES, null, this);
-    }
             
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
@@ -568,7 +589,20 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
                 int presInt = c.getInt(c.getColumnIndexOrThrow("Presence"));
                 boolean present = ((presInt == 1) ? true : false);
                 mCkSpeciesIsPresent.setChecked(present);
+/*                setupUI();
 
+                mCurSubplotRecId = 0;
+                mRecSource = 0;
+                mSourceRecId = 0;
+                mPresenceOnly = true;
+                mStrVegCode = "";
+                mStrDescription = "";
+                mStrGenus = "";
+                mStrSpecies = "";
+                mStrSubsppVar = "";
+                mStrVernacular = "";
+                mSublistOrder = 0;
+                mIsPlaceholder = 0;*/
                 // CheckBox mCkSpeciesIsPresent, mCkDontVerifyPresence;
                 // set up spinner
             }
