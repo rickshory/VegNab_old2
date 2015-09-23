@@ -78,7 +78,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
     private int mHeight, mCover, mSublistOrder, mIsPlaceholder;
     private boolean isPresent = true; // assume present; explicit false by user means verified absent
     long mIDConfidence = 1; // default 'no doubt of ID'
-    Cursor mCFCursor, mDupSppCursor;
+    Cursor mCFCursor = null, mDupSppCursor = null;
     boolean mAutoVerifyPresence = false;
     // following flags are used to auto verify
     boolean mOKToAutoAcceptItem = false, mNoDupCodes = false;
@@ -166,12 +166,12 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
         Bundle args = getArguments();
         if (args != null) {
             mVegItemRecId = args.getLong(VEG_ITEM_REC_ID);
+            mPresenceOnly = args.getBoolean(PRESENCE_ONLY);
             if (mVegItemRecId == 0) { // new record
                 mCurVisitRecId = args.getLong(CUR_VISIT_REC_ID);
                 mCurSubplotRecId = args.getLong(CUR_SUBPLOT_REC_ID);
                 mRecSource = args.getInt(REC_SOURCE);
                 mSourceRecId = args.getLong(SOURCE_REC_ID);
-                mPresenceOnly = args.getBoolean(PRESENCE_ONLY);
                 mStrVegCode = args.getString(VEG_CODE);
                 mStrDescription = args.getString(VEG_DESCR);
                 mStrGenus = args.getString(VEG_GENUS);
@@ -190,7 +190,6 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
                 mCurSubplotRecId = 0;
                 mRecSource = 0;
                 mSourceRecId = 0;
-                mPresenceOnly = true;
                 mStrVegCode = "";
                 mStrDescription = "";
                 mStrGenus = "";
@@ -222,6 +221,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
                 case VegcodeSources.REGIONAL_LIST: // standard NRCS codes from the regional list, first time entered
                 case VegcodeSources.PREVIOUSLY_FOUND: // NRCS code, species previously entered
                     // normally named species; may distinguish above two later
+                    setCFSpinnerSelection();
                     break; // allow Confidence selector to show for these
 //            case VegcodeSources.PLACE_HOLDERS: // user-created codes for species not known at the time
 //            case VegcodeSources.SPECIAL_CODES: // e.g. "no veg" (no vegetation on this subplot)
@@ -589,20 +589,27 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
                 int presInt = c.getInt(c.getColumnIndexOrThrow("Presence"));
                 boolean present = ((presInt == 1) ? true : false);
                 mCkSpeciesIsPresent.setChecked(present);
-/*                setupUI();
-
-                mCurSubplotRecId = 0;
-                mRecSource = 0;
-                mSourceRecId = 0;
-                mPresenceOnly = true;
-                mStrVegCode = "";
-                mStrDescription = "";
+                // get other fields, may not use all
+                mCurVisitRecId = c.getLong(c.getColumnIndexOrThrow("VisitID"));
+                mCurSubplotRecId = c.getLong(c.getColumnIndexOrThrow("SubPlotID"));
+                mRecSource = c.getInt(c.getColumnIndexOrThrow("SourceID"));
+                mSourceRecId = c.getLong(c.getColumnIndexOrThrow("SourceRecID"));
+                mStrVegCode = c.getString(c.getColumnIndexOrThrow("OrigCode"));
+                mStrDescription = c.getString(c.getColumnIndexOrThrow("OrigDescr"));
+                mIDConfidence = c.getInt(c.getColumnIndexOrThrow("IdLevelID"));
+                // following is integer for DB compatibility
+                mIsPlaceholder = ((mRecSource == VegcodeSources.PLACE_HOLDERS) ? 1 : 0);
+                
+                /*
                 mStrGenus = "";
                 mStrSpecies = "";
                 mStrSubsppVar = "";
                 mStrVernacular = "";
                 mSublistOrder = 0;
-                mIsPlaceholder = 0;*/
+                */
+
+                setupUI();
+
                 // CheckBox mCkSpeciesIsPresent, mCkDontVerifyPresence;
                 // set up spinner
             }
@@ -692,6 +699,9 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
     }
 
     public void setCFSpinnerSelection() {
+        if (mCFCursor == null) {
+            return;
+        }
         // set the id confidence spinner
         int ct = mCFCursor.getCount();
         for (int i=0; i<ct; i++) {

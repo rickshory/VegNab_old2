@@ -208,6 +208,10 @@ public class VegSubplotFragment extends ListFragment
         // check if selected code is in mVegCodesAlreadyOnSubplot
 //    	getListView().getItemAtPosition(pos).toString(); // not useful, gets cursor wrapper
         mVegItemsCursor.moveToPosition(pos);
+        Bundle args = new Bundle();
+        args.putLong(EditSppItemDialog.VEG_ITEM_REC_ID, id);
+        args.putBoolean(EditSppItemDialog.PRESENCE_ONLY, mPresenceOnly);
+        //mPresenceOnly
 /*
 // available fields: _id, Code, Genus, Species, SubsppVar, Vernacular, MatchTxt
         String vegCode = mVegItemsCursor.getString(
