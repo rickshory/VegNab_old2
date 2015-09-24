@@ -83,6 +83,7 @@ public final class VNContract {
         public static final int VEGITEM_TO_EDIT = 81; // The current veg item
         public static final int VEG_ITEM_CONFIDENCE_LEVELS = 82; //
         public static final int VEG_ITEM_DUP_CODES = 83; // codes duplicated on the subplot?
+        public static final int VEGITEM_DETAILS = 84; // genus, species, etc. fields of item being edited
 
         // in Edit Placeholder
         public static final int PLACEHOLDER_TO_EDIT = 91; // The current placeholder

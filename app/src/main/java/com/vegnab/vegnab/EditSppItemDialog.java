@@ -599,7 +599,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
                 mIDConfidence = c.getInt(c.getColumnIndexOrThrow("IdLevelID"));
                 // following is integer for DB compatibility
                 mIsPlaceholder = ((mRecSource == VegcodeSources.PLACE_HOLDERS) ? 1 : 0);
-                
+
                 /*
                 mStrGenus = "";
                 mStrSpecies = "";
