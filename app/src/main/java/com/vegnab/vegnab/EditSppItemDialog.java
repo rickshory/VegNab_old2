@@ -285,7 +285,11 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
             mEditVegItemListener.onEditVegItemComplete(EditSppItemDialog.this);
             this.dismiss();
         }
-    }        
+    }
+
+    private void getEditedItemDetails() {
+        getLoaderManager().initLoader(Loaders.VEGITEM_DETAILS, null, this);
+    }
 
     private int saveVegItemRecord() {
         Context c = getActivity();
@@ -621,13 +625,14 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
                 // following is integer for DB compatibility
                 mIsPlaceholder = ((mRecSource == VegcodeSources.PLACE_HOLDERS) ? 1 : 0);
 
-                /*
-                mStrGenus = "";
-                mStrSpecies = "";
-                mStrSubsppVar = "";
-                mStrVernacular = "";
-                mSublistOrder = 0;
-                */
+                // in 50ms, get 4 detail fields of edited item: Genus, Species, SubsppVar, Vernacular
+                // have these on hand when exiting the dialog
+                mTxtSpeciesItemLabel.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        getEditedItemDetails(); // get the 4 detail fields
+                    }
+                }, 50);
 
                 setupUI();
 
