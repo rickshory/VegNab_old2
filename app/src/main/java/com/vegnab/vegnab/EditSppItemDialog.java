@@ -569,6 +569,27 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
             cl = new CursorLoader(getActivity(), dupSppUri,
                     null, select, null, null);
             break;
+
+        case Loaders.VEGITEM_DETAILS:
+            Uri vegDetailsUri = ContentProvider_VegNab.SQL_URI;
+            switch (mRecSource) {
+
+                case VegcodeSources.REGIONAL_LIST:
+                    select = "SELECT Genus, Species, SubsppVar, Vernacular "
+                            + "FROM RegionalSpeciesList "
+                            + "WHERE _id = " + mSourceRecId + ";";
+                    break;
+
+                case VegcodeSources.PLACE_HOLDERS:
+                    select = "SELECT '' AS Genus, '' AS Species, "
+                            + "'' AS SubsppVar, Description AS Vernacular "
+                            + "FROM PlaceHolders "
+                            + "WHERE _id = " + mSourceRecId + ";";
+                    break;
+            }
+            cl = new CursorLoader(getActivity(), vegDetailsUri,
+                    null, select, null, null);
+            break;
         }
         return cl;
     }
@@ -643,6 +664,19 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
                 }
             }, 50);
 
+            break;
+
+        case Loaders.VEGITEM_DETAILS:
+            if (c.moveToFirst()) {
+                mStrGenus = c.getString(c.getColumnIndexOrThrow("Genus"));
+                mStrSpecies = c.getString(c.getColumnIndexOrThrow("Species"));
+                mStrSubsppVar = c.getString(c.getColumnIndexOrThrow("SubsppVar"));
+                mStrVernacular = c.getString(c.getColumnIndexOrThrow("Vernacular"));
+
+                /*
+                mSublistOrder = 0;
+                */
+            }
             break;
         }
     }
