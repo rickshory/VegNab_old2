@@ -211,43 +211,9 @@ public class VegSubplotFragment extends ListFragment
         Bundle args = new Bundle();
         args.putLong(EditSppItemDialog.VEG_ITEM_REC_ID, id);
         args.putBoolean(EditSppItemDialog.PRESENCE_ONLY, mPresenceOnly);
-        //mPresenceOnly
-/*
-// available fields: _id, Code, Genus, Species, SubsppVar, Vernacular, MatchTxt
-        String vegCode = mVegItemsCursor.getString(
-                mVegItemsCursor.getColumnIndexOrThrow("Code"));
-        Log.d(LOG_TAG, "mVegItemsCursor, pos = " + pos + " SppCode: " + vegCode);
-        String vegDescr = mVegItemsCursor.getString(
-                mVegItemsCursor.getColumnIndexOrThrow("MatchTxt"));
-        String vegGenus = mVegItemsCursor.getString(
-                mVegItemsCursor.getColumnIndexOrThrow("Genus"));
-        String vegSpecies = mVegItemsCursor.getString(
-                mVegItemsCursor.getColumnIndexOrThrow("Species"));
-        String vegSubsppVar = mVegItemsCursor.getString(
-                mVegItemsCursor.getColumnIndexOrThrow("SubsppVar"));
-        String vegVernacular = mVegItemsCursor.getString(
-                mVegItemsCursor.getColumnIndexOrThrow("Vernacular"));
-
-        Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to create new record");
-        Bundle args = new Bundle();
-        args.putLong(EditSppItemDialog.VEG_ITEM_REC_ID, 0); // don't need this, default is in class
-        args.putLong(EditSppItemDialog.CUR_VISIT_REC_ID, mCurVisitRecId);
-        args.putLong(EditSppItemDialog.CUR_SUBPLOT_REC_ID, mCurSubplotTypeRecId);
-        args.putInt(EditSppItemDialog.REC_SOURCE, VNContract.VegcodeSources.REGIONAL_LIST);
-        args.putLong(EditSppItemDialog.SOURCE_REC_ID, id);
-        args.putBoolean(EditSppItemDialog.PRESENCE_ONLY, mPresenceOnly);
-        // streamline this, get directly from cursor
-        args.putString(EditSppItemDialog.VEG_CODE, vegCode);
-        args.putString(EditSppItemDialog.VEG_DESCR, vegDescr);
-        args.putString(EditSppItemDialog.VEG_GENUS, vegGenus);
-        args.putString(EditSppItemDialog.VEG_SPECIES, vegSpecies);
-        args.putString(EditSppItemDialog.VEG_SUBSPP_VAR, vegSubsppVar);
-        args.putString(EditSppItemDialog.VEG_VERNACULAR, vegVernacular);
-
+        Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to edit record");
         EditSppItemDialog newVegItemDlg = EditSppItemDialog.newInstance(args);
-
         newVegItemDlg.show(getFragmentManager(), "frg_edit_veg_item");
-*/
     }
 
     // create context menus
