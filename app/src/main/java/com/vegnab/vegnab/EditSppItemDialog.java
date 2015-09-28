@@ -546,6 +546,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
         // switch out based on id
         CursorLoader cl = null;
         String select = null; // default for all-columns, unless re-assigned or overridden by raw SQL
+        String[] params = null;
         switch (id) {
         case Loaders.VEGITEM_TO_EDIT:
             Uri oneVegItemUri = ContentUris.withAppendedId(
@@ -566,12 +567,11 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 
         case Loaders.VEG_ITEM_DUP_CODES:
             Uri dupSppUri = ContentProvider_VegNab.SQL_URI;
-            select = "SELECT OrigCode, IdLevelID FROM VegItems WHERE VisitID = " + mCurVisitRecId
-                + " AND SubPlotID = " + mCurSubplotRecId
-                + " AND OrigCode = '" + mStrVegCode + "'"
-                + " AND _id != " + mVegItemRecId + ";";
+            select = "SELECT OrigCode, IdLevelID FROM VegItems WHERE "
+                + "VisitID = ? AND SubPlotID = ? AND OrigCode = ? AND _id != ?;";
+            params = new String[] {"" + mCurVisitRecId, "" + mCurSubplotRecId, mStrVegCode, "" + mVegItemRecId };
             cl = new CursorLoader(getActivity(), dupSppUri,
-                    null, select, null, null);
+                    null, select, params, null);
             break;
 
         case Loaders.VEGITEM_DETAILS:
