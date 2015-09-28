@@ -181,8 +181,6 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
                 mSublistOrder = args.getInt(VEG_SUB_LIST_ORDER);
                 mIsPlaceholder = args.getInt(VEG_IS_PLACEHOLDER);
                 mTxtSpeciesItemLabel.setText(mStrDescription);
-                // try this loader here
-                getLoaderManager().restartLoader(Loaders.VEG_ITEM_DUP_CODES, null, this);
                 setupUI();
             } else {
                 // fill the fields with defaults
@@ -202,6 +200,8 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
                 getLoaderManager().initLoader(Loaders.VEGITEM_TO_EDIT, null, this);
                 // when loader manager returns, will set up UI
             }
+            // try this loader here
+            getLoaderManager().restartLoader(Loaders.VEG_ITEM_DUP_CODES, null, this);
         }
     }
 
