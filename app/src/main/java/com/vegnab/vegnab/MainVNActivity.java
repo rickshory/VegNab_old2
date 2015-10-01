@@ -114,9 +114,12 @@ public class MainVNActivity extends ActionBarActivity
     final static String ARG_PH_NAMER_ID = "phNamerId";
     final static String ARG_PH_EXISTING_SET = "phExistingSet";
 
-    // SKUs for products: testing in-app billing with donations
-    static final String SKU_DONATE_DOLLARS_001 = "donateDollars001";
-    static final String SKU_DONATE_DOLLARS_002 = "donateDollars002";
+    // SKUs for products
+    // testing in-app billing with donations
+    static final String SKU_DONATE_USD_001_00 = "donateUSD001_00";
+    static final String SKU_DONATE_USD_003_00 = "donateUSD003_00";
+    static final String SKU_DONATE_USD_010_00 = "donateUSD010_00";
+    static final String SKU_DONATE_USD_030_00 = "donateUSD030_00";
 
     ViewPager viewPager = null;
 
