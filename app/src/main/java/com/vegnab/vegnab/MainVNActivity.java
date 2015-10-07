@@ -32,6 +32,7 @@ import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.Prefs;
 import com.vegnab.vegnab.database.VNContract.Tags;
 import com.vegnab.vegnab.database.VegNabDbHelper;
+import com.vegnab.vegnab.util.inappbilling.IabHelper;
 
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -120,6 +121,9 @@ public class MainVNActivity extends ActionBarActivity
     static final String SKU_DONATE_USD_003_00 = "donateUSD003_00";
     static final String SKU_DONATE_USD_010_00 = "donateUSD010_00";
     static final String SKU_DONATE_USD_030_00 = "donateUSD030_00";
+
+    // the In-App billing helper object
+    IabHelper mHelper;
 
     ViewPager viewPager = null;
 
