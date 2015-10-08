@@ -189,7 +189,7 @@ public class MainVNActivity extends ActionBarActivity
         Log.d(LOG_TAG, "Creating IAB helper.");
         mHelper = new IabHelper(this, base64EncodedPublicKey);
         // enable debug logging (for production application, set this to false).
-        mHelper.enableDebugLogging(false);
+        mHelper.enableDebugLogging(true);
         // Start setup. This is asynchronous.
         // The specified listener will be called once setup completes.
         Log.d(LOG_TAG, "Starting setup.");
