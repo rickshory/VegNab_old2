@@ -33,6 +33,7 @@ import com.vegnab.vegnab.database.VNContract.Prefs;
 import com.vegnab.vegnab.database.VNContract.Tags;
 import com.vegnab.vegnab.database.VegNabDbHelper;
 import com.vegnab.vegnab.util.inappbilling.IabHelper;
+import com.vegnab.vegnab.util.inappbilling.IabResult;
 
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -182,6 +183,36 @@ public class MainVNActivity extends ActionBarActivity
             prefEditor.putLong(Prefs.DEFAULT_IDENT_METHOD_ID, 1);
             prefEditor.commit();
         }
+        // set up in-app billing
+//        String base64EncodedPublicKey = getString(R.string.app_license);
+        String base64EncodedPublicKey = "license"; // temporary to prevent code error; check best practices
+        Log.d(LOG_TAG, "Creating IAB helper.");
+        mHelper = new IabHelper(this, base64EncodedPublicKey);
+        // enable debug logging (for production application, set this to false).
+        mHelper.enableDebugLogging(false);
+        // Start setup. This is asynchronous.
+        // The specified listener will be called once setup completes.
+        Log.d(LOG_TAG, "Starting setup.");
+        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+            public void onIabSetupFinished(IabResult result) {
+                Log.d(LOG_TAG, "Setup finished.");
+                if (!result.isSuccess()) {
+                    // a problem.
+                    //Toast.makeText(this,
+//                        this.getResources().getString(R.string.in_app_bill_error) + result,
+//                        Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                // disposed?
+                if (mHelper == null)
+                    return;
+
+// IAB is fully set up. If needed, get an inventory here
+// Log.d(LOG_TAG, "Setup successful. Querying inventory.");
+// mHelper.queryInventoryAsync(mGotInventoryListener);
+
+            }
+        });
 
         setContentView(R.layout.activity_vn_main);
 //		viewPager = (ViewPager) findViewById(R.id.data_entry_pager);
