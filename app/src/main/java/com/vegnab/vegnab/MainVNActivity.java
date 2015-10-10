@@ -1005,31 +1005,22 @@ public class MainVNActivity extends ActionBarActivity
                                     Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(LOG_TAG, "in 'onActivityResult' resolution callback before any validity testing");
-        // we come here if connection first failed, such as if we needed to get the user login
-        // the failure sent off the login request as an intent, which then
-        // sent back another intent, which arrives here
-        if (requestCode == REQUEST_CODE_RESOLUTION && resultCode == RESULT_OK) {
-            Log.d(LOG_TAG, "in 'onActivityResult' resolution callback (requestCode == REQUEST_CODE_RESOLUTION && resultCode == RESULT_OK)");
-            mGoogleApiClient.connect();
+        Log.d(LOG_TAG, "onActivityResult(" + requestCode + "," + resultCode + ", " + data);
+        // first, test for in-app billing result
+        if ((mHelper != null) && (mHelper.handleActivityResult(requestCode, resultCode, data))) {
+            Log.d(LOG_TAG, "onActivityResult handled by IABUtil.");
+        } else {
+            // handle activity results not related to in-app billing
+            // we come here if connection first failed, such as if we needed to get the user login
+            // the failure sent off the login request as an intent, which then
+            // sent back another intent, which arrives here
+            if (requestCode == REQUEST_CODE_RESOLUTION && resultCode == RESULT_OK) {
+                Log.d(LOG_TAG, "in 'onActivityResult' resolution callback (requestCode == REQUEST_CODE_RESOLUTION && resultCode == RESULT_OK)");
+                mGoogleApiClient.connect();
+            }
         }
     }
-/*
-            @Override
-            protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-                Log.d(LOG_TAG, "onActivityResult(" + requestCode + "," + resultCode + ", " + data);
-                if (mHelper == null)
-                    return;
-// Pass on the activity result to the helper for handling
-                if (!mHelper.handleActivityResult(requestCode, resultCode, data)) {
-// not handled, so handle it ourselves (here's where you'd
-// perform any handling of activity results not related to in-app
-// billing...
-                    super.onActivityResult(requestCode, resultCode, data);
-                } else {
-                    Log.d(LOG_TAG, "onActivityResult handled by IABUtil.");
-                }
-            }
-*/
+
             // disconnect Drive service when activity is invisible.
     @Override
     protected void onPause() {
