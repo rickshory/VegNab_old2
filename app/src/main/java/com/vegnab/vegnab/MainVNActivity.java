@@ -832,6 +832,24 @@ public class MainVNActivity extends ActionBarActivity
         transaction.commit();
     }
 
+    public void onDonate(View arg0) {
+        Log.d(LOG_TAG, "Donate started; launching purchase flow");
+
+   /*
+        setWaitScreen(true);
+
+        // TODO: for security, generate your payload here for verification. See the comments on
+         //        verifyDeveloperPayload() for more info. Since this is a SAMPLE, we just use
+         //        an empty string, but on a production app you should carefully generate this.
+String payload = "";
+
+            mHelper.launchPurchaseFlow(this, SKU_DONATE_USD_001_00, RC_REQUEST,
+            mPurchaseFinishedListener, payload);
+ */
+    }
+
+
+
     private static final String DATABASE_NAME = "VegNab.db";
     String saveFolderName = BuildConfig.PUBLIC_DB_FOLDER;
 
