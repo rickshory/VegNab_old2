@@ -123,6 +123,9 @@ public class MainVNActivity extends ActionBarActivity
     static final String SKU_DONATE_USD_010_00 = "donateUSD010_00";
     static final String SKU_DONATE_USD_030_00 = "donateUSD030_00";
 
+    // (arbitrary) request code for donation purchase flow
+    static final int RC_REQUEST = 10003;
+
     // the In-App billing helper object
     IabHelper mHelper;
 
@@ -834,18 +837,14 @@ public class MainVNActivity extends ActionBarActivity
 
     public void onDonate(View arg0) {
         Log.d(LOG_TAG, "Donate started; launching purchase flow");
-
-   /*
         setWaitScreen(true);
-
-        // TODO: for security, generate your payload here for verification. See the comments on
-         //        verifyDeveloperPayload() for more info. Since this is a SAMPLE, we just use
-         //        an empty string, but on a production app you should carefully generate this.
-String payload = "";
-
-            mHelper.launchPurchaseFlow(this, SKU_DONATE_USD_001_00, RC_REQUEST,
-            mPurchaseFinishedListener, payload);
- */
+        // TODO: for security, generate a payload here for verification.
+        // For testing use an empty string, but in production would generate this.
+        // See comments in onverifyDeveloperPayload() for more info.
+        String payload = "";
+        // for testing, make the donation one dollar; make it a variable later
+        mHelper.launchPurchaseFlow(this, SKU_DONATE_USD_001_00, RC_REQUEST,
+                mPurchaseFinishedListener, payload);
     }
 
 
@@ -1275,4 +1274,11 @@ String payload = "";
                     showMessage("Created a file with content: " + result.getDriveFile().getDriveId());
                 }
             };
+
+    // Enables or disables the "please wait" screen for purchases
+    void setWaitScreen(boolean set) {
+        // implement this later
+//        findViewById(R.id.screen_main).setVisibility(set ? View.GONE : View.VISIBLE);
+//        findViewById(R.id.screen_wait).setVisibility(set ? View.VISIBLE : View.GONE);
+    }
 }
