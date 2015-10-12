@@ -34,6 +34,7 @@ import com.vegnab.vegnab.database.VNContract.Tags;
 import com.vegnab.vegnab.database.VegNabDbHelper;
 import com.vegnab.vegnab.util.inappbilling.IabHelper;
 import com.vegnab.vegnab.util.inappbilling.IabResult;
+import com.vegnab.vegnab.util.inappbilling.Purchase;
 
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -846,7 +847,116 @@ public class MainVNActivity extends ActionBarActivity
         mHelper.launchPurchaseFlow(this, SKU_DONATE_USD_001_00, RC_REQUEST,
                 mPurchaseFinishedListener, payload);
     }
+            
+    // Verifies the developer payload of a purchase.
+    boolean verifyDeveloperPayload(Purchase p) {
+        String payload = p.getDeveloperPayload();
 
+        // doesn't do anything yet, always returns true
+         // TODO: verify that the developer payload of the purchase is correct. It will be
+         // the same one that you sent when initiating the purchase.
+         //
+         // WARNING: Locally generating a random string when starting a purchase and
+         // verifying it here might seem like a good approach, but this will fail in the
+         // case where the user purchases an item on one device and then uses your app on
+         // a different device, because on the other device you will not have access to the
+         // random string you originally generated.
+         //
+         // So a good developer payload has these characteristics:
+         //
+         // 1. If two different users purchase an item, the payload is different between them,
+         //    so that one user's purchase can't be replayed to another user.
+         //
+         // 2. The payload must be such that you can verify it even when the app wasn't the
+         //    one who initiated the purchase flow (so that items purchased by the user on
+         //    one device work on other devices owned by the user).
+         //
+         // Using your own server to store and verify developer payloads across app
+         // installations is recommended.
+         ///
+
+    return true;
+}
+
+    // Callback for when a purchase is finished
+    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
+        public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
+            Log.d(LOG_TAG, "Purchase finished: " + result + ", purchase: " + purchase);
+
+            // if we were disposed of in the meantime, quit.
+            if (mHelper == null) return;
+
+            if (result.isFailure()) {
+                complain("Error purchasing: " + result);
+                setWaitScreen(false);
+                return;
+            }
+            if (!verifyDeveloperPayload(purchase)) {
+                complain("Error purchasing. Authenticity verification failed.");
+                setWaitScreen(false);
+                return;
+            }
+
+            Log.d(LOG_TAG, "Purchase successful.");
+
+            if (purchase.getSku().equals(SKU_DONATE_USD_001_00)) {
+                // bought a donation, so consume it.
+                Log.d(LOG_TAG, "Purchase is $1 donation. Starting consumption.");
+                mHelper.consumeAsync(purchase, mConsumeFinishedListener);
+            }
+/*
+            else if (purchase.getSku().equals(SKU_PREMIUM)) {
+                // bought the premium upgrade!
+                Log.d(LOG_TAG, "Purchase is premium upgrade. Congratulating user.");
+                alert("Thank you for upgrading to premium!");
+                mIsPremium = true;
+                updateUi();
+                setWaitScreen(false);
+            }
+            else if (purchase.getSku().equals(SKU_INFINITE_GAS)) {
+                // bought the infinite gas subscription
+                Log.d(LOG_TAG, "Infinite gas subscription purchased.");
+                alert("Thank you for subscribing to infinite gas!");
+                mSubscribedToInfiniteGas = true;
+                mTank = TANK_MAX;
+                updateUi();
+                setWaitScreen(false);
+            }
+*/
+        }
+    };
+
+    // Called when consumption is complete
+    IabHelper.OnConsumeFinishedListener mConsumeFinishedListener = new IabHelper.OnConsumeFinishedListener() {
+        public void onConsumeFinished(Purchase purchase, IabResult result) {
+            Log.d(LOG_TAG, "Consumption finished. Purchase: " + purchase + ", result: " + result);
+
+            // if we were disposed of in the meantime, quit.
+            if (mHelper == null) return;
+
+            // We know this is the "gas" sku because it's the only one we consume,
+            // so we don't check which sku was consumed. If you have more than one
+            // sku, you probably should check...
+            if (result.isSuccess()) {
+                // successfully consumed, so we apply the effects of the item in our
+                // game world's logic, which in our case means filling the gas tank a bit
+                Log.d(LOG_TAG, "Consumption successful. Accounting.");
+                // maybe record this in the database?
+//                Log.d(LOG_TAG, "Consumption successful. Provisioning.");
+//                mTank = mTank == TANK_MAX ? TANK_MAX : mTank + 1;
+//                saveData();
+//                alert("You filled 1/4 tank. Your tank is now " + String.valueOf(mTank) + "/4 full!");
+                alert("Thank you for your donation!");
+            }
+            else {
+                complain("Error while consuming: " + result);
+            }
+//            updateUi();
+            setWaitScreen(false);
+            Log.d(LOG_TAG, "End consumption flow.");
+        }
+    };
+            
 
 
     private static final String DATABASE_NAME = "VegNab.db";
@@ -1280,5 +1390,18 @@ public class MainVNActivity extends ActionBarActivity
         // implement this later
 //        findViewById(R.id.screen_main).setVisibility(set ? View.GONE : View.VISIBLE);
 //        findViewById(R.id.screen_wait).setVisibility(set ? View.VISIBLE : View.GONE);
+    }
+
+    void complain(String message) {
+        Log.d(LOG_TAG, "Error: " + message);
+        alert("Error: " + message);
+    }
+
+    void alert(String message) {
+        AlertDialog.Builder bld = new AlertDialog.Builder(this);
+        bld.setMessage(message);
+        bld.setNeutralButton("OK", null);
+        Log.d(LOG_TAG, "Showing alert dialog: " + message);
+        bld.create().show();
     }
 }
