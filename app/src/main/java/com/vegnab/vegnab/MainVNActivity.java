@@ -188,8 +188,8 @@ public class MainVNActivity extends ActionBarActivity
             prefEditor.commit();
         }
         // set up in-app billing
-//        String base64EncodedPublicKey = getString(R.string.app_license);
-        String base64EncodedPublicKey = "license"; // temporary to prevent code error; check best practices
+        // following resource is in it's own file, listed in .gitignore
+        String base64EncodedPublicKey = getString(R.string.app_license);
         Log.d(LOG_TAG, "Creating IAB helper.");
         mHelper = new IabHelper(this, base64EncodedPublicKey);
         // enable debug logging (for production application, set this to false).
