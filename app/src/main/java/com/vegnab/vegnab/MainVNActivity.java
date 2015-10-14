@@ -72,7 +72,9 @@ import android.os.Build;
 import static com.vegnab.vegnab.PhPixGridFragment.*;
 
 public class MainVNActivity extends ActionBarActivity 
-        implements NewVisitFragment.OnButtonListener,
+        implements DonateFragment.OnButtonListener,
+        DonateFragment.OnIAPDoneListener,
+        NewVisitFragment.OnButtonListener,
         NewVisitFragment.OnVisitClickListener,
         VisitHeaderFragment.OnButtonListener,
         VisitHeaderFragment.EditVisitDialogListener,
@@ -836,6 +838,21 @@ public class MainVNActivity extends ActionBarActivity
         transaction.commit();
     }
 
+        @Override
+        public void onDonateButtonClicked(Bundle args) {
+            // can declare a tracker here
+/*                if (readyToDoThis()) {
+                putTogetherTheBundle();
+                goToVisitHeaderScreen (Bundle args);
+            } else {
+                doTheOtherThingFirst();
+            }
+*/
+            // set the value to be donated
+            // call onDonate
+        }
+
+
     public void onDonate(View arg0) {
         Log.d(LOG_TAG, "Donate started; launching purchase flow");
         setWaitScreen(true);
@@ -956,7 +973,13 @@ public class MainVNActivity extends ActionBarActivity
             Log.d(LOG_TAG, "End consumption flow.");
         }
     };
-            
+
+    @Override
+    public void onINAppPurcaseComplete(DonateFragment donateFragment) {
+//                putTogetherTheBundle();
+//                goToWhateverScreen (Bundle args);
+        // tie up any open dialogs or fragments
+    }
 
 
     private static final String DATABASE_NAME = "VegNab.db";
