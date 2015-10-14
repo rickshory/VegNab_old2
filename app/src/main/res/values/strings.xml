@@ -382,5 +382,13 @@
     <string name="export_visit_dlg_btn_negative">Cancel</string>
     <string name="export_visit_dlg_btn_positive">Export</string>
 
+    <string name="donate_title">Dontate to VegNab</string>
+    <string name="donate_header">In this Alpha Testing version, donation is mainly to test the functioning of the in-app purchase process. We will refund, or even pre-fund, donations. Write to vegnab@vegnab.com</string>
+    <string name="donate_amount_text_usd001_00">$1.00</string>
+    <string name="donate_amount_text_usd003_00">$3.00</string>
+    <string name="donate_amount_text_usd010_00">$10.00</string>
+    <string name="donate_amount_text_usd030_00">$30.00</string>
+    <string name="donate_button_text">Dontate</string>
+
 
 </resources>

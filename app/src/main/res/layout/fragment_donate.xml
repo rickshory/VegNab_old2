@@ -5,7 +5,7 @@
     android:layout_height="fill_parent" >
 
 <RelativeLayout
-    android:id="@+id/visit_header"
+    android:id="@+id/donate"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -15,166 +15,32 @@
     >
 
     <TextView
-        android:id="@+id/visit_header_title_text"
+        android:id="@+id/donate_title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/visit_header_title" />
+        android:text="@string/donate_title" />
 
     <TextView
-        android:id="@+id/lbl_visit_name"
-        android:text="@string/visit_header_label_name"
+        android:id="@+id/donate_header"
+        android:text="@string/donate_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/visit_header_title_text"
-        android:layout_below="@id/visit_header_title_text"
+        android:layout_alignLeft="@id/donate_title_text"
+        android:layout_below="@id/donate_title_text"
         />
 
-    <EditText
-        android:id="@+id/txt_visit_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/lbl_visit_name"
-        android:layout_below="@id/lbl_visit_name"
-        android:hint="@string/visit_header_hint_name"
-        android:inputType="text"
-        android:maxLength="16" />
 
-    <TextView
-        android:id="@+id/lbl_visit_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/txt_visit_name"
-        android:layout_below="@id/txt_visit_name"
-        android:text="@string/visit_header_label_date"
-        />
 
-    <EditText
-        android:id="@+id/txt_visit_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/lbl_visit_date"
-        android:layout_below="@id/lbl_visit_date"
-        android:hint="@string/visit_header_hint_date"
-        android:focusable="false"
-        android:inputType="date"
-        android:maxLength="10" />
 
-    <TextView
-        android:id="@+id/lbl_spp_namer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/txt_visit_date"
-        android:layout_below="@id/txt_visit_date"
-        android:text="@string/visit_header_label_namer"
-        />
-
-    <Spinner
-        android:id="@+id/sel_spp_namer_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/lbl_spp_namer"
-        android:layout_below="@id/lbl_spp_namer"
-        android:prompt="@string/visit_header_hint_namer"
-        />
-
-    <TextView
-        android:id="@+id/lbl_spp_namer_spinner_cover"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/sel_spp_namer_spinner"
-        android:layout_alignRight="@id/sel_spp_namer_spinner"
-        android:layout_alignTop="@id/sel_spp_namer_spinner"
-        android:layout_alignBottom="@id/sel_spp_namer_spinner"
-        android:text="@string/empty_string"
-        />
-
-    <TextView
-        android:id="@+id/lbl_visit_scribe"
-        android:text="@string/visit_header_label_scribe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/sel_spp_namer_spinner"
-        android:layout_below="@id/sel_spp_namer_spinner"
-        />
-
-    <EditText
-        android:id="@+id/txt_visit_scribe"
-        android:hint="@string/visit_header_hint_scribe"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/lbl_visit_scribe"
-        android:layout_below="@id/lbl_visit_scribe"
-        android:inputType="text"
-        android:maxLength="16" />
-
-    <TextView
-        android:id="@+id/lbl_visit_location"
-        android:text="@string/visit_header_label_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/txt_visit_scribe"
-        android:layout_below="@id/txt_visit_scribe"
-        />
-
-    <EditText
-        android:id="@+id/txt_visit_location"
-        android:hint="@string/visit_header_hint_location"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/lbl_visit_location"
-        android:layout_below="@id/lbl_visit_location"
-        android:focusable="false"
-        android:inputType="textMultiLine"
-        />
-
-    <TextView
-        android:id="@+id/lbl_visit_azimuth"
-        android:text="@string/visit_header_label_azimuth"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/txt_visit_location"
-        android:layout_below="@id/txt_visit_location"
-        />
-
-    <EditText
-        android:id="@+id/txt_visit_azimuth"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/lbl_visit_azimuth"
-        android:layout_below="@id/lbl_visit_azimuth"
-        android:gravity="top|left"
-        android:hint="@string/visit_header_hint_azimuth"
-        android:inputType="number"
-        />
-
-    <TextView
-        android:id="@+id/lbl_visit_notes"
-        android:text="@string/visit_header_label_notes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/txt_visit_azimuth"
-        android:layout_below="@id/txt_visit_azimuth"
-        />
-
-    <EditText
-        android:id="@+id/txt_visit_notes"
-        android:hint="@string/visit_header_hint_notes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/lbl_visit_notes"
-        android:layout_below="@id/lbl_visit_notes"
-        android:inputType="textMultiLine"
-        android:gravity="top|left"
-        android:maxLength="255" />
 
     <Button
-        android:id="@+id/visit_header_go_button"
+        android:id="@+id/donate_go_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/visit_header_go_button_msg"
+        android:text="@string/donate_button_text"
         android:padding="10dp"
-        android:layout_alignLeft="@id/txt_visit_notes"
-        android:layout_below="@id/txt_visit_notes"
+        android:layout_alignLeft="@id/donate_header"
+        android:layout_below="@id/donate_header"
         />
 </RelativeLayout>
 </ScrollView>
