@@ -92,71 +92,32 @@ public class DonateFragment extends Fragment implements OnClickListener {
         super.onCreate(savedInstanceState);
         //Get a Tracker (should auto-report)
         ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
-        try {
-            mButtonCallback = (OnButtonListener) getActivity();
-            Log.d(LOG_TAG, "(OnButtonListener) getActivity()");
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Main Activity must implement OnButtonListener interface");
-        }
-        try {
-            mIAPDoneListener = (OnIAPDoneListener) getActivity();
-            Log.d(LOG_TAG, "(IAPDoneListener) getActivity()");
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Main Activity must implement IAPDoneListener interface");
-        }
-    setHasOptionsMenu(true);
+        setHasOptionsMenu(true);
     }
 
+/*
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.visit_header, menu);
+        inflater.inflate(R.menu.donate, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
-
-
+*/
+/*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         FragmentManager fm = getActivity().getSupportFragmentManager();
-//		DialogFragment editProjDlg;
         switch (item.getItemId()) { // the Activity has first opportunity to handle these
         // any not handled come here to this Fragment
-            case R.id.action_app_info:
+            case R.id.action_donate_info:
                 Toast.makeText(getActivity(), "''App Info'' of Visit Header is not implemented yet", Toast.LENGTH_SHORT).show();
-                return true;
-
-            case R.id.action_delete_visit:
-                Toast.makeText(getActivity(), "''Delete Visit'' is not fully implemented yet", Toast.LENGTH_SHORT).show();
-                Fragment newVisFragment = fm.findFragmentByTag("new_visit");
-                if (newVisFragment == null) {
-                    Log.d(LOG_TAG, "newVisFragment == null");
-                } else {
-                    Log.d(LOG_TAG, "newVisFragment: " + newVisFragment.toString());
-                    FragmentTransaction transaction = fm.beginTransaction();
-                    // replace the fragment in the fragment container with the stored New Visit fragment
-                    transaction.replace(R.id.fragment_container, newVisFragment);
-                    // we are deleting this record, so do not put the present fragment on the backstack
-                    transaction.commit();
-                }
-
-    //			DelProjectDialog delProjDlg = new DelProjectDialog();
-    //			delProjDlg.show(fm, "frg_del_proj");
-                return true;
-
-            case R.id.action_visit_help:
-                Toast.makeText(getActivity(), "''Visit Help'' is not implemented yet",
-                        Toast.LENGTH_SHORT).show();
-                return true;
-
-            case R.id.action_settings:
-                Toast.makeText(getActivity(), "''Settings'' of Visit Header is not implemented yet",
-                        Toast.LENGTH_SHORT).show();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
+*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -165,81 +126,17 @@ public class DonateFragment extends Fragment implements OnClickListener {
         // restore the previous screen, remembered by onSaveInstanceState()
         // This is mostly needed in fixed-pane layouts
         if (savedInstanceState != null) {
-            mResolvingError = savedInstanceState.getBoolean(STATE_RESOLVING_ERROR, false);
-            mCurrentSubplot = savedInstanceState.getInt(ARG_SUBPLOT, 0);
-            Log.d(LOG_TAG, "In onCreateView, about to retrieve mVisitId: " + mVisitId);
-            mVisitId = savedInstanceState.getLong(ARG_VISIT_ID, 0);
-            Log.d(LOG_TAG, "In onCreateView, retrieved mVisitId: " + mVisitId);
-            mLocIsGood = savedInstanceState.getBoolean(ARG_LOC_GOOD_FLAG, false);
-            mCurLocation = savedInstanceState.getParcelable(ARG_CUR_LOCATION);
-            mPrevLocation = savedInstanceState.getParcelable(ARG_PREV_LOCATION);
-            mCtPlaceholders = savedInstanceState.getLong(ARG_PH_COUNT);
-            if (mLocIsGood) {
-                mLatitude = savedInstanceState.getDouble(ARG_LOC_LATITUDE);
-                mLongitude = savedInstanceState.getDouble(ARG_LOC_LONGITUDE);
-                mAccuracy = savedInstanceState.getFloat(ARG_LOC_ACCURACY);
-                mLocTime = savedInstanceState.getString(ARG_LOC_TIME);
-            }
+            // mDonationOptionSelected = savedInstanceState.getLong(ARG_DONATION, 0);
         } else {
-            Log.d(LOG_TAG, "In onCreateView, savedInstanceState == null, mVisitId: " + mVisitId);
+            Log.d(LOG_TAG, "In onCreateView, savedInstanceState == null");
         }
         // inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_visit_header, container, false);
-        mViewVisitName = (EditText) rootView.findViewById(R.id.txt_visit_name);
-        mViewVisitName.setOnFocusChangeListener(this);
-        registerForContextMenu(mViewVisitName); // enable long-press
-        mViewVisitDate = (EditText) rootView.findViewById(R.id.txt_visit_date);
-        mViewVisitDate.setText(mDateFormat.format(mCalendar.getTime()));
-        mViewVisitDate.setOnClickListener(this);
-        mViewVisitDate.setOnFocusChangeListener(this);
-        mNamerSpinner = (Spinner) rootView.findViewById(R.id.sel_spp_namer_spinner);
-        mNamerSpinner.setTag(Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
-        mNamerSpinner.setEnabled(false); // will enable when data ready
-        mNamerAdapter = new SimpleCursorAdapter(getActivity(),
-                android.R.layout.simple_spinner_item, null,
-                new String[] {"NamerName"},
-                new int[] {android.R.id.text1}, 0);
-        mNamerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mNamerSpinner.setAdapter(mNamerAdapter);
-        mNamerSpinner.setOnItemSelectedListener(this);
-        registerForContextMenu(mNamerSpinner); // enable long-press
-        // also need click, if no names & therefore selection cannot be changed
-//		mNamerSpinner.setOnFocusChangeListener(this); // does not work
-        // use a TextView on top of the spinner, named "lbl_spp_namer_spinner_cover"
-        mLblNewNamerSpinnerCover = (TextView) rootView.findViewById(R.id.lbl_spp_namer_spinner_cover);
-        mLblNewNamerSpinnerCover.setOnClickListener(this);
-        registerForContextMenu(mLblNewNamerSpinnerCover); // enable long-press
-        // Prepare the loader. Either re-connect with an existing one or start a new one
-        getLoaderManager().initLoader(Loaders.NAMERS, null, this);
-        // in layout, TextView is in front of Spinner and takes precedence
-        // for testing context menu, bring spinner to front so it receives clicks
-//		mNamerSpinner.bringToFront();		
-        mViewVisitScribe = (EditText) rootView.findViewById(R.id.txt_visit_scribe);
-        mViewVisitScribe.setOnFocusChangeListener(this);
-        registerForContextMenu(mViewVisitScribe); // enable long-press
-        // set up the visit Location
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        mAccuracyTargetForVisitLoc = sharedPref.getFloat(Prefs.TARGET_ACCURACY_OF_VISIT_LOCATIONS, 7.0f);
-        mViewVisitLocation = (EditText) rootView.findViewById(R.id.txt_visit_location);
-        mViewVisitLocation.setOnFocusChangeListener(this);
-        registerForContextMenu(mViewVisitLocation); // enable long-press
-        // should the following go in onCreate() ?
-        Log.d(LOG_TAG, "in CreateView about to call 'buildGoogleApiClient()'");
-        buildGoogleApiClient();
-        Log.d(LOG_TAG, "in CreateView returned from call to 'buildGoogleApiClient()'");
-        mLocationRequest = LocationRequest.create()
-            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-            .setInterval(10000)        // 10 seconds, in milliseconds
-            .setFastestInterval(1000); // 1 second, in milliseconds
-
-        mViewAzimuth = (EditText) rootView.findViewById(R.id.txt_visit_azimuth);
-        mViewAzimuth.setOnFocusChangeListener(this);
-        registerForContextMenu(mViewAzimuth); // enable long-press
-        mViewVisitNotes = (EditText) rootView.findViewById(R.id.txt_visit_notes);
-        mViewVisitNotes.setOnFocusChangeListener(this);
-        registerForContextMenu(mViewVisitNotes); // enable long-press
+        View rootView = inflater.inflate(R.layout.fragment_donate, container, false);
+        // Prepare the loader
+        // maybe use a loader for purchases later, but none now
+        //getLoaderManager().initLoader(Loaders.DONATIONS, null, this);
         // set click listener for the button in the view
-        Button b = (Button) rootView.findViewById(R.id.visit_header_go_button);
+        Button b = (Button) rootView.findViewById(R.id.donate_go_button);
         b.setOnClickListener(this);
         // if more, loop through all the child items of the ViewGroup rootView and
         // set the onclicklistener for all the Button instances found
@@ -252,22 +149,23 @@ public class DonateFragment extends Fragment implements OnClickListener {
         GoogleAnalytics.getInstance(getActivity()).reportActivityStart(getActivity());
         // check if arguments are passed to the fragment that will change the layout
         Bundle args = getArguments();
+/*
         if (args != null) {
-            if (mVisitId == 0) {
+            if (mDonationOptionSelected == 0) {
                 // On return from Subplots container, this method can re-run before
                 // SaveInstanceState and so retain arguments originally passed when created,
                 // such as VisitId=0.
                 // Do not allow that zero to overwrite a new (nonzero) Visit ID, or
                 // it will flag to create a second copy of the same header.
-                mVisitId = args.getLong(ARG_VISIT_ID, 0);
-                mViewVisitName.requestFocus();
+                mDonationOptionSelected = args.getLong(ARG_DONATION, 0);
+                // set up on screen
             }
         // also use for special arguments like screen layout
         }
+*/
         // fire off loaders that depend on layout being ready to receive results
-        getLoaderManager().initLoader(Loaders.VISIT_TO_EDIT, null, this);
-        getLoaderManager().initLoader(Loaders.EXISTING_VISITS, null, this);
-        getLoaderManager().initLoader(Loaders.VISIT_PLACEHOLDERS_ENTERED, null, this);
+        // not yet used
+//        getLoaderManager().initLoader(Loaders.DONATE, null, this);
     }
 
     @Override
@@ -275,24 +173,24 @@ public class DonateFragment extends Fragment implements OnClickListener {
         super.onResume();
 //	    do other setup here if needed
         // re-check this every time the fragment is entered
-        getLoaderManager().restartLoader(Loaders.VISIT_PLACEHOLDERS_ENTERED, null, this);
-        if (!mLocIsGood) {
-            mGoogleApiClient.connect();
-        }
+//        getLoaderManager().restartLoader(Loaders.VISIT_PLACEHOLDERS_ENTERED, null, this);
+//        if (!mLocIsGood) {
+//            mGoogleApiClient.connect();
+//        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
         // if namer spinner has been changed
-        if (mNamerSpinner.getId() != mNamerId) {
-            // attempt to save record
-            saveVisitRecord();
-        }
-        if (mGoogleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-            mGoogleApiClient.disconnect();
-        }
+//        if (mNamerSpinner.getId() != mNamerId) {
+//            // attempt to save record
+//            saveVisitRecord();
+//        }
+//        if (mGoogleApiClient.isConnected()) {
+//            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+//            mGoogleApiClient.disconnect();
+//        }
     }
 
     @Override
@@ -305,9 +203,16 @@ public class DonateFragment extends Fragment implements OnClickListener {
         super.onAttach(activity);
         // assure the container activity has implemented the callback interface
         try {
-            mButtonCallback = (OnButtonListener) activity;
+            mButtonCallback = (OnButtonListener) getActivity();
+            Log.d(LOG_TAG, "(OnButtonListener) getActivity()");
         } catch (ClassCastException e) {
-            throw new ClassCastException (activity.toString() + " must implement OnButtonListener");
+            throw new ClassCastException("Main Activity must implement OnButtonListener interface");
+        }
+        try {
+            mIAPDoneListener = (OnIAPDoneListener) getActivity();
+            Log.d(LOG_TAG, "(IAPDoneListener) getActivity()");
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Main Activity must implement IAPDoneListener interface");
         }
     }
 
