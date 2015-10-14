@@ -30,8 +30,35 @@
         />
 
 
+    <RadioGroup
+        android:id="@+id/radio_group_opts_donation_amts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignLeft="@id/donate_header"
+        android:layout_below="@id/donate_header"
+        android:checkedButton="@+id/radio_amt_usd001_00">
 
-
+        <RadioButton android:id="@+id/radio_amt_usd001_00"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="@string/donate_amount_text_usd001_00"
+            />
+        <RadioButton android:id="@+id/radio_amt_usd003_00"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="@string/donate_amount_text_usd003_00"
+            />
+        <RadioButton android:id="@+id/radio_amt_usd010_00"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="@string/donate_amount_text_usd010_00"
+            />
+        <RadioButton android:id="@+id/radio_amt_usd030_00"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="@string/donate_amount_text_usd030_00"
+            />
+    </RadioGroup>
 
     <Button
         android:id="@+id/donate_go_button"
@@ -39,8 +66,8 @@
         android:layout_height="wrap_content"
         android:text="@string/donate_button_text"
         android:padding="10dp"
-        android:layout_alignLeft="@id/donate_header"
-        android:layout_below="@id/donate_header"
+        android:layout_alignLeft="@id/radio_group_opts_donation_amts"
+        android:layout_below="@id/radio_group_opts_donation_amts"
         />
 </RelativeLayout>
 </ScrollView>
