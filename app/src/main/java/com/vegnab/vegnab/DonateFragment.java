@@ -219,152 +219,26 @@ public class DonateFragment extends Fragment implements OnClickListener {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        // save the current subplot arguments in case we need to re-create the fragment
-        outState.putBoolean(STATE_RESOLVING_ERROR, mResolvingError);
-        outState.putInt(ARG_SUBPLOT, mCurrentSubplot);
-        outState.putLong(ARG_VISIT_ID, mVisitId);
-        outState.putBoolean(ARG_LOC_GOOD_FLAG, mLocIsGood);
-        outState.putParcelable(ARG_CUR_LOCATION, mCurLocation);
-        outState.putParcelable(ARG_PREV_LOCATION, mPrevLocation);
-        outState.putLong(ARG_PH_COUNT, mCtPlaceholders);
-        if (mLocIsGood) {
-            outState.putDouble(ARG_LOC_LATITUDE, mLatitude);
-            outState.putDouble(ARG_LOC_LONGITUDE, mLongitude);
-            outState.putFloat(ARG_LOC_ACCURACY, mAccuracy);
-            outState.putString(ARG_LOC_TIME, mLocTime);
-        }
+//        outState.putLong(ARG_DONATION, mDonationOptionSelected);
     }
 
     @Override
     public void onClick(View v) {
-        int numUpdated;
         switch (v.getId()) {
-        case R.id.txt_visit_date:
-            fireOffDatePicker();
+
+        case R.id.donate_go_button:
+            // maybe implement the tracker here
+            Bundle args = new Bundle();
+            // put in any needed parameters
+            //
+            Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onDonateButtonClicked(args)'");
+            mButtonCallback.onDonateButtonClicked(args);
+            Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onDonateButtonClicked(args)'");
             break;
-//		case R.id.sel_spp_namer_spinner: // does not receive onClick
-        case R.id.lbl_spp_namer_spinner_cover:
-//			AddSpeciesNamerDialog addSppNamerDlg = AddSpeciesNamerDialog.newInstance();
-//			addSppNamerDlg.setTargetFragment(this, 0); // does not work
-//			FragmentManager fm = getActivity().getSupportFragmentManager();
-            Log.d(LOG_TAG, "Starting 'add new' for Namer from onClick of 'lbl_spp_namer_spinner_cover'");
-//			addSppNamerDlg.show(fm, "sppNamerDialog_TextClick");
-            if (mCtPlaceholders == 0) { // no placeholders entered for this Visit, allowed to edit Namer
-                EditNamerDialog newNmrDlg = EditNamerDialog.newInstance(0);
-                newNmrDlg.show(getFragmentManager(), "frg_new_namer_fromCover");
-            } else {
-                ConfigurableMsgDialog nmrLockDlg = ConfigurableMsgDialog.newInstance(
-                        getActivity().getResources().getString(R.string.namer_locked_title),
-                        getActivity().getResources().getString(R.string.namer_locked_message));
-                nmrLockDlg.show(getFragmentManager(), "frg_err_namer_lock");
-            }
-
-            break;
-        case R.id.visit_header_go_button:
-            // create or update the Visit record in the database, if everything is valid
-            mValidationLevel = Validation.CRITICAL; // save if possible, and announce anything invalid
-            numUpdated = saveVisitRecord();
-            if (numUpdated == 0) {
-                Log.d(LOG_TAG, "Failed to save record in onClick; mValues: " + mValues.toString());
-            } else {
-                Log.d(LOG_TAG, "Saved record in onClick; mValues: " + mValues.toString());
-            }
-            if (numUpdated == 0) {
-                break;
-            }
-            Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onVisitHeaderGoButtonClicked()'");
-            mButtonCallback.onVisitHeaderGoButtonClicked(mVisitId);
-            Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onVisitHeaderGoButtonClicked()'");
-            break;
-        }
-    }
-
-
-
-
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
-        // onConnectionFailed.
-        Log.d(LOG_TAG, "Connection failed, will try resolution");
-        if (mResolvingError) { // already working on this
-            mResolveTryCount++;
-            Log.d(LOG_TAG, "Currently working on failed connection, attempt " + mResolveTryCount);
-            return;
-        } else  if (connectionResult.hasResolution()) {
-            Log.d(LOG_TAG, "Failed connection has resolution, about to try");
-            try {
-                mResolvingError = true;
-                // Start an Activity that tries to resolve the error
-                Log.d(LOG_TAG, "About to send Intent to resolve failed connection");
-                connectionResult.startResolutionForResult(getActivity(), REQUEST_RESOLVE_ERROR);
-            } catch (IntentSender.SendIntentException e) {
-                mGoogleApiClient.connect(); // error with resolution intent, try again
-            }
-        } else {
-            Log.d(LOG_TAG, "Connection, evidently no resolution, about to try to show error dialog");
-            GooglePlayServicesUtil.getErrorDialog(connectionResult.getErrorCode(),getActivity(),2000).show();
-            // Show dialog using GooglePlayServicesUtil.getErrorDialog()
-//        	showErrorDialog(connectionResult.getErrorCode());
-            mResolvingError = true;
-            Log.d(LOG_TAG, "Connection failed with code " + connectionResult.getErrorCode());
-            mViewVisitLocation.setText("Location services connection failed with code "
-                    + connectionResult.getErrorCode());
         }
     }
     
-    // next sections build the error dialog
-
-    // Creates a dialog for an error message
-    private void showErrorDialog(int errorCode) {
-        // Create a fragment for the error dialog
-        ErrorDialogFragment dialogFragment = new ErrorDialogFragment();
-        dialogFragment.setTargetFragment(this, -1);
-        // Pass the error that should be displayed
-        Bundle args = new Bundle();
-        args.putInt(DIALOG_ERROR, errorCode);
-        dialogFragment.setArguments(args);
-        dialogFragment.show(getActivity().getSupportFragmentManager(), "errordialog");
-    }
-
-    // Called from ErrorDialogFragment when the dialog is dismissed.
-    public void onDialogDismissed() {
-        mResolvingError = false;
-        mResolveTryCount = 0;
-    }
-
-    // A fragment to display an error dialog
-    public static class ErrorDialogFragment extends DialogFragment {
-        public ErrorDialogFragment() { }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Get the error code and retrieve the appropriate dialog
-            int errorCode = this.getArguments().getInt(DIALOG_ERROR);
-            return GooglePlayServicesUtil.getErrorDialog(errorCode,
-                    this.getActivity(), REQUEST_RESOLVE_ERROR);
-        }
-
-        @Override
-        public void onDismiss(DialogInterface dialog) {
-            try { // is this what occasionally crashes?, e.g. on pause while error dialog is displayed
-                ((DonateFragment)getTargetFragment()).onDialogDismissed();
-            } catch (Exception e) {
-                Log.d(LOG_TAG, "onDismiss error: " + e);
-            }
-        }
-
-        @Override
-        public void onSaveInstanceState(Bundle outState) {
-            try { // is this what occasionally crashes?, e.g. on pause while error dialog is displayed
-                super.onSaveInstanceState(outState);
-            } catch (Exception e) {
-                Log.d(LOG_TAG, "onSaveInstanceState error: " + e);
-            }
-        }
-    }
-
+/*
     // Checks if external storage is available for read and write
     public boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
@@ -373,4 +247,5 @@ public class DonateFragment extends Fragment implements OnClickListener {
         }
         return false;
     }
+*/
 }
