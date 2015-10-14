@@ -65,27 +65,21 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
-public class DonateFragment extends Fragment implements OnClickListener,
-        AdapterView.OnItemSelectedListener,
-        View.OnFocusChangeListener,
-        LoaderManager.LoaderCallbacks<Cursor>,
-        ConnectionCallbacks, OnConnectionFailedListener,
-        LocationListener {
+public class DonateFragment extends Fragment implements OnClickListener {
 
     private static final String LOG_TAG = DonateFragment.class.getSimpleName();
-
-    public interface EditVisitDialogListener {
-        void onEditVisitComplete(DonateFragment visitHeaderFragment);
-    }
-    EditVisitDialogListener mEditVisitListener;
-
 
     OnButtonListener mButtonCallback; // declare the interface
     // declare that the container Activity must implement this interface
     public interface OnButtonListener {
         // methods that must be implemented in the container Activity
-        public void onVisitHeaderGoButtonClicked(long visitId);
+        void onDonateButtonClicked(Bundle args);
     }
+
+    public interface OnIAPDoneListener {
+        void onINAppPurcaseComplete(DonateFragment donateFragment);
+    }
+    OnIAPDoneListener mIAPDoneListener;
 
     public static DonateFragment newInstance(Bundle args) {
         DonateFragment f = new DonateFragment();
@@ -99,10 +93,16 @@ public class DonateFragment extends Fragment implements OnClickListener,
         //Get a Tracker (should auto-report)
         ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
         try {
-            mEditVisitListener = (EditVisitDialogListener) getActivity();
-            Log.d(LOG_TAG, "(EditVisitDialogListener) getActivity()");
+            mButtonCallback = (OnButtonListener) getActivity();
+            Log.d(LOG_TAG, "(OnButtonListener) getActivity()");
         } catch (ClassCastException e) {
-            throw new ClassCastException("Main Activity must implement EditVisitDialogListener interface");
+            throw new ClassCastException("Main Activity must implement OnButtonListener interface");
+        }
+        try {
+            mIAPDoneListener = (OnIAPDoneListener) getActivity();
+            Log.d(LOG_TAG, "(IAPDoneListener) getActivity()");
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Main Activity must implement IAPDoneListener interface");
         }
     setHasOptionsMenu(true);
     }
