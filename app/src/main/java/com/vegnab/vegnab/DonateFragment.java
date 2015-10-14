@@ -77,7 +77,7 @@ public class DonateFragment extends Fragment implements OnClickListener {
     }
 
     public interface OnIAPDoneListener {
-        void onINAppPurcaseComplete(DonateFragment donateFragment);
+        void onINAppPurchaseComplete(DonateFragment donateFragment);
     }
     OnIAPDoneListener mIAPDoneListener;
 
@@ -237,7 +237,7 @@ public class DonateFragment extends Fragment implements OnClickListener {
             break;
         }
     }
-    
+
 /*
     // Checks if external storage is available for read and write
     public boolean isExternalStorageWritable() {

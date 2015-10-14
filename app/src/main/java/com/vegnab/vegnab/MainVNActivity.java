@@ -975,7 +975,7 @@ public class MainVNActivity extends ActionBarActivity
     };
 
     @Override
-    public void onINAppPurcaseComplete(DonateFragment donateFragment) {
+    public void onINAppPurchaseComplete(DonateFragment donateFragment) {
 //                putTogetherTheBundle();
 //                goToWhateverScreen (Bundle args);
         // tie up any open dialogs or fragments
