@@ -20,6 +20,7 @@
     <string name="action_export_visit">Export Visit</string>
     <string name="action_unhide_visit">Un-hide Visit</string>
     <string name="action_delete_namer">Delete Namer</string>
+    <string name="action_donate">Donate</string>
    
     <string name="default_project">MyProject</string>
     <string name="default_plottype">Species List</string>

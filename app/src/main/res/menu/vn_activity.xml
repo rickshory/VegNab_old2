@@ -16,6 +16,12 @@
         app:showAsAction="never"/>
 
     <item
+        android:id="@+id/action_donate"
+        android:orderInCategory="900"
+        android:title="@string/action_donate"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/action_legal_notices"
         android:orderInCategory="1000"
         android:title="@string/action_legal_notices"

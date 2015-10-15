@@ -369,6 +369,10 @@ public class MainVNActivity extends ActionBarActivity
         case R.id.action_settings:
             Toast.makeText(getApplicationContext(), "''Settings'' is not implemented yet", Toast.LENGTH_SHORT).show();
             return true;
+
+        case R.id.action_donate:
+            goToDonateScreen();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -561,6 +565,24 @@ public class MainVNActivity extends ActionBarActivity
         // put the present fragment on the backstack so the user can navigate back to it
         // the tag is for the fragment now being added, not the one replaced
         transaction.replace(R.id.fragment_container, phPixGridFrag, Tags.PLACEHOLDER_PIX_GRID);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    public void goToDonateScreen() {
+        // get tracker
+        Tracker t = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+        // set screen name
+        t.setScreenName("DonateScreen");
+        // send a screen view
+        t.send(new HitBuilders.ScreenViewBuilder().build());
+        // continue with work
+        DonateFragment frgDonate = new DonateFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        // replace the fragment in the fragment container with this new fragment and
+        // put the present fragment on the backstack so the user can navigate back to it
+        // the tag is for the fragment now being added, not the one replaced
+        transaction.replace(R.id.fragment_container, frgDonate, "frg_donate");
         transaction.addToBackStack(null);
         transaction.commit();
     }
