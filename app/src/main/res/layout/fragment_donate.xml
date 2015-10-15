@@ -18,7 +18,8 @@
         android:id="@+id/donate_title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/donate_title" />
+        android:text="@string/donate_title"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
 
     <TextView
         android:id="@+id/donate_header"
@@ -29,13 +30,21 @@
         android:layout_below="@id/donate_title_text"
         />
 
-
+    <TextView
+        android:id="@+id/donate_header2"
+        android:text="@string/donate_header2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/donate_header"
+        android:layout_below="@id/donate_header"
+        />
+    
     <RadioGroup
         android:id="@+id/radio_group_opts_donation_amts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignLeft="@id/donate_header"
-        android:layout_below="@id/donate_header"
+        android:layout_alignLeft="@id/donate_header2"
+        android:layout_below="@id/donate_header2"
         android:checkedButton="@+id/radio_amt_usd001_00">
 
         <RadioButton android:id="@+id/radio_amt_usd001_00"
