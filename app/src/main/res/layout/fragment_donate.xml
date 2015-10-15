@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:text="@string/donate_title"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:paddingBottom="20dp"/>
+        android:paddingBottom="10dp"/>
 
     <TextView
         android:id="@+id/donate_header"
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/donate_title_text"
         android:layout_below="@id/donate_title_text"
-        android:paddingBottom="20dp"
+        android:paddingBottom="10dp"
         />
 
     <TextView
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/donate_header"
         android:layout_below="@id/donate_header"
-        android:paddingBottom="20dp"
+        android:paddingBottom="10dp"
         />
 
     <RadioGroup
