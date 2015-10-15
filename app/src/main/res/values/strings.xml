@@ -391,6 +391,6 @@
     <string name="donate_amount_text_usd010_00">$10.00</string>
     <string name="donate_amount_text_usd030_00">$30.00</string>
     <string name="donate_button_text">Donate</string>
-
+    <string name="donate_pls_wait">Please wait</string>
 
 </resources>
