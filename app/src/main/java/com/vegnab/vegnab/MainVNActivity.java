@@ -284,6 +284,19 @@ public class MainVNActivity extends ActionBarActivity
         GoogleAnalytics.getInstance(this).reportActivityStop(this);
     }
 
+    // activity being destroyed, dispose of the IAB helper
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // very important:
+        Log.d(LOG_TAG, "Destroying helper.");
+        if (mHelper != null) {
+            mHelper.dispose();
+            mHelper = null;
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

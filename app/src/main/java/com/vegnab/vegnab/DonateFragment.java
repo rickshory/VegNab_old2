@@ -38,6 +38,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,6 +88,11 @@ public class DonateFragment extends Fragment implements OnClickListener {
         f.setArguments(args);
         return f;
     }
+    private RadioGroup mDonationOptsRadioGp;
+    private RadioButton mDonate001_00;
+    private RadioButton mDonate003_00;
+    private RadioButton mDonate010_00;
+    private RadioButton mDonate030_00;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -132,9 +139,11 @@ public class DonateFragment extends Fragment implements OnClickListener {
         }
         // inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_donate, container, false);
+        mDonationOptsRadioGp = (RadioGroup) rootView.findViewById(R.id.radio_group_opts_resolve_phs);
         // Prepare the loader
         // maybe use a loader for purchases later, but none now
         //getLoaderManager().initLoader(Loaders.DONATIONS, null, this);
+
         // set click listener for the button in the view
         Button b = (Button) rootView.findViewById(R.id.donate_go_button);
         b.setOnClickListener(this);
@@ -230,6 +239,24 @@ public class DonateFragment extends Fragment implements OnClickListener {
             // maybe implement the tracker here
             Bundle args = new Bundle();
             // put in any needed parameters
+            switch (mDonationOptsRadioGp.getCheckedRadioButtonId()) {
+                case R.id.radio_amt_usd001_00:
+                    Log.d(LOG_TAG, "mDonationOptsRadioGp radio button selected: R.id.radio_amt_usd001_00");
+                    break;
+                case R.id.radio_amt_usd003_00:
+                    Log.d(LOG_TAG, "mDonationOptsRadioGp radio button selected: R.id.radio_amt_usd003_00");
+                    break;
+                case R.id.radio_amt_usd010_00:
+                    Log.d(LOG_TAG, "mDonationOptsRadioGp radio button selected: R.id.radio_amt_usd010_00");
+                    break;
+                case R.id.radio_amt_usd030_00:
+                    Log.d(LOG_TAG, "mDonationOptsRadioGp radio button selected: R.id.radio_amt_usd030_00");
+                    break;
+                default:
+                    Log.d(LOG_TAG, "mDonationOptsRadioGp no radio button selected");
+                    break;
+            }
+
             //
             Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onDonateButtonClicked(args)'");
             mButtonCallback.onDonateButtonClicked(args);
