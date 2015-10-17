@@ -20,34 +20,14 @@
         android:layout_height="wrap_content"
         android:text="@string/donate_title"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:paddingBottom="10dp"/>
-
-    <TextView
-        android:id="@+id/donate_header"
-        android:text="@string/donate_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/donate_title_text"
-        android:layout_below="@id/donate_title_text"
-        android:paddingBottom="10dp"
-        />
-
-    <TextView
-        android:id="@+id/donate_header2"
-        android:text="@string/donate_header2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/donate_header"
-        android:layout_below="@id/donate_header"
-        android:paddingBottom="10dp"
-        />
+        android:paddingBottom="20dp"/>
 
     <RadioGroup
         android:id="@+id/radio_group_opts_donation_amts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignLeft="@id/donate_header2"
-        android:layout_below="@id/donate_header2"
+        android:layout_alignLeft="@id/donate_title_text"
+        android:layout_below="@id/donate_title_text"
         android:checkedButton="@+id/radio_amt_usd001_00">
 
         <RadioButton android:id="@+id/radio_amt_usd001_00"
@@ -80,6 +60,16 @@
         android:padding="10dp"
         android:layout_alignLeft="@id/radio_group_opts_donation_amts"
         android:layout_below="@id/radio_group_opts_donation_amts"
+        />
+
+    <TextView
+        android:id="@+id/donate_wait"
+        android:text="@string/donate_pls_wait"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/donate_go_button"
+        android:layout_below="@id/donate_go_button"
+        android:paddingTop="20dp"
         />
 </RelativeLayout>
 </ScrollView>

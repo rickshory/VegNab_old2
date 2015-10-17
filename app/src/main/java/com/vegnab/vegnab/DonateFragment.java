@@ -149,6 +149,9 @@ public class DonateFragment extends Fragment implements OnClickListener {
         b.setOnClickListener(this);
         // if more, loop through all the child items of the ViewGroup rootView and
         // set the onclicklistener for all the Button instances found
+
+        // initially hide the "Please wait" message
+        rootView.findViewById(R.id.donate_wait).setVisibility(View.GONE);
         return rootView;
     }
 
