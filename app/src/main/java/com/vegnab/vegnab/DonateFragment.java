@@ -94,6 +94,9 @@ public class DonateFragment extends Fragment implements OnClickListener {
     private RadioButton mDonate010_00;
     private RadioButton mDonate030_00;
 
+    private Button mBtnDonate;
+    private TextView mTxtPlsWaitMessage;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,13 +148,14 @@ public class DonateFragment extends Fragment implements OnClickListener {
         //getLoaderManager().initLoader(Loaders.DONATIONS, null, this);
 
         // set click listener for the button in the view
-        Button b = (Button) rootView.findViewById(R.id.donate_go_button);
-        b.setOnClickListener(this);
+        mBtnDonate = (Button) rootView.findViewById(R.id.donate_go_button);
+        mBtnDonate.setOnClickListener(this);
         // if more, loop through all the child items of the ViewGroup rootView and
         // set the onclicklistener for all the Button instances found
 
-        // initially hide the "Please wait" message
-        rootView.findViewById(R.id.donate_wait).setVisibility(View.GONE);
+        // save a reference to the "Please wait" message
+        mTxtPlsWaitMessage = (TextView) rootView.findViewById(R.id.donate_wait);
+
         return rootView;
     }
 
@@ -178,6 +182,7 @@ public class DonateFragment extends Fragment implements OnClickListener {
         // fire off loaders that depend on layout being ready to receive results
         // not yet used
 //        getLoaderManager().initLoader(Loaders.DONATE, null, this);
+        setWaitMessage(false);
     }
 
     @Override
@@ -264,10 +269,16 @@ public class DonateFragment extends Fragment implements OnClickListener {
             Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onDonateButtonClicked(args)'");
             mButtonCallback.onDonateButtonClicked(args);
             Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onDonateButtonClicked(args)'");
+
+            setWaitMessage(true);
             break;
         }
     }
-
+    // Enables or disables the "please wait" message.
+    void setWaitMessage(boolean set) {
+        mBtnDonate.setVisibility(set ? View.GONE : View.VISIBLE);
+        mTxtPlsWaitMessage.setVisibility(set ? View.VISIBLE : View.GONE);
+    }
 /*
     // Checks if external storage is available for read and write
     public boolean isExternalStorageWritable() {
