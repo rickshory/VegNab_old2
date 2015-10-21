@@ -899,6 +899,8 @@ public class MainVNActivity extends ActionBarActivity
     public void onDonate(Bundle args) {
         Log.d(LOG_TAG, "in onDonate; launching purchase flow");
 //        setWaitScreen(true);
+        mHelper.consumeAsync(inventory.getPurchase(productID_testPurchased),
+                mConsumeFinishedListener);
         // TODO: for security, generate a payload here for verification.
         // For testing use an empty string, but in production would generate this.
         // See comments in onverifyDeveloperPayload() for more info.
