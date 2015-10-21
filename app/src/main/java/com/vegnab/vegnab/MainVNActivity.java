@@ -119,7 +119,11 @@ public class MainVNActivity extends ActionBarActivity
     final static String ARG_PH_NAMER_ID = "phNamerId";
     final static String ARG_PH_EXISTING_SET = "phExistingSet";
 
-    private final String productID_testPurchased = "android.test.purchased";	// Test Product ID by Google
+    // fake product IDs for testing, provided by Google
+    private final String productID_testPurchased = "android.test.purchased";
+    private final String productID_testCanceled = "android.test.canceled";
+    private final String productID_testRefunded = "android.test.refunded";
+    private final String productID_testUnavailable = "android.test.item_unavailable";
 
     // SKUs for products
     // testing in-app billing with donations
@@ -903,9 +907,11 @@ public class MainVNActivity extends ActionBarActivity
 //        mHelper.launchPurchaseFlow(this, SKU_DONATE_USD_001_00, RC_REQUEST,
 //                mPurchaseFinishedListener, payload);
         // for first test, use reserved testing code
-        mHelper.launchPurchaseFlow(this, productID_testPurchased, RC_REQUEST,
-                mPurchaseFinishedListener, payload);
+//        mHelper.launchPurchaseFlow(this, productID_testPurchased, RC_REQUEST,
+//                mPurchaseFinishedListener, payload);
 
+        mHelper.launchPurchaseFlow(this, productID_testCanceled, RC_REQUEST,
+                mPurchaseFinishedListener, payload);
     }
             
     // Verifies the developer payload of a purchase.
