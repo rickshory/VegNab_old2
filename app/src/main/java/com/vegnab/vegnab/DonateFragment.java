@@ -247,30 +247,31 @@ public class DonateFragment extends Fragment implements OnClickListener {
             // maybe implement the tracker here
             Bundle args = new Bundle();
             // put in any needed parameters
-            switch (mDonationOptsRadioGp.getCheckedRadioButtonId()) {
-                case R.id.radio_amt_usd001_00:
-                    Log.d(LOG_TAG, "mDonationOptsRadioGp radio button selected: R.id.radio_amt_usd001_00");
-                    break;
-                case R.id.radio_amt_usd003_00:
-                    Log.d(LOG_TAG, "mDonationOptsRadioGp radio button selected: R.id.radio_amt_usd003_00");
-                    break;
-                case R.id.radio_amt_usd010_00:
-                    Log.d(LOG_TAG, "mDonationOptsRadioGp radio button selected: R.id.radio_amt_usd010_00");
-                    break;
-                case R.id.radio_amt_usd030_00:
-                    Log.d(LOG_TAG, "mDonationOptsRadioGp radio button selected: R.id.radio_amt_usd030_00");
-                    break;
-                default:
-                    Log.d(LOG_TAG, "mDonationOptsRadioGp no radio button selected");
-                    break;
-            }
+//            switch (mDonationOptsRadioGp.getCheckedRadioButtonId()) {
+//                case R.id.radio_amt_usd001_00:
+//                    Log.d(LOG_TAG, "mDonationOptsRadioGp radio button selected: R.id.radio_amt_usd001_00");
+//                    break;
+//                case R.id.radio_amt_usd003_00:
+//                    Log.d(LOG_TAG, "mDonationOptsRadioGp radio button selected: R.id.radio_amt_usd003_00");
+//                    break;
+//                case R.id.radio_amt_usd010_00:
+//                    Log.d(LOG_TAG, "mDonationOptsRadioGp radio button selected: R.id.radio_amt_usd010_00");
+//                    break;
+//                case R.id.radio_amt_usd030_00:
+//                    Log.d(LOG_TAG, "mDonationOptsRadioGp radio button selected: R.id.radio_amt_usd030_00");
+//                    break;
+//                default:
+//                    Log.d(LOG_TAG, "mDonationOptsRadioGp no radio button selected");
+//                    break;
+//            }
 
             //
             Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onDonateButtonClicked(args)'");
+            // test using reserved test codes, for now don't bother with args
             mButtonCallback.onDonateButtonClicked(args);
             Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onDonateButtonClicked(args)'");
 
-            setWaitMessage(true);
+//            setWaitMessage(true);
             break;
         }
     }

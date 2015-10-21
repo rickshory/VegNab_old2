@@ -119,6 +119,8 @@ public class MainVNActivity extends ActionBarActivity
     final static String ARG_PH_NAMER_ID = "phNamerId";
     final static String ARG_PH_EXISTING_SET = "phExistingSet";
 
+    private final String productID_testPurchased = "android.test.purchased";	// Test Product ID by Google
+
     // SKUs for products
     // testing in-app billing with donations
     static final String SKU_DONATE_USD_001_00 = "donateUSD001_00";
@@ -885,19 +887,25 @@ public class MainVNActivity extends ActionBarActivity
 */
             // set the value to be donated
             // call onDonate
+            // for first test, pass same empty bundle; ignored
+            onDonate(args);
         }
 
 
-    public void onDonate(View arg0) {
-        Log.d(LOG_TAG, "Donate started; launching purchase flow");
-        setWaitScreen(true);
+    public void onDonate(Bundle args) {
+        Log.d(LOG_TAG, "in onDonate; launching purchase flow");
+//        setWaitScreen(true);
         // TODO: for security, generate a payload here for verification.
         // For testing use an empty string, but in production would generate this.
         // See comments in onverifyDeveloperPayload() for more info.
         String payload = "";
-        // for testing, make the donation one dollar; make it a variable later
-        mHelper.launchPurchaseFlow(this, SKU_DONATE_USD_001_00, RC_REQUEST,
+//        // for testing, make the donation one dollar; make it a variable later
+//        mHelper.launchPurchaseFlow(this, SKU_DONATE_USD_001_00, RC_REQUEST,
+//                mPurchaseFinishedListener, payload);
+        // for first test, use reserved testing code
+        mHelper.launchPurchaseFlow(this, productID_testPurchased, RC_REQUEST,
                 mPurchaseFinishedListener, payload);
+
     }
             
     // Verifies the developer payload of a purchase.
@@ -951,9 +959,11 @@ public class MainVNActivity extends ActionBarActivity
 
             Log.d(LOG_TAG, "Purchase successful.");
 
-            if (purchase.getSku().equals(SKU_DONATE_USD_001_00)) {
+//            if (purchase.getSku().equals(SKU_DONATE_USD_001_00)) {
+            if (purchase.getSku().equals(productID_testPurchased)) {
                 // bought a donation, so consume it.
-                Log.d(LOG_TAG, "Purchase is $1 donation. Starting consumption.");
+//                Log.d(LOG_TAG, "Purchase is $1 donation. Starting consumption.");
+                Log.d(LOG_TAG, "Purchase is test.purchased. Starting consumption.");
                 mHelper.consumeAsync(purchase, mConsumeFinishedListener);
             }
 /*
