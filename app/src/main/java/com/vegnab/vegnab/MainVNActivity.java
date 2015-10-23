@@ -897,6 +897,15 @@ public class MainVNActivity extends ActionBarActivity
 
             Log.d(LOG_TAG, "Query inventory was successful.");
 
+            // has this user used the Google test code "android.test.purchased"
+            Purchase testPurchase = inventory.getPurchase(productID_testPurchased);
+            if ((testPurchase != null) && (verifyDeveloperPayload(testPurchase))) {
+                Log.d(LOG_TAG, "user has purchased the Google test purchase, about to consume it");
+                mHelper.consumeAsync(inventory.getPurchase(productID_testPurchased), mConsumeFinishedListener);
+                Log.d(LOG_TAG, "consumeAsync of Google test purchase sent");
+                return;
+            }
+
 //    /
 //      Check for items we own. Notice that for each purchase, we check
 //      the developer payload to see if it's correct! See
@@ -1059,6 +1068,9 @@ public class MainVNActivity extends ActionBarActivity
             // We know this is the "gas" sku because it's the only one we consume,
             // so we don't check which sku was consumed. If you have more than one
             // sku, you probably should check...
+//            if (purchase.getSku() == productID_testPurchased) {
+//
+//            }
             if (result.isSuccess()) {
                 // successfully consumed, so we apply the effects of the item in our
                 // game world's logic, which in our case means filling the gas tank a bit
@@ -1074,7 +1086,7 @@ public class MainVNActivity extends ActionBarActivity
                 complain("Error while consuming: " + result);
             }
 //            updateUi();
-            setWaitScreen(false);
+//            setWaitScreen(false);
             Log.d(LOG_TAG, "End consumption flow.");
         }
     };
