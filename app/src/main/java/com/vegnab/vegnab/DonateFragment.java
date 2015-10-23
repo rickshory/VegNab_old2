@@ -267,6 +267,17 @@ public class DonateFragment extends Fragment implements OnClickListener {
 
             //
             Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onDonateButtonClicked(args)'");
+            // get an Analytics event tracker
+            Tracker donationTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+            // build and send the Analytics even
+            // track that the user initiated a donation
+            donationTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("Purchase Event")
+                    .setAction("Initiated")
+                    .setLabel("Donation")
+                    .setValue(0) // maybe make this the purchase amount
+                    .build());
+
             // test using reserved test codes, for now don't bother with args
             mButtonCallback.onDonateButtonClicked(args);
             Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onDonateButtonClicked(args)'");
