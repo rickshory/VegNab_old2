@@ -9,6 +9,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
@@ -133,6 +134,8 @@ public class MainVNActivity extends ActionBarActivity
     static final String SKU_DONATE_LARGE = "donate_large";
     static final String SKU_DONATE_XLARGE = "donate_xlarge";
 
+    ArrayList<String> mSkuCkList = new ArrayList<String>();
+            
     // (arbitrary) request code for donation purchase flow
     static final int RC_REQUEST = 10003;
 
@@ -199,6 +202,12 @@ public class MainVNActivity extends ActionBarActivity
         // set up in-app billing
         // following resource is in it's own file, listed in .gitignore
         String base64EncodedPublicKey = getString(R.string.app_license);
+        // set up the list of products
+        mSkuCkList.add(SKU_DONATE_SMALL);
+        mSkuCkList.add(SKU_DONATE_MEDIUM);
+        mSkuCkList.add(SKU_DONATE_LARGE);
+        mSkuCkList.add(SKU_DONATE_XLARGE);
+
         Log.d(LOG_TAG, "Creating IAB helper.");
         mHelper = new IabHelper(this, base64EncodedPublicKey);
         // enable debug logging (for production application, set this to false).
