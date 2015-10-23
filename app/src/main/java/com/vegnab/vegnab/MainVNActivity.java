@@ -970,11 +970,11 @@ public class MainVNActivity extends ActionBarActivity
 //        mHelper.launchPurchaseFlow(this, SKU_DONATE_USD_001_00, RC_REQUEST,
 //                mPurchaseFinishedListener, payload);
         // for first test, use reserved testing code
-//        mHelper.launchPurchaseFlow(this, productID_testPurchased, RC_REQUEST,
-//                mPurchaseFinishedListener, payload);
-
-        mHelper.launchPurchaseFlow(this, productID_testCanceled, RC_REQUEST,
+        mHelper.launchPurchaseFlow(this, productID_testPurchased, RC_REQUEST,
                 mPurchaseFinishedListener, payload);
+
+//        mHelper.launchPurchaseFlow(this, productID_testCanceled, RC_REQUEST,
+//                mPurchaseFinishedListener, payload);
     }
             
     // Verifies the developer payload of a purchase.
