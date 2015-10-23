@@ -1023,11 +1023,6 @@ public class MainVNActivity extends ActionBarActivity
             // get an Analytics event tracker
             Tracker purchaseFinishedTracker = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
 
-
-            /*        // get an Analytics event tracker
-        Tracker purchaseFinishedTracker = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
-        */
-
             // if we were disposed of in the meantime, quit.
             if (mHelper == null) {
                 purchaseFinishedTracker.send(new HitBuilders.EventBuilder()
@@ -1097,9 +1092,19 @@ public class MainVNActivity extends ActionBarActivity
     IabHelper.OnConsumeFinishedListener mConsumeFinishedListener = new IabHelper.OnConsumeFinishedListener() {
         public void onConsumeFinished(Purchase purchase, IabResult result) {
             Log.d(LOG_TAG, "Consumption finished. Purchase: " + purchase + ", result: " + result);
+            // get an Analytics event tracker
+            Tracker consumePurchaseTracker = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
 
             // if we were disposed of in the meantime, quit.
-            if (mHelper == null) return;
+            if (mHelper == null) {
+                consumePurchaseTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Consume Purchase Event")
+                        .setAction("Finished but Helper disposed of")
+                        .setLabel("Consume")
+                        .setValue(0)
+                        .build());
+                return;
+            }
 
             // We know this is the "gas" sku because it's the only one we consume,
             // so we don't check which sku was consumed. If you have more than one
@@ -1112,6 +1117,12 @@ public class MainVNActivity extends ActionBarActivity
                 // game world's logic, which in our case means filling the gas tank a bit
                 Log.d(LOG_TAG, "Consumption successful. Accounting.");
                 // maybe record this in the database?
+                consumePurchaseTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Consume Purchase Event")
+                        .setAction("Complete, success")
+                        .setLabel(purchase.getSku())
+                        .setValue(purchase.getPurchaseTime())
+                        .build());
 //                Log.d(LOG_TAG, "Consumption successful. Provisioning.");
 //                mTank = mTank == TANK_MAX ? TANK_MAX : mTank + 1;
 //                saveData();
@@ -1120,6 +1131,12 @@ public class MainVNActivity extends ActionBarActivity
             }
             else {
                 complain("Error while consuming: " + result);
+                consumePurchaseTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Consume Purchase Event")
+                        .setAction("Complete but with error")
+                        .setLabel(result.toString())
+                        .setValue(purchase.getPurchaseTime())
+                        .build());
             }
 //            updateUi();
 //            setWaitScreen(false);
