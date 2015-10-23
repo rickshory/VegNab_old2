@@ -966,6 +966,15 @@ public class MainVNActivity extends ActionBarActivity
         // For testing use an empty string, but in production would generate this.
         // See comments in onverifyDeveloperPayload() for more info.
         String payload = "";
+        // get an Analytics event tracker
+        Tracker sendDonateTracker = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+        sendDonateTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Purchase Event")
+                .setAction("Sent")
+                .setLabel("Donation")
+                .setValue(0)
+                .build());
+
 //        // for testing, make the donation one dollar; make it a variable later
 //        mHelper.launchPurchaseFlow(this, SKU_DONATE_USD_001_00, RC_REQUEST,
 //                mPurchaseFinishedListener, payload);
@@ -1011,13 +1020,34 @@ public class MainVNActivity extends ActionBarActivity
     IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
         public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
             Log.d(LOG_TAG, "Purchase finished: " + result + ", purchase: " + purchase);
+            // get an Analytics event tracker
+            Tracker purchaseFinishedTracker = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+
+
+            /*        // get an Analytics event tracker
+        Tracker purchaseFinishedTracker = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+        */
 
             // if we were disposed of in the meantime, quit.
-            if (mHelper == null) return;
+            if (mHelper == null) {
+                purchaseFinishedTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Purchase Event")
+                        .setAction("Finished but disposed of")
+                        .setLabel("Donation")
+                        .setValue(0)
+                        .build());
+                return;
+            }
 
             if (result.isFailure()) {
                 complain("Error purchasing: " + result);
                 setWaitScreen(false);
+                purchaseFinishedTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Purchase Event")
+                        .setAction("Finished but with error")
+                        .setLabel(result.toString())
+                        .setValue(0)
+                        .build());
                 return;
             }
             if (!verifyDeveloperPayload(purchase)) {
@@ -1027,6 +1057,12 @@ public class MainVNActivity extends ActionBarActivity
             }
 
             Log.d(LOG_TAG, "Purchase successful.");
+            purchaseFinishedTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("Purchase Event")
+                    .setAction("Finished, successful")
+                    .setLabel(purchase.getSku())
+                    .setValue(purchase.getPurchaseTime())
+                    .build());
 
 //            if (purchase.getSku().equals(SKU_DONATE_USD_001_00)) {
             if (purchase.getSku().equals(productID_testPurchased)) {
