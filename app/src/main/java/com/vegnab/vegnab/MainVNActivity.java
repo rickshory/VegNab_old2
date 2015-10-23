@@ -128,10 +128,10 @@ public class MainVNActivity extends ActionBarActivity
 
     // SKUs for products
     // testing in-app billing with donations
-    static final String SKU_DONATE_USD_001_00 = "donateUSD001_00";
-    static final String SKU_DONATE_USD_003_00 = "donateUSD003_00";
-    static final String SKU_DONATE_USD_010_00 = "donateUSD010_00";
-    static final String SKU_DONATE_USD_030_00 = "donateUSD030_00";
+    static final String SKU_DONATE_SMALL = "donate_small";
+    static final String SKU_DONATE_MEDIUM = "donate_medium";
+    static final String SKU_DONATE_LARGE = "donate_large";
+    static final String SKU_DONATE_XLARGE = "donate_xlarge";
 
     // (arbitrary) request code for donation purchase flow
     static final int RC_REQUEST = 10003;
