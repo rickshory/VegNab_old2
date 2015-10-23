@@ -879,6 +879,16 @@ public class IabHelper {
                     inv.addPurchase(purchase);
                 }
                 else {
+                    // uncomment following lines temporarily to clear out Google test purchases
+                    // these will always cause signature failure because they do not have a signature
+                    // error below will show, but purchase will be cleared
+                    Purchase p = new Purchase(itemType, purchaseData, signature);
+                    try {
+                        consume(p);
+                    } catch (IabException e) {
+                        e.printStackTrace();
+                    }
+                    // end of lines to temporarily uncomment
                     logWarn("Purchase signature verification **FAILED**. Not adding item.");
                     logDebug("   Purchase data: " + purchaseData);
                     logDebug("   Signature: " + signature);
