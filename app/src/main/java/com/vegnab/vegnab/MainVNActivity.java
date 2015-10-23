@@ -11,6 +11,7 @@ import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -906,14 +907,22 @@ public class MainVNActivity extends ActionBarActivity
 
             Log.d(LOG_TAG, "Query inventory was successful.");
 
-            if (inventory.hasDetails(SKU_DONATE_SMALL)) {
-                Log.d(LOG_TAG, "inventory has details for '" + SKU_DONATE_SMALL + "'");
-                inventory.getSkuDetails(SKU_DONATE_SMALL).getDescription();
-
-            } else {
-                Log.d(LOG_TAG, "inventory has nothing for '" + SKU_DONATE_SMALL + "'");
+            // doesn't work, iterator skips values when used this way
+//            for (Iterator<String> it = mSkuCkList.iterator(); it.hasNext();) {
+//                if (inventory.hasDetails(it.next())) {
+//                    Log.d(LOG_TAG, "inventory has details for '" + it.next() + "'");
+//                } else {
+//                    Log.d(LOG_TAG, "inventory has nothing for '" + it.next() + "'");
+//                }
+//            }
+            for (String sSku : mSkuCkList) {
+                if (inventory.hasDetails(sSku)) {
+                    Log.d(LOG_TAG, "inventory has details for '" + sSku + "'");
+                } else {
+                    Log.d(LOG_TAG, "inventory has nothing for '" + sSku + "'");
+                }
             }
-
+            
             // has this user used the Google test code "android.test.purchased"
             Purchase testPurchase = inventory.getPurchase(productID_testPurchased);
             if ((testPurchase != null) && (verifyDeveloperPayload(testPurchase))) {
