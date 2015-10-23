@@ -897,6 +897,11 @@ public class MainVNActivity extends ActionBarActivity
 
             Log.d(LOG_TAG, "Query inventory was successful.");
 
+            if (inventory.hasDetails(SKU_DONATE_SMALL)) {
+                inventory.getSkuDetails(SKU_DONATE_SMALL).getDescription();
+
+            }
+
             // has this user used the Google test code "android.test.purchased"
             Purchase testPurchase = inventory.getPurchase(productID_testPurchased);
             if ((testPurchase != null) && (verifyDeveloperPayload(testPurchase))) {
