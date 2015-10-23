@@ -275,7 +275,7 @@ public class DonateFragment extends Fragment implements OnClickListener {
                     .setCategory("Purchase Event")
                     .setAction("Initiated")
                     .setLabel("Donation")
-                    .setValue(0) // maybe make this the purchase amount
+                    .setValue(System.currentTimeMillis()) // maybe make this the purchase amount
                     .build());
 
             // test using reserved test codes, for now don't bother with args

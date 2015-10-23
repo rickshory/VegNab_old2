@@ -972,7 +972,7 @@ public class MainVNActivity extends ActionBarActivity
                 .setCategory("Purchase Event")
                 .setAction("Sent")
                 .setLabel("Donation")
-                .setValue(0)
+                .setValue(System.currentTimeMillis())
                 .build());
 
 //        // for testing, make the donation one dollar; make it a variable later
@@ -1029,7 +1029,7 @@ public class MainVNActivity extends ActionBarActivity
                         .setCategory("Purchase Event")
                         .setAction("Finished but disposed of")
                         .setLabel("Donation")
-                        .setValue(0)
+                        .setValue(System.currentTimeMillis())
                         .build());
                 return;
             }
@@ -1041,7 +1041,7 @@ public class MainVNActivity extends ActionBarActivity
                         .setCategory("Purchase Event")
                         .setAction("Finished but with error")
                         .setLabel(result.toString())
-                        .setValue(0)
+                        .setValue(purchase.getPurchaseTime())
                         .build());
                 return;
             }
@@ -1101,8 +1101,8 @@ public class MainVNActivity extends ActionBarActivity
                         .setCategory("Consume Purchase Event")
                         .setAction("Finished but Helper disposed of")
                         .setLabel("Consume")
-                        .setValue(0)
-                        .build());
+                        .setValue(System.currentTimeMillis())
+                .build());
                 return;
             }
 
