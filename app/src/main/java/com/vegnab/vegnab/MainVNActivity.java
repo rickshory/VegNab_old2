@@ -135,7 +135,7 @@ public class MainVNActivity extends ActionBarActivity
     static final String SKU_DONATE_XLARGE = "donate_xlarge";
 
     ArrayList<String> mSkuCkList = new ArrayList<String>();
-            
+
     // (arbitrary) request code for donation purchase flow
     static final int RC_REQUEST = 10003;
 
@@ -232,7 +232,7 @@ public class MainVNActivity extends ActionBarActivity
                 // always a good idea to query inventory
                 // even if products were supposed to be consumed there might have been some glitch
                 Log.d(LOG_TAG, "Setup done. Querying inventory.");
-                mHelper.queryInventoryAsync(mGotInventoryListener);
+                mHelper.queryInventoryAsync(true, mSkuCkList, mGotInventoryListener);
 
             }
         });
@@ -907,8 +907,11 @@ public class MainVNActivity extends ActionBarActivity
             Log.d(LOG_TAG, "Query inventory was successful.");
 
             if (inventory.hasDetails(SKU_DONATE_SMALL)) {
+                Log.d(LOG_TAG, "inventory has details for '" + SKU_DONATE_SMALL + "'");
                 inventory.getSkuDetails(SKU_DONATE_SMALL).getDescription();
 
+            } else {
+                Log.d(LOG_TAG, "inventory has nothing for '" + SKU_DONATE_SMALL + "'");
             }
 
             // has this user used the Google test code "android.test.purchased"
