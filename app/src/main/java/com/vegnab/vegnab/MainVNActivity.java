@@ -34,6 +34,7 @@ import com.vegnab.vegnab.database.VNContract.Tags;
 import com.vegnab.vegnab.database.VegNabDbHelper;
 import com.vegnab.vegnab.util.inappbilling.IabHelper;
 import com.vegnab.vegnab.util.inappbilling.IabResult;
+import com.vegnab.vegnab.util.inappbilling.Inventory;
 import com.vegnab.vegnab.util.inappbilling.Purchase;
 
 import android.app.AlertDialog;
@@ -219,9 +220,10 @@ public class MainVNActivity extends ActionBarActivity
                 if (mHelper == null)
                     return;
 
-// IAB is fully set up. If needed, get an inventory here
-// Log.d(LOG_TAG, "Setup successful. Querying inventory.");
-// mHelper.queryInventoryAsync(mGotInventoryListener);
+                // always a good idea to query inventory
+                // even if products were supposed to be consumed there might have been some glitch
+                Log.d(LOG_TAG, "Setup done. Querying inventory.");
+                mHelper.queryInventoryAsync(mGotInventoryListener);
 
             }
         });
@@ -879,6 +881,56 @@ public class MainVNActivity extends ActionBarActivity
         transaction.commit();
     }
 
+    // Listener that's called when we finish querying the items and subscriptions we own
+    IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
+        public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
+            Log.d(LOG_TAG, "Query inventory finished.");
+
+            // Have we been disposed of in the meantime? If so, quit.
+            if (mHelper == null) return;
+
+            // Is it a failure?
+            if (result.isFailure()) {
+                complain("Failed to query inventory: " + result);
+                return;
+            }
+
+            Log.d(LOG_TAG, "Query inventory was successful.");
+
+//    /
+//      Check for items we own. Notice that for each purchase, we check
+//      the developer payload to see if it's correct! See
+//      verifyDeveloperPayload().
+//     /
+
+//            // Do we have the premium upgrade?
+//            Purchase premiumPurchase = inventory.getPurchase(SKU_PREMIUM);
+//            mIsPremium = (premiumPurchase != null && verifyDeveloperPayload(premiumPurchase));
+//            Log.d(LOG_TAG, "User is " + (mIsPremium ? "PREMIUM" : "NOT PREMIUM"));
+//
+//            // Do we have the infinite gas plan?
+//            Purchase infiniteGasPurchase = inventory.getPurchase(SKU_INFINITE_GAS);
+//            mSubscribedToInfiniteGas = (infiniteGasPurchase != null &&
+//                    verifyDeveloperPayload(infiniteGasPurchase));
+//            Log.d(LOG_TAG, "User " + (mSubscribedToInfiniteGas ? "HAS" : "DOES NOT HAVE")
+//                    + " infinite gas subscription.");
+//            if (mSubscribedToInfiniteGas) mTank = TANK_MAX;
+//
+//            // Check for gas delivery -- if we own gas, we should fill up the tank immediately
+//            Purchase gasPurchase = inventory.getPurchase(SKU_GAS);
+//            if (gasPurchase != null && verifyDeveloperPayload(gasPurchase)) {
+//                Log.d(LOG_TAG, "We have gas. Consuming it.");
+//                mHelper.consumeAsync(inventory.getPurchase(SKU_GAS), mConsumeFinishedListener);
+//                return;
+//            }
+
+//            updateUi();
+//            setWaitScreen(false);
+//            Log.d(LOG_TAG, "Initial inventory query finished; enabling main UI.");
+            // probably set a flag here that inventory is checked
+        }
+    };
+
         @Override
         public void onDonateButtonClicked(Bundle args) {
             // can declare a tracker here
@@ -899,8 +951,8 @@ public class MainVNActivity extends ActionBarActivity
     public void onDonate(Bundle args) {
         Log.d(LOG_TAG, "in onDonate; launching purchase flow");
 //        setWaitScreen(true);
-        mHelper.consumeAsync(inventory.getPurchase(productID_testPurchased),
-                mConsumeFinishedListener);
+//        mHelper.consumeAsync(inventory.getPurchase(productID_testPurchased),
+//                mConsumeFinishedListener);
         // TODO: for security, generate a payload here for verification.
         // For testing use an empty string, but in production would generate this.
         // See comments in onverifyDeveloperPayload() for more info.
