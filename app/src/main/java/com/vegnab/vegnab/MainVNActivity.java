@@ -995,9 +995,10 @@ public class MainVNActivity extends ActionBarActivity
 //        // for testing, make the donation one dollar; make it a variable later
 //        mHelper.launchPurchaseFlow(this, SKU_DONATE_USD_001_00, RC_REQUEST,
 //                mPurchaseFinishedListener, payload);
+        
         // for first test, use reserved testing code
-        mHelper.launchPurchaseFlow(this, productID_testPurchased, RC_REQUEST,
-                mPurchaseFinishedListener, payload);
+//        mHelper.launchPurchaseFlow(this, productID_testPurchased, RC_REQUEST,
+//                mPurchaseFinishedListener, payload);
 
 //        mHelper.launchPurchaseFlow(this, productID_testCanceled, RC_REQUEST,
 //                mPurchaseFinishedListener, payload);
