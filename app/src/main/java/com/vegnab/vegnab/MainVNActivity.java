@@ -995,7 +995,7 @@ public class MainVNActivity extends ActionBarActivity
 //        // for testing, make the donation one dollar; make it a variable later
 //        mHelper.launchPurchaseFlow(this, SKU_DONATE_USD_001_00, RC_REQUEST,
 //                mPurchaseFinishedListener, payload);
-        
+
         // for first test, use reserved testing code
 //        mHelper.launchPurchaseFlow(this, productID_testPurchased, RC_REQUEST,
 //                mPurchaseFinishedListener, payload);
@@ -1175,7 +1175,7 @@ public class MainVNActivity extends ActionBarActivity
 
     public File getBackupDatabaseFile() {
         SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-", Locale.US);
-        String uniqueTime = timeFormat.format(new Date()).toString();
+        String uniqueTime = timeFormat.format(new Date());
         Log.d(LOG_TAG, "uniqueTime: " + uniqueTime);
         String dbBkupName = uniqueTime + DATABASE_NAME;
         Log.d(LOG_TAG, "dbBkupName: " + dbBkupName);
@@ -1196,12 +1196,12 @@ public class MainVNActivity extends ActionBarActivity
         try {
             copyFile(from, to);
             Log.d(LOG_TAG, "DB backed up to: " + to.getPath());
-            flexErrDlg = ConfigurableMsgDialog.newInstance("DB backed up to: ", to.getPath().toString());
+            flexErrDlg = ConfigurableMsgDialog.newInstance("DB backed up to: ", to.getPath());
             flexErrDlg.show(getSupportFragmentManager(), "frg_db_copy_ok");
             return true;
         } catch (IOException e) {
             Log.d(LOG_TAG, "Error backuping up database: " + e.getMessage(), e);
-            flexErrDlg = ConfigurableMsgDialog.newInstance("Error backing up database: ", e.getMessage().toString());
+            flexErrDlg = ConfigurableMsgDialog.newInstance("Error backing up database: ", e.getMessage());
             flexErrDlg.show(getSupportFragmentManager(), "frg_db_copy_ok");
         }
         return false;
