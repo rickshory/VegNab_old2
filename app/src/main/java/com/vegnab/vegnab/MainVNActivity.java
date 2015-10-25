@@ -11,9 +11,9 @@ import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -103,7 +103,7 @@ public class MainVNActivity extends ActionBarActivity
     long mRowCt, mVisitId = 0, mSubplotTypeId = 0, mProjectId = 0, mNamerId = 0, mVisitIdToExport = 0;
     boolean mConnectionRequested = false;
     long mPhProjID = 0, mPhNameId =0;
-    ConcurrentHashMap<String, Long> mExistingPhCodes = new ConcurrentHashMap<String, Long>();
+    HashMap<String, Long> mExistingPhCodes = new HashMap<String, Long>();
 
     String mExportFileName = "";
     boolean mResolvePlaceholders = true;
@@ -468,7 +468,7 @@ public class MainVNActivity extends ActionBarActivity
         mSubplotTypeId = savedInstanceState.getLong(ARG_SUBPLOT_TYPE_ID);
         mVisitId = savedInstanceState.getLong(ARG_VISIT_ID);
         mConnectionRequested = savedInstanceState.getBoolean(ARG_CONNECTION_REQUESTED);
-        mExistingPhCodes = (ConcurrentHashMap<String, Long>) savedInstanceState.getSerializable(ARG_PH_EXISTING_SET);
+        mExistingPhCodes = (HashMap<String, Long>) savedInstanceState.getSerializable(ARG_PH_EXISTING_SET);
 
     }
 
