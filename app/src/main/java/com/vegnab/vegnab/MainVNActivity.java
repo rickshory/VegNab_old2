@@ -129,10 +129,10 @@ public class MainVNActivity extends ActionBarActivity
 
     // SKUs for products
     // testing in-app billing with donations
-    static final String SKU_DONATE_SMALL = "donate_small";
-    static final String SKU_DONATE_MEDIUM = "donate_medium";
-    static final String SKU_DONATE_LARGE = "donate_large";
-    static final String SKU_DONATE_XLARGE = "donate_xlarge";
+    static final String SKU_DONATE_SMALL = "donation_small";
+    static final String SKU_DONATE_MEDIUM = "donation_medium";
+    static final String SKU_DONATE_LARGE = "donation_large";
+    static final String SKU_DONATE_XLARGE = "donation_xlarge";
 
     ArrayList<String> mSkuCkList = new ArrayList<String>();
 
