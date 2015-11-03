@@ -142,7 +142,7 @@ public class DonateFragment extends Fragment implements OnClickListener {
         }
         // inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_donate, container, false);
-        mDonationOptsRadioGp = (RadioGroup) rootView.findViewById(R.id.radio_group_opts_resolve_phs);
+//        mDonationOptsRadioGp = (RadioGroup) rootView.findViewById(R.id.radio_group_opts_resolve_phs);
         // Prepare the loader
         // maybe use a loader for purchases later, but none now
         //getLoaderManager().initLoader(Loaders.DONATIONS, null, this);
