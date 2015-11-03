@@ -29,6 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/donate_title_text"
         android:layout_below="@id/donate_title_text"
+        android:prompt="@string/donate_hint"
         />
 
     <Button
