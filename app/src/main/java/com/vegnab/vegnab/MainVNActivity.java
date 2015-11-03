@@ -37,6 +37,7 @@ import com.vegnab.vegnab.util.inappbilling.IabHelper;
 import com.vegnab.vegnab.util.inappbilling.IabResult;
 import com.vegnab.vegnab.util.inappbilling.Inventory;
 import com.vegnab.vegnab.util.inappbilling.Purchase;
+import com.vegnab.vegnab.util.inappbilling.SkuDetails;
 
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -910,9 +911,10 @@ public class MainVNActivity extends ActionBarActivity
             for (String sSku : mSkuCkList) {
                 if (inventory.hasDetails(sSku)) {
                     Log.d(LOG_TAG, "inventory has details for '" + sSku + "'");
-                    Log.d(LOG_TAG, "     Title: " + inventory.getSkuDetails(sSku).getTitle());
-                    Log.d(LOG_TAG, "     Description: " + inventory.getSkuDetails(sSku).getDescription());
-                    Log.d(LOG_TAG, "     Price: " + inventory.getSkuDetails(sSku).getPrice());
+                    SkuDetails skuDetails = inventory.getSkuDetails(sSku);
+                    Log.d(LOG_TAG, "     Title: " + skuDetails.getTitle());
+                    Log.d(LOG_TAG, "     Description: " + skuDetails.getDescription());
+                    Log.d(LOG_TAG, "     Price: " + skuDetails.getPrice());
                 } else {
                     Log.d(LOG_TAG, "inventory has nothing for '" + sSku + "'");
                 }
