@@ -910,7 +910,9 @@ public class MainVNActivity extends ActionBarActivity
             for (String sSku : mSkuCkList) {
                 if (inventory.hasDetails(sSku)) {
                     Log.d(LOG_TAG, "inventory has details for '" + sSku + "'");
-                    Log.d(LOG_TAG, sSku + " Description: " + inventory.getSkuDetails(sSku).getDescription());
+                    Log.d(LOG_TAG, "     Title: " + inventory.getSkuDetails(sSku).getTitle());
+                    Log.d(LOG_TAG, "     Description: " + inventory.getSkuDetails(sSku).getDescription());
+                    Log.d(LOG_TAG, "     Price: " + inventory.getSkuDetails(sSku).getPrice());
                 } else {
                     Log.d(LOG_TAG, "inventory has nothing for '" + sSku + "'");
                 }
