@@ -143,6 +143,7 @@ public class MainVNActivity extends ActionBarActivity
 
     // the In-App billing helper object
     IabHelper mHelper;
+    Inventory mInventory;
 
     ViewPager viewPager = null;
 
@@ -609,7 +610,12 @@ public class MainVNActivity extends ActionBarActivity
         // send a screen view
         t.send(new HitBuilders.ScreenViewBuilder().build());
         // continue with work
-        DonateFragment frgDonate = new DonateFragment();
+        Bundle args = new Bundle();
+        /*
+        args.putLong(DonateFragment.ARG_SOME_PARAMETER, 1);
+        args.putInt(DonateFragment.ARG_SOME_OTHER_PARAMETER, 0);
+        */
+        DonateFragment frgDonate = DonateFragment.newInstance(args);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         // replace the fragment in the fragment container with this new fragment and
         // put the present fragment on the backstack so the user can navigate back to it
