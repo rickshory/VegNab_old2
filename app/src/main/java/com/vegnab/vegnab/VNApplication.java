@@ -3,6 +3,8 @@ package com.vegnab.vegnab;
 import android.app.Application;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
+import com.vegnab.vegnab.util.inappbilling.Inventory;
+
 import java.util.HashMap;
 
 public class VNApplication extends Application {

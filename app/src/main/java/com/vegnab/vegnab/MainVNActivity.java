@@ -611,6 +611,19 @@ public class MainVNActivity extends ActionBarActivity
         t.send(new HitBuilders.ScreenViewBuilder().build());
         // continue with work
         Bundle args = new Bundle();
+        // see if we have these values here
+        for (String sSku : mSkuCkList) {
+            if (mInventory.hasDetails(sSku)) {
+                Log.d(LOG_TAG, "inventory has details for '" + sSku + "'");
+                SkuDetails skuDetails = mInventory.getSkuDetails(sSku);
+                Log.d(LOG_TAG, "     Title: " + skuDetails.getTitle());
+                Log.d(LOG_TAG, "     Description: " + skuDetails.getDescription());
+                Log.d(LOG_TAG, "     Price: " + skuDetails.getPrice());
+            } else {
+                Log.d(LOG_TAG, "inventory has nothing for '" + sSku + "'");
+            }
+        }
+
         /*
         args.putLong(DonateFragment.ARG_SOME_PARAMETER, 1);
         args.putInt(DonateFragment.ARG_SOME_OTHER_PARAMETER, 0);
@@ -914,17 +927,19 @@ public class MainVNActivity extends ActionBarActivity
 
             Log.d(LOG_TAG, "Query inventory was successful.");
 
-            for (String sSku : mSkuCkList) {
-                if (inventory.hasDetails(sSku)) {
-                    Log.d(LOG_TAG, "inventory has details for '" + sSku + "'");
-                    SkuDetails skuDetails = inventory.getSkuDetails(sSku);
-                    Log.d(LOG_TAG, "     Title: " + skuDetails.getTitle());
-                    Log.d(LOG_TAG, "     Description: " + skuDetails.getDescription());
-                    Log.d(LOG_TAG, "     Price: " + skuDetails.getPrice());
-                } else {
-                    Log.d(LOG_TAG, "inventory has nothing for '" + sSku + "'");
-                }
-            }
+            mInventory = inventory; // save a reference to use outside this callback
+
+//            for (String sSku : mSkuCkList) {
+//                if (inventory.hasDetails(sSku)) {
+//                    Log.d(LOG_TAG, "inventory has details for '" + sSku + "'");
+//                    SkuDetails skuDetails = inventory.getSkuDetails(sSku);
+//                    Log.d(LOG_TAG, "     Title: " + skuDetails.getTitle());
+//                    Log.d(LOG_TAG, "     Description: " + skuDetails.getDescription());
+//                    Log.d(LOG_TAG, "     Price: " + skuDetails.getPrice());
+//                } else {
+//                    Log.d(LOG_TAG, "inventory has nothing for '" + sSku + "'");
+//                }
+//            }
 
             // has this user used the Google test code "android.test.purchased"
             Purchase testPurchase = inventory.getPurchase(productID_testPurchased);
