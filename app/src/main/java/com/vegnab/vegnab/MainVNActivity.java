@@ -129,6 +129,7 @@ public class MainVNActivity extends ActionBarActivity
 
     // SKUs for products
     // testing in-app billing with donations
+    // these values like 'donation_small' must exactly match product IDs in the published APK
     static final String SKU_DONATE_SMALL = "donation_small";
     static final String SKU_DONATE_MEDIUM = "donation_medium";
     static final String SKU_DONATE_LARGE = "donation_large";
@@ -909,6 +910,7 @@ public class MainVNActivity extends ActionBarActivity
             for (String sSku : mSkuCkList) {
                 if (inventory.hasDetails(sSku)) {
                     Log.d(LOG_TAG, "inventory has details for '" + sSku + "'");
+                    Log.d(LOG_TAG, sSku + " Description: " + inventory.getSkuDetails(sSku).getDescription());
                 } else {
                     Log.d(LOG_TAG, "inventory has nothing for '" + sSku + "'");
                 }
