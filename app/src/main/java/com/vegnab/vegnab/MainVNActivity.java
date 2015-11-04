@@ -72,6 +72,10 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 import android.os.Build;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import static com.vegnab.vegnab.PhPixGridFragment.*;
 
 public class MainVNActivity extends ActionBarActivity 
@@ -603,6 +607,7 @@ public class MainVNActivity extends ActionBarActivity
     }
 
     public void goToDonateScreen() {
+        JSONArray jsonSKUs = new JSONArray();
         // get tracker
         Tracker t = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
         // set screen name
@@ -611,19 +616,31 @@ public class MainVNActivity extends ActionBarActivity
         t.send(new HitBuilders.ScreenViewBuilder().build());
         // continue with work
         Bundle args = new Bundle();
-        // see if we have these values here
-        for (String sSku : mSkuCkList) {
-            if (mInventory.hasDetails(sSku)) {
-                Log.d(LOG_TAG, "inventory has details for '" + sSku + "'");
-                SkuDetails skuDetails = mInventory.getSkuDetails(sSku);
-                Log.d(LOG_TAG, "     Title: " + skuDetails.getTitle());
-                Log.d(LOG_TAG, "     Description: " + skuDetails.getDescription());
-                Log.d(LOG_TAG, "     Price: " + skuDetails.getPrice());
-            } else {
-                Log.d(LOG_TAG, "inventory has nothing for '" + sSku + "'");
+        try {
+            for (String sSku : mSkuCkList) {
+                JSONObject skuObj = new JSONObject();
+                skuObj.put("sku", sSku);
+                if (mInventory.hasDetails(sSku)) {
+                    Log.d(LOG_TAG, "inventory has details for '" + sSku + "'");
+                    SkuDetails skuDetails = mInventory.getSkuDetails(sSku);
+                    Log.d(LOG_TAG, "     Price: " + skuDetails.getPrice());
+                    skuObj.put("price", skuDetails.getPrice());
+                    Log.d(LOG_TAG, "     Description: " + skuDetails.getDescription());
+                    skuObj.put("descr", skuDetails.getDescription());
+                    Log.d(LOG_TAG, "     Title: " + skuDetails.getTitle());
+                    skuObj.put("title", skuDetails.getTitle());
+                } else {
+                    Log.d(LOG_TAG, "inventory has nothing for '" + sSku + "'");
+                    skuObj.put("price", "");
+                    skuObj.put("descr", "");
+                    skuObj.put("title", "");
+                }
+                jsonSKUs.put(skuObj);
             }
+        } catch(JSONException ex) {
+            ex.printStackTrace();
         }
-
+//        Log.d(LOG_TAG, "inventory string: " + mInventory.toString());
         /*
         args.putLong(DonateFragment.ARG_SOME_PARAMETER, 1);
         args.putInt(DonateFragment.ARG_SOME_OTHER_PARAMETER, 0);
