@@ -161,7 +161,7 @@ public class DonateFragment extends Fragment implements OnClickListener {
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //        mNamerSpinner.setOnItemSelectedListener(this);
         mDonationSpinner.setAdapter(dataAdapter);
-        
+
         // set click listener for the button in the view
         mBtnDonate = (Button) rootView.findViewById(R.id.donate_go_button);
         mBtnDonate.setOnClickListener(this);
@@ -260,6 +260,8 @@ public class DonateFragment extends Fragment implements OnClickListener {
 
         case R.id.donate_go_button:
             // maybe implement the tracker here
+            long i = mDonationSpinner.getSelectedItemId();
+            Log.d(LOG_TAG, "in onClick, got Spinner item Id " + i);
             Bundle args = new Bundle();
             // put in any needed parameters
 //            switch (mDonationOptsRadioGp.getCheckedRadioButtonId()) {
