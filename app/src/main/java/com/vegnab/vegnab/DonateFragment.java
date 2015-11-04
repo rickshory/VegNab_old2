@@ -35,6 +35,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -62,9 +63,11 @@ import com.vegnab.vegnab.database.VNContract.Tags;
 import com.vegnab.vegnab.database.VNContract.Validation;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 public class DonateFragment extends Fragment implements OnClickListener {
@@ -93,6 +96,8 @@ public class DonateFragment extends Fragment implements OnClickListener {
     private RadioButton mDonate003_00;
     private RadioButton mDonate010_00;
     private RadioButton mDonate030_00;
+
+    private Spinner mDonationSpinner;
 
     private Button mBtnDonate;
     private TextView mTxtPlsWaitMessage;
@@ -146,7 +151,17 @@ public class DonateFragment extends Fragment implements OnClickListener {
         // Prepare the loader
         // maybe use a loader for purchases later, but none now
         //getLoaderManager().initLoader(Loaders.DONATIONS, null, this);
-
+        mDonationSpinner = (Spinner) rootView.findViewById(R.id.donations_spinner);
+        List<String> itemsList = new ArrayList<String>();
+        itemsList.add("item 1");
+        itemsList.add("item 2");
+        itemsList.add("item 3");
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, itemsList);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        mNamerSpinner.setOnItemSelectedListener(this);
+        mDonationSpinner.setAdapter(dataAdapter);
+        
         // set click listener for the button in the view
         mBtnDonate = (Button) rootView.findViewById(R.id.donate_go_button);
         mBtnDonate.setOnClickListener(this);
