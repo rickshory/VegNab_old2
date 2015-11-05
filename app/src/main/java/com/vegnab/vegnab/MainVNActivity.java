@@ -623,6 +623,7 @@ public class MainVNActivity extends ActionBarActivity
 
                 skuObj.put("sku", sSku);
                 if (mInventory.hasDetails(sSku)) {
+                    skuObj.put("available", true);
                     Log.d(LOG_TAG, "inventory has details for '" + sSku + "'");
                     SkuDetails skuDetails = mInventory.getSkuDetails(sSku);
                     Log.d(LOG_TAG, "     Price: " + skuDetails.getPrice());
@@ -633,10 +634,16 @@ public class MainVNActivity extends ActionBarActivity
                     skuObj.put("title", skuDetails.getTitle());
                 } else {
                     Log.d(LOG_TAG, "inventory has nothing for '" + sSku + "'");
+                    skuObj.put("available", false);
                     skuObj.put("price", "--");
                     skuObj.put("descr", "(" + sSku + ", unavailable)");
-                    skuObj.put("title", "(unavailable)");
+                    skuObj.put("title", "(not available)");
                 }
+                // check if the user owns this item
+                Purchase purchase = mInventory.getPurchase(sSku);
+                Boolean owned = (purchase != null && verifyDeveloperPayload(purchase));
+                // will this ever be true for unavailable items?
+                skuObj.put("owned", owned);
                 jsonSKUs.put(skuObj);
             }
             jsonObj.put("productList",skuObj);
@@ -960,14 +967,14 @@ public class MainVNActivity extends ActionBarActivity
 //                }
 //            }
 
-            // has this user used the Google test code "android.test.purchased"
-            Purchase testPurchase = inventory.getPurchase(productID_testPurchased);
-            if ((testPurchase != null) && (verifyDeveloperPayload(testPurchase))) {
-                Log.d(LOG_TAG, "user has purchased the Google test purchase, about to consume it");
-                mHelper.consumeAsync(inventory.getPurchase(productID_testPurchased), mConsumeFinishedListener);
-                Log.d(LOG_TAG, "consumeAsync of Google test purchase sent");
-                return;
-            }
+//            // has this user used the Google test code "android.test.purchased"
+//            Purchase testPurchase = inventory.getPurchase(productID_testPurchased);
+//            if ((testPurchase != null) && (verifyDeveloperPayload(testPurchase))) {
+//                Log.d(LOG_TAG, "user has purchased the Google test purchase, about to consume it");
+//                mHelper.consumeAsync(inventory.getPurchase(productID_testPurchased), mConsumeFinishedListener);
+//                Log.d(LOG_TAG, "consumeAsync of Google test purchase sent");
+//                return;
+//            }
 
 //    /
 //      Check for items we own. Notice that for each purchase, we check
