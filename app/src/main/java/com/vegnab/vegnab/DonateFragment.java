@@ -73,6 +73,7 @@ import java.util.Locale;
 public class DonateFragment extends Fragment implements OnClickListener {
 
     private static final String LOG_TAG = DonateFragment.class.getSimpleName();
+    final static String ARG_JSON_STRING = "jsonString";
 
     OnButtonListener mButtonCallback; // declare the interface
     // declare that the container Activity must implement this interface

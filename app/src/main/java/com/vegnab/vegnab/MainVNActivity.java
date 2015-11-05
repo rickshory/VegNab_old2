@@ -607,7 +607,6 @@ public class MainVNActivity extends ActionBarActivity
     }
 
     public void goToDonateScreen() {
-        JSONArray jsonSKUs = new JSONArray();
         // get tracker
         Tracker t = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
         // set screen name
@@ -617,8 +616,11 @@ public class MainVNActivity extends ActionBarActivity
         // continue with work
         Bundle args = new Bundle();
         try {
+            JSONObject jsonObj = new JSONObject();
+            JSONArray jsonSKUs = new JSONArray();
+            JSONObject skuObj = new JSONObject();
             for (String sSku : mSkuCkList) {
-                JSONObject skuObj = new JSONObject();
+
                 skuObj.put("sku", sSku);
                 if (mInventory.hasDetails(sSku)) {
                     Log.d(LOG_TAG, "inventory has details for '" + sSku + "'");
@@ -631,20 +633,20 @@ public class MainVNActivity extends ActionBarActivity
                     skuObj.put("title", skuDetails.getTitle());
                 } else {
                     Log.d(LOG_TAG, "inventory has nothing for '" + sSku + "'");
-                    skuObj.put("price", "");
-                    skuObj.put("descr", "");
-                    skuObj.put("title", "");
+                    skuObj.put("price", "--");
+                    skuObj.put("descr", "(" + sSku + ", unavailable)");
+                    skuObj.put("title", "(unavailable)");
                 }
                 jsonSKUs.put(skuObj);
             }
+            jsonObj.put("productList",skuObj);
+            args.putString(DonateFragment.ARG_JSON_STRING, jsonObj.toString());
+            Log.d(LOG_TAG, "JSON string sent to Donate screen: " + jsonObj.toString());
         } catch(JSONException ex) {
             ex.printStackTrace();
+            args.putString(DonateFragment.ARG_JSON_STRING, null);
         }
-//        Log.d(LOG_TAG, "inventory string: " + mInventory.toString());
-        /*
-        args.putLong(DonateFragment.ARG_SOME_PARAMETER, 1);
-        args.putInt(DonateFragment.ARG_SOME_OTHER_PARAMETER, 0);
-        */
+
         DonateFragment frgDonate = DonateFragment.newInstance(args);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         // replace the fragment in the fragment container with this new fragment and
