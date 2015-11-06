@@ -649,9 +649,9 @@ public class MainVNActivity extends ActionBarActivity
                 skuObj.put("owned", owned);
                 jsonSKUs.put(skuObj);
             }
-            jsonObj.put(ARG_PRODUCT_LIST_DONATIONS,jsonObj);
-            args.putString(DonateFragment.ARG_JSON_STRING, jsonObj.toString());
+            jsonObj.put(ARG_PRODUCT_LIST_DONATIONS,jsonSKUs);
             Log.d(LOG_TAG, "JSON string sent to Donate screen: " + jsonObj.toString());
+            args.putString(DonateFragment.ARG_JSON_STRING, jsonObj.toString());
         } catch(JSONException ex) {
             ex.printStackTrace();
             args.putString(DonateFragment.ARG_JSON_STRING, null);
