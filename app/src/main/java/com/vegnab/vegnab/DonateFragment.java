@@ -97,7 +97,7 @@ public class DonateFragment extends Fragment implements OnClickListener {
         return f;
     }
 
-    JSONArray prodArray;
+    JSONArray mProdArray;
     private Spinner mDonationSpinner;
     private Button mBtnDonate;
     private TextView mTxtPlsWaitMessage;
@@ -108,6 +108,28 @@ public class DonateFragment extends Fragment implements OnClickListener {
         //Get a Tracker (should auto-report)
         ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
         setHasOptionsMenu(true);
+        Bundle args = getArguments();
+        if (args == null) {
+            // do something if no args sent
+            Log.d(LOG_TAG, "In onCreate, received args = null");
+        } else {
+            String jsonStr = args.getString(ARG_JSON_STRING);
+            if (jsonStr == null) {
+                // do something if empty product list sent
+                Log.d(LOG_TAG, "In onCreate, received jsonStr = null");
+            } else {
+                try {
+                    JSONObject jObj = new JSONObject(jsonStr);
+                    mProdArray = jObj.getJSONArray(MainVNActivity.ARG_PRODUCT_LIST_DONATIONS);
+                    Log.d(LOG_TAG, "Received JSON product array: " + mProdArray.toString());
+                } catch(JSONException ex) {
+                    ex.printStackTrace();
+                    Log.d(LOG_TAG, "JSON error retrieving product list");
+                    Toast.makeText(getActivity(), "Error retrieving product list", Toast.LENGTH_LONG).show();
+                    return;
+                }
+            }
+        }
     }
 
 /*
@@ -155,13 +177,13 @@ public class DonateFragment extends Fragment implements OnClickListener {
         //getLoaderManager().initLoader(Loaders.DONATIONS, null, this);
         mDonationSpinner = (Spinner) rootView.findViewById(R.id.donations_spinner);
         List<String> itemsList = new ArrayList<String>();
-        if (prodArray == null) {
+        if (mProdArray == null) {
             itemsList.add("(no items)");
             // disable other things
         } else {
             try {
-                for (int i=0; i < prodArray.length(); i++) {
-                    JSONObject prodItem = prodArray.getJSONObject(i);
+                for (int i=0; i < mProdArray.length(); i++) {
+                    JSONObject prodItem = mProdArray.getJSONObject(i);
                     Log.d(LOG_TAG, "Received JSON product item " + i + ": " + prodItem.toString());
                     String price = prodItem.getString("price");
                     String descr = prodItem.getString("descr");
@@ -200,23 +222,8 @@ public class DonateFragment extends Fragment implements OnClickListener {
         if (args == null) {
             // do something if no args sent
         } else {
-            String jsonStr = args.getString(ARG_JSON_STRING);
-            if (jsonStr == null) {
-                // do something if empty product list sent
-            } else {
-                try {
-                    JSONObject jObj = new JSONObject(jsonStr);
-                    prodArray = jObj.getJSONArray(MainVNActivity.ARG_PRODUCT_LIST_DONATIONS);
-                    Log.d(LOG_TAG, "Received JSON product array: " + prodArray.toString());
-                } catch(JSONException ex) {
-                    ex.printStackTrace();
-                    Log.d(LOG_TAG, "JSON error retrieving product list");
-                    Toast.makeText(getActivity(), "Error retrieving product list", Toast.LENGTH_LONG).show();
-                    return;
-                }
-            }
+            // do something if args sent
         }
-
         // fire off loaders that depend on layout being ready to receive results
         // not yet used
 //        getLoaderManager().initLoader(Loaders.DONATE, null, this);
