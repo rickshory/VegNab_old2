@@ -298,6 +298,21 @@ public class DonateFragment extends Fragment implements OnClickListener {
             // maybe implement the tracker here
             long i = mDonationSpinner.getSelectedItemId();
             Log.d(LOG_TAG, "in onClick, got Spinner item Id " + i);
+            try {
+                JSONObject prodItem = mProdArray.getJSONObject((int)i);
+                Log.d(LOG_TAG, "Retrieved JSON product item " + i + ": " + prodItem.toString());
+                // test the following two before proceeding
+                Boolean available = prodItem.getBoolean("available");
+                Boolean owned = prodItem.getBoolean("owned");
+                // for now, get this to test retrieval
+                String sku = prodItem.getString("sku");
+                Log.d(LOG_TAG, "in onClick, got SKU: " + sku);
+            } catch(JSONException ex) {
+                ex.printStackTrace();
+                Log.d(LOG_TAG, "JSON error retrieving product item");
+                Toast.makeText(getActivity(), "Error retrieving product item", Toast.LENGTH_LONG).show();
+            }
+
             Bundle args = new Bundle();
             // put in any needed parameters
 //            switch (mDonationOptsRadioGp.getCheckedRadioButtonId()) {
