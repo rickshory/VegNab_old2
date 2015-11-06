@@ -119,8 +119,7 @@ public class DonateFragment extends Fragment implements OnClickListener {
                 Log.d(LOG_TAG, "In onCreate, received jsonStr = null");
             } else {
                 try {
-                    JSONObject jObj = new JSONObject(jsonStr);
-                    mProdArray = jObj.getJSONArray(MainVNActivity.ARG_PRODUCT_LIST_DONATIONS);
+                    mProdArray = new JSONArray(jsonStr);
                     Log.d(LOG_TAG, "Received JSON product array: " + mProdArray.toString());
                 } catch(JSONException ex) {
                     ex.printStackTrace();

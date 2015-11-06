@@ -132,8 +132,6 @@ public class MainVNActivity extends ActionBarActivity
     private final String productID_testRefunded = "android.test.refunded";
     private final String productID_testUnavailable = "android.test.item_unavailable";
 
-    // the JSON key for this array
-    static final String ARG_PRODUCT_LIST_DONATIONS = "productListDonations";
     // SKUs for products
     // testing in-app billing with donations
     // these values like 'donation_small' must exactly match product IDs in the published APK
@@ -620,7 +618,6 @@ public class MainVNActivity extends ActionBarActivity
         // get the product information from the saved inventory object
         // and package it as JSON to send to the Donate screen
         try {
-            JSONObject jsonObj = new JSONObject();
             JSONArray jsonSKUs = new JSONArray();
             for (String sSku : mSkuCkList) {
                 JSONObject skuObj = new JSONObject();
@@ -649,9 +646,8 @@ public class MainVNActivity extends ActionBarActivity
                 skuObj.put("owned", owned);
                 jsonSKUs.put(skuObj);
             }
-            jsonObj.put(ARG_PRODUCT_LIST_DONATIONS,jsonSKUs);
-            Log.d(LOG_TAG, "JSON string sent to Donate screen: " + jsonObj.toString());
-            args.putString(DonateFragment.ARG_JSON_STRING, jsonObj.toString());
+            Log.d(LOG_TAG, "JSON string sent to Donate screen: " + jsonSKUs.toString());
+            args.putString(DonateFragment.ARG_JSON_STRING, jsonSKUs.toString());
         } catch(JSONException ex) {
             ex.printStackTrace();
             args.putString(DonateFragment.ARG_JSON_STRING, null);
