@@ -108,6 +108,13 @@ public class DonateFragment extends Fragment implements OnClickListener {
         //Get a Tracker (should auto-report)
         ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
         setHasOptionsMenu(true);
+        if (savedInstanceState == null) {
+
+        } else {
+            // If the bundle containing the product array were stored during onSaveInstanceState, we
+            // would come here. But, in this version, the array is not changed, and so we can
+            // use the original one created in newInstance. Don't need to do anything here.
+        }
         Bundle args = getArguments();
         if (args == null) {
             // do something if no args sent
@@ -280,7 +287,7 @@ public class DonateFragment extends Fragment implements OnClickListener {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-//        outState.putLong(ARG_DONATION, mDonationOptionSelected);
+        outState.putString(ARG_JSON_STRING, mProdArray.toString());
     }
 
     @Override
