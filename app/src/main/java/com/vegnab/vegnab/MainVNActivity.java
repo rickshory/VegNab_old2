@@ -615,12 +615,13 @@ public class MainVNActivity extends ActionBarActivity
         t.send(new HitBuilders.ScreenViewBuilder().build());
         // continue with work
         Bundle args = new Bundle();
+        // get the product information from the saved inventory object
+        // and package it as JSON to send to the Donate screen
         try {
             JSONObject jsonObj = new JSONObject();
             JSONArray jsonSKUs = new JSONArray();
-            JSONObject skuObj = new JSONObject();
             for (String sSku : mSkuCkList) {
-
+                JSONObject skuObj = new JSONObject();
                 skuObj.put("sku", sSku);
                 if (mInventory.hasDetails(sSku)) {
                     skuObj.put("available", true);
@@ -646,7 +647,7 @@ public class MainVNActivity extends ActionBarActivity
                 skuObj.put("owned", owned);
                 jsonSKUs.put(skuObj);
             }
-            jsonObj.put("productList",skuObj);
+            jsonObj.put("productList",jsonObj);
             args.putString(DonateFragment.ARG_JSON_STRING, jsonObj.toString());
             Log.d(LOG_TAG, "JSON string sent to Donate screen: " + jsonObj.toString());
         } catch(JSONException ex) {
