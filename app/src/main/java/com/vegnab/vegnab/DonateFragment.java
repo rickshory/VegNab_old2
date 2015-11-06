@@ -62,6 +62,10 @@ import com.vegnab.vegnab.database.VNContract.Prefs;
 import com.vegnab.vegnab.database.VNContract.Tags;
 import com.vegnab.vegnab.database.VNContract.Validation;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -92,14 +96,9 @@ public class DonateFragment extends Fragment implements OnClickListener {
         f.setArguments(args);
         return f;
     }
-    private RadioGroup mDonationOptsRadioGp;
-    private RadioButton mDonate001_00;
-    private RadioButton mDonate003_00;
-    private RadioButton mDonate010_00;
-    private RadioButton mDonate030_00;
 
+    JSONArray prodArray;
     private Spinner mDonationSpinner;
-
     private Button mBtnDonate;
     private TextView mTxtPlsWaitMessage;
 
@@ -146,6 +145,8 @@ public class DonateFragment extends Fragment implements OnClickListener {
         } else {
             Log.d(LOG_TAG, "In onCreateView, savedInstanceState == null");
         }
+//        Toast.makeText(getActivity(), "message here", Toast.LENGTH_SHORT).show();
+
         // inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_donate, container, false);
 //        mDonationOptsRadioGp = (RadioGroup) rootView.findViewById(R.id.radio_group_opts_resolve_phs);
@@ -154,9 +155,24 @@ public class DonateFragment extends Fragment implements OnClickListener {
         //getLoaderManager().initLoader(Loaders.DONATIONS, null, this);
         mDonationSpinner = (Spinner) rootView.findViewById(R.id.donations_spinner);
         List<String> itemsList = new ArrayList<String>();
-        itemsList.add("item 1");
-        itemsList.add("item 2");
-        itemsList.add("item 3");
+        if (prodArray == null) {
+            itemsList.add("(no items)");
+            // disable other things
+        } else {
+            try {
+                for (int i=0; i < prodArray.length(); i++) {
+                    JSONObject prodItem = prodArray.getJSONObject(i);
+                    Log.d(LOG_TAG, "Received JSON product item " + i + ": " + prodItem.toString());
+                    String price = prodItem.getString("price");
+                    String descr = prodItem.getString("descr");
+                    itemsList.add(price + " " + descr);
+                }
+            } catch(JSONException ex) {
+                ex.printStackTrace();
+                Log.d(LOG_TAG, "JSON error retrieving product items");
+                Toast.makeText(getActivity(), "Error retrieving product items", Toast.LENGTH_LONG).show();
+            }
+        }
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, itemsList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -181,20 +197,26 @@ public class DonateFragment extends Fragment implements OnClickListener {
         GoogleAnalytics.getInstance(getActivity()).reportActivityStart(getActivity());
         // check if arguments are passed to the fragment that will change the layout
         Bundle args = getArguments();
-/*
-        if (args != null) {
-            if (mDonationOptionSelected == 0) {
-                // On return from Subplots container, this method can re-run before
-                // SaveInstanceState and so retain arguments originally passed when created,
-                // such as VisitId=0.
-                // Do not allow that zero to overwrite a new (nonzero) Visit ID, or
-                // it will flag to create a second copy of the same header.
-                mDonationOptionSelected = args.getLong(ARG_DONATION, 0);
-                // set up on screen
+        if (args == null) {
+            // do something if no args sent
+        } else {
+            String jsonStr = args.getString(ARG_JSON_STRING);
+            if (jsonStr == null) {
+                // do something if empty product list sent
+            } else {
+                try {
+                    JSONObject jObj = new JSONObject(jsonStr);
+                    prodArray = jObj.getJSONArray(MainVNActivity.ARG_PRODUCT_LIST_DONATIONS);
+                    Log.d(LOG_TAG, "Received JSON product array: " + prodArray.toString());
+                } catch(JSONException ex) {
+                    ex.printStackTrace();
+                    Log.d(LOG_TAG, "JSON error retrieving product list");
+                    Toast.makeText(getActivity(), "Error retrieving product list", Toast.LENGTH_LONG).show();
+                    return;
+                }
             }
-        // also use for special arguments like screen layout
         }
-*/
+
         // fire off loaders that depend on layout being ready to receive results
         // not yet used
 //        getLoaderManager().initLoader(Loaders.DONATE, null, this);
