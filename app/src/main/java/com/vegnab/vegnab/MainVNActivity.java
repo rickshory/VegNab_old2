@@ -1109,10 +1109,11 @@ public class MainVNActivity extends ActionBarActivity
                         .setCategory("Purchase Event")
                         .setAction("Finished but with error")
                         .setLabel(result.toString())
-                        .setValue(purchase.getPurchaseTime())
+                        .setValue(System.currentTimeMillis())
                         .build());
                 return;
             }
+
             if (!verifyDeveloperPayload(purchase)) {
                 complain("Error purchasing. Authenticity verification failed.");
                 setWaitScreen(false);
