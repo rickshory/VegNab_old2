@@ -308,15 +308,23 @@ public class DonateFragment extends Fragment implements OnClickListener {
                 // for now, get this to test retrieval
                 sku = prodItem.getString("sku");
                 Log.d(LOG_TAG, "in onClick, got SKU: " + sku);
+                if (!available) {
+                    Toast.makeText(getActivity(), "Item is not available", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (owned) {
+                    Toast.makeText(getActivity(), "Item is already owned, can not purchase again", Toast.LENGTH_LONG).show();
+                    return;
+                }
             } catch(JSONException ex) {
                 ex.printStackTrace();
                 Log.d(LOG_TAG, "JSON error retrieving product item");
                 Toast.makeText(getActivity(), "Error retrieving product item", Toast.LENGTH_LONG).show();
                 sku = null;
             }
-            
-            if (sku == null) {
 
+            if (sku == null) {
+                return;
             } else {
                 Bundle args = new Bundle();
                 args.putString(MainVNActivity.SKU_CHOSEN, sku);
@@ -332,7 +340,6 @@ public class DonateFragment extends Fragment implements OnClickListener {
                         .setValue(System.currentTimeMillis()) // maybe make this the purchase amount
                         .build());
 
-                // test using reserved test codes, for now don't bother with args
                 mButtonCallback.onDonateButtonClicked(args);
                 Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onDonateButtonClicked(args)'");
 
