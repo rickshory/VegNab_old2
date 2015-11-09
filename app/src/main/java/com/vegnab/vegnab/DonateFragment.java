@@ -314,6 +314,7 @@ public class DonateFragment extends Fragment implements OnClickListener {
                 Toast.makeText(getActivity(), "Error retrieving product item", Toast.LENGTH_LONG).show();
                 sku = null;
             }
+            
             if (sku == null) {
 
             } else {
