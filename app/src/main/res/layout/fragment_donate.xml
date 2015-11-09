@@ -22,13 +22,30 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:paddingBottom="20dp"/>
 
+    <TextView
+        android:id="@+id/donate_header1_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/donate_header1"
+        android:layout_alignLeft="@id/donate_title_text"
+        android:layout_below="@id/donate_title_text"
+        android:paddingBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/donate_header2_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/donate_header2"
+        android:layout_alignLeft="@id/donate_header1_text"
+        android:layout_below="@id/donate_header1_text"
+        android:paddingBottom="20dp"/>
 
     <Spinner
         android:id="@+id/donations_spinner"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/donate_title_text"
-        android:layout_below="@id/donate_title_text"
+        android:layout_alignLeft="@id/donate_header2_text"
+        android:layout_below="@id/donate_header2_text"
         android:prompt="@string/donate_hint"
         />
 
