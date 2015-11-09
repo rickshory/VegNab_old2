@@ -297,6 +297,7 @@ public class DonateFragment extends Fragment implements OnClickListener {
         case R.id.donate_go_button:
             // maybe implement the tracker here
             long i = mDonationSpinner.getSelectedItemId();
+            String sku;
             Log.d(LOG_TAG, "in onClick, got Spinner item Id " + i);
             try {
                 JSONObject prodItem = mProdArray.getJSONObject((int)i);
@@ -305,50 +306,39 @@ public class DonateFragment extends Fragment implements OnClickListener {
                 Boolean available = prodItem.getBoolean("available");
                 Boolean owned = prodItem.getBoolean("owned");
                 // for now, get this to test retrieval
-                String sku = prodItem.getString("sku");
+                sku = prodItem.getString("sku");
                 Log.d(LOG_TAG, "in onClick, got SKU: " + sku);
             } catch(JSONException ex) {
                 ex.printStackTrace();
                 Log.d(LOG_TAG, "JSON error retrieving product item");
                 Toast.makeText(getActivity(), "Error retrieving product item", Toast.LENGTH_LONG).show();
+                sku = null;
+            }
+            if (sku == null) {
+
+            } else {
+                Bundle args = new Bundle();
+                args.putString(MainVNActivity.SKU_CHOSEN, sku);
+                Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onDonateButtonClicked(args)'");
+                // get an Analytics event tracker
+                Tracker donationTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+                // build and send the Analytics even
+                // track that the user initiated a donation
+                donationTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Purchase Event")
+                        .setAction("Initiated")
+                        .setLabel("Donation")
+                        .setValue(System.currentTimeMillis()) // maybe make this the purchase amount
+                        .build());
+
+                // test using reserved test codes, for now don't bother with args
+                mButtonCallback.onDonateButtonClicked(args);
+                Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onDonateButtonClicked(args)'");
+
             }
 
-            Bundle args = new Bundle();
-            // put in any needed parameters
-//            switch (mDonationOptsRadioGp.getCheckedRadioButtonId()) {
-//                case R.id.radio_amt_usd001_00:
-//                    Log.d(LOG_TAG, "mDonationOptsRadioGp radio button selected: R.id.radio_amt_usd001_00");
-//                    break;
-//                case R.id.radio_amt_usd003_00:
-//                    Log.d(LOG_TAG, "mDonationOptsRadioGp radio button selected: R.id.radio_amt_usd003_00");
-//                    break;
-//                case R.id.radio_amt_usd010_00:
-//                    Log.d(LOG_TAG, "mDonationOptsRadioGp radio button selected: R.id.radio_amt_usd010_00");
-//                    break;
-//                case R.id.radio_amt_usd030_00:
-//                    Log.d(LOG_TAG, "mDonationOptsRadioGp radio button selected: R.id.radio_amt_usd030_00");
-//                    break;
-//                default:
-//                    Log.d(LOG_TAG, "mDonationOptsRadioGp no radio button selected");
-//                    break;
-//            }
 
             //
-            Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onDonateButtonClicked(args)'");
-            // get an Analytics event tracker
-            Tracker donationTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
-            // build and send the Analytics even
-            // track that the user initiated a donation
-            donationTracker.send(new HitBuilders.EventBuilder()
-                    .setCategory("Purchase Event")
-                    .setAction("Initiated")
-                    .setLabel("Donation")
-                    .setValue(System.currentTimeMillis()) // maybe make this the purchase amount
-                    .build());
-
-            // test using reserved test codes, for now don't bother with args
-            mButtonCallback.onDonateButtonClicked(args);
-            Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onDonateButtonClicked(args)'");
 
 //            setWaitMessage(true);
             break;

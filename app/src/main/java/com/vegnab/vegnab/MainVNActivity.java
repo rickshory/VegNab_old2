@@ -140,6 +140,8 @@ public class MainVNActivity extends ActionBarActivity
     static final String SKU_DONATE_LARGE = "donation_large";
     static final String SKU_DONATE_XLARGE = "donation_xlarge";
 
+    static final String SKU_CHOSEN = "skuChosen";
+
     ArrayList<String> mSkuCkList = new ArrayList<String>();
 
     // (arbitrary) request code for donation purchase flow
@@ -1037,6 +1039,7 @@ public class MainVNActivity extends ActionBarActivity
         // TODO: for security, generate a payload here for verification.
         // For testing use an empty string, but in production would generate this.
         // See comments in onverifyDeveloperPayload() for more info.
+        String skuToPurchase = args.getString(SKU_CHOSEN);
         String payload = "";
         // get an Analytics event tracker
         Tracker sendDonateTracker = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
@@ -1046,10 +1049,9 @@ public class MainVNActivity extends ActionBarActivity
                 .setLabel("Donation")
                 .setValue(System.currentTimeMillis())
                 .build());
-
-//        // for testing, make the donation one dollar; make it a variable later
-//        mHelper.launchPurchaseFlow(this, SKU_DONATE_USD_001_00, RC_REQUEST,
-//                mPurchaseFinishedListener, payload);
+        
+        mHelper.launchPurchaseFlow(this, skuToPurchase, RC_REQUEST,
+                mPurchaseFinishedListener, payload);
 
         // for first test, use reserved testing code
 //        mHelper.launchPurchaseFlow(this, productID_testPurchased, RC_REQUEST,
