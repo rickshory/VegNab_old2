@@ -1103,8 +1103,26 @@ public class MainVNActivity extends ActionBarActivity
             }
 
             if (result.isFailure()) {
-                complain("Error purchasing: " + result);
+/*
+    // IAB Helper error codes
+IABHELPER_ERROR_BASE = -1000;
+IABHELPER_REMOTE_EXCEPTION = -1001;
+IABHELPER_BAD_RESPONSE = -1002;
+IABHELPER_VERIFICATION_FAILED = -1003;
+IABHELPER_SEND_INTENT_FAILED = -1004;
+IABHELPER_USER_CANCELLED = -1005;
+IABHELPER_UNKNOWN_PURCHASE_RESPONSE = -1006;
+IABHELPER_MISSING_TOKEN = -1007;
+IABHELPER_UNKNOWN_ERROR = -1008;
+IABHELPER_SUBSCRIPTIONS_NOT_AVAILABLE = -1009;
+IABHELPER_INVALID_CONSUMPTION = -1010;
+*/
                 setWaitScreen(false);
+                if (result.getResponse() == mHelper.IABHELPER_USER_CANCELLED) {
+                    // silent on this one
+                } else {
+                    complain("Purchase failed: " + result);
+                }
                 purchaseFinishedTracker.send(new HitBuilders.EventBuilder()
                         .setCategory("Purchase Event")
                         .setAction("Finished but with error")
@@ -1115,7 +1133,7 @@ public class MainVNActivity extends ActionBarActivity
             }
 
             if (!verifyDeveloperPayload(purchase)) {
-                complain("Error purchasing. Authenticity verification failed.");
+                complain("Purchase payload authentication failed.");
                 setWaitScreen(false);
                 return;
             }
