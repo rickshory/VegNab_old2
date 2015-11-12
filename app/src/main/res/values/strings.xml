@@ -384,8 +384,7 @@
     <string name="export_visit_dlg_btn_positive">Export</string>
 
     <string name="donate_title">Donate to VegNab</string>
-    <string name="donate_header1">For alpha testing, donations behave as if you are making a purchase, but no money is charged.</string>
-    <string name="donate_header2">Questions? Problems? Write to vegnab@vegnab.com</string>
+    <string name="donate_header1">Questions? Problems? Write to vegnab@vegnab.com</string>
     <string name="donate_hint">Choose donation</string>
     <string name="donate_amount_text_usd001_00">$1.00</string>
     <string name="donate_amount_text_usd003_00">$3.00</string>
