@@ -1153,6 +1153,27 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                 Log.d(LOG_TAG, "Purchase is test.purchased. Starting consumption.");
                 mHelper.consumeAsync(purchase, mConsumeFinishedListener);
             }
+
+            // get the items to write to the database
+            String sku = purchase.getSku();
+            String payload = purchase.getDeveloperPayload();
+            String itemType = purchase.getItemType();
+            String ordId = purchase.getOrderId();
+            String pkgName = purchase.getPackageName();
+            String sig = purchase.getSignature();
+            String tok = purchase.getToken();
+            int purchSt = purchase.getPurchaseState();
+            long t = purchase.getPurchaseTime();
+            String price = "";
+            String descr = "";
+            String title = "";
+            if (mInventory.hasDetails(sku)) {
+                SkuDetails skuDetails = mInventory.getSkuDetails(sku);
+                price = skuDetails.getPrice();
+                descr = skuDetails.getDescription();
+                title = skuDetails.getTitle();
+            }
+
 /*
             else if (purchase.getSku().equals(SKU_PREMIUM)) {
                 // bought the premium upgrade!
