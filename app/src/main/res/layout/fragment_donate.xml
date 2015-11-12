@@ -22,22 +22,14 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:paddingBottom="20dp"/>
 
-    <TextView
-        android:id="@+id/donate_header1_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/donate_header1"
-        android:layout_alignLeft="@id/donate_title_text"
-        android:layout_below="@id/donate_title_text"
-        android:paddingBottom="10dp"/>
-
     <Spinner
         android:id="@+id/donations_spinner"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/donate_header1_text"
-        android:layout_below="@id/donate_header1_text"
+        android:layout_alignLeft="@id/donate_title_text"
+        android:layout_below="@id/donate_title_text"
         android:prompt="@string/donate_hint"
+        android:paddingBottom="10dp"
         />
 
     <Button
@@ -51,12 +43,23 @@
         />
 
     <TextView
+        android:id="@+id/donate_detail1_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/donate_detail1"
+        android:layout_alignLeft="@id/donate_go_button"
+        android:layout_below="@id/donate_go_button"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"/>
+
+    <TextView
         android:id="@+id/donate_wait"
         android:text="@string/donate_pls_wait"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/donate_go_button"
-        android:layout_below="@id/donate_go_button"
+        android:layout_alignLeft="@id/donate_detail1_text"
+        android:layout_below="@id/donate_detail1_text"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:paddingTop="20dp"
         />
 </RelativeLayout>
