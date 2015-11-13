@@ -3,6 +3,7 @@ package com.vegnab.vegnab;
 import java.util.HashMap;
 
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
+import com.vegnab.vegnab.database.VNContract.LDebug;
 import com.vegnab.vegnab.database.VNContract.Loaders;
 import com.vegnab.vegnab.database.VNContract.Prefs;
 
@@ -57,7 +58,7 @@ public class EditNamerDialog extends DialogFragment implements android.view.View
         super.onCreate(savedInstanceState);
         try {
             mEditNamerListener = (EditNamerDialogListener) getActivity();
-            Log.d(LOG_TAG, "(EditNamerDialogListener) getActivity()");
+           if (LDebug.ON) Log.d(LOG_TAG, "(EditNamerDialogListener) getActivity()");
         } catch (ClassCastException e) {
             throw new ClassCastException("Main Activity must implement EditNamerDialogListener interface");
         }
@@ -124,7 +125,7 @@ public class EditNamerDialog extends DialogFragment implements android.view.View
                 mValues.put("NamerName", mEditNamerName.getText().toString().trim());
 
                 }
-            Log.d(LOG_TAG, "Saving record in onFocusChange; mValues: " + mValues.toString().trim());
+           if (LDebug.ON) Log.d(LOG_TAG, "Saving record in onFocusChange; mValues: " + mValues.toString().trim());
             int numUpdated = saveNamerRecord();
             }
         }
@@ -135,7 +136,7 @@ public class EditNamerDialog extends DialogFragment implements android.view.View
         // update the project record in the database, if everything valid
         mValues.clear();
         mValues.put("NamerName", mEditNamerName.getText().toString().trim());
-        Log.d(LOG_TAG, "Saving record in onCancel; mValues: " + mValues.toString());
+       if (LDebug.ON) Log.d(LOG_TAG, "Saving record in onCancel; mValues: " + mValues.toString());
         int numUpdated = saveNamerRecord();
         if (numUpdated > 0) {
             mEditNamerListener.onEditNamerComplete(EditNamerDialog.this);
@@ -168,21 +169,21 @@ public class EditNamerDialog extends DialogFragment implements android.view.View
         }
         ContentResolver rs = getActivity().getContentResolver();
         if (mNamerRecId == -1) {
-            Log.d(LOG_TAG, "entered saveNamerRecord with (mNamerRecId == -1); canceled");
+           if (LDebug.ON) Log.d(LOG_TAG, "entered saveNamerRecord with (mNamerRecId == -1); canceled");
             return 0;
         }
         if (mNamerRecId == 0) { // new record
             mUri = rs.insert(mNamersUri, mValues);
-            Log.d(LOG_TAG, "new record in saveNamerRecord; returned URI: " + mUri.toString());
+           if (LDebug.ON) Log.d(LOG_TAG, "new record in saveNamerRecord; returned URI: " + mUri.toString());
             long newRecId = Long.parseLong(mUri.getLastPathSegment());
             if (newRecId < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
-                Log.d(LOG_TAG, "new record in saveNamerRecord has Id == " + newRecId + "); canceled");
+               if (LDebug.ON) Log.d(LOG_TAG, "new record in saveNamerRecord has Id == " + newRecId + "); canceled");
                 return 0;
             }
             mNamerRecId = newRecId;
             getLoaderManager().restartLoader(Loaders.EXISTING_NAMERS, null, this);
             mUri = ContentUris.withAppendedId(mNamersUri, mNamerRecId);
-            Log.d(LOG_TAG, "new record in saveNamerRecord; URI re-parsed: " + mUri.toString());
+           if (LDebug.ON) Log.d(LOG_TAG, "new record in saveNamerRecord; URI re-parsed: " + mUri.toString());
             // set default Namer
             SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
             SharedPreferences.Editor prefEditor = sharedPref.edit();
@@ -191,9 +192,9 @@ public class EditNamerDialog extends DialogFragment implements android.view.View
             return 1;
         } else {
             mUri = ContentUris.withAppendedId(mNamersUri, mNamerRecId);
-            Log.d(LOG_TAG, "about to update record in saveNamerRecord; mValues: " + mValues.toString() + "; URI: " + mUri.toString());
+           if (LDebug.ON) Log.d(LOG_TAG, "about to update record in saveNamerRecord; mValues: " + mValues.toString() + "; URI: " + mUri.toString());
             int numUpdated = rs.update(mUri, mValues, null, null);
-            Log.d(LOG_TAG, "Saved record in saveNamerRecord; numUpdated: " + numUpdated);
+           if (LDebug.ON) Log.d(LOG_TAG, "Saved record in saveNamerRecord; numUpdated: " + numUpdated);
             return numUpdated;
         }
     }
@@ -238,16 +239,16 @@ public class EditNamerDialog extends DialogFragment implements android.view.View
         case Loaders.EXISTING_NAMERS:
             mExistingNamers.clear();
             while (c.moveToNext()) {
-                Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("NamerName")));
+               if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("NamerName")));
                 mExistingNamers.put(c.getLong(c.getColumnIndexOrThrow("_id")),
                         c.getString(c.getColumnIndexOrThrow("NamerName")));
             }
-            Log.d(LOG_TAG, "onLoadFinished, number of items in mExistingNamers: " + mExistingNamers.size());
-            Log.d(LOG_TAG, "onLoadFinished, items in mExistingNamers: " + mExistingNamers.toString());
+           if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, number of items in mExistingNamers: " + mExistingNamers.size());
+           if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, items in mExistingNamers: " + mExistingNamers.toString());
 
             break;
         case Loaders.NAMER_TO_EDIT:
-            Log.d(LOG_TAG, "onLoadFinished, records: " + c.getCount());
+           if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, records: " + c.getCount());
             if (c.moveToFirst()) {
                 mEditNamerName.setText(c.getString(c.getColumnIndexOrThrow("NamerName")));
             }

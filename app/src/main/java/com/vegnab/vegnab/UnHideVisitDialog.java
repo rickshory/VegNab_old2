@@ -1,15 +1,9 @@
 package com.vegnab.vegnab;
 
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -24,8 +18,7 @@ import android.widget.ListView;
 
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract.Loaders;
-import com.vegnab.vegnab.database.VNContract.Prefs;
-import com.vegnab.vegnab.database.VegNabDbHelper;
+import com.vegnab.vegnab.database.VNContract.LDebug;
 
 public class UnHideVisitDialog extends DialogFragment implements View.OnClickListener,
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -51,7 +44,7 @@ public class UnHideVisitDialog extends DialogFragment implements View.OnClickLis
         super.onCreate(savedInstanceState);
         try {
             mConfirmUnHideVisitListener = (ConfirmUnHideVisitDialogListener) getActivity();
-            Log.d(LOG_TAG, "(ConfirmUnHideVisitDialogListener) getActivity()");
+           if (LDebug.ON) Log.d(LOG_TAG, "(ConfirmUnHideVisitDialogListener) getActivity()");
         } catch (ClassCastException e) {
             throw new ClassCastException("Main Activity must implement ConfirmUnHideVisitDialogListener interface");
         }
@@ -75,15 +68,15 @@ public class UnHideVisitDialog extends DialogFragment implements View.OnClickLis
                     long id) {
                 Cursor cr = ((SimpleCursorAdapter) mHiddenVisitsList.getAdapter()).getCursor();
                 cr.moveToPosition(position);
-                Log.d(LOG_TAG, "In onCreateView setOnItemClickListener, list item clicked, id = " + id);
+               if (LDebug.ON) Log.d(LOG_TAG, "In onCreateView setOnItemClickListener, list item clicked, id = " + id);
                 Bundle args = getArguments();
                 if (args != null) {
                     args.putLong(ARG_VISIT_ID_TO_UNHIDE, id);
-                    Log.d(LOG_TAG, "put ARG_VISIT_ID_TO_UNHIDE =" + id);
+                   if (LDebug.ON) Log.d(LOG_TAG, "put ARG_VISIT_ID_TO_UNHIDE =" + id);
                 } else {
-                    Log.d(LOG_TAG, "getArguments() returned null");
+                   if (LDebug.ON) Log.d(LOG_TAG, "getArguments() returned null");
                 }
-                Log.d(LOG_TAG, "About to call onUnHideVisitConfirm=" + id);
+               if (LDebug.ON) Log.d(LOG_TAG, "About to call onUnHideVisitConfirm=" + id);
                 mConfirmUnHideVisitListener.onUnHideVisitConfirm(UnHideVisitDialog.this);
                 dismiss();
             }

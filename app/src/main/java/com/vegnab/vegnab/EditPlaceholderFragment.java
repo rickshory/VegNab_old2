@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -45,6 +44,7 @@ import com.google.android.gms.analytics.Tracker;
 
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract;
+import com.vegnab.vegnab.database.VNContract.LDebug;
 import com.vegnab.vegnab.database.VNContract.Loaders;
 import com.vegnab.vegnab.database.VNContract.Prefs;
 import com.vegnab.vegnab.database.VNContract.Validation;
@@ -140,7 +140,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         public void afterTextChanged(Editable s) {
             // use this method; test length of string; e.g. 'count' of other methods does not give this length
             //Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "'");
-            Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "', length: " + s.length());
+           if (LDebug.ON) Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "', length: " + s.length());
             mStSearchHabitat = s.toString();
             getLoaderManager().restartLoader(Loaders.PLACEHOLDER_HABITATS, null, EditPlaceholderFragment.this);
         }
@@ -165,7 +165,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         public void afterTextChanged(Editable s) {
             // use this method; test length of string; e.g. 'count' of other methods does not give this length
             //Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "'");
-            Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "', length: " + s.length());
+           if (LDebug.ON) Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "', length: " + s.length());
             mStSearch = s.toString();
             getLoaderManager().restartLoader(Loaders.PH_IDENT_SPECIES, null, EditPlaceholderFragment.this);
         }
@@ -191,7 +191,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
 //        try {
 //            mEditPlaceholderListener = (EditPlaceholderDialogListener) getActivity();
-//            Log.d(LOG_TAG, "(EditPlaceholderDialogListener) getActivity()");
+//           if (LDebug.ON) Log.d(LOG_TAG, "(EditPlaceholderDialogListener) getActivity()");
 //        } catch (ClassCastException e) {
 //            throw new ClassCastException("Main Activity must implement EditPlaceholderDialogListener interface");
 //        }
@@ -236,7 +236,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         // restore the previous screen, remembered by onSaveInstanceState()
         // This is mostly needed in fixed-pane layouts
         if (savedInstanceState != null) {
-            Log.d(LOG_TAG, "In onCreateView, about to retrieve mPlaceholderId: " + mPlaceholderId);
+           if (LDebug.ON) Log.d(LOG_TAG, "In onCreateView, about to retrieve mPlaceholderId: " + mPlaceholderId);
             mPlaceholderId = savedInstanceState.getLong(ARG_PLACEHOLDER_ID, 0);
             mPlaceholderCode = savedInstanceState.getString(ARG_PLACEHOLDER_CODE);
             mCodeWasShortened = savedInstanceState.getBoolean(ARG_CODE_WAS_SHORTENED, false);
@@ -250,11 +250,11 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mIdentCFId = savedInstanceState.getLong(ARG_IDENT_CF_ID, 1);
             mPhIdentTimeStamp = savedInstanceState.getString(ARG_IDENT_TIMESTAMP);
 
-            Log.d(LOG_TAG, "In onCreateView, retrieved mPlaceholderId: " + mPlaceholderId);
-            Log.d(LOG_TAG, "In onCreateView, retrieved mPlaceholderCode: " + mPlaceholderCode);
-            Log.d(LOG_TAG, "In onCreateView, retrieved mPhVisitId: " + mPhVisitId);
+           if (LDebug.ON) Log.d(LOG_TAG, "In onCreateView, retrieved mPlaceholderId: " + mPlaceholderId);
+           if (LDebug.ON) Log.d(LOG_TAG, "In onCreateView, retrieved mPlaceholderCode: " + mPlaceholderCode);
+           if (LDebug.ON) Log.d(LOG_TAG, "In onCreateView, retrieved mPhVisitId: " + mPhVisitId);
         } else {
-            Log.d(LOG_TAG, "In onCreateView, savedInstanceState == null, mPlaceholderId: " + mPlaceholderId);
+           if (LDebug.ON) Log.d(LOG_TAG, "In onCreateView, savedInstanceState == null, mPlaceholderId: " + mPlaceholderId);
         }
         // inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_edit_placeholder, container, false);
@@ -487,7 +487,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         switch (v.getId()) {
 
             case R.id.placeholder_pix_button:
-                Log.d(LOG_TAG, "in onClick, placeholder_pix_button");
+               if (LDebug.ON) Log.d(LOG_TAG, "in onClick, placeholder_pix_button");
                 placeholderButtonTracker.send(new HitBuilders.EventBuilder()
                         .setCategory("Edit Placeholder Event")
                         .setAction("Button click")
@@ -507,13 +507,13 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 }
                 args.putInt(BUTTON_KEY, VNContract.PhActions.GO_TO_PICTURES);
                 args.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
-                Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onPlaceholderActionButtonClicked(PICTURES)'");
+               if (LDebug.ON) Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onPlaceholderActionButtonClicked(PICTURES)'");
                 mButtonCallback.onPlaceholderActionButtonClicked(args);
-                Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onPlaceholderActionButtonClicked(PICTURES)'");
+               if (LDebug.ON) Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onPlaceholderActionButtonClicked(PICTURES)'");
                 break;
 
             case R.id.ph_identify_button:
-                Log.d(LOG_TAG, "in onClick, ph_identify_button");
+               if (LDebug.ON) Log.d(LOG_TAG, "in onClick, ph_identify_button");
                 if (mPlaceholderId == 0) { // record not defined yet
                     mValidationLevel = Validation.SILENT;
                     mIdPlaceholder = false; // assure not in identification mode
@@ -543,21 +543,21 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 break;
 
             case R.id.lbl_ident_namer_spinner_cover:
-                Log.d(LOG_TAG, "in onClick, lbl_ident_namer_spinner_cover");
+               if (LDebug.ON) Log.d(LOG_TAG, "in onClick, lbl_ident_namer_spinner_cover");
                 ConfigurableEditDialog newIdNamerDlg =
                         ConfigurableEditDialog.newInstance(getArgsForNewIdentNamer());
                 newIdNamerDlg.show(getFragmentManager(), "frg_new_idnamer_fromCover");
                 break;
 
             case R.id.lbl_ident_ref_spinner_cover:
-                Log.d(LOG_TAG, "in onClick, lbl_ident_ref_spinner_cover");
+               if (LDebug.ON) Log.d(LOG_TAG, "in onClick, lbl_ident_ref_spinner_cover");
                 ConfigurableEditDialog newIdRefDlg =
                         ConfigurableEditDialog.newInstance(getArgsForNewIdentRef());
                 newIdRefDlg.show(getFragmentManager(), "frg_new_idref_fromCover");
                 break;
 
             case R.id.lbl_ident_method_spinner_cover:
-                Log.d(LOG_TAG, "in onClick, lbl_ident_method_spinner_cover");
+               if (LDebug.ON) Log.d(LOG_TAG, "in onClick, lbl_ident_method_spinner_cover");
                 ConfigurableEditDialog newIdMethodDlg =
                         ConfigurableEditDialog.newInstance(getArgsForNewIdentMethod());
                 newIdMethodDlg.show(getFragmentManager(), "frg_new_idmethod_fromCover");
@@ -693,7 +693,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         switch (loader.getId()) {
 
             case Loaders.PLACEHOLDER_TO_EDIT:
-                Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_TO_EDIT, records: " + c.getCount());
+               if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_TO_EDIT, records: " + c.getCount());
                 if (c.moveToFirst()) {
                     mViewPlaceholderCode.setText(c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
                     mViewPlaceholderDescription.setText(c.getString(c.getColumnIndexOrThrow("Description")));
@@ -792,11 +792,11 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             case Loaders.PLACEHOLDERS_EXISTING:
                 mExistingPlaceholderCodes.clear();
                 while (c.moveToNext()) {
-                    Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
+                   if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
                     mExistingPlaceholderCodes.add(c.getString(c.getColumnIndexOrThrow("PlaceHolderCode")));
                 }
-                Log.d(LOG_TAG, "onLoadFinished, number of items in mExistingPlaceholderCodes: " + mExistingPlaceholderCodes.size());
-                Log.d(LOG_TAG, "onLoadFinished, items in mExistingPlaceholderCodes: " + mExistingPlaceholderCodes.toString());
+               if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, number of items in mExistingPlaceholderCodes: " + mExistingPlaceholderCodes.size());
+               if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, items in mExistingPlaceholderCodes: " + mExistingPlaceholderCodes.toString());
                 break;
 
             case Loaders.PLACEHOLDER_HABITATS:
@@ -911,12 +911,12 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         switch (loader.getId()) {
 
             case Loaders.PLACEHOLDER_TO_EDIT:
-                Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_TO_EDIT.");
+               if (LDebug.ON) Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_TO_EDIT.");
     //			don't need to do anything here, no cursor adapter
                 break;
 
             case Loaders.PLACEHOLDERS_EXISTING:
-                Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDERS_EXISTING.");
+               if (LDebug.ON) Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDERS_EXISTING.");
     //			don't need to do anything here, no cursor adapter
                 break;
 
@@ -1253,13 +1253,13 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     private int savePlaceholderRecord() {
         int numUpdated = 0;
         if (!validatePlaceholder()) {
-            Log.d(LOG_TAG, "Failed validation in savePlaceholderRecord; mValues: " + mValues.toString());
+           if (LDebug.ON) Log.d(LOG_TAG, "Failed validation in savePlaceholderRecord; mValues: " + mValues.toString());
             return numUpdated;
         }
         ContentResolver rs = getActivity().getContentResolver();
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         if (mPlaceholderId == 0) { // new record
-            Log.d(LOG_TAG, "savePlaceholderRecord; creating new record with mPlaceholderId = " + mPlaceholderId);
+           if (LDebug.ON) Log.d(LOG_TAG, "savePlaceholderRecord; creating new record with mPlaceholderId = " + mPlaceholderId);
             // fill in fields the user never sees
             mValues.put("TimeFirstInput", mTimeFormat.format(new Date()));
             mValues.put("TimeLastEdited", mTimeFormat.format(new Date()));
@@ -1268,25 +1268,25 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mValues.put("NamerID", sharedPref.getLong(Prefs.DEFAULT_NAMER_ID, 0));
 
             mUri = rs.insert(mPlaceholdersUri, mValues);
-            Log.d(LOG_TAG, "new record in savePlaceholderRecord; returned URI: " + mUri.toString());
+           if (LDebug.ON) Log.d(LOG_TAG, "new record in savePlaceholderRecord; returned URI: " + mUri.toString());
             long newRecId = Long.parseLong(mUri.getLastPathSegment());
             if (newRecId < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
-                Log.d(LOG_TAG, "new record in savePlaceholderRecord has Id == " + newRecId + "); canceled");
+               if (LDebug.ON) Log.d(LOG_TAG, "new record in savePlaceholderRecord has Id == " + newRecId + "); canceled");
                 return 0;
             }
             mPlaceholderId = newRecId;
             getLoaderManager().restartLoader(Loaders.PLACEHOLDERS_EXISTING, null, this);
 
             mUri = ContentUris.withAppendedId(mPlaceholdersUri, mPlaceholderId);
-            Log.d(LOG_TAG, "new record in savePlaceholderRecord; URI re-parsed: " + mUri.toString());
+           if (LDebug.ON) Log.d(LOG_TAG, "new record in savePlaceholderRecord; URI re-parsed: " + mUri.toString());
             numUpdated = 1;
             mViewPlaceholderCode.setFocusableInTouchMode(false); // disable editing the code
         } else { // update the existing record
-            Log.d(LOG_TAG, "savePlaceholderRecord; updating existing record with mVisitId = " + mPlaceholderId);
+           if (LDebug.ON) Log.d(LOG_TAG, "savePlaceholderRecord; updating existing record with mVisitId = " + mPlaceholderId);
             mValues.put("TimeLastEdited", mTimeFormat.format(new Date())); // update the last-changed time
             mUri = ContentUris.withAppendedId(mPlaceholdersUri, mPlaceholderId);
             numUpdated = rs.update(mUri, mValues, null, null);
-            Log.d(LOG_TAG, "Updated record in savePlaceholderRecord; numUpdated: " + numUpdated);
+           if (LDebug.ON) Log.d(LOG_TAG, "Updated record in savePlaceholderRecord; numUpdated: " + numUpdated);
         }
         if (numUpdated > 0) {
             // may not need this
@@ -1343,7 +1343,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         if (parent.getId() == mIdentNamerSpinner.getId()) {
             mIdentNamerId = id;
             if (mIdentNamerId == 0) { // picked '(add new)'
-                Log.d(LOG_TAG, "Starting 'add new' for IdentNamer from onItemSelect");
+               if (LDebug.ON) Log.d(LOG_TAG, "Starting 'add new' for IdentNamer from onItemSelect");
                 ConfigurableEditDialog newIdNamerDlg =
                         ConfigurableEditDialog.newInstance(getArgsForNewIdentNamer());
                 newIdNamerDlg.show(getFragmentManager(), "frg_new_idnamer_fromSpinner");
@@ -1357,7 +1357,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         if (parent.getId() == mIdentRefSpinner.getId()) {
             mIdentRefId = id;
             if (mIdentRefId == 0) { // picked '(add new)'
-                Log.d(LOG_TAG, "Starting 'add new' for IdentRef from onItemSelect");
+               if (LDebug.ON) Log.d(LOG_TAG, "Starting 'add new' for IdentRef from onItemSelect");
                 ConfigurableEditDialog newIdRefDlg = ConfigurableEditDialog.newInstance(getArgsForNewIdentRef());
                 newIdRefDlg.show(getFragmentManager(), "frg_new_idref_fromSpinner");
             } else {
@@ -1370,7 +1370,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         if (parent.getId() == mIdentMethodSpinner.getId()) {
             mIdentMethodId = id;
             if (mIdentMethodId == 0) { // picked '(add new)'
-                Log.d(LOG_TAG, "Starting 'add new' for IdentMethod from onItemSelect");
+               if (LDebug.ON) Log.d(LOG_TAG, "Starting 'add new' for IdentMethod from onItemSelect");
                 ConfigurableEditDialog newIdMethodDlg = ConfigurableEditDialog.newInstance(getArgsForNewIdentMethod());
                 newIdMethodDlg.show(getFragmentManager(), "frg_new_idmethod_fromSpinner");
             } else {
@@ -1457,9 +1457,9 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 mValidationLevel = Validation.SILENT; // save if possible, but do not notify
                 int numUpdated = savePlaceholderRecord();
                 if (numUpdated == 0) {
-                    Log.d(LOG_TAG, "Failed to save record in onFocusChange; mValues: " + mValues.toString());
+                   if (LDebug.ON) Log.d(LOG_TAG, "Failed to save record in onFocusChange; mValues: " + mValues.toString());
                 } else {
-                    Log.d(LOG_TAG, "Saved record in onFocusChange; mValues: " + mValues.toString());
+                   if (LDebug.ON) Log.d(LOG_TAG, "Saved record in onFocusChange; mValues: " + mValues.toString());
                 }
                 break;
             }
@@ -1493,9 +1493,9 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     public boolean onContextItemSelected(MenuItem item) {
     AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
     if (info == null) {
-        Log.d(LOG_TAG, "onContextItemSelected info is null");
+       if (LDebug.ON) Log.d(LOG_TAG, "onContextItemSelected info is null");
     } else {
-        Log.d(LOG_TAG, "onContextItemSelected info: " + info.toString());
+       if (LDebug.ON) Log.d(LOG_TAG, "onContextItemSelected info: " + info.toString());
     }
     Context c = getActivity();
     UnderConstrDialog notYetDlg = new UnderConstrDialog();
@@ -1507,7 +1507,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
     switch (item.getItemId()) {
     case R.id.placeholder_code_help:
-        Log.d(LOG_TAG, "'Placeholder Code Help' selected");
+       if (LDebug.ON) Log.d(LOG_TAG, "'Placeholder Code Help' selected");
         headerContextTracker.send(new HitBuilders.EventBuilder()
                 .setCategory("Edit Placeholder Event")
                 .setAction("Context Menu")
@@ -1521,7 +1521,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         flexHlpDlg.show(getFragmentManager(), "frg_help_placeholder_code");
         return true;
     case R.id.placeholder_description_help:
-        Log.d(LOG_TAG, "'Placeholder Description Help' selected");
+       if (LDebug.ON) Log.d(LOG_TAG, "'Placeholder Description Help' selected");
         headerContextTracker.send(new HitBuilders.EventBuilder()
                 .setCategory("Edit Placeholder Event")
                 .setAction("Context Menu")
@@ -1535,7 +1535,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         return true;
 
     case R.id.placeholder_habitat_help:
-        Log.d(LOG_TAG, "'Placeholder Habitat Help' selected");
+       if (LDebug.ON) Log.d(LOG_TAG, "'Placeholder Habitat Help' selected");
         headerContextTracker.send(new HitBuilders.EventBuilder()
                 .setCategory("Edit Placeholder Event")
                 .setAction("Context Menu")
@@ -1549,7 +1549,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         return true;
 
     case R.id.placeholder_labelnumber_help:
-        Log.d(LOG_TAG, "'Placeholder Label Number Help' selected");
+       if (LDebug.ON) Log.d(LOG_TAG, "'Placeholder Label Number Help' selected");
         headerContextTracker.send(new HitBuilders.EventBuilder()
                 .setCategory("Edit Placeholder Event")
                 .setAction("Context Menu")

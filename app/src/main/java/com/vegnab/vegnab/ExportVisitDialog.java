@@ -7,10 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+
+import com.vegnab.vegnab.database.VNContract.LDebug;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -45,7 +46,7 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
         super.onCreate(savedInstanceState);
         try {
             mExpVisListener = (ExportVisitListener) getActivity();
-            Log.d(LOG_TAG, "(ExportVisitListener) getActivity()");
+           if (LDebug.ON) Log.d(LOG_TAG, "(ExportVisitListener) getActivity()");
         } catch (ClassCastException e) {
             throw new ClassCastException("Main Activity must implement ExportVisitListener interface");
         }
@@ -60,13 +61,13 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.radio_resolve_phs:
-                        Log.d(LOG_TAG, "R.id.radio_resolve_phs");
+                       if (LDebug.ON) Log.d(LOG_TAG, "R.id.radio_resolve_phs");
                         break;
                     case R.id.radio_phs_asis:
-                        Log.d(LOG_TAG, "R.id.radio_phs_asis");
+                       if (LDebug.ON) Log.d(LOG_TAG, "R.id.radio_phs_asis");
                         break;
                     default:
-                        Log.d(LOG_TAG, "neither radio button");
+                       if (LDebug.ON) Log.d(LOG_TAG, "neither radio button");
                         break;
                 }
             }
@@ -124,15 +125,15 @@ public class ExportVisitDialog extends DialogFragment implements android.view.Vi
                 switch (mResolvePhRadioGp.getCheckedRadioButtonId()) {
                     case R.id.radio_resolve_phs:
                         resolvePh = true;
-                        Log.d(LOG_TAG, "resolvePh radio button selected: R.id.radio_resolve_phs");
+                       if (LDebug.ON) Log.d(LOG_TAG, "resolvePh radio button selected: R.id.radio_resolve_phs");
                         break;
                     case R.id.radio_phs_asis:
                         resolvePh = false;
-                        Log.d(LOG_TAG, "resolvePh radio button selected: R.id.radio_phs_asis");
+                       if (LDebug.ON) Log.d(LOG_TAG, "resolvePh radio button selected: R.id.radio_phs_asis");
                         break;
                     default:
                         resolvePh = true;
-                        Log.d(LOG_TAG, "resolvePh radio button selected: neither radio button");
+                       if (LDebug.ON) Log.d(LOG_TAG, "resolvePh radio button selected: neither radio button");
                         break;
                 }
                 expArgs.putBoolean(MainVNActivity.ARG_RESOLVE_PLACEHOLDERS, resolvePh);

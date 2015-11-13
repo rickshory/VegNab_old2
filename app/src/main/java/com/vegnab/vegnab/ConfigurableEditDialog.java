@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
+import com.vegnab.vegnab.database.VNContract.LDebug;
 import com.vegnab.vegnab.database.VNContract.Loaders;
 import com.vegnab.vegnab.database.VNContract.Prefs;
 
@@ -77,7 +78,7 @@ public class ConfigurableEditDialog extends DialogFragment implements
         super.onCreate(savedInstanceState);
         try {
             mEditListener = (ConfigurableEditDialogListener) getActivity();
-            Log.d(LOG_TAG, "(ConfigurableEditDialogListener) getActivity()");
+           if (LDebug.ON) Log.d(LOG_TAG, "(ConfigurableEditDialogListener) getActivity()");
         } catch (ClassCastException e) {
             throw new ClassCastException("Main Activity must implement ConfigurableEditDialogListener interface");
         }
@@ -200,7 +201,7 @@ public class ConfigurableEditDialog extends DialogFragment implements
                 mValues.put(mItemDbField, mEditItem.getText().toString().trim());
 
                 }
-            Log.d(LOG_TAG, "Saving record in onFocusChange; mValues: " + mValues.toString().trim());
+           if (LDebug.ON) Log.d(LOG_TAG, "Saving record in onFocusChange; mValues: " + mValues.toString().trim());
             int numUpdated = saveItemRecord();
             }
         }
@@ -210,7 +211,7 @@ public class ConfigurableEditDialog extends DialogFragment implements
         // update the project record in the database, if everything valid
         mValues.clear();
         mValues.put(mItemDbField, mEditItem.getText().toString().trim());
-        Log.d(LOG_TAG, "Saving record in onCancel; mValues: " + mValues.toString());
+       if (LDebug.ON) Log.d(LOG_TAG, "Saving record in onCancel; mValues: " + mValues.toString());
         int numUpdated = saveItemRecord();
         if (numUpdated > 0) {
             mEditListener.onConfigurableEditComplete(ConfigurableEditDialog.this);
@@ -236,7 +237,7 @@ public class ConfigurableEditDialog extends DialogFragment implements
         }
         ContentResolver rs = getActivity().getContentResolver();
         if (mItemRecId == -1) {
-            Log.d(LOG_TAG, "entered saveItemRecord with (mItemRecId == -1); canceled");
+           if (LDebug.ON) Log.d(LOG_TAG, "entered saveItemRecord with (mItemRecId == -1); canceled");
             return 0;
         }
 
@@ -251,16 +252,16 @@ public class ConfigurableEditDialog extends DialogFragment implements
         mItemsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, mUriTarget);
         if (mItemRecId == 0) { // new record
             mUri = rs.insert(mItemsUri, mValues);
-            Log.d(LOG_TAG, "new record in saveItemRecord; returned URI: " + mUri.toString());
+           if (LDebug.ON) Log.d(LOG_TAG, "new record in saveItemRecord; returned URI: " + mUri.toString());
             long newRecId = Long.parseLong(mUri.getLastPathSegment());
             if (newRecId < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
-                Log.d(LOG_TAG, "new record in saveItemRecord has Id == " + newRecId + "); canceled");
+               if (LDebug.ON) Log.d(LOG_TAG, "new record in saveItemRecord has Id == " + newRecId + "); canceled");
                 return 0;
             }
             mItemRecId = newRecId;
             getLoaderManager().restartLoader(Loaders.EXISTING_ITEMS, null, this);
             mUri = ContentUris.withAppendedId(mItemsUri, mItemRecId);
-            Log.d(LOG_TAG, "new record in saveItemRecord; URI re-parsed: " + mUri.toString());
+           if (LDebug.ON) Log.d(LOG_TAG, "new record in saveItemRecord; URI re-parsed: " + mUri.toString());
             // for some cases, set default Item
             SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
             SharedPreferences.Editor prefEditor = sharedPref.edit();
@@ -285,9 +286,9 @@ public class ConfigurableEditDialog extends DialogFragment implements
             return 1;
         } else {
             mUri = ContentUris.withAppendedId(mItemsUri, mItemRecId);
-            Log.d(LOG_TAG, "about to update record in saveItemRecord; mValues: " + mValues.toString() + "; URI: " + mUri.toString());
+           if (LDebug.ON) Log.d(LOG_TAG, "about to update record in saveItemRecord; mValues: " + mValues.toString() + "; URI: " + mUri.toString());
             int numUpdated = rs.update(mUri, mValues, null, null);
-            Log.d(LOG_TAG, "Saved record in saveItemRecord; numUpdated: " + numUpdated);
+           if (LDebug.ON) Log.d(LOG_TAG, "Saved record in saveItemRecord; numUpdated: " + numUpdated);
             return numUpdated;
         }
     }
@@ -336,16 +337,16 @@ public class ConfigurableEditDialog extends DialogFragment implements
         case Loaders.EXISTING_ITEMS:
             mExistingItems.clear();
             while (c.moveToNext()) {
-                Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow(mItemDbField)));
+               if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, add to HashMap: " + c.getString(c.getColumnIndexOrThrow(mItemDbField)));
                 mExistingItems.put(c.getLong(c.getColumnIndexOrThrow("_id")),
                         c.getString(c.getColumnIndexOrThrow(mItemDbField)));
             }
-            Log.d(LOG_TAG, "onLoadFinished, number of items in mExistingItems: " + mExistingItems.size());
-            Log.d(LOG_TAG, "onLoadFinished, items in mExistingItems: " + mExistingItems.toString());
+           if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, number of items in mExistingItems: " + mExistingItems.size());
+           if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, items in mExistingItems: " + mExistingItems.toString());
 
             break;
         case Loaders.ITEM_TO_EDIT:
-            Log.d(LOG_TAG, "onLoadFinished, records: " + c.getCount());
+           if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, records: " + c.getCount());
             if (c.moveToFirst()) {
                 mEditItem.setText(c.getString(c.getColumnIndexOrThrow(mItemDbField)));
             }

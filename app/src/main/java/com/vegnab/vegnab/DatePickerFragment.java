@@ -2,6 +2,8 @@ package com.vegnab.vegnab;
 
 import java.util.Calendar;
 
+import com.vegnab.vegnab.database.VNContract.LDebug;
+
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -37,11 +39,11 @@ public class DatePickerFragment extends DialogFragment
                 Toast.LENGTH_SHORT).show();
 
         txt = (EditText) this.getActivity().findViewById(R.id.txt_date_from);
-        Log.d("DatePicker", "about to test 'txt == null'");
+       if (LDebug.ON) Log.d("DatePicker", "about to test 'txt == null'");
         if (txt == null) {
-            Log.d("DatePicker", "EditText is null ");
+           if (LDebug.ON) Log.d("DatePicker", "EditText is null ");
         } else {
-            Log.d("DatePicker", "EditText not null ");
+           if (LDebug.ON) Log.d("DatePicker", "EditText not null ");
         }
 //		Log.d("DatePicker", "verifity EditText: " + txt.toString());
 //		String s = "2000";

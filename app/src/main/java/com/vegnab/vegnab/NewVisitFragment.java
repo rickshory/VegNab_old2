@@ -9,7 +9,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract;
-import com.vegnab.vegnab.database.VegNabDbHelper;
+import com.vegnab.vegnab.database.VNContract.LDebug;
 import com.vegnab.vegnab.database.VNContract.Prefs;
 
 import android.app.Activity;
@@ -20,20 +20,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v7.internal.widget.AdapterViewCompat;
-import android.support.v7.internal.widget.AdapterViewCompat.OnItemSelectedListener;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -89,7 +82,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
         ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
 //        try {
 //            mExpVisListener = (ExportVisitListener) getActivity();
-//            Log.d(LOG_TAG, "set up (ExportVisitListener) getActivity()");
+//           if (LDebug.ON) Log.d(LOG_TAG, "set up (ExportVisitListener) getActivity()");
 //        } catch (ClassCastException e) {
 //            throw new ClassCastException("Main Activity must implement ExportVisitListener interface");
 //        }
@@ -313,9 +306,9 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
 //    AdapterViewCompat.AdapterContextMenuInfo info = (AdapterViewCompat.AdapterContextMenuInfo) item.getMenuInfo();
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         if (info == null) {
-            Log.d(LOG_TAG, "onContextItemSelected info is null");
+           if (LDebug.ON) Log.d(LOG_TAG, "onContextItemSelected info is null");
         } else {
-            Log.d(LOG_TAG, "onContextItemSelected info: " + info.toString());
+           if (LDebug.ON) Log.d(LOG_TAG, "onContextItemSelected info: " + info.toString());
         }
         Context c = getActivity();
         UnderConstrDialog notYetDlg = new UnderConstrDialog();
@@ -332,7 +325,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
         switch (item.getItemId()) {
 
             case R.id.new_visit_list_item_export:
-                Log.d(LOG_TAG, "New Visit item 'Export Visit' selected");
+               if (LDebug.ON) Log.d(LOG_TAG, "New Visit item 'Export Visit' selected");
                 headerContextTracker.send(new HitBuilders.EventBuilder()
                         .setCategory("New Visit Event")
                         .setAction("Context Menu")
@@ -368,7 +361,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
                 return true;
 
             case R.id.new_visit_list_item_hide:
-                Log.d(LOG_TAG, "New Visit item 'Hide Visit' selected");
+               if (LDebug.ON) Log.d(LOG_TAG, "New Visit item 'Hide Visit' selected");
                 headerContextTracker.send(new HitBuilders.EventBuilder()
                         .setCategory("New Visit Event")
                         .setAction("Context Menu")
@@ -377,7 +370,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
                         .build());
                 // Hide visit
                 if (info == null) {
-                    Log.d(LOG_TAG, "info == null 'Hide Visit' exiting");
+                   if (LDebug.ON) Log.d(LOG_TAG, "info == null 'Hide Visit' exiting");
                     return true;
                 }
 // adapt this if need to test for conditions
@@ -394,7 +387,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
                 return true;
 
             case R.id.new_visit_list_item_help:
-                Log.d(LOG_TAG, "New Visit item 'Help' selected");
+               if (LDebug.ON) Log.d(LOG_TAG, "New Visit item 'Help' selected");
                 headerContextTracker.send(new HitBuilders.EventBuilder()
                         .setCategory("New Visit Event")
                         .setAction("Context Menu")
@@ -457,9 +450,9 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
         if (visRecId == 0) return; // default bailout
         Context c = getActivity();
         if (showVisit) {
-            Log.d(LOG_TAG, "About to show Visit, record id=" + visRecId);
+           if (LDebug.ON) Log.d(LOG_TAG, "About to show Visit, record id=" + visRecId);
         } else {
-            Log.d(LOG_TAG, "About to hide Visit, record id=" + visRecId);
+           if (LDebug.ON) Log.d(LOG_TAG, "About to hide Visit, record id=" + visRecId);
         }
         Uri uri, sUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "visits");
         uri = ContentUris.withAppendedId(sUri, visRecId);
@@ -467,7 +460,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
         mValues.put("ShowOnMobile", (showVisit ? 1 : 0));
         ContentResolver rs = c.getContentResolver();
         int numUpdated = rs.update(uri, mValues, null, null);
-        Log.d(LOG_TAG, "Updated visit to ShowOnMobile=" + showVisit + "; numUpdated: " + numUpdated);
+       if (LDebug.ON) Log.d(LOG_TAG, "Updated visit to ShowOnMobile=" + showVisit + "; numUpdated: " + numUpdated);
         String msg = (showVisit ? c.getResources().getString(R.string.new_visit_show_visit_done) :
                 c.getResources().getString(R.string.new_visit_hide_visit_done));
         Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
@@ -544,10 +537,10 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
         switch (loader.getId()) {
 
             case VNContract.Loaders.TEST_SQL:
-                Log.d(LOG_TAG, "Loaders.TEST_SQL returned cursor ");
+               if (LDebug.ON) Log.d(LOG_TAG, "Loaders.TEST_SQL returned cursor ");
                 finishedCursor.moveToFirst();
                 String d = finishedCursor.getString(0);
-                Log.d(LOG_TAG, "Loaders.TEST_SQL value returned: " + d);
+               if (LDebug.ON) Log.d(LOG_TAG, "Loaders.TEST_SQL value returned: " + d);
     /*			Toast.makeText(this.getActivity(),
                         "Date: " + d,
                         Toast.LENGTH_LONG).show();
@@ -572,7 +565,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
                                 "Prefs key '" + PREF_DEFAULT_PROJECT_ID + "' does not exist yet.",
                                 Toast.LENGTH_LONG).show();
     */
-                        Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PROJECT_ID + "' does not exist yet.");
+                       if (LDebug.ON) Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PROJECT_ID + "' does not exist yet.");
                         // update the create time in the database from when the DB file was created to 'now'
                         String sql = "UPDATE Projects SET StartDate = DATETIME('now') WHERE _id = 1;";
                         ContentResolver resolver = getActivity().getContentResolver();
@@ -584,20 +577,20 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
                                 "Prefs key '" + PREF_DEFAULT_PROJECT_ID + "' set for the first time.",
                                 Toast.LENGTH_LONG).show();
     */
-                        Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PROJECT_ID + "' set for the first time.");
+                       if (LDebug.ON) Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PROJECT_ID + "' set for the first time.");
                     } else {
     /*					Toast.makeText(this.getActivity(),
                                 "Prefs key '" + PREF_DEFAULT_PROJECT_ID + "' = " + mProjectId,
                                 Toast.LENGTH_LONG).show();
     */
-                        Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PROJECT_ID + "' = " + mProjectId);
+                       if (LDebug.ON) Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PROJECT_ID + "' = " + mProjectId);
                     }
                     // set the default Project to show in its spinner
                     // for a generalized fn, try: mProjSpinner.getAdapter().getCount()
                     for (int i=0; i<mRowCt; i++) {
-                        Log.d(LOG_TAG, "Setting mProjSpinner default; testing index " + i);
+                       if (LDebug.ON) Log.d(LOG_TAG, "Setting mProjSpinner default; testing index " + i);
                         if (mProjSpinner.getItemIdAtPosition(i) == mProjectId) {
-                            Log.d(LOG_TAG, "Setting mProjSpinner default; found matching index " + i);
+                           if (LDebug.ON) Log.d(LOG_TAG, "Setting mProjSpinner default; found matching index " + i);
                             mProjSpinner.setSelection(i);
                             break;
                         }
@@ -625,26 +618,26 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
                                 "Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' does not exist yet.",
                                 Toast.LENGTH_LONG).show();
     */
-                        Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' does not exist yet.");
+                       if (LDebug.ON) Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' does not exist yet.");
                         saveDefaultPlotTypeId(mPlotTypeId);
     /*					Toast.makeText(this.getActivity(),
                                 "Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' set for the first time.",
                                 Toast.LENGTH_LONG).show();
     */
-                        Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' set for the first time.");
+                       if (LDebug.ON) Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' set for the first time.");
                     } else { // default plot type already exisits
     /*					Toast.makeText(this.getActivity(),
                                 "Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' = " + mPlotTypeId,
                                 Toast.LENGTH_LONG).show();
     */
-                        Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' = " + mPlotTypeId);
+                       if (LDebug.ON) Log.d(LOG_TAG, "Prefs key '" + Prefs.DEFAULT_PLOTTYPE_ID + "' = " + mPlotTypeId);
                     }
                     // set the default Plot Type to show in its spinner
                     // for a generalized fn, try: mySpinner.getAdapter().getCount()
                     for (int i=0; i<mRowCt; i++) {
-                        Log.d(LOG_TAG, "Setting mPlotTypeSpinner default; testing index " + i);
+                       if (LDebug.ON) Log.d(LOG_TAG, "Setting mPlotTypeSpinner default; testing index " + i);
                         if (mPlotTypeSpinner.getItemIdAtPosition(i) == mPlotTypeId) {
-                            Log.d(LOG_TAG, "Setting mPlotTypeSpinner default; found matching index " + i);
+                           if (LDebug.ON) Log.d(LOG_TAG, "Setting mPlotTypeSpinner default; found matching index " + i);
                             mPlotTypeSpinner.setSelection(i);
                             break;
                         }
@@ -745,12 +738,12 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
 /*
     // no Override
     public static void onBackPressed() {
-        Log.d("NewVist", "In NewVisitFragment, caught 'onBackPressed'");
+       if (LDebug.ON) Log.d("NewVist", "In NewVisitFragment, caught 'onBackPressed'");
     return;
     }
 */	
     public void showDatePickerDialog(View v) {
-        Log.d("NewVisit", "Event caught in NewVisitFragment");
+       if (LDebug.ON) Log.d("NewVisit", "Event caught in NewVisitFragment");
     }
 
 }

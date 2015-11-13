@@ -22,6 +22,8 @@ import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
+import com.vegnab.vegnab.database.VNContract.LDebug;
+
 public class DataBaseHelper extends SQLiteOpenHelper{
     private static final String LOG_TAG = DataBaseHelper.class.getSimpleName();
  
@@ -209,7 +211,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                     // do 5000 records at a time
                     db.setTransactionSuccessful();
                     db.endTransaction();
-                    Log.d(LOG_TAG, "re-starting bulk transactions at item " + ct
+                   if (LDebug.ON) Log.d(LOG_TAG, "re-starting bulk transactions at item " + ct
                             + ", currentTimeMillis = " + System.currentTimeMillis());
                     db.beginTransactionNonExclusive();
                     stmt = db.compileStatement(sSql);
@@ -220,7 +222,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 //		} catch (FileNotFoundException e) {
 //			e.printStackTrace();
         } catch (IOException e) {
-            Log.d(LOG_TAG, "IOException " + e.getMessage());
+           if (LDebug.ON) Log.d(LOG_TAG, "IOException " + e.getMessage());
         }
 
         db.endTransaction();

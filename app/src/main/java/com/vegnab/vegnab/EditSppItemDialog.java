@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
+import com.vegnab.vegnab.database.VNContract.LDebug;
 import com.vegnab.vegnab.database.VNContract.Loaders;
 import com.vegnab.vegnab.database.VNContract.Prefs;
 import com.vegnab.vegnab.database.VNContract.Tags;
@@ -104,7 +105,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
         super.onCreate(savedInstanceState);
         try {
             mEditVegItemListener = (EditSppItemDialogListener) getActivity();
-            Log.d(LOG_TAG, "(EditSppItemDialogListener) getActivity()");
+           if (LDebug.ON) Log.d(LOG_TAG, "(EditSppItemDialogListener) getActivity()");
         } catch (ClassCastException e) {
             throw new ClassCastException("Main Activity must implement EditSppItemDialogListener interface");
         }
@@ -247,7 +248,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
                 mValidationLevel = Validation.QUIET;
                 if (validateVegItemValues()) {
                     int numUpdated = saveVegItemRecord();
-                    Log.d(LOG_TAG, "Saved record in onFocusChange; numUpdated: " + numUpdated);
+                   if (LDebug.ON) Log.d(LOG_TAG, "Saved record in onFocusChange; numUpdated: " + numUpdated);
                 }
             }
         }
@@ -259,7 +260,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
         mValidationLevel = Validation.CRITICAL;
         if (validateVegItemValues()) {
             int numUpdated = saveVegItemRecord();
-            Log.d(LOG_TAG, "Saved record in onCancel; numUpdated: " + numUpdated);
+           if (LDebug.ON) Log.d(LOG_TAG, "Saved record in onCancel; numUpdated: " + numUpdated);
             if (numUpdated > 0) {
                 if (mCkDontVerifyPresence.isChecked()) {
                     SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
@@ -281,7 +282,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
         // try the following line to avoid occasional crashes from (?) race conditions
         mOKToAutoAcceptItem = false; // assure only runs once
         if (saveVegItemRecord() > 0) { // if item is correctly saved
-            Log.d(LOG_TAG, "Saved record in checkAutoAcceptSppItem");
+           if (LDebug.ON) Log.d(LOG_TAG, "Saved record in checkAutoAcceptSppItem");
             mEditVegItemListener.onEditVegItemComplete(EditSppItemDialog.this);
             this.dismiss();
         }
@@ -339,7 +340,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 
         ContentResolver rs = c.getContentResolver();
         if (mVegItemRecId == -1) {
-            Log.d(LOG_TAG, "entered saveVegItemRecord with (mVegItemRecId == -1); canceled");
+           if (LDebug.ON) Log.d(LOG_TAG, "entered saveVegItemRecord with (mVegItemRecId == -1); canceled");
             return 0;
         }
         if (mVegItemRecId == 0) { // new record
@@ -354,15 +355,15 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
             mValues.put("TimeLastChanged", mTimeFormat.format(new Date()));
 
             mUri = rs.insert(mVegItemsUri, mValues);
-            Log.d(LOG_TAG, "new record in saveVegItemRecord; returned URI: " + mUri.toString());
+           if (LDebug.ON) Log.d(LOG_TAG, "new record in saveVegItemRecord; returned URI: " + mUri.toString());
             long newRecId = Long.parseLong(mUri.getLastPathSegment());
             if (newRecId < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
-                Log.d(LOG_TAG, "new record in saveVegItemRecord has Id == " + newRecId + "); canceled");
+               if (LDebug.ON) Log.d(LOG_TAG, "new record in saveVegItemRecord has Id == " + newRecId + "); canceled");
                 return 0;
             }
             mVegItemRecId = newRecId;
             mUri = ContentUris.withAppendedId(mVegItemsUri, mVegItemRecId);
-            Log.d(LOG_TAG, "new record in saveVegItemRecord; URI re-parsed: " + mUri.toString());
+           if (LDebug.ON) Log.d(LOG_TAG, "new record in saveVegItemRecord; URI re-parsed: " + mUri.toString());
             // save the timestamp, in seconds, when this occurred
             SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
             SharedPreferences.Editor prefEditor = sharedPref.edit();
@@ -375,7 +376,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
                 mValues.clear();
                 mValues.put("HasBeenFound",1);
                 int numUpdated = rs.update(mUri, mValues, null, null);
-                Log.d(LOG_TAG, "Updated species to HasBeenFound=true; numUpdated: " + numUpdated);
+               if (LDebug.ON) Log.d(LOG_TAG, "Updated species to HasBeenFound=true; numUpdated: " + numUpdated);
             }
             return 1;
         } else {
@@ -383,7 +384,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
             mValues.put("OrigDescr", strSaveDescription);
             mValues.put("TimeLastChanged", mTimeFormat.format(new Date()));
             int numUpdated = rs.update(mUri, mValues, null, null);
-            Log.d(LOG_TAG, "Saved record in saveVegItemRecord; numUpdated: " + numUpdated);
+           if (LDebug.ON) Log.d(LOG_TAG, "Saved record in saveVegItemRecord; numUpdated: " + numUpdated);
             return numUpdated;
         }
 
@@ -407,7 +408,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
             // validate Height
             String stringHt = mEditSpeciesHeight.getText().toString().trim();
             if (stringHt.length() == 0) {
-                Log.d(LOG_TAG, "Height is length zero");
+               if (LDebug.ON) Log.d(LOG_TAG, "Height is length zero");
                 if (mValidationLevel > Validation.SILENT) {
                     stringProblem = c.getResources().getString(R.string.edit_spp_item_msg_no_height);
                     if (mValidationLevel == Validation.QUIET) {
@@ -426,7 +427,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
                 try {
                     Ht = Integer.parseInt(stringHt);
                     if ((Ht < 0) || (Ht > 35000)) { // tallest plants are 300m redwoods
-                        Log.d(LOG_TAG, "Height is out of range");
+                       if (LDebug.ON) Log.d(LOG_TAG, "Height is out of range");
                         if (mValidationLevel > Validation.SILENT) {
                             stringProblem = c.getResources().getString(R.string.edit_spp_item_validate_height_bad);
                             if (mValidationLevel == Validation.QUIET) {
@@ -448,10 +449,10 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
                         flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
                         flexErrDlg.show(getFragmentManager(), "frg_verify_height_zero");
                         Cv = 0;
-                        Log.d(LOG_TAG, "Height is zero, Cover set to zero");
+                       if (LDebug.ON) Log.d(LOG_TAG, "Height is zero, Cover set to zero");
                     }
                 } catch(NumberFormatException e) {
-                    Log.d(LOG_TAG, "Height is not a valid number");
+                   if (LDebug.ON) Log.d(LOG_TAG, "Height is not a valid number");
                     if (mValidationLevel > Validation.SILENT) {
                         stringProblem = c.getResources().getString(R.string.edit_spp_item_validate_height_bad);
                         if (mValidationLevel == Validation.QUIET) {
@@ -472,7 +473,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
             // validate Cover
             String stringCv = mEditSpeciesCover.getText().toString().trim();
             if (stringCv.length() == 0) {
-                Log.d(LOG_TAG, "Cover is length zero");
+               if (LDebug.ON) Log.d(LOG_TAG, "Cover is length zero");
                 if (mValidationLevel > Validation.SILENT) {
                     stringProblem = c.getResources().getString(R.string.edit_spp_item_msg_no_cover);
                     if (mValidationLevel == Validation.QUIET) {
@@ -491,7 +492,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
                 try {
                     Cv = Integer.parseInt(stringCv);
                     if ((Cv < 0) || (Cv > 100)) { // percent
-                        Log.d(LOG_TAG, "Cover is out of range");
+                       if (LDebug.ON) Log.d(LOG_TAG, "Cover is out of range");
                         if (mValidationLevel > Validation.SILENT) {
                             stringProblem = c.getResources().getString(R.string.edit_spp_item_validate_cover_bad);
                             if (mValidationLevel == Validation.QUIET) {
@@ -515,7 +516,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
                         Ht = 0;
                     }
                 } catch(NumberFormatException e) {
-                    Log.d(LOG_TAG, "Cover is not a valid number");
+                   if (LDebug.ON) Log.d(LOG_TAG, "Cover is not a valid number");
                     if (mValidationLevel > Validation.SILENT) {
                         stringProblem = c.getResources().getString(R.string.edit_spp_item_validate_cover_bad);
                         if (mValidationLevel == Validation.QUIET) {
@@ -603,7 +604,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
         switch (loader.getId()) {
 
         case Loaders.VEGITEM_TO_EDIT:
-            Log.d(LOG_TAG, "onLoadFinished, records: " + c.getCount());
+           if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, records: " + c.getCount());
             if (c.moveToFirst()) {
                 getDialog().setTitle(R.string.edit_spp_item_title_edit);
                 String vegItemLabel = c.getString(c.getColumnIndexOrThrow("OrigCode")) + ": "
@@ -744,9 +745,9 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
         // set the id confidence spinner
         int ct = mCFCursor.getCount();
         for (int i=0; i<ct; i++) {
-            Log.d(LOG_TAG, "Setting mSpinnerSpeciesConfidence; testing index " + i);
+           if (LDebug.ON) Log.d(LOG_TAG, "Setting mSpinnerSpeciesConfidence; testing index " + i);
             if (mSpinnerSpeciesConfidence.getItemIdAtPosition(i) == mIDConfidence) {
-                Log.d(LOG_TAG, "Setting mSpinnerSpeciesConfidence; found matching index " + i);
+               if (LDebug.ON) Log.d(LOG_TAG, "Setting mSpinnerSpeciesConfidence; found matching index " + i);
                 mSpinnerSpeciesConfidence.setSelection(i);
                 break;
             }

@@ -163,6 +163,10 @@ public final class VNContract {
         public static final int PLACEHOLDER_MAX_LENGTH = 10; // maximum allowed length for a Placeholder code
     }
 
+    public static abstract class LDebug {
+        public static final boolean ON = true; // true or false to conditionally compile Log statements
+    }
+
     // class for use in grid view
     public class VNGridImageItem {
         private Bitmap image;

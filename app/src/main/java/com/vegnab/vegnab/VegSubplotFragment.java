@@ -3,7 +3,7 @@ package com.vegnab.vegnab;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
-import com.vegnab.vegnab.database.VNContract;
+import com.vegnab.vegnab.database.VNContract.LDebug;
 import com.vegnab.vegnab.database.VNContract.Loaders;
 import com.vegnab.vegnab.database.VNContract.Prefs;
 import android.app.Activity;
@@ -82,9 +82,9 @@ public class VegSubplotFragment extends ListFragment
         super.onCreate(savedInstanceState);
 //	setHasOptionsMenu(true);
         if (savedInstanceState == null) {
-            Log.d(LOG_TAG, "onCreate FIRST TIME, position = " + mPosition);
+           if (LDebug.ON) Log.d(LOG_TAG, "onCreate FIRST TIME, position = " + mPosition);
         } else {
-            Log.d(LOG_TAG, "onCreate SUBSEQUENT TIME, position = " + mPosition);
+           if (LDebug.ON) Log.d(LOG_TAG, "onCreate SUBSEQUENT TIME, position = " + mPosition);
         }
 // set up any interfaces
 //		try {
@@ -166,14 +166,14 @@ public class VegSubplotFragment extends ListFragment
 
 //		mVegItemsList.setOnItemClickListener(this);
 
-        Log.d(LOG_TAG, "onCreateView, position = " + mPosition);
+       if (LDebug.ON) Log.d(LOG_TAG, "onCreateView, position = " + mPosition);
         return rootView;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.d(LOG_TAG, "onStart, position = " + mPosition);
+       if (LDebug.ON) Log.d(LOG_TAG, "onStart, position = " + mPosition);
 //		mSubplotLoaderId = Loaders.BASE_SUBPLOT + (int) mSubplotTypeId;
 //		getLoaderManager().initLoader(mSubplotLoaderId, null, this);
         mSppLoaderId = Loaders.BASE_SUBPLOT_SPP + (int) mSubplotTypeId;
@@ -184,7 +184,7 @@ public class VegSubplotFragment extends ListFragment
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        Log.d(LOG_TAG, "onAttach, position = " + mPosition);
+       if (LDebug.ON) Log.d(LOG_TAG, "onAttach, position = " + mPosition);
         // assure the container activity has implemented the callback interface
         try {
             mButtonCallback = (OnButtonListener) activity;
@@ -196,7 +196,7 @@ public class VegSubplotFragment extends ListFragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.d(LOG_TAG, "onSaveInstanceState, position = " + mPosition);
+       if (LDebug.ON) Log.d(LOG_TAG, "onSaveInstanceState, position = " + mPosition);
         // save the current subplot arguments in case we need to re-create the fragment
         outState.putLong(VISIT_ID, mVisitId);
         outState.putLong(SUBPLOT_TYPE_ID, mSubplotTypeId);
@@ -211,7 +211,7 @@ public class VegSubplotFragment extends ListFragment
         Bundle args = new Bundle();
         args.putLong(EditSppItemDialog.VEG_ITEM_REC_ID, id);
         args.putBoolean(EditSppItemDialog.PRESENCE_ONLY, mPresenceOnly);
-        Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to edit record");
+       if (LDebug.ON) Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to edit record");
         EditSppItemDialog newVegItemDlg = EditSppItemDialog.newInstance(args);
         newVegItemDlg.show(getFragmentManager(), "frg_edit_veg_item");
     }
@@ -232,13 +232,13 @@ public class VegSubplotFragment extends ListFragment
     // This is executed when the user selects an option
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        Log.d(LOG_TAG, "onContextItemSelected: item.getGroupId() = " + item.getGroupId());
+       if (LDebug.ON) Log.d(LOG_TAG, "onContextItemSelected: item.getGroupId() = " + item.getGroupId());
 //		AdapterViewCompat.AdapterContextMenuInfo info = (AdapterViewCompat.AdapterContextMenuInfo) item.getMenuInfo();
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         if (info == null) {
-            Log.d(LOG_TAG, "onContextItemSelected info is null");
+           if (LDebug.ON) Log.d(LOG_TAG, "onContextItemSelected info is null");
         } else {
-            Log.d(LOG_TAG, "onContextItemSelected info: " + info.toString());
+           if (LDebug.ON) Log.d(LOG_TAG, "onContextItemSelected info: " + info.toString());
         }
 //        Toast.makeText(this.getActivity(), "Right-Clicked position " + info.position + ", record ID " + info.id, Toast.LENGTH_SHORT).show();
 
@@ -252,7 +252,7 @@ public class VegSubplotFragment extends ListFragment
 
         switch (item.getItemId()) {
         case R.id.veg_subl_list_item_edit:
-            Log.d(LOG_TAG, "Veg item 'Edit' selected");
+           if (LDebug.ON) Log.d(LOG_TAG, "Veg item 'Edit' selected");
             headerContextTracker.send(new HitBuilders.EventBuilder()
                     .setCategory("Veg Subplot Event")
                     .setAction("Context Menu")
@@ -267,7 +267,7 @@ public class VegSubplotFragment extends ListFragment
             return true;
 
         case R.id.veg_subl_list_item_delete:
-            Log.d(LOG_TAG, "Veg item 'Delete' selected");
+           if (LDebug.ON) Log.d(LOG_TAG, "Veg item 'Delete' selected");
             headerContextTracker.send(new HitBuilders.EventBuilder()
                     .setCategory("Veg Subplot Event")
                     .setAction("Context Menu")
@@ -302,7 +302,7 @@ public class VegSubplotFragment extends ListFragment
             return true;
 
         case R.id.veg_subl_list_item_help:
-            Log.d(LOG_TAG, "Veg item 'Help' selected");
+           if (LDebug.ON) Log.d(LOG_TAG, "Veg item 'Help' selected");
             headerContextTracker.send(new HitBuilders.EventBuilder()
                     .setCategory("Veg Subplot Event")
                     .setAction("Context Menu")
@@ -324,43 +324,43 @@ public class VegSubplotFragment extends ListFragment
     @Override
     public void onStop() {
         super.onStop();
-        Log.d(LOG_TAG, "onStop, position = " + mPosition);
+       if (LDebug.ON) Log.d(LOG_TAG, "onStop, position = " + mPosition);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(LOG_TAG, "onDestroy, position = " + mPosition);
+       if (LDebug.ON) Log.d(LOG_TAG, "onDestroy, position = " + mPosition);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.d(LOG_TAG, "onDestroyView, position = " + mPosition);
+       if (LDebug.ON) Log.d(LOG_TAG, "onDestroyView, position = " + mPosition);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.d(LOG_TAG, "onDetach, position = " + mPosition);
+       if (LDebug.ON) Log.d(LOG_TAG, "onDetach, position = " + mPosition);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.d(LOG_TAG, "onPause, position = " + mPosition);
+       if (LDebug.ON) Log.d(LOG_TAG, "onPause, position = " + mPosition);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(LOG_TAG, "onResume, position = " + mPosition);
+       if (LDebug.ON) Log.d(LOG_TAG, "onResume, position = " + mPosition);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.d(LOG_TAG, "onActivityCreated, position = " + mPosition);
+       if (LDebug.ON) Log.d(LOG_TAG, "onActivityCreated, position = " + mPosition);
     }
 
     @Override
@@ -373,13 +373,13 @@ public class VegSubplotFragment extends ListFragment
     }
 
     public void deleteVegItem(long vegItemRecId) {
-        Log.d(LOG_TAG, "About to delete Veg Item record id=" + vegItemRecId);
+       if (LDebug.ON) Log.d(LOG_TAG, "About to delete Veg Item record id=" + vegItemRecId);
         Uri uri = ContentUris.withAppendedId(
                 Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "vegitems"), vegItemRecId);
-        Log.d(LOG_TAG, "In ConfirmDelNamerDialog URI: " + uri.toString());
+       if (LDebug.ON) Log.d(LOG_TAG, "In ConfirmDelNamerDialog URI: " + uri.toString());
         ContentResolver rs = getActivity().getContentResolver();
         int numDeleted = rs.delete(uri, null, null);
-        Log.d(LOG_TAG, "numDeleted: " + numDeleted);
+       if (LDebug.ON) Log.d(LOG_TAG, "numDeleted: " + numDeleted);
         refreshVegList();
     }
 
@@ -413,7 +413,7 @@ public class VegSubplotFragment extends ListFragment
                     + "FROM VegItems LEFT JOIN IdLevels ON VegItems.IdLevelID = IdLevels._id "
                     + "WHERE (((VegItems.VisitID)=?) AND ((VegItems.SubPlotID)=?)) "
                     + "ORDER BY VegItems.TimeLastChanged DESC;";
-            Log.d(LOG_TAG, "onCreateLoader CURRENT_SUBPLOT_SPP, mVisitId=" + mVisitId
+           if (LDebug.ON) Log.d(LOG_TAG, "onCreateLoader CURRENT_SUBPLOT_SPP, mVisitId=" + mVisitId
                     + ", mSubplotTypeId=" + mSubplotTypeId);
             String[] sppSelectionArgs = { "" + mVisitId, "" + mSubplotTypeId };
             cl = new CursorLoader(getActivity(), baseUri,
@@ -438,7 +438,7 @@ public class VegSubplotFragment extends ListFragment
 //		}
 
         if (loaderId == mSppLoaderId) {
-            Log.d(LOG_TAG, "onLoadFinished CURRENT_SUBPLOT_SPP, number of rows returned: " + c.getCount());
+           if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished CURRENT_SUBPLOT_SPP, number of rows returned: " + c.getCount());
             mVegItemsCursor = c;
             mVegSubplotSppAdapter.swapCursor(c);
         }

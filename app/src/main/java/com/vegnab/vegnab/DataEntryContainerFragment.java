@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
+import com.vegnab.vegnab.database.VNContract.LDebug;
 import com.vegnab.vegnab.database.VNContract.Loaders;
 import android.database.Cursor;
 import android.net.Uri;
@@ -57,29 +58,29 @@ public class DataEntryContainerFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(LOG_TAG, "entered 'onCreateView'");
-        Log.d(LOG_TAG, "in 'onCreateView' before getArguments, mVisitId = " + mVisitId);
+       if (LDebug.ON) Log.d(LOG_TAG, "entered 'onCreateView'");
+       if (LDebug.ON) Log.d(LOG_TAG, "in 'onCreateView' before getArguments, mVisitId = " + mVisitId);
         mVisitId = getArguments().getLong(VISIT_ID);
-        Log.d(LOG_TAG, "in 'onCreateView' after getArguments, mVisitId = " + mVisitId);
+       if (LDebug.ON) Log.d(LOG_TAG, "in 'onCreateView' after getArguments, mVisitId = " + mVisitId);
         View root = inflater.inflate(R.layout.fragment_data_entry_container, container, false);
 // assign UI elements
         mDataScreenPager = (ViewPager) root.findViewById(R.id.data_entry_pager);
-        Log.d(LOG_TAG, "About to call LoaderManager.initLoader CURRENT_SUBPLOTS");
+       if (LDebug.ON) Log.d(LOG_TAG, "About to call LoaderManager.initLoader CURRENT_SUBPLOTS");
         getLoaderManager().initLoader(Loaders.CURRENT_SUBPLOTS, null, this);
-        Log.d(LOG_TAG, "Called LoaderManager.initLoader CURRENT_SUBPLOTS");
+       if (LDebug.ON) Log.d(LOG_TAG, "Called LoaderManager.initLoader CURRENT_SUBPLOTS");
         if (savedInstanceState != null) {
-            Log.d(LOG_TAG, "About to do 'getInt(dataPagePosition)', mScreenToShow=" + mScreenToShow);
+           if (LDebug.ON) Log.d(LOG_TAG, "About to do 'getInt(dataPagePosition)', mScreenToShow=" + mScreenToShow);
             mVisitId = savedInstanceState.getLong(VISIT_ID);
             mScreenToShow = savedInstanceState.getInt("dataPagePosition");
-            Log.d(LOG_TAG, "Completed 'getInt(dataPagePosition)', mScreenToShow=" + mScreenToShow);
+           if (LDebug.ON) Log.d(LOG_TAG, "Completed 'getInt(dataPagePosition)', mScreenToShow=" + mScreenToShow);
         } else {
-            Log.d(LOG_TAG, "savedInstanceState == null; mScreenToShow=" + mScreenToShow);
+           if (LDebug.ON) Log.d(LOG_TAG, "savedInstanceState == null; mScreenToShow=" + mScreenToShow);
             // don't yet know why mScreenToShow is retained across re-entry, but explicitly reset it here
 //			Log.d(LOG_TAG, "resetting mScreenToShow to 0");
 //			mScreenToShow = 0;
         }
         // set Pager Adapter when loader done
-        Log.d(LOG_TAG, "about to return from 'onCreateView'");
+       if (LDebug.ON) Log.d(LOG_TAG, "about to return from 'onCreateView'");
         return root;
     }
 
@@ -87,45 +88,45 @@ public class DataEntryContainerFragment extends Fragment
     @Override
     public void onStop() {
         super.onStop();
-        Log.d(LOG_TAG, "onStop, ScreenToShow = " + mScreenToShow);
+       if (LDebug.ON) Log.d(LOG_TAG, "onStop, ScreenToShow = " + mScreenToShow);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(LOG_TAG, "onDestroy, ScreenToShow = " + mScreenToShow);
+       if (LDebug.ON) Log.d(LOG_TAG, "onDestroy, ScreenToShow = " + mScreenToShow);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.d(LOG_TAG, "onDestroyView, ScreenToShow = " + mScreenToShow);
+       if (LDebug.ON) Log.d(LOG_TAG, "onDestroyView, ScreenToShow = " + mScreenToShow);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.d(LOG_TAG, "onDetach, ScreenToShow = " + mScreenToShow);
+       if (LDebug.ON) Log.d(LOG_TAG, "onDetach, ScreenToShow = " + mScreenToShow);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.d(LOG_TAG, "onPause, ScreenToShow = " + mScreenToShow + "; about to set to 'mDataScreenPager.getCurrentItem()'");
+       if (LDebug.ON) Log.d(LOG_TAG, "onPause, ScreenToShow = " + mScreenToShow + "; about to set to 'mDataScreenPager.getCurrentItem()'");
         mScreenToShow = mDataScreenPager.getCurrentItem();
-        Log.d(LOG_TAG, "onPause, ScreenToShow = " + mScreenToShow);
+       if (LDebug.ON) Log.d(LOG_TAG, "onPause, ScreenToShow = " + mScreenToShow);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(LOG_TAG, "onResume, ScreenToShow = " + mScreenToShow);
+       if (LDebug.ON) Log.d(LOG_TAG, "onResume, ScreenToShow = " + mScreenToShow);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.d(LOG_TAG, "onActivityCreated, ScreenToShow = " + mScreenToShow);
+       if (LDebug.ON) Log.d(LOG_TAG, "onActivityCreated, ScreenToShow = " + mScreenToShow);
     }
 
     public static class dataPagerAdapter extends FragmentStatePagerAdapter {
@@ -136,7 +137,7 @@ public class DataEntryContainerFragment extends Fragment
 
         @Override
         public Fragment getItem(int position) {
-            Log.d(LOG_TAG, "called dataPagerAdapter 'getItem' " + position);
+           if (LDebug.ON) Log.d(LOG_TAG, "called dataPagerAdapter 'getItem' " + position);
             Bundle args = new Bundle();
             args.putInt(VegSubplotFragment.POSITION_KEY, position);
             mSubplotsCursor.moveToPosition(position);
@@ -184,7 +185,7 @@ public class DataEntryContainerFragment extends Fragment
             WeakReference<Fragment> ref = mFragments.get(position);
             Fragment f = ref != null ? ref.get() : null;
             if (f == null) {
-                Log.d(LOG_TAG, "fragment for " + position + " is null!");
+               if (LDebug.ON) Log.d(LOG_TAG, "fragment for " + position + " is null!");
             }
             return f;
         }
@@ -226,7 +227,7 @@ public class DataEntryContainerFragment extends Fragment
             // store the list of subplots
             mPlotSpecs = new JSONArray(); // clear the array
             mSubplotNames.clear();
-            Log.d(LOG_TAG, "In 'onLoadFinished', mPlotSpecs=" + mPlotSpecs.toString());
+           if (LDebug.ON) Log.d(LOG_TAG, "In 'onLoadFinished', mPlotSpecs=" + mPlotSpecs.toString());
             while (finishedCursor.moveToNext()) {
                 mSubplotNames.append(finishedCursor.getInt(finishedCursor.getColumnIndexOrThrow("SubplotTypeId")),
                         finishedCursor.getString(finishedCursor.getColumnIndexOrThrow("SubplotDescription")));
@@ -241,16 +242,16 @@ public class DataEntryContainerFragment extends Fragment
                     mSubplotSpec.put("nstInId", finishedCursor.getInt(finishedCursor.getColumnIndexOrThrow("NestedInId")));
                     mSubplotSpec.put("nstInName", finishedCursor.getString(finishedCursor.getColumnIndexOrThrow("NestedInName")));
                 } catch (JSONException e) {
-                    Log.d(LOG_TAG, "In 'onLoadFinished', JSON error: " + e.getMessage());
+                   if (LDebug.ON) Log.d(LOG_TAG, "In 'onLoadFinished', JSON error: " + e.getMessage());
                 }
                 // can put in the auxiliary data specs, here or in post-processing
                 mPlotSpecs.put(mSubplotSpec);
             }
             // must use ChildFragmentManager
             mDataScreenPager.setAdapter(new dataPagerAdapter(getChildFragmentManager()));
-            Log.d(LOG_TAG, "About to do mDataScreenPager.setCurrentItem(mScreenToShow)=" + mScreenToShow);
+           if (LDebug.ON) Log.d(LOG_TAG, "About to do mDataScreenPager.setCurrentItem(mScreenToShow)=" + mScreenToShow);
             mDataScreenPager.setCurrentItem(mScreenToShow);
-            Log.d(LOG_TAG, "Just did mDataScreenPager.setCurrentItem(mScreenToShow)=" + mScreenToShow);
+           if (LDebug.ON) Log.d(LOG_TAG, "Just did mDataScreenPager.setCurrentItem(mScreenToShow)=" + mScreenToShow);
             break;
         }
     }
@@ -273,7 +274,7 @@ public class DataEntryContainerFragment extends Fragment
         // following can crash on screen rotate when EditSppItemDialog is displayed
 //		Log.d(LOG_TAG, "In 'onSaveInstanceState', about to save dataPagePosition; mDataScreenPager.getCurrentItem() = " + mDataScreenPager.getCurrentItem());
 //		outState.putInt("dataPagePosition", mDataScreenPager.getCurrentItem());
-        Log.d(LOG_TAG, "In 'onSaveInstanceState', about to save dataPagePosition; mScreenToShow = " + mScreenToShow);
+       if (LDebug.ON) Log.d(LOG_TAG, "In 'onSaveInstanceState', about to save dataPagePosition; mScreenToShow = " + mScreenToShow);
         outState.putInt("dataPagePosition", mScreenToShow);
         outState.putLong(VISIT_ID, mVisitId);
         super.onSaveInstanceState(outState);

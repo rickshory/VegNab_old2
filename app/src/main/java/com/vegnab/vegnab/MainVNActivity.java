@@ -30,6 +30,7 @@ import com.google.android.gms.drive.MetadataChangeSet;
 import com.vegnab.vegnab.BuildConfig;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract;
+import com.vegnab.vegnab.database.VNContract.LDebug;
 import com.vegnab.vegnab.database.VNContract.Prefs;
 import com.vegnab.vegnab.database.VNContract.Tags;
 import com.vegnab.vegnab.database.VegNabDbHelper;
@@ -217,16 +218,16 @@ public class MainVNActivity extends ActionBarActivity
         mSkuCkList.add(SKU_DONATE_LARGE);
         mSkuCkList.add(SKU_DONATE_XLARGE);
 
-        Log.d(LOG_TAG, "Creating IAB helper.");
+       if (LDebug.ON) Log.d(LOG_TAG, "Creating IAB helper.");
         mHelper = new IabHelper(this, base64EncodedPublicKey);
         // enable debug logging (for production application, set this to false).
         mHelper.enableDebugLogging(true);
         // Start setup. This is asynchronous.
         // The specified listener will be called once setup completes.
-        Log.d(LOG_TAG, "Starting setup.");
+       if (LDebug.ON) Log.d(LOG_TAG, "Starting setup.");
         mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
             public void onIabSetupFinished(IabResult result) {
-                Log.d(LOG_TAG, "Setup finished.");
+               if (LDebug.ON) Log.d(LOG_TAG, "Setup finished.");
                 if (!result.isSuccess()) {
                     // a problem.
                     //Toast.makeText(this,
@@ -240,7 +241,7 @@ public class MainVNActivity extends ActionBarActivity
 
                 // always a good idea to query inventory
                 // even if products were supposed to be consumed there might have been some glitch
-                Log.d(LOG_TAG, "Setup done. Querying inventory.");
+               if (LDebug.ON) Log.d(LOG_TAG, "Setup done. Querying inventory.");
                 mHelper.queryInventoryAsync(true, mSkuCkList, mGotInventoryListener);
 
             }
@@ -282,7 +283,7 @@ public class MainVNActivity extends ActionBarActivity
 /*
             @Override
             protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-                Log.d(LOG_TAG, "onActivityResult(" + requestCode + "," + resultCode + ", " + data);
+               if (LDebug.ON) Log.d(LOG_TAG, "onActivityResult(" + requestCode + "," + resultCode + ", " + data);
                 if (mHelper == null)
                     return;
 // Pass on the activity result to the helper for handling
@@ -292,7 +293,7 @@ public class MainVNActivity extends ActionBarActivity
 // billing...
                     super.onActivityResult(requestCode, resultCode, data);
                 } else {
-                    Log.d(LOG_TAG, "onActivityResult handled by IABUtil.");
+                   if (LDebug.ON) Log.d(LOG_TAG, "onActivityResult handled by IABUtil.");
                 }
             }
 */
@@ -316,7 +317,7 @@ public class MainVNActivity extends ActionBarActivity
         super.onDestroy();
 
         // very important:
-        Log.d(LOG_TAG, "Destroying helper.");
+       if (LDebug.ON) Log.d(LOG_TAG, "Destroying helper.");
         if (mHelper != null) {
             mHelper.dispose();
             mHelper = null;
@@ -419,16 +420,16 @@ public class MainVNActivity extends ActionBarActivity
 /* comment out onBackPressed()
     @Override
     public void onBackPressed() {
-        Log.d(LOG_TAG, "Caught 'onBackPressed'");
+       if (LDebug.ON) Log.d(LOG_TAG, "Caught 'onBackPressed'");
         FragmentManager fm = getSupportFragmentManager();
         try {
             // try to pop the data screens container fragment
             if (fm.popBackStackImmediate (Tags.DATA_SCREENS_CONTAINER, FragmentManager.POP_BACK_STACK_INCLUSIVE)) {
-                Log.d(LOG_TAG, "DATA_SCREENS_CONTAINER fragment popped from backstack");
+               if (LDebug.ON) Log.d(LOG_TAG, "DATA_SCREENS_CONTAINER fragment popped from backstack");
 //				wasRemoved = true;
             }
         } catch (Exception e) {
-            Log.d(LOG_TAG, "stack pop exception: " + e.getMessage());
+           if (LDebug.ON) Log.d(LOG_TAG, "stack pop exception: " + e.getMessage());
         }
 
 //		Fragment currentFragment = this.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
@@ -444,10 +445,10 @@ public class MainVNActivity extends ActionBarActivity
     public void onVisitHeaderGoButtonClicked(long visitId) {
         mVisitId = visitId;
         // swap DataEntryContainerFragment in place of existing fragment
-        Log.d(LOG_TAG, "About to go to DataEntryContainer");
+       if (LDebug.ON) Log.d(LOG_TAG, "About to go to DataEntryContainer");
         FragmentManager fm = getSupportFragmentManager();
         Bundle args = new Bundle();
-        Log.d(LOG_TAG, "In onVisitHeaderGoButtonClicked, about to putLong mVisitId=" +  mVisitId);
+       if (LDebug.ON) Log.d(LOG_TAG, "In onVisitHeaderGoButtonClicked, about to putLong mVisitId=" +  mVisitId);
         args.putLong(DataEntryContainerFragment.VISIT_ID, mVisitId);
         DataEntryContainerFragment dataEntryFrag = DataEntryContainerFragment.newInstance(args);
         FragmentTransaction transaction = fm.beginTransaction();
@@ -457,7 +458,7 @@ public class MainVNActivity extends ActionBarActivity
         transaction.replace(R.id.fragment_container, dataEntryFrag, Tags.DATA_SCREENS_CONTAINER);
         transaction.addToBackStack(null);
         transaction.commit();
-        Log.d(LOG_TAG, "Call to DataEntryContainer complete");
+       if (LDebug.ON) Log.d(LOG_TAG, "Call to DataEntryContainer complete");
     }
 
     @Override
@@ -473,7 +474,7 @@ public class MainVNActivity extends ActionBarActivity
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        Log.d(LOG_TAG, "In 'onRestoreInstanceState'");
+       if (LDebug.ON) Log.d(LOG_TAG, "In 'onRestoreInstanceState'");
         mSubplotTypeId = savedInstanceState.getLong(ARG_SUBPLOT_TYPE_ID);
         mVisitId = savedInstanceState.getLong(ARG_VISIT_ID);
         mConnectionRequested = savedInstanceState.getBoolean(ARG_CONNECTION_REQUESTED);
@@ -534,7 +535,7 @@ public class MainVNActivity extends ActionBarActivity
 
     public void goToVisitHeaderScreen(long visitID) {
         // swap VisitHeaderFragment in place of existing fragment
-        Log.d(LOG_TAG, "About to go to VisitHeader");
+       if (LDebug.ON) Log.d(LOG_TAG, "About to go to VisitHeader");
         Bundle args = new Bundle();
         // visitID = 0 means new visit, not assigned or created yet
         args.putLong(VisitHeaderFragment.ARG_VISIT_ID, visitID);
@@ -550,7 +551,7 @@ public class MainVNActivity extends ActionBarActivity
 
     public void goToEditPlaceholderScreen(Bundle enteredArgs) {
         // swap EditPlaceholderFragment in place of existing fragment
-        Log.d(LOG_TAG, "About to go to EditPlaceholder");
+       if (LDebug.ON) Log.d(LOG_TAG, "About to go to EditPlaceholder");
         Bundle args = new Bundle();
         // fn structure, but not functional yet
 /*available args	final static String ARG_PLACEHOLDER_ID = "placeholderId";
@@ -580,7 +581,7 @@ public class MainVNActivity extends ActionBarActivity
 
     public void goToPhPixGridScreen(Bundle enteredArgs) {
         // swap PhPixGridFragment in place of existing fragment
-        Log.d(LOG_TAG, "About to go to Placeholder Pictures");
+       if (LDebug.ON) Log.d(LOG_TAG, "About to go to Placeholder Pictures");
         Bundle args = new Bundle();
         // fn structure, but not functional yet
 /*available args	final static String ARG_PLACEHOLDER_ID = "placeholderId";
@@ -626,16 +627,16 @@ public class MainVNActivity extends ActionBarActivity
                 skuObj.put("sku", sSku);
                 if (mInventory.hasDetails(sSku)) {
                     skuObj.put("available", true);
-                    Log.d(LOG_TAG, "inventory has details for '" + sSku + "'");
+                   if (LDebug.ON) Log.d(LOG_TAG, "inventory has details for '" + sSku + "'");
                     SkuDetails skuDetails = mInventory.getSkuDetails(sSku);
-                    Log.d(LOG_TAG, "     Price: " + skuDetails.getPrice());
+                   if (LDebug.ON) Log.d(LOG_TAG, "     Price: " + skuDetails.getPrice());
                     skuObj.put("price", skuDetails.getPrice());
-                    Log.d(LOG_TAG, "     Description: " + skuDetails.getDescription());
+                   if (LDebug.ON) Log.d(LOG_TAG, "     Description: " + skuDetails.getDescription());
                     skuObj.put("descr", skuDetails.getDescription());
-                    Log.d(LOG_TAG, "     Title: " + skuDetails.getTitle());
+                   if (LDebug.ON) Log.d(LOG_TAG, "     Title: " + skuDetails.getTitle());
                     skuObj.put("title", skuDetails.getTitle());
                 } else {
-                    Log.d(LOG_TAG, "inventory has nothing for '" + sSku + "'");
+                   if (LDebug.ON) Log.d(LOG_TAG, "inventory has nothing for '" + sSku + "'");
                     skuObj.put("available", false);
                     skuObj.put("price", "--");
                     skuObj.put("descr", "(" + sSku + ", unavailable)");
@@ -648,12 +649,12 @@ public class MainVNActivity extends ActionBarActivity
                 skuObj.put("owned", owned);
                 jsonSKUs.put(skuObj);
             }
-            Log.d(LOG_TAG, "JSON string sent to Donate screen: " + jsonSKUs.toString());
+           if (LDebug.ON) Log.d(LOG_TAG, "JSON string sent to Donate screen: " + jsonSKUs.toString());
             args.putString(DonateFragment.ARG_JSON_STRING, jsonSKUs.toString());
         } catch(JSONException ex) {
             ex.printStackTrace();
             args.putString(DonateFragment.ARG_JSON_STRING, null);
-            Log.d(LOG_TAG, "JSON error getting product information");
+           if (LDebug.ON) Log.d(LOG_TAG, "JSON error getting product information");
             Toast.makeText(this, "Error getting product informations", Toast.LENGTH_LONG).show();
             return;
         }
@@ -685,7 +686,7 @@ public class MainVNActivity extends ActionBarActivity
 
     public void onPlaceholderActionButtonClicked(Bundle args) {
         Bundle argsOut= new Bundle();
-        Log.d(LOG_TAG, "In onPlaceholderActionButtonClicked");
+       if (LDebug.ON) Log.d(LOG_TAG, "In onPlaceholderActionButtonClicked");
         switch (args.getInt(EditPlaceholderFragment.BUTTON_KEY)) {
             case VNContract.PhActions.GO_TO_PICTURES: // go to the show/take/edit photos screen
                 argsOut.putLong(PhPixGridFragment.ARG_PLACEHOLDER_ID,
@@ -702,7 +703,7 @@ public class MainVNActivity extends ActionBarActivity
     }
 
     public void onRequestGenerateExistingPlaceholders(Bundle args) {
-        Log.d(LOG_TAG, "In onRequestGenerateExistingPlaceholders");
+       if (LDebug.ON) Log.d(LOG_TAG, "In onRequestGenerateExistingPlaceholders");
         mPhProjID = args.getLong(ARG_PH_PROJ_ID, 0);
         mPhNameId = args.getLong(ARG_PH_NAMER_ID, 0);
         getSupportLoaderManager().restartLoader(VNContract.Loaders.EXISTING_PH_CODES, null, this);
@@ -789,7 +790,7 @@ public class MainVNActivity extends ActionBarActivity
 
 //    @Override
     public void onDeleteVegItemConfirm(DialogFragment dialog) {
-        Log.d(LOG_TAG, "onDeleteVegItemConfirm(DialogFragment dialog)");
+       if (LDebug.ON) Log.d(LOG_TAG, "onDeleteVegItemConfirm(DialogFragment dialog)");
         Bundle args = dialog.getArguments();
         long recIdToDelete = args.getLong(ConfirmDelVegItemDialog.ARG_VI_REC_ID);
         DataEntryContainerFragment dataEntryFrag = (DataEntryContainerFragment)
@@ -809,7 +810,7 @@ public class MainVNActivity extends ActionBarActivity
     }
 
     public void onUnHideVisitConfirm(DialogFragment dialog) {
-        Log.d(LOG_TAG, "onUnHideVisitConfirm(DialogFragment dialog)");
+       if (LDebug.ON) Log.d(LOG_TAG, "onUnHideVisitConfirm(DialogFragment dialog)");
         Bundle args = dialog.getArguments();
         long recIdToUnhide = args.getLong(UnHideVisitDialog.ARG_VISIT_ID_TO_UNHIDE);
         NewVisitFragment nvFrag = (NewVisitFragment)
@@ -819,7 +820,7 @@ public class MainVNActivity extends ActionBarActivity
 
     @Override
     public void onConfigurableEditComplete(DialogFragment dialog) {
-        Log.d(LOG_TAG, "onConfigurableEditComplete(DialogFragment dialog)");
+       if (LDebug.ON) Log.d(LOG_TAG, "onConfigurableEditComplete(DialogFragment dialog)");
         // get parameter(s) from dialog
         Bundle args = dialog.getArguments();
         // switch out task based on where called from
@@ -835,7 +836,7 @@ public class MainVNActivity extends ActionBarActivity
             } catch (Exception e) {
                 // screen rotates may destroy some objects & cause null pointer exceptions
                 // refresh will occur when fragments rebuilt
-                Log.d(LOG_TAG, "exception: " + e.getMessage());
+               if (LDebug.ON) Log.d(LOG_TAG, "exception: " + e.getMessage());
             }
         }
         EditPlaceholderFragment editPhFragment = (EditPlaceholderFragment)
@@ -852,14 +853,14 @@ public class MainVNActivity extends ActionBarActivity
                     editPhFragment.refreshIdMethodSpinner();
                 }
             } catch (Exception e) {
-                Log.d(LOG_TAG, "exception: " + e.getMessage());
+               if (LDebug.ON) Log.d(LOG_TAG, "exception: " + e.getMessage());
             }
         }
     }
 
     @Override
     public void onEditNamerComplete(DialogFragment dialog) {
-        Log.d(LOG_TAG, "onEditNamerComplete(DialogFragment dialog)");
+       if (LDebug.ON) Log.d(LOG_TAG, "onEditNamerComplete(DialogFragment dialog)");
         VisitHeaderFragment visHdrFragment = (VisitHeaderFragment)
                 getSupportFragmentManager().findFragmentByTag(Tags.VISIT_HEADER);
         visHdrFragment.refreshNamerSpinner();
@@ -867,7 +868,7 @@ public class MainVNActivity extends ActionBarActivity
 
     @Override
     public void onEditVisitComplete(VisitHeaderFragment visitHeaderFragment) {
-        Log.d(LOG_TAG, "onEditVisitComplete(VisitHeaderFragment visitHeaderFragment)");
+       if (LDebug.ON) Log.d(LOG_TAG, "onEditVisitComplete(VisitHeaderFragment visitHeaderFragment)");
         NewVisitFragment newVisFragment = (NewVisitFragment)
                 getSupportFragmentManager().findFragmentByTag(Tags.NEW_VISIT);
         newVisFragment.refreshVisitsList();
@@ -881,13 +882,13 @@ public class MainVNActivity extends ActionBarActivity
 
     @Override
     public void onEditVegItemComplete(DialogFragment dialog) {
-        Log.d(LOG_TAG, "onEditSppComplete(DialogFragment dialog)");
+       if (LDebug.ON) Log.d(LOG_TAG, "onEditSppComplete(DialogFragment dialog)");
         DataEntryContainerFragment dataScreensFrag = (DataEntryContainerFragment)
                 getSupportFragmentManager().findFragmentByTag(Tags.DATA_SCREENS_CONTAINER);
         if (dataScreensFrag == null) {
-            Log.d(LOG_TAG, "dataScreensFrag == null");
+           if (LDebug.ON) Log.d(LOG_TAG, "dataScreensFrag == null");
         } else {
-            Log.d(LOG_TAG, "dataScreensFrag: " + dataScreensFrag.toString());
+           if (LDebug.ON) Log.d(LOG_TAG, "dataScreensFrag: " + dataScreensFrag.toString());
             try {
                 // Sometimes screen-rotates while EditSppItemDialog is displayed destroy some of
                 // the following objects, in which case the app would crash with null pointer exceptions
@@ -899,16 +900,16 @@ public class MainVNActivity extends ActionBarActivity
                         ((DataEntryContainerFragment.dataPagerAdapter)dataScreensFrag.mDataScreenPager.getAdapter());
                 VegSubplotFragment vegSubpFragment = (VegSubplotFragment) adapter.getFragment(index);
                 if (vegSubpFragment == null) {
-                    Log.d(LOG_TAG, "vegSubpFragment == null");
+                   if (LDebug.ON) Log.d(LOG_TAG, "vegSubpFragment == null");
                 } else {
-                    Log.d(LOG_TAG, "vegSubpFragment: " + vegSubpFragment.toString());
-                    Log.d(LOG_TAG, "About to do 'refreshSppList' for data page " + index);
+                   if (LDebug.ON) Log.d(LOG_TAG, "vegSubpFragment: " + vegSubpFragment.toString());
+                   if (LDebug.ON) Log.d(LOG_TAG, "About to do 'refreshSppList' for data page " + index);
                     vegSubpFragment.refreshVegList();
-                    Log.d(LOG_TAG, "Completed 'refreshSppList' for data page " + index);
+                   if (LDebug.ON) Log.d(LOG_TAG, "Completed 'refreshSppList' for data page " + index);
     //				dataScreensFrag.mDataScreenPager.setCurrentItem(index);
                 }
             } catch (Exception e) {
-                Log.d(LOG_TAG, "exception: " + e.getMessage());
+               if (LDebug.ON) Log.d(LOG_TAG, "exception: " + e.getMessage());
             }
         }
 
@@ -929,7 +930,7 @@ public class MainVNActivity extends ActionBarActivity
     @Override
     public void onEditPlaceholder(Bundle argsIn) {
         // swap EditPlaceholderFragment in place of existing fragment
-        Log.d(LOG_TAG, "About to go to Placeholder");
+       if (LDebug.ON) Log.d(LOG_TAG, "About to go to Placeholder");
         Bundle argsOut = new Bundle();
         argsOut.putAll(argsIn); // if the bundle info can be passed right through
         EditPlaceholderFragment phFrag = EditPlaceholderFragment.newInstance(argsOut);
@@ -944,7 +945,7 @@ public class MainVNActivity extends ActionBarActivity
     // Listener that's called when we finish querying the items and subscriptions we own
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
         public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
-            Log.d(LOG_TAG, "Query inventory finished.");
+           if (LDebug.ON) Log.d(LOG_TAG, "Query inventory finished.");
 
             // Have we been disposed of in the meantime? If so, quit.
             if (mHelper == null) return;
@@ -955,28 +956,28 @@ public class MainVNActivity extends ActionBarActivity
                 return;
             }
 
-            Log.d(LOG_TAG, "Query inventory was successful.");
+           if (LDebug.ON) Log.d(LOG_TAG, "Query inventory was successful.");
 
             mInventory = inventory; // save a reference to use outside this callback
 
 //            for (String sSku : mSkuCkList) {
 //                if (inventory.hasDetails(sSku)) {
-//                    Log.d(LOG_TAG, "inventory has details for '" + sSku + "'");
+//                   if (LDebug.ON) Log.d(LOG_TAG, "inventory has details for '" + sSku + "'");
 //                    SkuDetails skuDetails = inventory.getSkuDetails(sSku);
-//                    Log.d(LOG_TAG, "     Title: " + skuDetails.getTitle());
-//                    Log.d(LOG_TAG, "     Description: " + skuDetails.getDescription());
-//                    Log.d(LOG_TAG, "     Price: " + skuDetails.getPrice());
+//                   if (LDebug.ON) Log.d(LOG_TAG, "     Title: " + skuDetails.getTitle());
+//                   if (LDebug.ON) Log.d(LOG_TAG, "     Description: " + skuDetails.getDescription());
+//                   if (LDebug.ON) Log.d(LOG_TAG, "     Price: " + skuDetails.getPrice());
 //                } else {
-//                    Log.d(LOG_TAG, "inventory has nothing for '" + sSku + "'");
+//                   if (LDebug.ON) Log.d(LOG_TAG, "inventory has nothing for '" + sSku + "'");
 //                }
 //            }
 
 //            // has this user used the Google test code "android.test.purchased"
 //            Purchase testPurchase = inventory.getPurchase(productID_testPurchased);
 //            if ((testPurchase != null) && (verifyDeveloperPayload(testPurchase))) {
-//                Log.d(LOG_TAG, "user has purchased the Google test purchase, about to consume it");
+//               if (LDebug.ON) Log.d(LOG_TAG, "user has purchased the Google test purchase, about to consume it");
 //                mHelper.consumeAsync(inventory.getPurchase(productID_testPurchased), mConsumeFinishedListener);
-//                Log.d(LOG_TAG, "consumeAsync of Google test purchase sent");
+//               if (LDebug.ON) Log.d(LOG_TAG, "consumeAsync of Google test purchase sent");
 //                return;
 //            }
 
@@ -989,27 +990,27 @@ public class MainVNActivity extends ActionBarActivity
 //            // Do we have the premium upgrade?
 //            Purchase premiumPurchase = inventory.getPurchase(SKU_PREMIUM);
 //            mIsPremium = (premiumPurchase != null && verifyDeveloperPayload(premiumPurchase));
-//            Log.d(LOG_TAG, "User is " + (mIsPremium ? "PREMIUM" : "NOT PREMIUM"));
+//           if (LDebug.ON) Log.d(LOG_TAG, "User is " + (mIsPremium ? "PREMIUM" : "NOT PREMIUM"));
 //
 //            // Do we have the infinite gas plan?
 //            Purchase infiniteGasPurchase = inventory.getPurchase(SKU_INFINITE_GAS);
 //            mSubscribedToInfiniteGas = (infiniteGasPurchase != null &&
 //                    verifyDeveloperPayload(infiniteGasPurchase));
-//            Log.d(LOG_TAG, "User " + (mSubscribedToInfiniteGas ? "HAS" : "DOES NOT HAVE")
+//           if (LDebug.ON) Log.d(LOG_TAG, "User " + (mSubscribedToInfiniteGas ? "HAS" : "DOES NOT HAVE")
 //                    + " infinite gas subscription.");
 //            if (mSubscribedToInfiniteGas) mTank = TANK_MAX;
 //
 //            // Check for gas delivery -- if we own gas, we should fill up the tank immediately
 //            Purchase gasPurchase = inventory.getPurchase(SKU_GAS);
 //            if (gasPurchase != null && verifyDeveloperPayload(gasPurchase)) {
-//                Log.d(LOG_TAG, "We have gas. Consuming it.");
+//               if (LDebug.ON) Log.d(LOG_TAG, "We have gas. Consuming it.");
 //                mHelper.consumeAsync(inventory.getPurchase(SKU_GAS), mConsumeFinishedListener);
 //                return;
 //            }
 
 //            updateUi();
 //            setWaitScreen(false);
-//            Log.d(LOG_TAG, "Initial inventory query finished; enabling main UI.");
+//           if (LDebug.ON) Log.d(LOG_TAG, "Initial inventory query finished; enabling main UI.");
             // probably set a flag here that inventory is checked
         }
     };
@@ -1032,7 +1033,7 @@ public class MainVNActivity extends ActionBarActivity
 
 
     public void onDonate(Bundle args) {
-        Log.d(LOG_TAG, "in onDonate; launching purchase flow");
+       if (LDebug.ON) Log.d(LOG_TAG, "in onDonate; launching purchase flow");
 //        setWaitScreen(true);
 //        mHelper.consumeAsync(inventory.getPurchase(productID_testPurchased),
 //                mConsumeFinishedListener);
@@ -1087,7 +1088,7 @@ public class MainVNActivity extends ActionBarActivity
     // Callback for when a purchase is finished
     IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
         public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
-            Log.d(LOG_TAG, "Purchase finished: " + result + ", purchase: " + purchase);
+           if (LDebug.ON) Log.d(LOG_TAG, "Purchase finished: " + result + ", purchase: " + purchase);
             // get an Analytics event tracker
             Tracker purchaseFinishedTracker = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
 
@@ -1138,7 +1139,7 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                 return;
             }
 
-            Log.d(LOG_TAG, "Purchase successful.");
+           if (LDebug.ON) Log.d(LOG_TAG, "Purchase successful.");
             purchaseFinishedTracker.send(new HitBuilders.EventBuilder()
                     .setCategory("Purchase Event")
                     .setAction("Finished, successful")
@@ -1149,8 +1150,8 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
 //            if (purchase.getSku().equals(SKU_DONATE_USD_001_00)) {
             if (purchase.getSku().equals(productID_testPurchased)) {
                 // bought a donation, so consume it.
-//                Log.d(LOG_TAG, "Purchase is $1 donation. Starting consumption.");
-                Log.d(LOG_TAG, "Purchase is test.purchased. Starting consumption.");
+//               if (LDebug.ON) Log.d(LOG_TAG, "Purchase is $1 donation. Starting consumption.");
+               if (LDebug.ON) Log.d(LOG_TAG, "Purchase is test.purchased. Starting consumption.");
                 mHelper.consumeAsync(purchase, mConsumeFinishedListener);
             }
 
@@ -1177,7 +1178,7 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
 /*
             else if (purchase.getSku().equals(SKU_PREMIUM)) {
                 // bought the premium upgrade!
-                Log.d(LOG_TAG, "Purchase is premium upgrade. Congratulating user.");
+               if (LDebug.ON) Log.d(LOG_TAG, "Purchase is premium upgrade. Congratulating user.");
                 alert("Thank you for upgrading to premium!");
                 mIsPremium = true;
                 updateUi();
@@ -1185,7 +1186,7 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
             }
             else if (purchase.getSku().equals(SKU_INFINITE_GAS)) {
                 // bought the infinite gas subscription
-                Log.d(LOG_TAG, "Infinite gas subscription purchased.");
+               if (LDebug.ON) Log.d(LOG_TAG, "Infinite gas subscription purchased.");
                 alert("Thank you for subscribing to infinite gas!");
                 mSubscribedToInfiniteGas = true;
                 mTank = TANK_MAX;
@@ -1199,7 +1200,7 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
     // Called when consumption is complete
     IabHelper.OnConsumeFinishedListener mConsumeFinishedListener = new IabHelper.OnConsumeFinishedListener() {
         public void onConsumeFinished(Purchase purchase, IabResult result) {
-            Log.d(LOG_TAG, "Consumption finished. Purchase: " + purchase + ", result: " + result);
+            if (LDebug.ON) Log.d(LOG_TAG, "Consumption finished. Purchase: " + purchase + ", result: " + result);
             // get an Analytics event tracker
             Tracker consumePurchaseTracker = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
 
@@ -1223,7 +1224,7 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
             if (result.isSuccess()) {
                 // successfully consumed, so we apply the effects of the item in our
                 // game world's logic, which in our case means filling the gas tank a bit
-                Log.d(LOG_TAG, "Consumption successful. Accounting.");
+               if (LDebug.ON) Log.d(LOG_TAG, "Consumption successful. Accounting.");
                 // maybe record this in the database?
                 consumePurchaseTracker.send(new HitBuilders.EventBuilder()
                         .setCategory("Consume Purchase Event")
@@ -1231,7 +1232,7 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                         .setLabel(purchase.getSku())
                         .setValue(purchase.getPurchaseTime())
                         .build());
-//                Log.d(LOG_TAG, "Consumption successful. Provisioning.");
+//               if (LDebug.ON) Log.d(LOG_TAG, "Consumption successful. Provisioning.");
 //                mTank = mTank == TANK_MAX ? TANK_MAX : mTank + 1;
 //                saveData();
 //                alert("You filled 1/4 tank. Your tank is now " + String.valueOf(mTank) + "/4 full!");
@@ -1248,7 +1249,7 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
             }
 //            updateUi();
 //            setWaitScreen(false);
-            Log.d(LOG_TAG, "End consumption flow.");
+           if (LDebug.ON) Log.d(LOG_TAG, "End consumption flow.");
         }
     };
 
@@ -1266,15 +1267,15 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
     public File getBackupDatabaseFile() {
         SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-", Locale.US);
         String uniqueTime = timeFormat.format(new Date());
-        Log.d(LOG_TAG, "uniqueTime: " + uniqueTime);
+       if (LDebug.ON) Log.d(LOG_TAG, "uniqueTime: " + uniqueTime);
         String dbBkupName = uniqueTime + DATABASE_NAME;
-        Log.d(LOG_TAG, "dbBkupName: " + dbBkupName);
+       if (LDebug.ON) Log.d(LOG_TAG, "dbBkupName: " + dbBkupName);
 
         File sdCard = Environment.getExternalStorageDirectory();
         // create the folder
         File vnFolder = new File(sdCard.getAbsolutePath() + "/" + saveFolderName);
         vnFolder.mkdirs();
-        Log.d(LOG_TAG, "folder created '" + saveFolderName + "'");
+       if (LDebug.ON) Log.d(LOG_TAG, "folder created '" + saveFolderName + "'");
         File backupDB = new File(vnFolder, dbBkupName);
 
         return backupDB;
@@ -1285,12 +1286,12 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
         ConfigurableMsgDialog flexErrDlg = new ConfigurableMsgDialog();
         try {
             copyFile(from, to);
-            Log.d(LOG_TAG, "DB backed up to: " + to.getPath());
+           if (LDebug.ON) Log.d(LOG_TAG, "DB backed up to: " + to.getPath());
             flexErrDlg = ConfigurableMsgDialog.newInstance("DB backed up to: ", to.getPath());
             flexErrDlg.show(getSupportFragmentManager(), "frg_db_copy_ok");
             return true;
         } catch (IOException e) {
-            Log.d(LOG_TAG, "Error backuping up database: " + e.getMessage(), e);
+           if (LDebug.ON) Log.d(LOG_TAG, "Error backuping up database: " + e.getMessage(), e);
             flexErrDlg = ConfigurableMsgDialog.newInstance("Error backing up database: ", e.getMessage());
             flexErrDlg.show(getSupportFragmentManager(), "frg_db_copy_ok");
         }
@@ -1368,11 +1369,11 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
     @Override
     public void onExportVisitRequest(Bundle paramsBundle) {
         mVisitIdToExport = paramsBundle.getLong(ARG_VISIT_TO_EXPORT_ID);
-        Log.d(LOG_TAG, "mVisitIdToExport received in 'onExportVisitRequest' = " + mVisitIdToExport);
+       if (LDebug.ON) Log.d(LOG_TAG, "mVisitIdToExport received in 'onExportVisitRequest' = " + mVisitIdToExport);
         // ARG_VISIT_TO_EXPORT_NAME); // currently unused
         // get filename, either default or overridden in Confirm dialog
         mExportFileName = paramsBundle.getString(ARG_VISIT_TO_EXPORT_FILENAME);
-        Log.d(LOG_TAG, "mExportFileName received in 'onExportVisitRequest': " + mExportFileName);
+       if (LDebug.ON) Log.d(LOG_TAG, "mExportFileName received in 'onExportVisitRequest': " + mExportFileName);
         mResolvePlaceholders = paramsBundle.getBoolean(ARG_RESOLVE_PLACEHOLDERS, true);
         mConnectionRequested = true;
         buildGoogleApiClient();
@@ -1432,18 +1433,18 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(LOG_TAG, "in 'onActivityResult' resolution callback before any validity testing");
-        Log.d(LOG_TAG, "onActivityResult(" + requestCode + "," + resultCode + ", " + data);
+       if (LDebug.ON) Log.d(LOG_TAG, "in 'onActivityResult' resolution callback before any validity testing");
+       if (LDebug.ON) Log.d(LOG_TAG, "onActivityResult(" + requestCode + "," + resultCode + ", " + data);
         // first, test for in-app billing result
         if ((mHelper != null) && (mHelper.handleActivityResult(requestCode, resultCode, data))) {
-            Log.d(LOG_TAG, "onActivityResult handled by IABUtil.");
+           if (LDebug.ON) Log.d(LOG_TAG, "onActivityResult handled by IABUtil.");
         } else {
             // handle activity results not related to in-app billing
             // we come here if connection first failed, such as if we needed to get the user login
             // the failure sent off the login request as an intent, which then
             // sent back another intent, which arrives here
             if (requestCode == REQUEST_CODE_RESOLUTION && resultCode == RESULT_OK) {
-                Log.d(LOG_TAG, "in 'onActivityResult' resolution callback (requestCode == REQUEST_CODE_RESOLUTION && resultCode == RESULT_OK)");
+               if (LDebug.ON) Log.d(LOG_TAG, "in 'onActivityResult' resolution callback (requestCode == REQUEST_CODE_RESOLUTION && resultCode == RESULT_OK)");
                 mGoogleApiClient.connect();
             }
         }
@@ -1461,14 +1462,14 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
     // Called when {@code mGoogleApiClient} is disconnected
     @Override
     public void onConnectionSuspended(int cause) {
-        Log.d(LOG_TAG, "GoogleApiClient connection suspended");
+       if (LDebug.ON) Log.d(LOG_TAG, "GoogleApiClient connection suspended");
     }
 
     // Called when {@code mGoogleApiClient} is trying to connect but failed.
     // Handle {@code result.getResolution()} if there is a resolution is available.
     @Override
     public void onConnectionFailed(ConnectionResult result) {
-        Log.d(LOG_TAG, "GoogleApiClient connection failed: " + result.toString());
+       if (LDebug.ON) Log.d(LOG_TAG, "GoogleApiClient connection failed: " + result.toString());
         if (!result.hasResolution()) {
             // show the localized error dialog.
             GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), this, 0).show();
@@ -1477,7 +1478,7 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
         try {
             result.startResolutionForResult(this, REQUEST_CODE_RESOLUTION);
         } catch (IntentSender.SendIntentException e) {
-            Log.e(LOG_TAG, "Exception while starting resolution activity", e);
+           if (LDebug.ON) Log.e(LOG_TAG, "Exception while starting resolution activity", e);
         }
     }
 
@@ -1496,7 +1497,7 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
     @Override
     public void onConnected(Bundle connectionHint) {
  //       super.onConnected(connectionHint);
-        Log.d(LOG_TAG, "GoogleApiClient connected");
+       if (LDebug.ON) Log.d(LOG_TAG, "GoogleApiClient connected");
     }
 
     final private ResultCallback<DriveApi.DriveContentsResult> driveContentsCallback = new
@@ -1584,9 +1585,9 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                         }
 //	    						Log.d(LOG_TAG, "wrote a record");
                     }
-                    Log.d(LOG_TAG, "cursor done");
+                   if (LDebug.ON) Log.d(LOG_TAG, "cursor done");
                     thdCs.close();
-                    Log.d(LOG_TAG, "cursor closed");
+                   if (LDebug.ON) Log.d(LOG_TAG, "cursor closed");
                     // get the Subplots for this Visit
                     long sbId;
                     String sbName, spCode, spDescr, spParams;
@@ -1652,12 +1653,12 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                     }
                     thdSb.close();
                     thdDb.close();
-                    Log.d(LOG_TAG, "database closed");
+                   if (LDebug.ON) Log.d(LOG_TAG, "database closed");
                 }
 
                 writer.close();
             } catch (IOException e) {
-                Log.e(LOG_TAG, e.getMessage());
+               if (LDebug.ON) Log.e(LOG_TAG, e.getMessage());
             }
             MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
                     .setTitle(fileName + ".txt")
@@ -1694,7 +1695,7 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
     }
 
     void complain(String message) {
-        Log.d(LOG_TAG, "Error: " + message);
+       if (LDebug.ON) Log.d(LOG_TAG, "Error: " + message);
         alert("Error: " + message);
     }
 
@@ -1702,7 +1703,7 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
         AlertDialog.Builder bld = new AlertDialog.Builder(this);
         bld.setMessage(message);
         bld.setNeutralButton("OK", null);
-        Log.d(LOG_TAG, "Showing alert dialog: " + message);
+       if (LDebug.ON) Log.d(LOG_TAG, "Showing alert dialog: " + message);
         bld.create().show();
     }
 }

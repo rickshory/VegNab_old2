@@ -8,7 +8,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract.Loaders;
-import com.vegnab.vegnab.database.VNContract.Prefs;
+import com.vegnab.vegnab.database.VNContract.LDebug;
 import com.vegnab.vegnab.database.VNContract.VegcodeSources;
 import com.vegnab.vegnab.database.VNContract.VNRegex;
 import com.vegnab.vegnab.database.VNContract.VNConstraints;
@@ -91,7 +91,7 @@ public class SelectSpeciesFragment extends ListFragment
             mPickPlaceholder = false; // pop out of this mode on any keystroke
             // use this method; test length of string; e.g. 'count' of other methods does not give this length
             //Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "'");
-            Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "', length: " + s.length());
+           if (LDebug.ON) Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "', length: " + s.length());
             mStSearch = s.toString();
             getLoaderManager().restartLoader(Loaders.SPP_MATCHES, null, SelectSpeciesFragment.this);
         }
@@ -190,7 +190,7 @@ public class SelectSpeciesFragment extends ListFragment
 
     @Override
     public void onPause(){
-        Log.d(LOG_TAG, "in 'onPause'");
+       if (LDebug.ON) Log.d(LOG_TAG, "in 'onPause'");
 
         super.onPause();
     }
@@ -217,7 +217,7 @@ public class SelectSpeciesFragment extends ListFragment
 // available fields: _id, Code, Genus, Species, SubsppVar, Vernacular, MatchTxt, SubListOrder, IsPlaceholder
         String vegCode = mSppMatchCursor.getString(
                 mSppMatchCursor.getColumnIndexOrThrow("Code"));
-        Log.d(LOG_TAG, "mSppMatchCursor, pos = " + pos + " SppCode: " + vegCode);
+       if (LDebug.ON) Log.d(LOG_TAG, "mSppMatchCursor, pos = " + pos + " SppCode: " + vegCode);
         String vegDescr = mSppMatchCursor.getString(
                 mSppMatchCursor.getColumnIndexOrThrow("MatchTxt"));
         String vegGenus = mSppMatchCursor.getString(
@@ -233,7 +233,7 @@ public class SelectSpeciesFragment extends ListFragment
         int vegIsPlaceholder = mSppMatchCursor.getInt(
                 mSppMatchCursor.getColumnIndexOrThrow("IsPlaceholder"));
 
-        Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to create new record");
+       if (LDebug.ON) Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to create new record");
         Bundle args = new Bundle();
         args.putLong(EditSppItemDialog.VEG_ITEM_REC_ID, 0); // don't need this, default is in class
         args.putLong(EditSppItemDialog.CUR_VISIT_REC_ID, mCurVisitRecId);
@@ -291,9 +291,9 @@ public class SelectSpeciesFragment extends ListFragment
 //    AdapterViewCompat.AdapterContextMenuInfo info = (AdapterViewCompat.AdapterContextMenuInfo) item.getMenuInfo();
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         if (info == null) {
-            Log.d(LOG_TAG, "onContextItemSelected info is null");
+           if (LDebug.ON) Log.d(LOG_TAG, "onContextItemSelected info is null");
         } else {
-            Log.d(LOG_TAG, "onContextItemSelected info: " + info.toString());
+           if (LDebug.ON) Log.d(LOG_TAG, "onContextItemSelected info: " + info.toString());
         }
         Context c = getActivity();
         UnderConstrDialog notYetDlg = new UnderConstrDialog();
@@ -310,7 +310,7 @@ public class SelectSpeciesFragment extends ListFragment
         switch (item.getItemId()) {
 
             case R.id.sel_spp_search_add_placeholder:
-                Log.d(LOG_TAG, "'Create Placeholder' selected");
+               if (LDebug.ON) Log.d(LOG_TAG, "'Create Placeholder' selected");
                 headerContextTracker.send(new HitBuilders.EventBuilder()
                         .setCategory("Species Select Event")
                         .setAction("Context Menu")
@@ -367,7 +367,7 @@ public class SelectSpeciesFragment extends ListFragment
                 return true;
 
             case R.id.sel_spp_search_help:
-                Log.d(LOG_TAG, "'Search Chars Help' selected");
+               if (LDebug.ON) Log.d(LOG_TAG, "'Search Chars Help' selected");
                 headerContextTracker.send(new HitBuilders.EventBuilder()
                         .setCategory("Species Select Event")
                         .setAction("Context Menu")
@@ -382,7 +382,7 @@ public class SelectSpeciesFragment extends ListFragment
                 return true;
 
             case R.id.sel_spp_list_item_forget:
-                Log.d(LOG_TAG, "Spp list item 'Forget Species' selected");
+               if (LDebug.ON) Log.d(LOG_TAG, "Spp list item 'Forget Species' selected");
                 headerContextTracker.send(new HitBuilders.EventBuilder()
                         .setCategory("Species Select Event")
                         .setAction("Context Menu")
@@ -409,7 +409,7 @@ public class SelectSpeciesFragment extends ListFragment
                 return true;
 
             case R.id.sel_spp_list_item_edit_ph:
-                Log.d(LOG_TAG, "Spp list item 'Edit Placeholder' selected");
+               if (LDebug.ON) Log.d(LOG_TAG, "Spp list item 'Edit Placeholder' selected");
                 headerContextTracker.send(new HitBuilders.EventBuilder()
                         .setCategory("Species Select Event")
                         .setAction("Context Menu")
@@ -446,7 +446,7 @@ public class SelectSpeciesFragment extends ListFragment
                 return true;
 
             case R.id.sel_spp_list_item_help:
-                Log.d(LOG_TAG, "Spp list item 'Help' selected");
+               if (LDebug.ON) Log.d(LOG_TAG, "Spp list item 'Help' selected");
                 headerContextTracker.send(new HitBuilders.EventBuilder()
                         .setCategory("Species Select Event")
                         .setAction("Context Menu")
@@ -467,14 +467,14 @@ public class SelectSpeciesFragment extends ListFragment
 
     public void forgetSppMatch(long sppRecId) {
         Context c = getActivity();
-        Log.d(LOG_TAG, "About to forget Species, record id=" + sppRecId);
+       if (LDebug.ON) Log.d(LOG_TAG, "About to forget Species, record id=" + sppRecId);
         Uri uri, sUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "species");
         uri = ContentUris.withAppendedId(sUri, sppRecId);
         mValues.clear();
         mValues.put("HasBeenFound", 0);
         ContentResolver rs = c.getContentResolver();
         int numUpdated = rs.update(uri, mValues, null, null);
-        Log.d(LOG_TAG, "Updated species to HasBeenFound=false; numUpdated: " + numUpdated);
+       if (LDebug.ON) Log.d(LOG_TAG, "Updated species to HasBeenFound=false; numUpdated: " + numUpdated);
         Toast.makeText(getActivity(),
                 c.getResources().getString(R.string.sel_spp_list_ctx_forget_spp_done),
                 Toast.LENGTH_LONG).show();

@@ -1,46 +1,15 @@
 package com.vegnab.vegnab;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.IntentSender;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v7.internal.widget.AdapterViewCompat.AdapterContextMenuInfo;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,19 +17,9 @@ import android.widget.Toast;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
-import com.vegnab.vegnab.database.VNContract.Loaders;
-import com.vegnab.vegnab.database.VNContract.Prefs;
-import com.vegnab.vegnab.database.VNContract.Tags;
-import com.vegnab.vegnab.database.VNContract.Validation;
+
+import com.vegnab.vegnab.database.VNContract.LDebug;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -118,19 +77,19 @@ public class DonateFragment extends Fragment implements OnClickListener {
         Bundle args = getArguments();
         if (args == null) {
             // do something if no args sent
-            Log.d(LOG_TAG, "In onCreate, received args = null");
+           if (LDebug.ON) Log.d(LOG_TAG, "In onCreate, received args = null");
         } else {
             String jsonStr = args.getString(ARG_JSON_STRING);
             if (jsonStr == null) {
                 // do something if empty product list sent
-                Log.d(LOG_TAG, "In onCreate, received jsonStr = null");
+               if (LDebug.ON) Log.d(LOG_TAG, "In onCreate, received jsonStr = null");
             } else {
                 try {
                     mProdArray = new JSONArray(jsonStr);
-                    Log.d(LOG_TAG, "Received JSON product array: " + mProdArray.toString());
+                   if (LDebug.ON) Log.d(LOG_TAG, "Received JSON product array: " + mProdArray.toString());
                 } catch(JSONException ex) {
                     ex.printStackTrace();
-                    Log.d(LOG_TAG, "JSON error retrieving product list");
+                   if (LDebug.ON) Log.d(LOG_TAG, "JSON error retrieving product list");
                     Toast.makeText(getActivity(), "Error retrieving product list", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -171,7 +130,7 @@ public class DonateFragment extends Fragment implements OnClickListener {
         if (savedInstanceState != null) {
             // mDonationOptionSelected = savedInstanceState.getLong(ARG_DONATION, 0);
         } else {
-            Log.d(LOG_TAG, "In onCreateView, savedInstanceState == null");
+           if (LDebug.ON) Log.d(LOG_TAG, "In onCreateView, savedInstanceState == null");
         }
 //        Toast.makeText(getActivity(), "message here", Toast.LENGTH_SHORT).show();
 
@@ -190,14 +149,14 @@ public class DonateFragment extends Fragment implements OnClickListener {
             try {
                 for (int i=0; i < mProdArray.length(); i++) {
                     JSONObject prodItem = mProdArray.getJSONObject(i);
-                    Log.d(LOG_TAG, "Received JSON product item " + i + ": " + prodItem.toString());
+                   if (LDebug.ON) Log.d(LOG_TAG, "Received JSON product item " + i + ": " + prodItem.toString());
                     String price = prodItem.getString("price");
                     String descr = prodItem.getString("descr");
                     itemsList.add(price + " " + descr);
                 }
             } catch(JSONException ex) {
                 ex.printStackTrace();
-                Log.d(LOG_TAG, "JSON error retrieving product items");
+               if (LDebug.ON) Log.d(LOG_TAG, "JSON error retrieving product items");
                 Toast.makeText(getActivity(), "Error retrieving product items", Toast.LENGTH_LONG).show();
             }
         }
@@ -272,13 +231,13 @@ public class DonateFragment extends Fragment implements OnClickListener {
         // assure the container activity has implemented the callback interface
         try {
             mButtonCallback = (OnButtonListener) getActivity();
-            Log.d(LOG_TAG, "(OnButtonListener) getActivity()");
+           if (LDebug.ON) Log.d(LOG_TAG, "(OnButtonListener) getActivity()");
         } catch (ClassCastException e) {
             throw new ClassCastException("Main Activity must implement OnButtonListener interface");
         }
         try {
             mIAPDoneListener = (OnIAPDoneListener) getActivity();
-            Log.d(LOG_TAG, "(IAPDoneListener) getActivity()");
+           if (LDebug.ON) Log.d(LOG_TAG, "(IAPDoneListener) getActivity()");
         } catch (ClassCastException e) {
             throw new ClassCastException("Main Activity must implement IAPDoneListener interface");
         }
@@ -298,16 +257,16 @@ public class DonateFragment extends Fragment implements OnClickListener {
             // maybe implement the tracker here
             long i = mDonationSpinner.getSelectedItemId();
             String sku;
-            Log.d(LOG_TAG, "in onClick, got Spinner item Id " + i);
+           if (LDebug.ON) Log.d(LOG_TAG, "in onClick, got Spinner item Id " + i);
             try {
                 JSONObject prodItem = mProdArray.getJSONObject((int)i);
-                Log.d(LOG_TAG, "Retrieved JSON product item " + i + ": " + prodItem.toString());
+               if (LDebug.ON) Log.d(LOG_TAG, "Retrieved JSON product item " + i + ": " + prodItem.toString());
                 // test the following two before proceeding
                 Boolean available = prodItem.getBoolean("available");
                 Boolean owned = prodItem.getBoolean("owned");
                 // for now, get this to test retrieval
                 sku = prodItem.getString("sku");
-                Log.d(LOG_TAG, "in onClick, got SKU: " + sku);
+               if (LDebug.ON) Log.d(LOG_TAG, "in onClick, got SKU: " + sku);
                 if (!available) {
                     Toast.makeText(getActivity(), "Item is not available", Toast.LENGTH_LONG).show();
                     return;
@@ -318,7 +277,7 @@ public class DonateFragment extends Fragment implements OnClickListener {
                 }
             } catch(JSONException ex) {
                 ex.printStackTrace();
-                Log.d(LOG_TAG, "JSON error retrieving product item");
+               if (LDebug.ON) Log.d(LOG_TAG, "JSON error retrieving product item");
                 Toast.makeText(getActivity(), "Error retrieving product item", Toast.LENGTH_LONG).show();
                 sku = null;
             }
@@ -328,7 +287,7 @@ public class DonateFragment extends Fragment implements OnClickListener {
             } else {
                 Bundle args = new Bundle();
                 args.putString(MainVNActivity.SKU_CHOSEN, sku);
-                Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onDonateButtonClicked(args)'");
+               if (LDebug.ON) Log.d(LOG_TAG, "in onClick, about to do 'mButtonCallback.onDonateButtonClicked(args)'");
                 // get an Analytics event tracker
                 Tracker donationTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
                 // build and send the Analytics even
@@ -341,7 +300,7 @@ public class DonateFragment extends Fragment implements OnClickListener {
                         .build());
 
                 mButtonCallback.onDonateButtonClicked(args);
-                Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onDonateButtonClicked(args)'");
+               if (LDebug.ON) Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onDonateButtonClicked(args)'");
 
             }
 

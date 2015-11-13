@@ -5,6 +5,7 @@ import java.util.HashSet;
 
 import com.vegnab.vegnab.BuildConfig;
 import com.vegnab.vegnab.database.VegNabDbHelper;
+import com.vegnab.vegnab.database.VNContract.LDebug;
 
 import android.content.ContentProvider;
 //import android.content.ContentResolver;
@@ -16,6 +17,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+
 
 public class ContentProvider_VegNab extends ContentProvider {
     private static final String LOG_TAG = ContentProvider_VegNab.class.getSimpleName();
@@ -164,96 +166,96 @@ public class ContentProvider_VegNab extends ContentProvider {
 
             case NAMER_ID:
                 queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-                Log.d(LOG_TAG, "NAMER_ID appendWhere");
+               if (LDebug.ON) Log.d(LOG_TAG, "NAMER_ID appendWhere");
                 // note, no break, so drops through
             case NAMERS:
                 queryBuilder.setTables("Namers");
-                Log.d(LOG_TAG, "NAMERS setTables");
+               if (LDebug.ON) Log.d(LOG_TAG, "NAMERS setTables");
                 break;
 
             case PLOTTYPE_ID:
                 queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-                Log.d(LOG_TAG, "PLOTTYPE_ID appendWhere");
+               if (LDebug.ON) Log.d(LOG_TAG, "PLOTTYPE_ID appendWhere");
                 // note, no break, so drops through
             case PLOTTYPES:
                 queryBuilder.setTables("PlotTypes");
-                Log.d(LOG_TAG, "PLOTTYPES setTables");
+               if (LDebug.ON) Log.d(LOG_TAG, "PLOTTYPES setTables");
                 break;
 
             case SUBPLOTTYPE_ID:
                 queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-                Log.d(LOG_TAG, "SUBPLOTTYPE_ID appendWhere");
+               if (LDebug.ON) Log.d(LOG_TAG, "SUBPLOTTYPE_ID appendWhere");
                 // note, no break, so drops through
             case SUBPLOTTYPES:
                 queryBuilder.setTables("SubplotTypes");
-                Log.d(LOG_TAG, "SUBPLOTTYPES setTables");
+               if (LDebug.ON) Log.d(LOG_TAG, "SUBPLOTTYPES setTables");
                 break;
 
             case VEGITEM_ID:
                 queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-                Log.d(LOG_TAG, "VEGITEM_ID appendWhere");
+               if (LDebug.ON) Log.d(LOG_TAG, "VEGITEM_ID appendWhere");
                 // note, no break, so drops through
             case VEGITEMS:
                 queryBuilder.setTables("VegItems");
-                Log.d(LOG_TAG, "VEGITEMS setTables");
+               if (LDebug.ON) Log.d(LOG_TAG, "VEGITEMS setTables");
                 break;
 
             case PLACEHOLDER_ID:
                 queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-                Log.d(LOG_TAG, "PLACEHOLDER_ID appendWhere");
+               if (LDebug.ON) Log.d(LOG_TAG, "PLACEHOLDER_ID appendWhere");
                 // note, no break, so drops through
             case PLACEHOLDERS:
                 queryBuilder.setTables("Placeholders");
-                Log.d(LOG_TAG, "PLACEHOLDERS setTables");
+               if (LDebug.ON) Log.d(LOG_TAG, "PLACEHOLDERS setTables");
                 break;
 
             case PLACEHOLDER_PIX_ID:
                 queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-                Log.d(LOG_TAG, "PLACEHOLDER_PIX_ID appendWhere");
+               if (LDebug.ON) Log.d(LOG_TAG, "PLACEHOLDER_PIX_ID appendWhere");
                 // note, no break, so drops through
             case PLACEHOLDER_PIX:
                 queryBuilder.setTables("Placeholders");
-                Log.d(LOG_TAG, "PLACEHOLDER_PIX setTables");
+               if (LDebug.ON) Log.d(LOG_TAG, "PLACEHOLDER_PIX setTables");
                 break;
             case IDNAMER_ID:
                 queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-                Log.d(LOG_TAG, "IDNAMER_ID appendWhere");
+               if (LDebug.ON) Log.d(LOG_TAG, "IDNAMER_ID appendWhere");
                 // note, no break, so drops through
             case IDNAMERS:
                 queryBuilder.setTables("IdNamers");
-                Log.d(LOG_TAG, "IDNAMERS setTables");
+               if (LDebug.ON) Log.d(LOG_TAG, "IDNAMERS setTables");
                 break;
             case IDREF_ID:
                 queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-                Log.d(LOG_TAG, "IDREF_ID appendWhere");
+               if (LDebug.ON) Log.d(LOG_TAG, "IDREF_ID appendWhere");
                 // note, no break, so drops through
             case IDREFS:
                 queryBuilder.setTables("IdRefs");
-                Log.d(LOG_TAG, "IDREFS setTables");
+               if (LDebug.ON) Log.d(LOG_TAG, "IDREFS setTables");
                 break;
             case IDMETHOD_ID:
                 queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-                Log.d(LOG_TAG, "IDMETHOD_ID appendWhere");
+               if (LDebug.ON) Log.d(LOG_TAG, "IDMETHOD_ID appendWhere");
                 // note, no break, so drops through
             case IDMETHODS:
                 queryBuilder.setTables("IdMethods");
-                Log.d(LOG_TAG, "IDMETHODS setTables");
+               if (LDebug.ON) Log.d(LOG_TAG, "IDMETHODS setTables");
                 break;
             case IDLEVEL_ID:
                 queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-                Log.d(LOG_TAG, "IDLEVEL_ID appendWhere");
+               if (LDebug.ON) Log.d(LOG_TAG, "IDLEVEL_ID appendWhere");
                 // note, no break, so drops through
             case IDLEVELS:
                 queryBuilder.setTables("IdLevels");
-                Log.d(LOG_TAG, "IDLEVELS setTables");
+               if (LDebug.ON) Log.d(LOG_TAG, "IDLEVELS setTables");
                 break;
             case SPECIES_ID:
                 queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-                Log.d(LOG_TAG, "SPECIES_ID appendWhere");
+               if (LDebug.ON) Log.d(LOG_TAG, "SPECIES_ID appendWhere");
                 // note, no break, so drops through
             case SPECIES:
                 queryBuilder.setTables("SpeciesFound");
-                Log.d(LOG_TAG, "SPECIES setTables");
+               if (LDebug.ON) Log.d(LOG_TAG, "SPECIES setTables");
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);

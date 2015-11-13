@@ -2,14 +2,12 @@ package com.vegnab.vegnab;
 
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,7 +17,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.internal.widget.AdapterViewCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +25,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +32,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract;
+import com.vegnab.vegnab.database.VNContract.LDebug;
 
 import java.io.File;
 import java.io.IOException;
@@ -76,7 +73,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         // restore the previous parameters remembered by onSaveInstanceState()
         // This is mostly needed in fixed-pane layouts
         if (savedInstanceState != null) { // restore parameters
-            Log.d(LOG_TAG, "In onCreateView, about to retrieve mPlaceholderId: " + mPlaceholderId);
+           if (LDebug.ON) Log.d(LOG_TAG, "In onCreateView, about to retrieve mPlaceholderId: " + mPlaceholderId);
             mPlaceholderId = savedInstanceState.getLong(ARG_PLACEHOLDER_ID, 0);
             mPlaceholderCode = savedInstanceState.getString(ARG_PLACEHOLDER_CODE);
             mPlaceholderDescr = savedInstanceState.getString(ARG_PLACEHOLDER_DESCRIPTION);
@@ -165,7 +162,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         switch (v.getId()) {
 
             case R.id.placeholder_take_picture_button:
-                Log.d(LOG_TAG, "in onClick, placeholder_take_picture_button");
+               if (LDebug.ON) Log.d(LOG_TAG, "in onClick, placeholder_take_picture_button");
                 placeholderButtonTracker.send(new HitBuilders.EventBuilder()
                         .setCategory("Placeholder Pictures Grid Event")
                         .setAction("Button click")
@@ -303,10 +300,10 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                         "WHERE PlaceHolderPix.PlaceHolderID = ? " +
                         "ORDER BY PlaceHolderPix.PhotoTimeStamp DESC;";
                 params = new String[] { "" + mPlaceholderId };
-                Log.d(LOG_TAG, "onCreateLoader, PLACEHOLDER_PIX, just before CursorLoader");
+               if (LDebug.ON) Log.d(LOG_TAG, "onCreateLoader, PLACEHOLDER_PIX, just before CursorLoader");
                 cl = new CursorLoader(getActivity(), baseUri,
                         null, select, params, null);
-                Log.d(LOG_TAG, "onCreateLoader, PLACEHOLDER_PIX, just after CursorLoader");
+               if (LDebug.ON) Log.d(LOG_TAG, "onCreateLoader, PLACEHOLDER_PIX, just after CursorLoader");
                 break;
         }
         return cl;
@@ -319,7 +316,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         switch (loader.getId()) {
 
             case VNContract.Loaders.PLACEHOLDER_OF_PIX:
-                Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_OF_PIX, records: " + c.getCount());
+               if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_OF_PIX, records: " + c.getCount());
                 if (c.moveToFirst()) {
                     mPlaceholderCode = c.getString(c.getColumnIndexOrThrow("PlaceHolderCode"));
                     mPlaceholderDescr = c.getString(c.getColumnIndexOrThrow("Description"));
@@ -331,9 +328,9 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                 break;
 
             case VNContract.Loaders.PLACEHOLDER_PIX:
-//                Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PIX, just before swapCursor");
+//               if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PIX, just before swapCursor");
                 mPhPixGridAdapter.swapCursor(c);
-//                Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PIX, just before copy cursor");
+//               if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PIX, just before copy cursor");
                 mPixMatchCursor = c;
                 break;
         }
@@ -346,12 +343,12 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         switch (loader.getId()) {
 
             case VNContract.Loaders.PLACEHOLDER_OF_PIX:
-                Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_OF_PIX.");
+               if (LDebug.ON) Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_OF_PIX.");
     //			don't need to do anything here, no cursor adapter
                 break;
 
             case VNContract.Loaders.PLACEHOLDER_PIX:
-                Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_PIX.");
+               if (LDebug.ON) Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_PIX.");
     //			don't need to do anything here, no cursor adapter
                 break;
         }
@@ -374,13 +371,13 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
             if (storageDir != null) {
                 if (! storageDir.mkdirs()) {
                     if (! storageDir.exists()){
-                        Log.d(LOG_TAG, "Could not create folder: " + getAlbumName());
+                       if (LDebug.ON) Log.d(LOG_TAG, "Could not create folder: " + getAlbumName());
                         return null;
                     }
                 }
             }
         } else {
-            Log.d(getString(R.string.app_name), "External storage is not mounted READ/WRITE.");
+           if (LDebug.ON) Log.d(getString(R.string.app_name), "External storage is not mounted READ/WRITE.");
         }
         return storageDir;
     }
@@ -418,7 +415,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     }
 
     private void storePicturePathInDB() {
-        Log.d(LOG_TAG, "savePlaceHolderPix; creating new record with mPlaceholderId = " + mPlaceholderId);
+       if (LDebug.ON) Log.d(LOG_TAG, "savePlaceHolderPix; creating new record with mPlaceholderId = " + mPlaceholderId);
         ContentResolver rs = getActivity().getContentResolver();
         ContentValues values = new ContentValues();
         values.put("PlaceHolderID", mPlaceholderId);
@@ -428,16 +425,16 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
 "PhotoURL" VARCHAR(255),*/
         Uri phPixUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "placeholderpix");
         Uri phUri = rs.insert(phPixUri, values);
-        Log.d(LOG_TAG, "new record in storePicturePathInDB; returned URI: " + phUri.toString());
+       if (LDebug.ON) Log.d(LOG_TAG, "new record in storePicturePathInDB; returned URI: " + phUri.toString());
         long newRecId = Long.parseLong(phUri.getLastPathSegment());
         long placeholderPixId = newRecId;
         if (newRecId < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
-            Log.d(LOG_TAG, "new record in savePlaceHolderPix has Id == " + newRecId + "); canceled");
+           if (LDebug.ON) Log.d(LOG_TAG, "new record in savePlaceHolderPix has Id == " + newRecId + "); canceled");
 //            return 0;
         } else {
             getLoaderManager().restartLoader(VNContract.Loaders.PLACEHOLDER_PIX, null, this);
 //            Uri phNewUri = ContentUris.withAppendedId(phUri, newRecId);
-//            Log.d(LOG_TAG, "new record in savePlaceHolderPix; URI re-parsed: " + phNewUri.toString());
+//           if (LDebug.ON) Log.d(LOG_TAG, "new record in savePlaceHolderPix; URI re-parsed: " + phNewUri.toString());
 //            long numUpdated = 1;
         }
     }

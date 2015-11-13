@@ -2,15 +2,12 @@ package com.vegnab.vegnab;
 
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
-import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 
-import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
+import com.vegnab.vegnab.database.VNContract.LDebug;
 
 public class ConfirmDelVegItemDialog extends DialogFragment {
     private static final String LOG_TAG = ConfirmDelVegItemDialog.class.getSimpleName();
@@ -36,7 +33,7 @@ public class ConfirmDelVegItemDialog extends DialogFragment {
         super.onCreate(savedInstanceState);
         try {
             mConfirmDeleteVegItemListener = (ConfirmDeleteVegItemDialogListener) getActivity();
-            Log.d(LOG_TAG, "(ConfirmDeleteVegItemDialogListener) getActivity()");
+           if (LDebug.ON) Log.d(LOG_TAG, "(ConfirmDeleteVegItemDialogListener) getActivity()");
         } catch (ClassCastException e) {
             throw new ClassCastException("Main Activity must implement ConfirmDeleteVegItemDialogListener interface");
         }
@@ -55,14 +52,14 @@ public class ConfirmDelVegItemDialog extends DialogFragment {
             .setPositiveButton(R.string.action_affirm, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Log.d(LOG_TAG, "In DialogFragment, onCreateDialog, Positive button clicked");
-                    Log.d(LOG_TAG, "About to call onDeleteVegItemConfirm=" + mVegItemRecId);
+                   if (LDebug.ON) Log.d(LOG_TAG, "In DialogFragment, onCreateDialog, Positive button clicked");
+                   if (LDebug.ON) Log.d(LOG_TAG, "About to call onDeleteVegItemConfirm=" + mVegItemRecId);
                     mConfirmDeleteVegItemListener.onDeleteVegItemConfirm(ConfirmDelVegItemDialog.this);
                 }
             })
             .setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Log.d(LOG_TAG, "In DialogFragment, onCreateDialog, Negative button clicked");
+                   if (LDebug.ON) Log.d(LOG_TAG, "In DialogFragment, onCreateDialog, Negative button clicked");
                 }
             });
         return bld.create();
