@@ -151,8 +151,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         // for testing, always add to the list, never clear it
         // for production, make this a user option
      //   db.execSQL("DELETE FROM RegionalSpeciesList;");
-        String sSql = "INSERT OR IGNORE INTO RegionalSpeciesList ( Code, Genus, Species, SubsppVar, Vernacular ) "
-			+ "VALUES ( ?, ?, ?, ?, ? )";
+        String sSql = "INSERT OR IGNORE INTO RegionalSpeciesList ( Code, Genus, Species, SubsppVar, Vernacular, Distribution ) "
+			+ "VALUES ( ?, ?, ?, ?, ?, ? )";
 //		String sSql = "INSERT OR REPLACE INTO RegionalSpeciesList ( Code, Genus, Species, SubsppVar, Vernacular ) "
 //				+ "VALUES ( ?, ?, ?, ?, ? )";
 
@@ -175,7 +175,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 					fieldValues = new ArrayList<String>(Arrays.asList(line.split("\t")));
 					// List<String> list = new ArrayList<String>(Arrays.asList(string.split(" , ")));
 //					Log.d(LOG_TAG, "number of fieldValues: " + fieldValues.size());
-					while (fieldValues.size() < 5) {
+					while (fieldValues.size() < 6) {
 						fieldValues.add("");
 //						Log.d(LOG_TAG, "Empty string added, number of fieldValues now: " + fieldValues.size());
 					}
@@ -195,6 +195,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 					stmt.bindString(4, fieldValues.get(3));
 //					Log.d(LOG_TAG, "fieldValues.get(4): " + fieldValues.get(4).toString());
 					stmt.bindString(5, fieldValues.get(4));
+					stmt.bindString(6, fieldValues.get(5));
 
 					stmt.execute();
 					stmt.clearBindings();
