@@ -56,7 +56,7 @@
     <string name="new_vis_ctx_export_no_info">Info missing, can\'t export Visit.</string>
 
     <string name="dnld_spp_no_spp_title">No Species List</string>
-    <string name="dnld_spp_no_spp_msg">You need to download the NRCS species list.\r\n\r\n The download is about 3Mb and requires network connectivity.</string>
+    <string name="dnld_spp_no_spp_msg">You need to download the NRCS species list.\r\n\r\n The download is about 7Mb and requires network connectivity.</string>
 
     <string name="dnld_spp_btn_start">Download Species List</string>
     <string name="dnld_spp_btn_show_all">Display all Downloads</string>
