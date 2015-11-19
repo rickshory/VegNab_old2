@@ -153,10 +153,10 @@ public final class VNContract {
     // putting them all together here allows consistent usage throughout
     public static abstract class VNRegex {
         public static final String NRCS_CODE = "[a-zA-Z]{3,5}[0-9]*|2[a-zA-Z]{1,4}";
+        // defines what an NRCS code can look like, mostly for disallowing Placeholders being like that
         // disallow 3 to 5 letters, alone or followed by numbers
         // disallow any with numerals trailing 3-5 letters, though never saw real codes with more than 2 digits here
         // also disallow codes like "2FDA" (forb dicot annual) some agencies use for general ids
-
     }
 
     public static abstract class VNConstraints {
