@@ -868,7 +868,6 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         return true;
     }
 
-
     private int saveVisitRecord() {
         int numUpdated = 0;
         if (!validateVisitHeader()) {

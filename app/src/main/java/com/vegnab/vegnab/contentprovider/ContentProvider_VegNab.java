@@ -55,6 +55,12 @@ public class ContentProvider_VegNab extends ContentProvider {
     private static final int IDLEVEL_ID = 260;
     private static final int SPECIES = 270;
     private static final int SPECIES_ID = 280;
+    private static final int DOCS = 290;
+    private static final int DOC_ID = 300;
+    private static final int DOCTYPES = 310;
+    private static final int DOCTYPE_ID = 320;
+    private static final int DOCSOURCES = 330;
+    private static final int DOCSOURCE_ID = 340;
 
 //	private static final String AUTHORITY = "com.vegnab.provider"; // must match in app Manifest
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".provider";
@@ -98,6 +104,13 @@ public class ContentProvider_VegNab extends ContentProvider {
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/idlevels/#", IDLEVEL_ID);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/species", SPECIES);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/species/#", SPECIES_ID);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/docs", DOCS);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/docs/#", DOC_ID);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/doctypes", DOCTYPES);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/doctypes/#", DOCTYPE_ID);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/docsources", DOCSOURCES);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/docsources/#", DOCSOURCE_ID);
+
     }
 
     HashSet<String> mFields_Projects = new HashSet<String>();
@@ -257,6 +270,31 @@ public class ContentProvider_VegNab extends ContentProvider {
                 queryBuilder.setTables("SpeciesFound");
                if (LDebug.ON) Log.d(LOG_TAG, "SPECIES setTables");
                 break;
+            case DOC_ID:
+                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
+                if (LDebug.ON) Log.d(LOG_TAG, "DOC_ID appendWhere");
+                // note, no break, so drops through
+            case DOCS:
+                queryBuilder.setTables("DocsCreated");
+                if (LDebug.ON) Log.d(LOG_TAG, "DOCS setTables");
+                break;
+            case DOCTYPE_ID:
+                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
+                if (LDebug.ON) Log.d(LOG_TAG, "DOCTYPE_ID appendWhere");
+                // note, no break, so drops through
+            case DOCTYPES:
+                queryBuilder.setTables("DocsCreatedTypes");
+                if (LDebug.ON) Log.d(LOG_TAG, "DOCTYPES setTables");
+                break;
+            case DOCSOURCE_ID:
+                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
+                if (LDebug.ON) Log.d(LOG_TAG, "DOCSOURCE_ID appendWhere");
+                // note, no break, so drops through
+            case DOCSOURCES:
+                queryBuilder.setTables("DocsSourcesTypes");
+                if (LDebug.ON) Log.d(LOG_TAG, "DOCSOURCES setTables");
+                break;
+
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
             }
@@ -335,6 +373,18 @@ public class ContentProvider_VegNab extends ContentProvider {
         case SPECIES:
             id = sqlDB.insert("RegionalSpeciesList", null, values);
             uriToReturn = Uri.parse(BASE_PATH + "/species/" + id);
+            break;
+        case DOCS:
+            id = sqlDB.insert("DocsCreated", null, values);
+            uriToReturn = Uri.parse(BASE_PATH + "/docs/" + id);
+            break;
+        case DOCTYPES:
+            id = sqlDB.insert("DocsCreatedTypes", null, values);
+            uriToReturn = Uri.parse(BASE_PATH + "/doctypes/" + id);
+            break;
+        case DOCSOURCES:
+            id = sqlDB.insert("DocsSourcesTypes", null, values);
+            uriToReturn = Uri.parse(BASE_PATH + "/docsources/" + id);
             break;
         default:
             throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -515,6 +565,42 @@ public class ContentProvider_VegNab extends ContentProvider {
                 rowsDeleted = sqlDB.delete("RegionalSpeciesList", "_id=" + id, null);
             } else {
                 rowsDeleted = sqlDB.delete("RegionalSpeciesList", "_id=" + id, selectionArgs);
+            }
+            break;
+
+        case DOCS:
+            rowsDeleted = sqlDB.delete("DocsCreated", selection, selectionArgs);
+            break;
+        case DOC_ID:
+            id = uri.getLastPathSegment();
+            if (TextUtils.isEmpty(selection)) {
+                rowsDeleted = sqlDB.delete("DocsCreated", "_id=" + id, null);
+            } else {
+                rowsDeleted = sqlDB.delete("DocsCreated", "_id=" + id, selectionArgs);
+            }
+            break;
+
+        case DOCTYPES:
+            rowsDeleted = sqlDB.delete("DocsCreatedTypes", selection, selectionArgs);
+            break;
+        case DOCTYPE_ID:
+            id = uri.getLastPathSegment();
+            if (TextUtils.isEmpty(selection)) {
+                rowsDeleted = sqlDB.delete("DocsCreatedTypes", "_id=" + id, null);
+            } else {
+                rowsDeleted = sqlDB.delete("DocsCreatedTypes", "_id=" + id, selectionArgs);
+            }
+            break;
+
+        case DOCSOURCES:
+            rowsDeleted = sqlDB.delete("DocsSourceTypes", selection, selectionArgs);
+            break;
+        case DOCSOURCE_ID:
+            id = uri.getLastPathSegment();
+            if (TextUtils.isEmpty(selection)) {
+                rowsDeleted = sqlDB.delete("DocsSourceTypes", "_id=" + id, null);
+            } else {
+                rowsDeleted = sqlDB.delete("DocsSourceTypes", "_id=" + id, selectionArgs);
             }
             break;
 
@@ -707,6 +793,42 @@ public class ContentProvider_VegNab extends ContentProvider {
                 rowsUpdated = sqlDB.updateWithOnConflict("RegionalSpeciesList", values, "_id=" + id, null, SQLiteDatabase.CONFLICT_IGNORE);
             } else {
                 rowsUpdated = sqlDB.updateWithOnConflict("RegionalSpeciesList", values, "_id=" + id, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
+            }
+            break;
+
+        case DOCS:
+            rowsUpdated = sqlDB.updateWithOnConflict("DocsCreated", values, selection, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
+            break;
+        case DOC_ID:
+            id = uri.getLastPathSegment();
+            if (TextUtils.isEmpty(selection)) {
+                rowsUpdated = sqlDB.updateWithOnConflict("DocsCreated", values, "_id=" + id, null, SQLiteDatabase.CONFLICT_IGNORE);
+            } else {
+                rowsUpdated = sqlDB.updateWithOnConflict("DocsCreated", values, "_id=" + id, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
+            }
+            break;
+
+        case DOCTYPES:
+            rowsUpdated = sqlDB.updateWithOnConflict("DocsCreatedTypes", values, selection, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
+            break;
+        case DOCTYPE_ID:
+            id = uri.getLastPathSegment();
+            if (TextUtils.isEmpty(selection)) {
+                rowsUpdated = sqlDB.updateWithOnConflict("DocsCreatedTypes", values, "_id=" + id, null, SQLiteDatabase.CONFLICT_IGNORE);
+            } else {
+                rowsUpdated = sqlDB.updateWithOnConflict("DocsCreatedTypes", values, "_id=" + id, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
+            }
+            break;
+
+        case DOCSOURCES:
+            rowsUpdated = sqlDB.updateWithOnConflict("DocsSourceTypes", values, selection, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
+            break;
+        case DOCSOURCE_ID:
+            id = uri.getLastPathSegment();
+            if (TextUtils.isEmpty(selection)) {
+                rowsUpdated = sqlDB.updateWithOnConflict("DocsSourceTypes", values, "_id=" + id, null, SQLiteDatabase.CONFLICT_IGNORE);
+            } else {
+                rowsUpdated = sqlDB.updateWithOnConflict("DocsSourceTypes", values, "_id=" + id, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
             }
             break;
 
