@@ -227,7 +227,7 @@ public class ContentProvider_VegNab extends ContentProvider {
                if (LDebug.ON) Log.d(LOG_TAG, "PLACEHOLDER_PIX_ID appendWhere");
                 // note, no break, so drops through
             case PLACEHOLDER_PIX:
-                queryBuilder.setTables("Placeholders");
+                queryBuilder.setTables("PlaceHolderPix");
                if (LDebug.ON) Log.d(LOG_TAG, "PLACEHOLDER_PIX setTables");
                 break;
             case IDNAMER_ID:
@@ -267,7 +267,7 @@ public class ContentProvider_VegNab extends ContentProvider {
                if (LDebug.ON) Log.d(LOG_TAG, "SPECIES_ID appendWhere");
                 // note, no break, so drops through
             case SPECIES:
-                queryBuilder.setTables("SpeciesFound");
+                queryBuilder.setTables("RegionalSpeciesList");
                if (LDebug.ON) Log.d(LOG_TAG, "SPECIES setTables");
                 break;
             case DOC_ID:
