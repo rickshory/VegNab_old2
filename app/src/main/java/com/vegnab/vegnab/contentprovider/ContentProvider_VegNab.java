@@ -28,7 +28,7 @@ public class ContentProvider_VegNab extends ContentProvider {
 
     // following class and hashmap to avoid extreme error-prone redundancy of
     // simple query/insert/update/delete methods on tables
-    class TableStd {
+    static class TableStd {
         String tableName;
         String basePath;
         TableStd(String n, String p) {
@@ -37,7 +37,8 @@ public class ContentProvider_VegNab extends ContentProvider {
         }
     }
 
-    private static final HashMap<Integer, TableStd> tblHash = new HashMap<Integer, TableStd>();
+    static HashMap<Integer, TableStd> tblHash = new HashMap<Integer, TableStd>();
+/*
     {
         tblHash.put(100, new TableStd("Projects","projects"));
         tblHash.put(110, new TableStd("Visits","visits"));
@@ -60,7 +61,7 @@ public class ContentProvider_VegNab extends ContentProvider {
         // in the DB), and the base URI as desired.
         // Make sure the numbers never overlap any custom URI pattern
     }
-
+*/
 
     // used for the UriMatcher
     private static final int RAW_SQL = 1;
@@ -116,6 +117,29 @@ public class ContentProvider_VegNab extends ContentProvider {
         // add any custom URI patterns
         sURIMatcher.addURI(AUTHORITY, "sql", RAW_SQL);
         if (LDebug.ON) Log.d(LOG_TAG, "added to sURIMatcher: sql, " + ", key: " + RAW_SQL);
+
+        // set up the tables for standard methods, in their hash map
+        tblHash.put(100, new TableStd("Projects","projects"));
+        tblHash.put(110, new TableStd("Visits","visits"));
+        tblHash.put(120, new TableStd("Locations","locations"));
+        tblHash.put(130, new TableStd("Namers","namers"));
+        tblHash.put(140, new TableStd("PlotTypes","plottypes"));
+        tblHash.put(150, new TableStd("SubplotTypes","subplottypes"));
+        tblHash.put(160, new TableStd("VegItems","vegitems"));
+        tblHash.put(170, new TableStd("Placeholders","placeholders"));
+        tblHash.put(180, new TableStd("PlaceHolderPix","placeholderpix"));
+        tblHash.put(190, new TableStd("IdNamers","idnamers"));
+        tblHash.put(200, new TableStd("IdRefs","idrefs"));
+        tblHash.put(210, new TableStd("IdMethods","idmethods"));
+        tblHash.put(220, new TableStd("IdLevels","idlevels"));
+        tblHash.put(230, new TableStd("RegionalSpeciesList","species"));
+        tblHash.put(240, new TableStd("DocsCreated","docs"));
+        tblHash.put(250, new TableStd("DocsCreatedTypes","doctypes"));
+        tblHash.put(260, new TableStd("DocsSourcesTypes","docsources"));
+        // to implement new tables, enter the table name (correct spelling as
+        // in the DB), and the base URI as desired.
+        // Make sure the numbers never overlap any custom URI pattern
+
         if (LDebug.ON) Log.d(LOG_TAG, "tblHash.size: " + tblHash.size());
 
         // add all the standard URI patterns for each table
