@@ -224,176 +224,32 @@ public class ContentProvider_VegNab extends ContentProvider {
         if (LDebug.ON) Log.d(LOG_TAG, "in query; uri = " + uri);
         int uriType = sURIMatcher.match(uri);
         if (LDebug.ON) Log.d(LOG_TAG, "in query; uriType = " + uriType);
-/*        if (uriType == RAW_SQL) { // use rawQuery
+        if (uriType == RAW_SQL) { // use rawQuery
             // the full SQL statement is in 'selection' and any needed parameters in 'selectionArgs'
             cursor = database.getReadableDatabase().rawQuery(selection, selectionArgs);
-        } else if (tblHash.containsKey(uriType)) { */
-        if (tblHash.containsKey(uriType)) {
-            if (LDebug.ON) Log.d(LOG_TAG, "in gen; tblHash.containsKey " + uriType);
-            queryBuilder.setTables(tblHash.get(uriType).tableName);
-        } else if (tblHash.containsKey(uriType - 1)) {
-            if (LDebug.ON) Log.d(LOG_TAG, "in item; tblHash.containsKey " + (uriType - 1));
-            queryBuilder.setTables(tblHash.get(uriType).tableName);
-            queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
         } else {
-            if (LDebug.ON) Log.d(LOG_TAG, "in Switch; uriType " + uriType);
-            switch (uriType) {
-                case RAW_SQL:
-                    // the full SQL statement is in 'selection' and any needed parameters in 'selectionArgs'
-                    cursor = database.getReadableDatabase().rawQuery(selection, selectionArgs);
-                    break;
-/*
-            case PROJECTS:
-                // fix up the following fn to work with all tables
-                // check if the caller has requested a field that does not exist
-                checkFields("Projects", projection);
-                // assign the table
-                queryBuilder.setTables("Projects");
-                break;
-            case PROJECT_ID:
-                checkFields("Projects", projection);
-                queryBuilder.setTables("Projects");
-                // add the ID to the original query
+            if (tblHash.containsKey(uriType)) {
+                if (LDebug.ON) Log.d(LOG_TAG, "in gen; tblHash.containsKey " + uriType);
+                queryBuilder.setTables(tblHash.get(uriType).tableName);
+            } else if (tblHash.containsKey(uriType - 1)) {
+                if (LDebug.ON) Log.d(LOG_TAG, "in item; tblHash.containsKey " + (uriType - 1));
+                queryBuilder.setTables(tblHash.get(uriType).tableName);
                 queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-                break;
-
-            case VISIT_ID:
-                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-                // note, no break, so drops through
-            case VISITS:
-                queryBuilder.setTables("Visits");
-                break;
-
-            case LOCATION_ID:
-                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-                // note, no break, so drops through
-            case LOCATIONS:
-                queryBuilder.setTables("Locations");
-                break;
-
-            case NAMER_ID:
-                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-               if (LDebug.ON) Log.d(LOG_TAG, "NAMER_ID appendWhere");
-                // note, no break, so drops through
-            case NAMERS:
-                queryBuilder.setTables("Namers");
-               if (LDebug.ON) Log.d(LOG_TAG, "NAMERS setTables");
-                break;
-
-            case PLOTTYPE_ID:
-                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-               if (LDebug.ON) Log.d(LOG_TAG, "PLOTTYPE_ID appendWhere");
-                // note, no break, so drops through
-            case PLOTTYPES:
-                queryBuilder.setTables("PlotTypes");
-               if (LDebug.ON) Log.d(LOG_TAG, "PLOTTYPES setTables");
-                break;
-
-            case SUBPLOTTYPE_ID:
-                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-               if (LDebug.ON) Log.d(LOG_TAG, "SUBPLOTTYPE_ID appendWhere");
-                // note, no break, so drops through
-            case SUBPLOTTYPES:
-                queryBuilder.setTables("SubplotTypes");
-               if (LDebug.ON) Log.d(LOG_TAG, "SUBPLOTTYPES setTables");
-                break;
-
-            case VEGITEM_ID:
-                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-               if (LDebug.ON) Log.d(LOG_TAG, "VEGITEM_ID appendWhere");
-                // note, no break, so drops through
-            case VEGITEMS:
-                queryBuilder.setTables("VegItems");
-               if (LDebug.ON) Log.d(LOG_TAG, "VEGITEMS setTables");
-                break;
-
-            case PLACEHOLDER_ID:
-                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-               if (LDebug.ON) Log.d(LOG_TAG, "PLACEHOLDER_ID appendWhere");
-                // note, no break, so drops through
-            case PLACEHOLDERS:
-                queryBuilder.setTables("Placeholders");
-               if (LDebug.ON) Log.d(LOG_TAG, "PLACEHOLDERS setTables");
-                break;
-
-            case PLACEHOLDER_PIX_ID:
-                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-               if (LDebug.ON) Log.d(LOG_TAG, "PLACEHOLDER_PIX_ID appendWhere");
-                // note, no break, so drops through
-            case PLACEHOLDER_PIX:
-                queryBuilder.setTables("PlaceHolderPix");
-               if (LDebug.ON) Log.d(LOG_TAG, "PLACEHOLDER_PIX setTables");
-                break;
-            case IDNAMER_ID:
-                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-               if (LDebug.ON) Log.d(LOG_TAG, "IDNAMER_ID appendWhere");
-                // note, no break, so drops through
-            case IDNAMERS:
-                queryBuilder.setTables("IdNamers");
-               if (LDebug.ON) Log.d(LOG_TAG, "IDNAMERS setTables");
-                break;
-            case IDREF_ID:
-                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-               if (LDebug.ON) Log.d(LOG_TAG, "IDREF_ID appendWhere");
-                // note, no break, so drops through
-            case IDREFS:
-                queryBuilder.setTables("IdRefs");
-               if (LDebug.ON) Log.d(LOG_TAG, "IDREFS setTables");
-                break;
-            case IDMETHOD_ID:
-                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-               if (LDebug.ON) Log.d(LOG_TAG, "IDMETHOD_ID appendWhere");
-                // note, no break, so drops through
-            case IDMETHODS:
-                queryBuilder.setTables("IdMethods");
-               if (LDebug.ON) Log.d(LOG_TAG, "IDMETHODS setTables");
-                break;
-            case IDLEVEL_ID:
-                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-               if (LDebug.ON) Log.d(LOG_TAG, "IDLEVEL_ID appendWhere");
-                // note, no break, so drops through
-            case IDLEVELS:
-                queryBuilder.setTables("IdLevels");
-               if (LDebug.ON) Log.d(LOG_TAG, "IDLEVELS setTables");
-                break;
-            case SPECIES_ID:
-                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-               if (LDebug.ON) Log.d(LOG_TAG, "SPECIES_ID appendWhere");
-                // note, no break, so drops through
-            case SPECIES:
-                queryBuilder.setTables("RegionalSpeciesList");
-               if (LDebug.ON) Log.d(LOG_TAG, "SPECIES setTables");
-                break;
-            case DOC_ID:
-                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-                if (LDebug.ON) Log.d(LOG_TAG, "DOC_ID appendWhere");
-                // note, no break, so drops through
-            case DOCS:
-                queryBuilder.setTables("DocsCreated");
-                if (LDebug.ON) Log.d(LOG_TAG, "DOCS setTables");
-                break;
-            case DOCTYPE_ID:
-                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-                if (LDebug.ON) Log.d(LOG_TAG, "DOCTYPE_ID appendWhere");
-                // note, no break, so drops through
-            case DOCTYPES:
-                queryBuilder.setTables("DocsCreatedTypes");
-                if (LDebug.ON) Log.d(LOG_TAG, "DOCTYPES setTables");
-                break;
-            case DOCSOURCE_ID:
-                queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
-                if (LDebug.ON) Log.d(LOG_TAG, "DOCSOURCE_ID appendWhere");
-                // note, no break, so drops through
-            case DOCSOURCES:
-                queryBuilder.setTables("DocsSourcesTypes");
-                if (LDebug.ON) Log.d(LOG_TAG, "DOCSOURCES setTables");
-                break;
-*/
-            default:
-                throw new IllegalArgumentException("Unknown URI: " + uri);
+            } else {
+                if (LDebug.ON) Log.d(LOG_TAG, "in Switch; uriType " + uriType);
+                switch (uriType) {
+                    // no custom Uri patterns yet
+                    default:
+                        throw new IllegalArgumentException("Unknown URI: " + uri);
+                }
             }
             SQLiteDatabase db = database.getReadableDatabase();
+            if (LDebug.ON) Log.d(LOG_TAG, "projection: " + projection);
+            if (LDebug.ON) Log.d(LOG_TAG, "selection: " + selection);
+            if (LDebug.ON) Log.d(LOG_TAG, "selectionArgs: " + selectionArgs);
+            if (LDebug.ON) Log.d(LOG_TAG, "sortOrder: " + sortOrder);
             cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+            if (LDebug.ON) Log.d(LOG_TAG, "completed cursor = queryBuilder...; uriType " + uriType + ", selection: " + selection);
         }
         // assure potential listeners are notified
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
