@@ -150,9 +150,10 @@ public class ContentProvider_VegNab extends ContentProvider {
             if (LDebug.ON) Log.d(LOG_TAG, "added to sURIMatcher: " + t.getValue().basePath + ", key: " + t.getKey());
             // and one like:
             // sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/projects/#", PROJECT_ID);
-            sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/" + t.getValue().basePath + "/#", t.getKey() + 1);
-            if (LDebug.ON) Log.d(LOG_TAG, "added to sURIMatcher: " + t.getValue().basePath + "/#, key: " + t.getKey()+1);
+            sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/" + t.getValue().basePath + "/#", ((Integer)t.getKey() + 1));
+            if (LDebug.ON) Log.d(LOG_TAG, "added to sURIMatcher: " + t.getValue().basePath + "/#, key: " + ((Integer)t.getKey()+1));
         }
+
 /*
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/projects", PROJECTS);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/projects/#", PROJECT_ID);
@@ -220,6 +221,7 @@ public class ContentProvider_VegNab extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         Cursor cursor = null;
+        if (LDebug.ON) Log.d(LOG_TAG, "in query; uri = " + uri);
         int uriType = sURIMatcher.match(uri);
         if (LDebug.ON) Log.d(LOG_TAG, "in query; uriType = " + uriType);
 /*        if (uriType == RAW_SQL) { // use rawQuery
@@ -227,13 +229,14 @@ public class ContentProvider_VegNab extends ContentProvider {
             cursor = database.getReadableDatabase().rawQuery(selection, selectionArgs);
         } else if (tblHash.containsKey(uriType)) { */
         if (tblHash.containsKey(uriType)) {
-            if (LDebug.ON) Log.d(LOG_TAG, "tblHash.containsKey " + uriType);
+            if (LDebug.ON) Log.d(LOG_TAG, "in gen; tblHash.containsKey " + uriType);
             queryBuilder.setTables(tblHash.get(uriType).tableName);
         } else if (tblHash.containsKey(uriType - 1)) {
-            if (LDebug.ON) Log.d(LOG_TAG, "tblHash.containsKey " + (uriType - 1));
+            if (LDebug.ON) Log.d(LOG_TAG, "in item; tblHash.containsKey " + (uriType - 1));
             queryBuilder.setTables(tblHash.get(uriType).tableName);
             queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
         } else {
+            if (LDebug.ON) Log.d(LOG_TAG, "in Switch; uriType " + uriType);
             switch (uriType) {
                 case RAW_SQL:
                     // the full SQL statement is in 'selection' and any needed parameters in 'selectionArgs'
