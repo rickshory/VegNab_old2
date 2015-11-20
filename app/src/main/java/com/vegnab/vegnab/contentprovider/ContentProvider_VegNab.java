@@ -25,7 +25,7 @@ public class ContentProvider_VegNab extends ContentProvider {
     // database
     private VegNabDbHelper database; // = null; // to initialize ?
 
-    // following class and hashmap to avoid extreme error-prone redundancy of
+    // following class and hashmap avoids extreme error-prone redundancy of
     // simple query/insert/update/delete methods on tables
     static class TableStd {
         String tableName;
@@ -132,14 +132,11 @@ public class ContentProvider_VegNab extends ContentProvider {
             cursor = database.getReadableDatabase().rawQuery(selection, selectionArgs);
         } else {
             if (tblHash.containsKey(uriType)) {
-                if (LDebug.ON) Log.d(LOG_TAG, "in gen; tblHash.containsKey " + uriType);
                 queryBuilder.setTables(tblHash.get(uriType).tableName);
             } else if (tblHash.containsKey(uriType - 1)) {
-                if (LDebug.ON) Log.d(LOG_TAG, "in item; tblHash.containsKey " + (uriType-1) + " for uriType " + uriType);
                 queryBuilder.setTables(tblHash.get(uriType - 1).tableName);
                 queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
             } else {
-                if (LDebug.ON) Log.d(LOG_TAG, "in Switch; uriType " + uriType);
                 switch (uriType) {
                     // no custom Uri patterns yet
                     default:
@@ -147,12 +144,7 @@ public class ContentProvider_VegNab extends ContentProvider {
                 }
             }
             SQLiteDatabase db = database.getReadableDatabase();
-            if (LDebug.ON) Log.d(LOG_TAG, "projection: " + projection);
-            if (LDebug.ON) Log.d(LOG_TAG, "selection: " + selection);
-            if (LDebug.ON) Log.d(LOG_TAG, "selectionArgs: " + selectionArgs);
-            if (LDebug.ON) Log.d(LOG_TAG, "sortOrder: " + sortOrder);
             cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
-            if (LDebug.ON) Log.d(LOG_TAG, "completed cursor = queryBuilder...; uriType " + uriType + ", selection: " + selection);
         }
         // assure potential listeners are notified
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
