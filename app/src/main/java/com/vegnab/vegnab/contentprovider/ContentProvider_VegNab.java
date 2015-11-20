@@ -37,7 +37,7 @@ public class ContentProvider_VegNab extends ContentProvider {
         }
     }
 
-    private static final  HashMap<Integer, TableStd> tblHash = new HashMap<Integer, TableStd>();
+    private static final HashMap<Integer, TableStd> tblHash = new HashMap<Integer, TableStd>();
     {
         tblHash.put(100, new TableStd("Projects","projects"));
         tblHash.put(110, new TableStd("Visits","visits"));
@@ -49,7 +49,7 @@ public class ContentProvider_VegNab extends ContentProvider {
         tblHash.put(170, new TableStd("Placeholders","placeholders"));
         tblHash.put(180, new TableStd("PlaceHolderPix","placeholderpix"));
         tblHash.put(190, new TableStd("IdNamers","idnamers"));
-        tblHash.put(100, new TableStd("IdRefs","idrefs"));
+        tblHash.put(200, new TableStd("IdRefs","idrefs"));
         tblHash.put(210, new TableStd("IdMethods","idmethods"));
         tblHash.put(220, new TableStd("IdLevels","idlevels"));
         tblHash.put(230, new TableStd("RegionalSpeciesList","species"));
@@ -64,6 +64,7 @@ public class ContentProvider_VegNab extends ContentProvider {
 
     // used for the UriMatcher
     private static final int RAW_SQL = 1;
+/*
     private static final int PROJECTS = 10;
     private static final int PROJECT_ID = 20;
     private static final int VISITS = 30;
@@ -98,7 +99,7 @@ public class ContentProvider_VegNab extends ContentProvider {
     private static final int DOCTYPE_ID = 320;
     private static final int DOCSOURCES = 330;
     private static final int DOCSOURCE_ID = 340;
-
+*/
 //	private static final String AUTHORITY = "com.vegnab.provider"; // must match in app Manifest
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".provider";
 
@@ -112,7 +113,23 @@ public class ContentProvider_VegNab extends ContentProvider {
 //    public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_SUBTYPE;
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static {
+        // add any custom URI patterns
         sURIMatcher.addURI(AUTHORITY, "sql", RAW_SQL);
+        if (LDebug.ON) Log.d(LOG_TAG, "added to sURIMatcher: sql, " + ", key: " + RAW_SQL);
+        if (LDebug.ON) Log.d(LOG_TAG, "tblHash.size: " + tblHash.size());
+
+        // add all the standard URI patterns for each table
+        for (HashMap.Entry<Integer, TableStd> t : tblHash.entrySet()) {
+            // create two entries, one like:
+            // sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/projects", PROJECTS);
+            sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/" + t.getValue().basePath, t.getKey());
+            if (LDebug.ON) Log.d(LOG_TAG, "added to sURIMatcher: " + t.getValue().basePath + ", key: " + t.getKey());
+            // and one like:
+            // sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/projects/#", PROJECT_ID);
+            sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/" + t.getValue().basePath + "/#", t.getKey() + 1);
+            if (LDebug.ON) Log.d(LOG_TAG, "added to sURIMatcher: " + t.getValue().basePath + "/#, key: " + t.getKey()+1);
+        }
+/*
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/projects", PROJECTS);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/projects/#", PROJECT_ID);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/visits", VISITS);
@@ -147,7 +164,7 @@ public class ContentProvider_VegNab extends ContentProvider {
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/doctypes/#", DOCTYPE_ID);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/docsources", DOCSOURCES);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/docsources/#", DOCSOURCE_ID);
-
+*/
     }
 
     HashSet<String> mFields_Projects = new HashSet<String>();
@@ -180,12 +197,25 @@ public class ContentProvider_VegNab extends ContentProvider {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         Cursor cursor = null;
         int uriType = sURIMatcher.match(uri);
-        if (uriType == RAW_SQL) { // use rawQuery
+        if (LDebug.ON) Log.d(LOG_TAG, "in query; uriType = " + uriType);
+/*        if (uriType == RAW_SQL) { // use rawQuery
             // the full SQL statement is in 'selection' and any needed parameters in 'selectionArgs'
             cursor = database.getReadableDatabase().rawQuery(selection, selectionArgs);
+        } else if (tblHash.containsKey(uriType)) { */
+        if (tblHash.containsKey(uriType)) {
+            if (LDebug.ON) Log.d(LOG_TAG, "tblHash.containsKey " + uriType);
+            queryBuilder.setTables(tblHash.get(uriType).tableName);
+        } else if (tblHash.containsKey(uriType - 1)) {
+            if (LDebug.ON) Log.d(LOG_TAG, "tblHash.containsKey " + (uriType - 1));
+            queryBuilder.setTables(tblHash.get(uriType).tableName);
+            queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
         } else {
-
             switch (uriType) {
+                case RAW_SQL:
+                    // the full SQL statement is in 'selection' and any needed parameters in 'selectionArgs'
+                    cursor = database.getReadableDatabase().rawQuery(selection, selectionArgs);
+                    break;
+/*
             case PROJECTS:
                 // fix up the following fn to work with all tables
                 // check if the caller has requested a field that does not exist
@@ -331,7 +361,7 @@ public class ContentProvider_VegNab extends ContentProvider {
                 queryBuilder.setTables("DocsSourcesTypes");
                 if (LDebug.ON) Log.d(LOG_TAG, "DOCSOURCES setTables");
                 break;
-
+*/
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
             }
@@ -351,10 +381,22 @@ public class ContentProvider_VegNab extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         int uriType = sURIMatcher.match(uri);
-        Uri uriToReturn;
+        Uri uriToReturn = null;
         SQLiteDatabase sqlDB = database.getWritableDatabase();
         long id;
+        if (tblHash.containsKey(uriType)) {
+            id = sqlDB.insert(tblHash.get(uriType).tableName, null, values);
+            uriToReturn = Uri.parse(BASE_PATH + "/" + tblHash.get(uriType).basePath + "/" + id);
+        } else {
+            switch (uriType) {
+                // no custom Uri patterns to service yet
+                default:
+                    throw new IllegalArgumentException("Unknown URI: " + uri);
+            }
+        }
+/*
         switch (uriType) {
+
         case PROJECTS:
             id = sqlDB.insert("Projects", null, values);
             uriToReturn = Uri.parse(BASE_PATH + "/projects/" + id);
@@ -426,6 +468,7 @@ public class ContentProvider_VegNab extends ContentProvider {
         default:
             throw new IllegalArgumentException("Unknown URI: " + uri);
         }
+*/
         getContext().getContentResolver().notifyChange(uri, null);
         return uriToReturn;
     }
@@ -436,6 +479,23 @@ public class ContentProvider_VegNab extends ContentProvider {
         String id;
         SQLiteDatabase sqlDB = database.getWritableDatabase();
         int rowsDeleted;
+        if (tblHash.containsKey(uriType)) {
+            rowsDeleted = sqlDB.delete(tblHash.get(uriType).tableName, selection, selectionArgs);
+        } else if (tblHash.containsKey(uriType - 1)) {
+            id = uri.getLastPathSegment();
+            if (TextUtils.isEmpty(selection)) {
+                rowsDeleted = sqlDB.delete(tblHash.get(uriType).tableName, "_id=" + id, null);
+            } else {
+                rowsDeleted = sqlDB.delete(tblHash.get(uriType).tableName, "_id=" + id, selectionArgs);
+            }
+        } else {
+            switch (uriType) {
+                // no custom Uri patterns to service yet
+                default:
+                    throw new IllegalArgumentException("Unknown URI: " + uri);
+            }
+        }
+/*
         switch (uriType) {
         case PROJECTS:
             rowsDeleted = sqlDB.delete("Projects", selection, selectionArgs);
@@ -644,6 +704,7 @@ public class ContentProvider_VegNab extends ContentProvider {
         default:
             throw new IllegalArgumentException("Unknown URI: " + uri);
         }
+*/
         getContext().getContentResolver().notifyChange(uri, null);
         return rowsDeleted;
     }
@@ -654,6 +715,34 @@ public class ContentProvider_VegNab extends ContentProvider {
         SQLiteDatabase sqlDB = database.getWritableDatabase();
         int rowsUpdated;
         String id;
+        if (tblHash.containsKey(uriType)) {
+            rowsUpdated = sqlDB.updateWithOnConflict(tblHash.get(uriType).tableName,
+                    values, selection, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
+        } else if (tblHash.containsKey(uriType - 1)) {
+            id = uri.getLastPathSegment();
+            if (TextUtils.isEmpty(selection)) {
+                rowsUpdated = sqlDB.updateWithOnConflict(tblHash.get(uriType).tableName,
+                        values, "_id=" + id, null, SQLiteDatabase.CONFLICT_IGNORE);
+            } else {
+                rowsUpdated = sqlDB.updateWithOnConflict(tblHash.get(uriType).tableName,
+                        values, "_id=" + id, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
+            }
+        } else {
+            switch (uriType) {
+                case RAW_SQL:
+                    // SQL to run is in 'selection', any parameters in 'selectionArgs'
+                    sqlDB.execSQL(selection); // run SQL that creates no cursor and returns no results
+                    // then use SQLite internal 'Changes' fn to retrieve number of rows changed
+                    Cursor cur = sqlDB.rawQuery("SELECT Changes() AS C;", null);
+                    cur.moveToFirst();
+                    rowsUpdated = cur.getInt(0);
+                    cur.close();
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown URI:" + uri);
+            }
+        }
+/*
         switch (uriType) {
         case RAW_SQL:
             // SQL to run is in 'selection', any parameters in 'selectionArgs'
@@ -872,6 +961,7 @@ public class ContentProvider_VegNab extends ContentProvider {
         default:
             throw new IllegalArgumentException("Unknown URI:" + uri);
         }
+*/
         getContext().getContentResolver().notifyChange(uri, null);
         return rowsUpdated;
     }
