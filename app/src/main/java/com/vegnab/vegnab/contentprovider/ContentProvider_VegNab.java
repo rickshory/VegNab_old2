@@ -232,8 +232,8 @@ public class ContentProvider_VegNab extends ContentProvider {
                 if (LDebug.ON) Log.d(LOG_TAG, "in gen; tblHash.containsKey " + uriType);
                 queryBuilder.setTables(tblHash.get(uriType).tableName);
             } else if (tblHash.containsKey(uriType - 1)) {
-                if (LDebug.ON) Log.d(LOG_TAG, "in item; tblHash.containsKey " + (uriType - 1));
-                queryBuilder.setTables(tblHash.get(uriType).tableName);
+                if (LDebug.ON) Log.d(LOG_TAG, "in item; tblHash.containsKey " + (uriType-1) + " for uriType " + uriType);
+                queryBuilder.setTables(tblHash.get(uriType - 1).tableName);
                 queryBuilder.appendWhere("_id=" + uri.getLastPathSegment());
             } else {
                 if (LDebug.ON) Log.d(LOG_TAG, "in Switch; uriType " + uriType);
@@ -367,9 +367,9 @@ public class ContentProvider_VegNab extends ContentProvider {
         } else if (tblHash.containsKey(uriType - 1)) {
             id = uri.getLastPathSegment();
             if (TextUtils.isEmpty(selection)) {
-                rowsDeleted = sqlDB.delete(tblHash.get(uriType).tableName, "_id=" + id, null);
+                rowsDeleted = sqlDB.delete(tblHash.get(uriType - 1).tableName, "_id=" + id, null);
             } else {
-                rowsDeleted = sqlDB.delete(tblHash.get(uriType).tableName, "_id=" + id, selectionArgs);
+                rowsDeleted = sqlDB.delete(tblHash.get(uriType - 1).tableName, "_id=" + id, selectionArgs);
             }
         } else {
             switch (uriType) {
@@ -604,10 +604,10 @@ public class ContentProvider_VegNab extends ContentProvider {
         } else if (tblHash.containsKey(uriType - 1)) {
             id = uri.getLastPathSegment();
             if (TextUtils.isEmpty(selection)) {
-                rowsUpdated = sqlDB.updateWithOnConflict(tblHash.get(uriType).tableName,
+                rowsUpdated = sqlDB.updateWithOnConflict(tblHash.get(uriType - 1).tableName,
                         values, "_id=" + id, null, SQLiteDatabase.CONFLICT_IGNORE);
             } else {
-                rowsUpdated = sqlDB.updateWithOnConflict(tblHash.get(uriType).tableName,
+                rowsUpdated = sqlDB.updateWithOnConflict(tblHash.get(uriType - 1).tableName,
                         values, "_id=" + id, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
             }
         } else {
