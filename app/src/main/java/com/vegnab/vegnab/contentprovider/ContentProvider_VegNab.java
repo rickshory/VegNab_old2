@@ -1,6 +1,7 @@
 package com.vegnab.vegnab.contentprovider;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import com.vegnab.vegnab.BuildConfig;
@@ -24,6 +25,42 @@ public class ContentProvider_VegNab extends ContentProvider {
 
     // database
     private VegNabDbHelper database; // = null; // to initialize ?
+
+    // following class and hashmap to avoid extreme error-prone redundancy of
+    // simple query/insert/update/delete methods on tables
+    class TableStd {
+        String tableName;
+        String basePath;
+        TableStd(String n, String p) {
+            tableName = n;
+            basePath = p;
+        }
+    }
+
+    private static final  HashMap<Integer, TableStd> tblHash = new HashMap<Integer, TableStd>();
+    {
+        tblHash.put(100, new TableStd("Projects","projects"));
+        tblHash.put(110, new TableStd("Visits","visits"));
+        tblHash.put(120, new TableStd("Locations","locations"));
+        tblHash.put(130, new TableStd("Namers","namers"));
+        tblHash.put(140, new TableStd("PlotTypes","plottypes"));
+        tblHash.put(150, new TableStd("SubplotTypes","subplottypes"));
+        tblHash.put(160, new TableStd("VegItems","vegitems"));
+        tblHash.put(170, new TableStd("Placeholders","placeholders"));
+        tblHash.put(180, new TableStd("PlaceHolderPix","placeholderpix"));
+        tblHash.put(190, new TableStd("IdNamers","idnamers"));
+        tblHash.put(100, new TableStd("IdRefs","idrefs"));
+        tblHash.put(210, new TableStd("IdMethods","idmethods"));
+        tblHash.put(220, new TableStd("IdLevels","idlevels"));
+        tblHash.put(230, new TableStd("RegionalSpeciesList","species"));
+        tblHash.put(240, new TableStd("DocsCreated","docs"));
+        tblHash.put(250, new TableStd("DocsCreatedTypes","doctypes"));
+        tblHash.put(260, new TableStd("DocsSourcesTypes","docsources"));
+        // to implement new tables, enter the table name (correct spelling as
+        // in the DB), and the base URI as desired.
+        // Make sure the numbers never overlap any custom URI pattern
+    }
+
 
     // used for the UriMatcher
     private static final int RAW_SQL = 1;
