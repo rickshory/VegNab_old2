@@ -229,7 +229,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         // create the full text search (FTS) virtual table
         if (LDebug.ON) Log.d(LOG_TAG, "start create FTS virtual table "
                 + ", currentTimeMillis = " + System.currentTimeMillis());
-        sSql = "CREATE VIRTUAL TABLE 'NRCSSpp_fts' USING fts4(content='NRCSSpp', Code, Genus, Species, SubsppVar, Vernacular);";
+        sSql = "CREATE VIRTUAL TABLE 'NRCSSpp_fts' USING fts4(content='NRCSSpp', "
+                + "Code, Genus, Species, SubsppVar, Vernacular, HasBeenFound, Local);";
         db.execSQL(sSql);
         if (LDebug.ON) Log.d(LOG_TAG, "finished creating FTS table "
                 + ", currentTimeMillis = " + System.currentTimeMillis());
