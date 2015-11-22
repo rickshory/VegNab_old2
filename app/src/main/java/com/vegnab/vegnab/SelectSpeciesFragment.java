@@ -95,7 +95,16 @@ public class SelectSpeciesFragment extends ListFragment
             //Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "'");
            if (LDebug.ON) Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "', length: " + s.length());
             mStSearch = s.toString();
-            getLoaderManager().restartLoader(Loaders.SPP_MATCHES, null, SelectSpeciesFragment.this);
+            if (mStSearch.trim().length() == 0) {
+                mViewForEmptyList.setText(
+                        getActivity().getResources().getString(R.string.sel_spp_search_msg_empty_list));
+                mSppResultsAdapter.swapCursor(null);
+            } else {
+                mViewForEmptyList.setText(
+                        getActivity().getResources().getString(R.string.sel_spp_search_msg_not_finished));
+                mSppResultsAdapter.swapCursor(null);
+                getLoaderManager().restartLoader(Loaders.SPP_MATCHES, null, SelectSpeciesFragment.this);
+            }
         }
 
         @Override
@@ -682,8 +691,6 @@ public class SelectSpeciesFragment extends ListFragment
             if (mRowCt == 0) {
                 mViewForEmptyList.setText(
                         getActivity().getResources().getString(R.string.sel_spp_search_msg_no_matches));
-
-//                getListView().setEmptyView();
             }
             break;
         }
