@@ -226,20 +226,31 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         }
         db.endTransaction();
 
-        // attempt to create the full text search (fts) virtual table
+        // create the full text search (FTS) virtual table
         if (LDebug.ON) Log.d(LOG_TAG, "start create FTS virtual table "
                 + ", currentTimeMillis = " + System.currentTimeMillis());
         sSql = "CREATE VIRTUAL TABLE 'NRCSSpp_fts' USING fts4(content='NRCSSpp', Code, Genus, Species, SubsppVar, Vernacular);";
         db.execSQL(sSql);
         if (LDebug.ON) Log.d(LOG_TAG, "finished creating FTS table "
                 + ", currentTimeMillis = " + System.currentTimeMillis());
-        // attempt to create the full text search (fts) table
+
+        // fill the FTS table
         if (LDebug.ON) Log.d(LOG_TAG, "start populate FTS virtual table "
                 + ", currentTimeMillis = " + System.currentTimeMillis());
         sSql = "INSERT INTO 'NRCSSpp_fts' (docid, Code, Genus, Species, SubsppVar, Vernacular) "
                 + "SELECT _id, Code, Genus, Species, SubsppVar, Vernacular FROM 'NRCSSpp';";
         db.execSQL(sSql);
         if (LDebug.ON) Log.d(LOG_TAG, "finished filling FTS table "
+                + ", currentTimeMillis = " + System.currentTimeMillis());
+
+        // optimize FTS index, table will be queried without further changes
+        // Every FTSn has a hidden column with the same name as the table itself.
+        // INSERTs into this column are interpreted as commands
+        if (LDebug.ON) Log.d(LOG_TAG, "start optimize FTS virtual table "
+                + ", currentTimeMillis = " + System.currentTimeMillis());
+        sSql = "INSERT INTO 'NRCSSpp_fts'('NRCSSpp_fts') VALUES('optimize');";
+        db.execSQL(sSql);
+        if (LDebug.ON) Log.d(LOG_TAG, "finished indexing FTS table "
                 + ", currentTimeMillis = " + System.currentTimeMillis());
 
         db.close();
