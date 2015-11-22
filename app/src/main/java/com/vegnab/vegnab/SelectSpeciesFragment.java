@@ -42,6 +42,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class SelectSpeciesFragment extends ListFragment 
@@ -65,6 +66,7 @@ public class SelectSpeciesFragment extends ListFragment
     ContentValues mValues = new ContentValues();
 
     SelSppItemAdapter mSppResultsAdapter;
+    TextView mViewForEmptyList;
 
     // declare an interface the container Activity must implement
     public interface OnEditPlaceholderListener {
@@ -129,6 +131,8 @@ public class SelectSpeciesFragment extends ListFragment
 
         mViewSearchChars.addTextChangedListener(sppCodeTextWatcher);
         registerForContextMenu(mViewSearchChars); // enable long-press
+
+        mViewForEmptyList = (TextView) rootView.findViewById(android.R.id.empty);
 
         // use query to return 'MatchTxt', concatenated from code and description; more reading room
         mSppResultsAdapter = new SelSppItemAdapter(getActivity(),
@@ -668,9 +672,18 @@ public class SelectSpeciesFragment extends ListFragment
             mSppResultsAdapter.swapCursor(finishedCursor);
             mSppMatchCursor = finishedCursor;
             if ((mPickPlaceholder) && (mRowCt == 0)) {
+                        /*    <string name="sel_spp_search_msg_empty_list">(matches will appear here)</string>
+    <string name="sel_spp_search_msg_not_finished">(working)</string>
+    <string name="sel_spp_search_msg_no_matches">(no matches)</string>*/
                 Toast.makeText(getActivity(),
                         getActivity().getResources().getString(R.string.sel_spp_pick_placeholder_none),
                         Toast.LENGTH_SHORT).show();
+            }
+            if (mRowCt == 0) {
+                mViewForEmptyList.setText(
+                        getActivity().getResources().getString(R.string.sel_spp_search_msg_no_matches));
+
+//                getListView().setEmptyView();
             }
             break;
         }

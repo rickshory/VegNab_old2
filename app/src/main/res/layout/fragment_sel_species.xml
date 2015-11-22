@@ -36,7 +36,7 @@
     <TextView android:id="@id/android:empty"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:text="@string/sel_spp_search_msg_no_results"
+         android:text="@string/sel_spp_search_msg_empty_list"
          android:layout_alignLeft="@id/android:list"
          android:layout_below="@id/android:list"
          android:textAppearance="?android:attr/textAppearanceLarge"

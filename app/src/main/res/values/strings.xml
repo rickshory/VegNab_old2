@@ -192,7 +192,9 @@
     <string name="sel_spp_search_hint_found_text">Search found species by full text</string>
     <string name="sel_spp_search_hint_all_code">Search all species by code</string>
     <string name="sel_spp_search_hint_all_text">Search all species by full text</string>
-    <string name="sel_spp_search_msg_no_results">(matches will appear here)</string>
+    <string name="sel_spp_search_msg_empty_list">(matches will appear here)</string>
+    <string name="sel_spp_search_msg_not_finished">(working)</string>
+    <string name="sel_spp_search_msg_no_matches">(no matches)</string>
     <string name="sel_spp_search_msg_no_match">No matches</string>
     <string name="sel_spp_search_msg_3chars">Enter at least 3 characters</string>
 
