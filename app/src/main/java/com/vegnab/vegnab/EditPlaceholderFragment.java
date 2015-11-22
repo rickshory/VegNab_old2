@@ -661,7 +661,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                             + "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
                             + "(CASE WHEN LENGTH(SubsppVar)>0 THEN (' ' || SubsppVar) ELSE '' END) || "
                             + "(CASE WHEN LENGTH(Vernacular)>0 THEN (', ' || Vernacular) ELSE '' END) "
-                            + "AS MatchTxt FROM RegionalSpeciesList "
+                            + "AS MatchTxt FROM NRCSSpp "
                             + "WHERE Code LIKE ? "
                             + "ORDER BY Code;";
                 params = new String[] {mStSearch + "%"};

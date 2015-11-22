@@ -152,10 +152,10 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getWritableDatabase();
         // for testing, always add to the list, never clear it
         // for production, make this a user option
-     //   db.execSQL("DELETE FROM RegionalSpeciesList;");
-        String sSql = "INSERT OR IGNORE INTO RegionalSpeciesList ( Code, Genus, Species, SubsppVar, Vernacular, Distribution ) "
+     //   db.execSQL("DELETE FROM NRCSSpp;");
+        String sSql = "INSERT OR IGNORE INTO NRCSSpp ( Code, Genus, Species, SubsppVar, Vernacular, Distribution ) "
             + "VALUES ( ?, ?, ?, ?, ?, ? )";
-//		String sSql = "INSERT OR REPLACE INTO RegionalSpeciesList ( Code, Genus, Species, SubsppVar, Vernacular ) "
+//		String sSql = "INSERT OR REPLACE INTO NRCSSpp ( Code, Genus, Species, SubsppVar, Vernacular ) "
 //				+ "VALUES ( ?, ?, ?, ?, ? )";
 
 //        db.beginTransaction();

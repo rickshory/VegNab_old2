@@ -581,7 +581,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 
                 case VegcodeSources.REGIONAL_LIST:
                     select = "SELECT Genus, Species, SubsppVar, Vernacular "
-                            + "FROM RegionalSpeciesList "
+                            + "FROM NRCSSpp "
                             + "WHERE _id = " + mSourceRecId + ";";
                     break;
 

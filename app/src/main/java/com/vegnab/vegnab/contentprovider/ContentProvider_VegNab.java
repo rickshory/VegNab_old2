@@ -72,7 +72,7 @@ public class ContentProvider_VegNab extends ContentProvider {
         tblHash.put(200, new TableStd("IdRefs","idrefs"));
         tblHash.put(210, new TableStd("IdMethods","idmethods"));
         tblHash.put(220, new TableStd("IdLevels","idlevels"));
-        tblHash.put(230, new TableStd("RegionalSpeciesList","species"));
+        tblHash.put(230, new TableStd("NRCSSpp","species"));
         tblHash.put(240, new TableStd("DocsCreated","docs"));
         tblHash.put(250, new TableStd("DocsCreatedTypes","doctypes"));
         tblHash.put(260, new TableStd("DocsSourcesTypes","docsources"));
