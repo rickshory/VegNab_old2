@@ -688,7 +688,7 @@ public class SelectSpeciesFragment extends ListFragment
                         getActivity().getResources().getString(R.string.sel_spp_pick_placeholder_none),
                         Toast.LENGTH_SHORT).show();
             }
-            if (mRowCt == 0) {
+            if ((mRowCt == 0) && (mStSearch.trim().length() != 0)) {
                 mViewForEmptyList.setText(
                         getActivity().getResources().getString(R.string.sel_spp_search_msg_no_matches));
             }
