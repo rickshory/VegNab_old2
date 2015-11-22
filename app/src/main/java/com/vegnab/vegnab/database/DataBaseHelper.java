@@ -140,7 +140,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         // appropriate for forming a message like, "species list for Oregon"
         // this first line is what is returned
         // Second line is a list of the fields, separated by Tab characters:
-        // Code	Genus	Species	SubsppVar	Vernacular
+        // Code	Genus	Species	SubsppVar	Vernacular	Distribution
         // these exactly match the field names in the database table
         // After the first 2 lines,
         // each row has the data fields, separated by Tab characters
@@ -224,8 +224,24 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         } catch (IOException e) {
            if (LDebug.ON) Log.d(LOG_TAG, "IOException " + e.getMessage());
         }
-
         db.endTransaction();
+
+        // attempt to create the full text search (fts) virtual table
+        if (LDebug.ON) Log.d(LOG_TAG, "start create FTS virtual table "
+                + ", currentTimeMillis = " + System.currentTimeMillis());
+        sSql = "CREATE VIRTUAL TABLE 'NRCSSpp_fts' USING fts4(content='NRCSSpp', Code, Genus, Species, SubsppVar, Vernacular);";
+        db.execSQL(sSql);
+        if (LDebug.ON) Log.d(LOG_TAG, "finished creating FTS table "
+                + ", currentTimeMillis = " + System.currentTimeMillis());
+        // attempt to create the full text search (fts) table
+        if (LDebug.ON) Log.d(LOG_TAG, "start populate FTS virtual table "
+                + ", currentTimeMillis = " + System.currentTimeMillis());
+        sSql = "INSERT INTO 'NRCSSpp_fts' (docid, Code, Genus, Species, SubsppVar, Vernacular) "
+                + "SELECT _id, Code, Genus, Species, SubsppVar, Vernacular FROM 'NRCSSpp';";
+        db.execSQL(sSql);
+        if (LDebug.ON) Log.d(LOG_TAG, "finished filling FTS table "
+                + ", currentTimeMillis = " + System.currentTimeMillis());
+
         db.close();
         return listName;
     }
