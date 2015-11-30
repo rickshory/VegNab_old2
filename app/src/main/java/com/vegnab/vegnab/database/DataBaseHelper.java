@@ -244,7 +244,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         if (LDebug.ON) Log.d(LOG_TAG, "finished filling FTS table "
                 + ", currentTimeMillis = " + System.currentTimeMillis());
 
-        // optimize FTS index, table will be queried without further changes
+        // Optimize FTS index, table will be queried without further changes so
+        // most efficient to take the time to optimize it now
         // Every FTSn has a hidden column with the same name as the table itself.
         // INSERTs into this column are interpreted as commands
         if (LDebug.ON) Log.d(LOG_TAG, "start optimize FTS virtual table "
