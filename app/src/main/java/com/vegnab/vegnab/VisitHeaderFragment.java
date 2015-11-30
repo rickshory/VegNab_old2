@@ -325,15 +325,18 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 // Do not allow that zero to overwrite a new (nonzero) Visit ID, or
                 // it will flag to create a second copy of the same header.
                 mVisitId = args.getLong(ARG_VISIT_ID, 0);
-                mViewVisitName.requestFocus();
-                // show the on-screen keyboard, ready to enter the new visit name
-                mViewVisitName.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(mViewVisitName, 0);
-                    }
-                }, 50);
+                if (mVisitId == 0) {
+                    // if it is really a new record
+                    mViewVisitName.requestFocus();
+                    // show the on-screen keyboard, ready to enter the new visit name
+                    mViewVisitName.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.showSoftInput(mViewVisitName, 0);
+                        }
+                    }, 50);
+                }
             }
         // also use for special arguments like screen layout
         }
