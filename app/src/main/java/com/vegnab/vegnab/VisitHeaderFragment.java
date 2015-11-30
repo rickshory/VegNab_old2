@@ -61,6 +61,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -325,6 +326,14 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 // it will flag to create a second copy of the same header.
                 mVisitId = args.getLong(ARG_VISIT_ID, 0);
                 mViewVisitName.requestFocus();
+                // show the on-screen keyboard, ready to enter the new visit name
+                mViewVisitName.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(mViewVisitName, 0);
+                    }
+                }, 50);
             }
         // also use for special arguments like screen layout
         }

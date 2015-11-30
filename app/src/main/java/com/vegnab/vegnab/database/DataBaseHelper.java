@@ -155,8 +155,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
      //   db.execSQL("DELETE FROM NRCSSpp;");
         String sSql = "INSERT OR IGNORE INTO NRCSSpp ( Code, Genus, Species, SubsppVar, Vernacular, Distribution ) "
             + "VALUES ( ?, ?, ?, ?, ?, ? )";
-//		String sSql = "INSERT OR REPLACE INTO NRCSSpp ( Code, Genus, Species, SubsppVar, Vernacular ) "
-//				+ "VALUES ( ?, ?, ?, ?, ? )";
+//		String sSql = "INSERT OR REPLACE INTO NRCSSpp ( Code, Genus, Species, SubsppVar, Vernacular, Distribution ) "
+//				+ "VALUES ( ?, ?, ?, ?, ?, ? )";
 
 //        db.beginTransaction();
         db.beginTransactionNonExclusive();
