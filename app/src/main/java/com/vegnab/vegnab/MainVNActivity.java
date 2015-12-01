@@ -1683,7 +1683,12 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                         showMessage("Error while trying to create the file");
                         return;
                     }
-                    showMessage("Created a file with content: " + result.getDriveFile().getDriveId());
+                    showMessage("Created file: " + result.getDriveFile().getDriveId());
+                    if (LDebug.ON) Log.d(LOG_TAG, "Created file: " + result.getDriveFile().getDriveId());
+
+                    if (LDebug.ON) Log.d(LOG_TAG, "resource ID file: " + result.getDriveFile().getDriveId().getResourceId());
+
+        //            result.getDriveFile().getMetadata().isCanceled();
                 }
             };
 
