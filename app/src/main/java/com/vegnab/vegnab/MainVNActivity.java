@@ -1673,26 +1673,6 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                     .setTrackingTag("outputVisit")
                     .build();
 
-//                    driveContents.commit(getGoogleApiClient(), null, executionOptions)
-//                            .setResultCallback(fileWrittenCallback);
-/*    Drive.DriveApi.getRootFolder(getGoogleApiClient())
-      .createFile(getGoogleApiClient(), meta, null,
-        new ExecutionOptions.Builder()
-          .setNotifyOnCompletion(true)
-          .build()
-      )
-      .setResultCallback(new ResultCallback<DriveFileResult>() {
-        @Override
-        public void onResult(DriveFileResult result) {
-          if (result.getStatus().isSuccess()) {
-            DriveId driveId = result.getDriveFile().getDriveId();
-            Log.d(TAG, "Created a empty file: " + driveId);
-            DriveFile file = Drive.DriveApi.getFile(getGoogleApiClient(), driveId);
-            file.addChangeSubscription(getGoogleApiClient());
-          }
-        }
-      });
-  }*/
             // create file in root folder
             Drive.DriveApi.getRootFolder(getGoogleApiClient())
                     .createFile(getGoogleApiClient(), changeSet, driveContents, executionOptions)
@@ -1701,9 +1681,7 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
             }.start();
         }
     };
-            /*
 
-            */
     final private ResultCallback<DriveFolder.DriveFileResult> fileCallback = new
             ResultCallback<DriveFolder.DriveFileResult>() {
                 @Override
