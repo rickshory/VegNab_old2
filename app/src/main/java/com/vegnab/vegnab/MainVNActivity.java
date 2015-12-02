@@ -25,7 +25,9 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.drive.DriveApi;
 import com.google.android.gms.drive.DriveContents;
+import com.google.android.gms.drive.DriveFile;
 import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.drive.MetadataChangeSet;
 import com.vegnab.vegnab.BuildConfig;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
@@ -1683,10 +1685,13 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                         showMessage("Error while trying to create the file");
                         return;
                     }
-                    showMessage("Created file: " + result.getDriveFile().getDriveId());
-                    if (LDebug.ON) Log.d(LOG_TAG, "Created file: " + result.getDriveFile().getDriveId());
+                    DriveId driveId = result.getDriveFile().getDriveId();
+                    showMessage("Created file: " + driveId);
+                    if (LDebug.ON) Log.d(LOG_TAG, "XXX Created file: " + driveId);
+                    DriveFile file = Drive.DriveApi.getFile(getGoogleApiClient(), driveId);
+                    file.addChangeSubscription(getGoogleApiClient());
 
-                    if (LDebug.ON) Log.d(LOG_TAG, "resource ID file: " + result.getDriveFile().getDriveId().getResourceId());
+                    if (LDebug.ON) Log.d(LOG_TAG, "XXX resource ID file: " + result.getDriveFile().getDriveId().getResourceId());
 
         //            result.getDriveFile().getMetadata().isCanceled();
                 }
