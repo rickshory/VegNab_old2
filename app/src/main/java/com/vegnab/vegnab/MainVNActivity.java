@@ -1670,7 +1670,7 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
 
             ExecutionOptions executionOptions = new ExecutionOptions.Builder()
                     .setNotifyOnCompletion(true)
-                    .setTrackingTag("outputVisit")
+                    .setTrackingTag(changeSet.getTitle())
                     .build();
 
             // create file in root folder

@@ -7,6 +7,8 @@ import com.google.android.gms.drive.events.CompletionEvent;
 import com.google.android.gms.drive.events.DriveEventService;
 import com.vegnab.vegnab.database.VNContract.LDebug;
 
+import java.util.List;
+
 /**
  * Created by rshory on 12/1/2015.
  */
@@ -23,6 +25,11 @@ public class VNDriveEventService extends DriveEventService {
         if (LDebug.ON) Log.d(LOG_TAG, "XXX DriveID: " + event.getDriveId()); // returns cryptic string something like expanded form of Drive ID sent
         if (LDebug.ON) Log.d(LOG_TAG, "XXX toString: " + event.toString()); // returns DriveID, status, and trackingTag
         if (LDebug.ON) Log.d(LOG_TAG, "XXX describe: " + event.describeContents()); // returns zero
+
+          List tags = event.getTrackingTags();
+          String trackTag = tags.get(0).toString();
+          if (LDebug.ON) Log.d(LOG_TAG, "XXX first tracking tag: " + trackTag); //
+
         switch (event.getStatus()) {
             case CompletionEvent.STATUS_CONFLICT:
                 if (LDebug.ON) Log.d(LOG_TAG, "XXX STATUS_CONFLICT");
