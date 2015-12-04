@@ -112,7 +112,8 @@ public class MainVNActivity extends ActionBarActivity
 
     private static final String LOG_TAG = MainVNActivity.class.getSimpleName();
     static String mUniqueDeviceId, mDeviceIdSource;
-    long mRowCt, mVisitId = 0, mSubplotTypeId = 0, mProjectId = 0, mNamerId = 0, mVisitIdToExport = 0;
+    long mRowCt, mVisitId = 0, mSubplotTypeId = 0, mProjectId = 0, mNamerId = 0,
+            mVisitIdToExport = 0, mNewPurcRecId = 0;
     boolean mConnectionRequested = false;
     long mPhProjID = 0, mPhNameId =0;
     HashMap<String, Long> mExistingPhCodes = new HashMap<String, Long>();
@@ -132,6 +133,8 @@ public class MainVNActivity extends ActionBarActivity
     final static String ARG_PH_PROJ_ID = "phProjId";
     final static String ARG_PH_NAMER_ID = "phNamerId";
     final static String ARG_PH_EXISTING_SET = "phExistingSet";
+
+    final static String ARG_PURCH_REC_ID = "purchRecId";
 
     // fake product IDs for testing, provided by Google
     private final String productID_testPurchased = "android.test.purchased";
@@ -267,6 +270,7 @@ public class MainVNActivity extends ActionBarActivity
                 mVisitId = savedInstanceState.getLong(ARG_VISIT_ID);
                 mConnectionRequested = savedInstanceState.getBoolean(ARG_CONNECTION_REQUESTED);
                 mSubplotTypeId = savedInstanceState.getLong(ARG_SUBPLOT_TYPE_ID, 0);
+                mNewPurcRecId = savedInstanceState.getLong(ARG_PURCH_REC_ID);
                 // if restoring from a previous state, do not create view
                 // could end up with overlapping views
                 return;
@@ -475,6 +479,7 @@ public class MainVNActivity extends ActionBarActivity
         outState.putLong(ARG_VISIT_ID, mVisitId);
         outState.putBoolean(ARG_CONNECTION_REQUESTED, mConnectionRequested);
         outState.putSerializable(ARG_PH_EXISTING_SET, mExistingPhCodes);
+        outState.putLong(ARG_PURCH_REC_ID, mNewPurcRecId);
     }
 
     @Override
@@ -485,6 +490,7 @@ public class MainVNActivity extends ActionBarActivity
         mVisitId = savedInstanceState.getLong(ARG_VISIT_ID);
         mConnectionRequested = savedInstanceState.getBoolean(ARG_CONNECTION_REQUESTED);
         mExistingPhCodes = (HashMap<String, Long>) savedInstanceState.getSerializable(ARG_PH_EXISTING_SET);
+        mNewPurcRecId = savedInstanceState.getLong(ARG_PURCH_REC_ID);
 
     }
 
@@ -1086,9 +1092,11 @@ public class MainVNActivity extends ActionBarActivity
         contentValues.put("Title", "_" + timestampNow);
         contentValues.put("Consumed", 0);
         uri = rs.insert(purchUri, contentValues);
-        /*
+        // see if the following persists consistently
+        mNewPurcRecId = Long.parseLong(uri.getLastPathSegment());
+        if (LDebug.ON) Log.d(LOG_TAG, "mNewPurcRecId of tentative record stored in DB: " + mNewPurcRecId);
 
-                contentValues.putNull("DocStatusID"); // flags that the document is only 'Initiated',
+        /*
 
 "_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
 "ProductIdCode" VARCHAR(255) NOT NULL, -- also called 'SKU'
@@ -1256,7 +1264,9 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
             String sig = purchase.getSignature();
             String tok = purchase.getToken();
             int purchSt = purchase.getPurchaseState();
+            SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
             long t = purchase.getPurchaseTime();
+            String purchTime = dateTimeFormat.format(new Date(t));
             String price = "";
             String descr = "";
             String title = "";
@@ -1266,7 +1276,34 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                 descr = skuDetails.getDescription();
                 title = skuDetails.getTitle();
             }
-
+            int numUpdated = 0;
+            Uri uri, purchUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "purchases");
+            ContentResolver rs = getContentResolver();
+            ContentValues contentValues = new ContentValues();
+            // after testing, tidy this up with above lines
+            contentValues.put("ProductIdCode", sku);
+            contentValues.put("DevPayload", payload);
+            contentValues.put("PurchTypeID", itemType);
+            contentValues.put("OrderIDCode", ordId);
+            contentValues.put("PkgName", pkgName);
+            contentValues.put("Signature", sig);
+            contentValues.put("Token", tok);
+            contentValues.put("PurchaseState", purchSt);
+            contentValues.put("TimePurchased", purchTime);
+            contentValues.put("Price", price);
+            contentValues.put("Description", descr);
+            contentValues.put("Title", title);
+            contentValues.put("Consumed", 0);
+            String whereClause = "_id = ? AND DevPayload = ?";
+            String[] whereArgs = new String[] {"" + mNewPurcRecId, makePayload(sku)};
+            numUpdated = rs.update(purchUri, contentValues, whereClause, whereArgs);
+            if (LDebug.ON) Log.d(LOG_TAG, "Updated purchase record in OnIabPurchaseFinishedListener; numUpdated: " + numUpdated);
+            if (numUpdated == 0) { // did not find a record to update
+                // create a new record
+                uri = rs.insert(purchUri, contentValues);
+                mNewPurcRecId = Long.parseLong(uri.getLastPathSegment());
+                if (LDebug.ON) Log.d(LOG_TAG, "mNewPurcRecId of new record stored in DB: " + mNewPurcRecId);
+            }
 /*
             else if (purchase.getSku().equals(SKU_PREMIUM)) {
                 // bought the premium upgrade!
