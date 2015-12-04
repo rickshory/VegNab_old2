@@ -1145,6 +1145,33 @@ public class MainVNActivity extends ActionBarActivity
          // installations is recommended.
          ///
 
+        // experimenting with verification
+        String payLoadReturned = p.getDeveloperPayload();
+        if (LDebug.ON) Log.d(LOG_TAG, "Payload received back from purchase: " + payLoadReturned);
+        // package the foll0wing into a method, which will give the same result as when sending off the purchase
+
+
+        /*
+exper
+            String sku = purchase.getSku();
+            String payload = purchase.getDeveloperPayload();
+            String itemType = purchase.getItemType();
+            String ordId = purchase.getOrderId();
+            String pkgName = purchase.getPackageName();
+            String sig = purchase.getSignature();
+            String tok = purchase.getToken();
+            int purchSt = purchase.getPurchaseState();
+            long t = purchase.getPurchaseTime();
+            String price = "";
+            String descr = "";
+            String title = "";
+            if (mInventory.hasDetails(sku)) {
+                SkuDetails skuDetails = mInventory.getSkuDetails(sku);
+                price = skuDetails.getPrice();
+                descr = skuDetails.getDescription();
+                title = skuDetails.getTitle();
+            }
+        */
     return true;
 }
 
@@ -1349,12 +1376,12 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
         ConfigurableMsgDialog flexErrDlg = new ConfigurableMsgDialog();
         try {
             copyFile(from, to);
-           if (LDebug.ON) Log.d(LOG_TAG, "DB backed up to: " + to.getPath());
+            if (LDebug.ON) Log.d(LOG_TAG, "DB backed up to: " + to.getPath());
             flexErrDlg = ConfigurableMsgDialog.newInstance("DB backed up to: ", to.getPath());
             flexErrDlg.show(getSupportFragmentManager(), "frg_db_copy_ok");
             return true;
         } catch (IOException e) {
-           if (LDebug.ON) Log.d(LOG_TAG, "Error backuping up database: " + e.getMessage(), e);
+            if (LDebug.ON) Log.d(LOG_TAG, "Error backuping up database: " + e.getMessage(), e);
             flexErrDlg = ConfigurableMsgDialog.newInstance("Error backing up database: ", e.getMessage());
             flexErrDlg.show(getSupportFragmentManager(), "frg_db_copy_ok");
         }
