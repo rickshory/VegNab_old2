@@ -18,6 +18,7 @@ import java.util.UUID;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -30,6 +31,7 @@ import com.google.android.gms.drive.DriveFolder;
 import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.drive.ExecutionOptions;
 import com.google.android.gms.drive.MetadataChangeSet;
+import com.google.android.gms.plus.Plus;
 import com.vegnab.vegnab.BuildConfig;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract;
@@ -659,7 +661,7 @@ public class MainVNActivity extends ActionBarActivity
             ex.printStackTrace();
             args.putString(DonateFragment.ARG_JSON_STRING, null);
            if (LDebug.ON) Log.d(LOG_TAG, "JSON error getting product information");
-            Toast.makeText(this, "Error getting product informations", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Error getting product information", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -1045,7 +1047,64 @@ public class MainVNActivity extends ActionBarActivity
         // For testing use an empty string, but in production would generate this.
         // See comments in onverifyDeveloperPayload() for more info.
         String skuToPurchase = args.getString(SKU_CHOSEN);
-        String payload = "";
+        // experiment with payload string
+        String accountID, acctNameCrypt, accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
+        // will '@' in email be a problem in SQLite parameters?
+        if (accountName == null) { // for now, fake the crypto
+            acctNameCrypt = "fake_crypto_no_account_name";
+        } else {
+            acctNameCrypt = "fake_crypto_" + accountName;
+        }
+        try {
+            accountID = GoogleAuthUtil.getAccountId(getApplicationContext(), accountName);
+        } catch (Exception e) { // for now, just use dummy string
+            accountID = "no_account_id";
+        }
+        // createLocalAccount(accountID); // maybe do this later
+//        String payload = "";
+        String payload = acctNameCrypt + "_" + skuToPurchase;
+
+        // store a record in the DB, to check later
+        int numUpdated = 0;
+        Uri uri, purchUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "purchases");
+        ContentResolver rs = getContentResolver();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("ProductIdCode", skuToPurchase);
+        contentValues.put("DevPayload", payload);
+        contentValues.put("PurchTypeID", 1); // 'Managed item'
+        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+        String timestampNow = dateTimeFormat.format(new Date());
+        // for experimentation, use this timestamp in all the fields we don't know yet
+        contentValues.put("OrderIDCode", "_" + timestampNow);
+        contentValues.put("PkgName", "_" + timestampNow);
+        contentValues.put("Signature", "_" + timestampNow);
+        contentValues.put("Token", "_" + timestampNow);
+        contentValues.put("PurchaseState", -1); // indefinite
+        contentValues.put("TimePurchased", timestampNow);
+        contentValues.put("Price", "_" + timestampNow);
+        contentValues.put("Description", "_" + timestampNow);
+        contentValues.put("Title", "_" + timestampNow);
+        contentValues.put("Consumed", 0);
+        uri = rs.insert(purchUri, contentValues);
+        /*
+
+                contentValues.putNull("DocStatusID"); // flags that the document is only 'Initiated',
+
+"_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+"ProductIdCode" VARCHAR(255) NOT NULL, -- also called 'SKU'
+"DevPayload" VARCHAR(255) NOT NULL,
+"PurchTypeID" INTEGER NOT NULL, -- the different types of purchases; currently 'managed item', or 'subscription', but possibly others in the future.
+"OrderIDCode" VARCHAR(255) NOT NULL, -- corresponds to the Google payments order ID
+"PkgName" VARCHAR(255) NOT NULL,
+"Signature" VARCHAR(255) NOT NULL,
+"Token" VARCHAR(255) NOT NULL, -- uniquely identifies a purchase for a given item and user pair
+"PurchaseState" INTEGER NOT NULL DEFAULT 0, --  0 (purchased), 1 (canceled), or 2 (refunded).
+"TimePurchased" TIMESTAMP NOT NULL,
+"Price" VARCHAR(255) NOT NULL,
+"Description" VARCHAR(255) NOT NULL,
+"Title" VARCHAR(255) NOT NULL,
+"Consumed" BOOL NOT NULL DEFAULT 0, -- may not apply to all purchases
+*/
         // get an Analytics event tracker
         Tracker sendDonateTracker = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
         sendDonateTracker.send(new HitBuilders.EventBuilder()
