@@ -1048,7 +1048,7 @@ public class MainVNActivity extends ActionBarActivity
         // See comments in onverifyDeveloperPayload() for more info.
         String skuToPurchase = args.getString(SKU_CHOSEN);
         // experiment with payload string
-        String accountID, acctNameCrypt, accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
+/*        String accountID, acctNameCrypt, accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
         // will '@' in email be a problem in SQLite parameters?
         if (accountName == null) { // for now, fake the crypto
             acctNameCrypt = "fake_crypto_no_account_name";
@@ -1060,9 +1060,9 @@ public class MainVNActivity extends ActionBarActivity
         } catch (Exception e) { // for now, just use dummy string
             accountID = "no_account_id";
         }
-        // createLocalAccount(accountID); // maybe do this later
+        // createLocalAccount(accountID); // maybe do this later*/
 //        String payload = "";
-        String payload = acctNameCrypt + "_" + skuToPurchase;
+        String payload = makePayload(skuToPurchase);
 
         // store a record in the DB, to check later
         int numUpdated = 0;
@@ -1117,6 +1117,24 @@ public class MainVNActivity extends ActionBarActivity
         mHelper.launchPurchaseFlow(this, skuToPurchase, RC_REQUEST,
                 mPurchaseFinishedListener, payload);
     }
+
+    // experimental payload method
+    String makePayload(String sku) {
+        String accountID, acctNameCrypt, accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
+        // will '@' in email be a problem in SQLite parameters?
+        if (accountName == null) { // for now, fake the crypto
+            acctNameCrypt = "fake_crypto_no_account_name";
+        } else {
+            acctNameCrypt = "fake_crypto_" + accountName;
+        }
+        try {
+            accountID = GoogleAuthUtil.getAccountId(getApplicationContext(), accountName);
+        } catch (Exception e) { // for now, just use dummy string
+            accountID = "no_account_id";
+        }
+        // createLocalAccount(accountID); // maybe do this later
+        return acctNameCrypt + "_" + sku;
+    };
             
     // Verifies the developer payload of a purchase.
     boolean verifyDeveloperPayload(Purchase p) {
@@ -1148,32 +1166,16 @@ public class MainVNActivity extends ActionBarActivity
         // experimenting with verification
         String payLoadReturned = p.getDeveloperPayload();
         if (LDebug.ON) Log.d(LOG_TAG, "Payload received back from purchase: " + payLoadReturned);
-        // package the foll0wing into a method, which will give the same result as when sending off the purchase
-
-
-        /*
-exper
-            String sku = purchase.getSku();
-            String payload = purchase.getDeveloperPayload();
-            String itemType = purchase.getItemType();
-            String ordId = purchase.getOrderId();
-            String pkgName = purchase.getPackageName();
-            String sig = purchase.getSignature();
-            String tok = purchase.getToken();
-            int purchSt = purchase.getPurchaseState();
-            long t = purchase.getPurchaseTime();
-            String price = "";
-            String descr = "";
-            String title = "";
-            if (mInventory.hasDetails(sku)) {
-                SkuDetails skuDetails = mInventory.getSkuDetails(sku);
-                price = skuDetails.getPrice();
-                descr = skuDetails.getDescription();
-                title = skuDetails.getTitle();
-            }
-        */
-    return true;
-}
+        String payLoadToCheck = makePayload(p.getSku());
+        if (LDebug.ON) Log.d(LOG_TAG, "Payload regenerated, to check: " + payLoadToCheck);
+        if (payLoadToCheck == payLoadReturned) {
+            if (LDebug.ON) Log.d(LOG_TAG, "Payload OK");
+        } else {
+            if (LDebug.ON) Log.d(LOG_TAG, "Payload mismatch");
+        }
+        // while in development, despite checking, still return true
+        return true;
+    }
 
     // Callback for when a purchase is finished
     IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
