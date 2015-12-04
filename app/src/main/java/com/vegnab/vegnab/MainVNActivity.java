@@ -1683,10 +1683,11 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                 contentValues.put("DocTypeID", 1); // text file
                 contentValues.put("DocSourceTypeID", 1); // based on table 'Visits'
                 contentValues.put("DocSourceRecID", visId); // the record in the 'Visits' table
-                contentValues.put("DocStatusID", 5); // 'Initiated', Drive completion event will update if possible
+                contentValues.putNull("DocStatusID"); // flags that the document is only 'Initiated',
+                    // Drive completion event will update if possible with completions status
                 contentValues.put("DocName", changeSet.getTitle()); // completion event will try to match this with TrackingTag
                 SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-                contentValues.put("TimeInitiated", dateTimeFormat.format(new Date()));
+                contentValues.put("TimeInitiated", dateTimeFormat.format(new Date())); // probably don't need; defaults to Now
                 uri = rs.insert(docsUri, contentValues);
 
                     // create file in root folder

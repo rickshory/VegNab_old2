@@ -25,7 +25,6 @@ public class VNDriveEventService extends DriveEventService {
       @Override
     public void onCompletion(CompletionEvent event) {
         super.onCompletion(event);
-          int cmpStatus = 7; // default 'Error'
         DriveId driveId = event.getDriveId();
         if (LDebug.ON) Log.d(LOG_TAG, "XXX Resource ID: " + driveId.getResourceId()); // returns the final part of the URL
         if (LDebug.ON) Log.d(LOG_TAG, "XXX Tracking Tags: " + event.getTrackingTags()); // first one is tracking tag sent
@@ -44,9 +43,10 @@ public class VNDriveEventService extends DriveEventService {
           }
 
           if (LDebug.ON) Log.d(LOG_TAG, "XXX first tracking tag: " + trackTag); //
-          cmpStatus = event.getStatus() + 1; // status code to store in DB is 1-based
+          int cmpStatus = event.getStatus() + 1; // status code to store in DB is 1-based
 
           // following is redundant and can be removed
+/*
         switch (event.getStatus()) {
             case CompletionEvent.STATUS_CONFLICT:
                 if (LDebug.ON) Log.d(LOG_TAG, "XXX STATUS_CONFLICT");
@@ -64,10 +64,9 @@ public class VNDriveEventService extends DriveEventService {
                 event.dismiss();
                 break;
         }
+*/
 
-        int numUpdated = 0;
         Uri uri, docsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "docs");
-
         ContentResolver rs = getContentResolver();
         ContentValues contentValues = new ContentValues();
         contentValues.put("DocStatusID", cmpStatus); // ' try to update status ...
@@ -75,9 +74,8 @@ public class VNDriveEventService extends DriveEventService {
         SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         contentValues.put("TimePosted", dateTimeFormat.format(new Date()));
         String whereClause = "DocName = ?"; // ... of record where filename was sent as the tracking tag
-        String[] whereArgs;
-        whereArgs = new String[] {trackTag};
-        numUpdated = rs.update(docsUri, contentValues, whereClause, whereArgs);
+        String[] whereArgs = new String[] {trackTag};
+        int numUpdated = rs.update(docsUri, contentValues, whereClause, whereArgs);
         if (LDebug.ON) Log.d(LOG_TAG, "Updated doc record in onCompletion; numUpdated: " + numUpdated);
         if (numUpdated == 0) { // did not find a record to update
             // create a new record
@@ -88,5 +86,6 @@ public class VNDriveEventService extends DriveEventService {
             contentValues.put("DocName", resID); // same as field 'DocResourceID'
             uri = rs.insert(docsUri, contentValues);
         }
+          event.dismiss();
     }
 }
