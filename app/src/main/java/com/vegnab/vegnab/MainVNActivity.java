@@ -1106,7 +1106,7 @@ public class MainVNActivity extends ActionBarActivity
         if (LDebug.ON) Log.d(LOG_TAG, "mNewPurcRecId of new record stored in DB: " + mNewPurcRecId);
     }
 
-    void logPurchaseActivity (Purchase p) {
+    void logPurchaseActivity (Purchase p, IabResult result) {
         Uri uri, purchUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "purchases");
         ContentResolver rs = getContentResolver();
         ContentValues contentValues = new ContentValues();
@@ -1137,6 +1137,8 @@ public class MainVNActivity extends ActionBarActivity
             contentValues.putNull("Title");
         }
         contentValues.put("Consumed", 0);
+        contentValues.put("IABResponse", result.getResponse());
+        contentValues.put("IABMessage", result.getMessage());
         // create a new record
         uri = rs.insert(purchUri, contentValues);
         mNewPurcRecId = Long.parseLong(uri.getLastPathSegment());
@@ -1209,7 +1211,7 @@ public class MainVNActivity extends ActionBarActivity
             // get an Analytics event tracker
             Tracker purchaseFinishedTracker = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
 
-            logPurchaseActivity(purchase);
+            logPurchaseActivity(purchase, result);
 
             // if we were disposed of in the meantime, quit.
             if (mHelper == null) {
