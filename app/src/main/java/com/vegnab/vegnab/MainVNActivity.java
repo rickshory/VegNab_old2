@@ -1132,6 +1132,7 @@ public class MainVNActivity extends ActionBarActivity
             contentValues.putNull("Title");
         }
         contentValues.put("Consumed", isConsumed ? 1 : 0);
+        contentValues.put("PurchJSON", p.getOriginalJson());
         contentValues.put("IABResponse", result.getResponse());
         contentValues.put("IABMessage", result.getMessage());
         if (notes == null) {
