@@ -1131,12 +1131,18 @@ public class MainVNActivity extends ActionBarActivity
         SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         long t = p.getPurchaseTime();
         contentValues.put("PurchaseTime", dateTimeFormat.format(new Date(t)));
-        if (mInventory.hasDetails(sku)) {
-            SkuDetails skuDetails = mInventory.getSkuDetails(sku);
-            contentValues.put("Price", skuDetails.getPrice());
-            contentValues.put("Description", skuDetails.getDescription());
-            contentValues.put("Title", skuDetails.getTitle());
-        } else {
+        try { // inventory object may not exist yet
+            if (mInventory.hasDetails(sku)) {
+                SkuDetails skuDetails = mInventory.getSkuDetails(sku);
+                contentValues.put("Price", skuDetails.getPrice());
+                contentValues.put("Description", skuDetails.getDescription());
+                contentValues.put("Title", skuDetails.getTitle());
+            } else {
+                contentValues.putNull("Price");
+                contentValues.putNull("Description");
+                contentValues.putNull("Title");
+            }
+        } catch (Exception e) {
             contentValues.putNull("Price");
             contentValues.putNull("Description");
             contentValues.putNull("Title");
