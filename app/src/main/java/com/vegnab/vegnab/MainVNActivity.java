@@ -1298,12 +1298,15 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                     .build());
 
 //            if (purchase.getSku().equals(SKU_DONATE_USD_001_00)) {
-            if (purchase.getSku().equals(productID_testPurchased)) {
+/*            if (purchase.getSku().equals(productID_testPurchased)) {
                 // bought a donation, so consume it.
 //               if (LDebug.ON) Log.d(LOG_TAG, "Purchase is $1 donation. Starting consumption.");
                if (LDebug.ON) Log.d(LOG_TAG, "Purchase is test.purchased. Starting consumption.");
                 mHelper.consumeAsync(purchase, mConsumeFinishedListener);
-            }
+            }*/
+
+            // at this time, all purchases are donations, attempt to consume with no further result
+            mHelper.consumeAsync(purchase, mConsumeFinishedListener);
 
 /*
             else if (purchase.getSku().equals(SKU_PREMIUM)) {
