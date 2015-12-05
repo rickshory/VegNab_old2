@@ -1126,6 +1126,10 @@ public class MainVNActivity extends ActionBarActivity
                 mPurchaseFinishedListener, payload);
     }
 
+    long logPurchaseActivity (Purchase p) {
+        return 0;
+    };
+
     // experimental payload method
     String makePayload(String sku) {
         String accountID, acctNameCrypt, accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
