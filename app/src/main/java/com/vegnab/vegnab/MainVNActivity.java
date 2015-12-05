@@ -1522,6 +1522,7 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                         .addScope(Drive.SCOPE_APPFOLDER) // required for App Folder sample
                         .addConnectionCallbacks(this)
                         .addOnConnectionFailedListener(this)
+                        .addApi(Plus.API)
                         .build();
             }
         }
