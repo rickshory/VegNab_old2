@@ -1127,7 +1127,37 @@ public class MainVNActivity extends ActionBarActivity
     }
 
     long logPurchaseActivity (Purchase p) {
-        return 0;
+        Uri uri, purchUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "purchases");
+        ContentResolver rs = getContentResolver();
+        ContentValues contentValues = new ContentValues();
+        String sku = p.getSku();
+        contentValues.put("ProductIdCode", sku);
+        contentValues.put("DevPayload", p.getDeveloperPayload());
+        contentValues.put("PurchTypeID", p.getItemType());
+        contentValues.put("OrderIDCode", p.getOrderId());
+        contentValues.put("PkgName", p.getPackageName());
+        contentValues.put("Signature", p.getSignature());
+        contentValues.put("Token", p.getToken());
+        contentValues.put("PurchaseState", p.getPurchaseState());
+        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+        long t = p.getPurchaseTime();
+        contentValues.put("TimePurchased", dateTimeFormat.format(new Date(t)));
+        if (mInventory.hasDetails(sku)) {
+            SkuDetails skuDetails = mInventory.getSkuDetails(sku);
+            contentValues.put("Price", skuDetails.getPrice());
+            contentValues.put("Description", skuDetails.getDescription());
+            contentValues.put("Title", skuDetails.getTitle());
+        } else {
+            contentValues.putNull("Price");
+            contentValues.putNull("Description");
+            contentValues.putNull("Title");
+        }
+        contentValues.put("Consumed", 0);
+        // create a new record
+        uri = rs.insert(purchUri, contentValues);
+        mNewPurcRecId = Long.parseLong(uri.getLastPathSegment());
+        if (LDebug.ON) Log.d(LOG_TAG, "mNewPurcRecId of new record stored in DB: " + mNewPurcRecId);
+        return mNewPurcRecId;
     };
 
     // experimental payload method
