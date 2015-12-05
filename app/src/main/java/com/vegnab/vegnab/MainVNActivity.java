@@ -1209,6 +1209,8 @@ public class MainVNActivity extends ActionBarActivity
             // get an Analytics event tracker
             Tracker purchaseFinishedTracker = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
 
+            logPurchaseActivity(purchase);
+
             // if we were disposed of in the meantime, quit.
             if (mHelper == null) {
                 purchaseFinishedTracker.send(new HitBuilders.EventBuilder()
@@ -1272,55 +1274,6 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                 mHelper.consumeAsync(purchase, mConsumeFinishedListener);
             }
 
-            // get the items to write to the database
-            String sku = purchase.getSku();
-            String payload = purchase.getDeveloperPayload();
-            String itemType = purchase.getItemType();
-            String ordId = purchase.getOrderId();
-            String pkgName = purchase.getPackageName();
-            String sig = purchase.getSignature();
-            String tok = purchase.getToken();
-            int purchSt = purchase.getPurchaseState();
-            SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-            long t = purchase.getPurchaseTime();
-            String purchTime = dateTimeFormat.format(new Date(t));
-            String price = "";
-            String descr = "";
-            String title = "";
-            if (mInventory.hasDetails(sku)) {
-                SkuDetails skuDetails = mInventory.getSkuDetails(sku);
-                price = skuDetails.getPrice();
-                descr = skuDetails.getDescription();
-                title = skuDetails.getTitle();
-            }
-            int numUpdated = 0;
-            Uri uri, purchUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "purchases");
-            ContentResolver rs = getContentResolver();
-            ContentValues contentValues = new ContentValues();
-            // after testing, tidy this up with above lines
-            contentValues.put("ProductIdCode", sku);
-            contentValues.put("DevPayload", payload);
-            contentValues.put("PurchTypeID", itemType);
-            contentValues.put("OrderIDCode", ordId);
-            contentValues.put("PkgName", pkgName);
-            contentValues.put("Signature", sig);
-            contentValues.put("Token", tok);
-            contentValues.put("PurchaseState", purchSt);
-            contentValues.put("TimePurchased", purchTime);
-            contentValues.put("Price", price);
-            contentValues.put("Description", descr);
-            contentValues.put("Title", title);
-            contentValues.put("Consumed", 0);
-            String whereClause = "_id = ? AND DevPayload = ?";
-            String[] whereArgs = new String[] {"" + mNewPurcRecId, makePayload(sku)};
-            numUpdated = rs.update(purchUri, contentValues, whereClause, whereArgs);
-            if (LDebug.ON) Log.d(LOG_TAG, "Updated purchase record in OnIabPurchaseFinishedListener; numUpdated: " + numUpdated);
-            if (numUpdated == 0) { // did not find a record to update
-                // create a new record
-                uri = rs.insert(purchUri, contentValues);
-                mNewPurcRecId = Long.parseLong(uri.getLastPathSegment());
-                if (LDebug.ON) Log.d(LOG_TAG, "mNewPurcRecId of new record stored in DB: " + mNewPurcRecId);
-            }
 /*
             else if (purchase.getSku().equals(SKU_PREMIUM)) {
                 // bought the premium upgrade!
