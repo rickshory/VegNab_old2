@@ -1169,7 +1169,12 @@ public class MainVNActivity extends ActionBarActivity
 
     // experimental payload method
     String makePayload(String sku) {
-        String accountID, acctNameCrypt, accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
+        String accountName, acctNameCrypt, accountID;
+        try {
+            accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
+        } catch (Exception e) {
+            accountName = null;
+        }
         // will '@' in email be a problem in SQLite parameters?
         if (accountName == null) { // for now, fake the crypto
             acctNameCrypt = "fake_crypto_no_account_name";
@@ -1221,6 +1226,8 @@ public class MainVNActivity extends ActionBarActivity
             if (LDebug.ON) Log.d(LOG_TAG, "Payload OK");
         } else {
             if (LDebug.ON) Log.d(LOG_TAG, "Payload mismatch");
+            logPurchaseActivity(p, null, false, "Payload mismatch. Expected: " + payLoadToCheck
+                    + "; Received: " + payLoadReturned);
         }
         // while in development, despite checking, still return true
         return true;
