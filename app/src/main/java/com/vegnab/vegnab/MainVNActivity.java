@@ -1069,33 +1069,14 @@ public class MainVNActivity extends ActionBarActivity
         // createLocalAccount(accountID); // maybe do this later*/
 //        String payload = "";
         String payload = makePayload(skuToPurchase);
-
-        // store a record in the DB, to check later
-        int numUpdated = 0;
-        Uri uri, purchUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "purchases");
-        ContentResolver rs = getContentResolver();
+        // log an initiated purchase in the DB, empty fields flag that it is tentative
         ContentValues contentValues = new ContentValues();
         contentValues.put("ProductIdCode", skuToPurchase);
         contentValues.put("DevPayload", payload);
         contentValues.put("PurchTypeID", 1); // 'Managed item'
-        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-        String timestampNow = dateTimeFormat.format(new Date());
-        // for experimentation, use this timestamp in all the fields we don't know yet
-        contentValues.put("OrderIDCode", "_" + timestampNow);
-        contentValues.put("PkgName", "_" + timestampNow);
-        contentValues.put("Signature", "_" + timestampNow);
-        contentValues.put("Token", "_" + timestampNow);
         contentValues.put("PurchaseState", -1); // indefinite
-        contentValues.put("TimePurchased", timestampNow);
-        contentValues.put("Price", "_" + timestampNow);
-        contentValues.put("Description", "_" + timestampNow);
-        contentValues.put("Title", "_" + timestampNow);
         contentValues.put("Consumed", 0);
-        uri = rs.insert(purchUri, contentValues);
-        // see if the following persists consistently
-        mNewPurcRecId = Long.parseLong(uri.getLastPathSegment());
-        if (LDebug.ON) Log.d(LOG_TAG, "mNewPurcRecId of tentative record stored in DB: " + mNewPurcRecId);
-
+        logPurchaseActivity(contentValues);
 
         // get an Analytics event tracker
         Tracker sendDonateTracker = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
