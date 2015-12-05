@@ -1073,9 +1073,10 @@ public class MainVNActivity extends ActionBarActivity
         ContentValues contentValues = new ContentValues();
         contentValues.put("ProductIdCode", skuToPurchase);
         contentValues.put("DevPayload", payload);
-        contentValues.put("PurchTypeID", 1); // 'Managed item'
+        contentValues.put("Type", "initiated");
         contentValues.put("PurchaseState", -1); // indefinite
         contentValues.put("Consumed", 0);
+        contentValues.put("Notes", "Tentative purchase, newly initiated");
         logPurchaseActivity(contentValues);
 
         // get an Analytics event tracker
@@ -1095,26 +1096,20 @@ public class MainVNActivity extends ActionBarActivity
         // create a new record with whatever fields are provided in ContentValues
         Uri uri, purchUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "purchases");
         ContentResolver rs = getContentResolver();
-        // if no timestamp, provide a default of Now
-        if (!cv.containsKey("TimePurchased")) {
-            SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-            cv.put("TimePurchased", dateTimeFormat.format(new Date()));
-        }
         // create a new record
         uri = rs.insert(purchUri, cv);
         mNewPurcRecId = Long.parseLong(uri.getLastPathSegment());
         if (LDebug.ON) Log.d(LOG_TAG, "mNewPurcRecId of new record stored in DB: " + mNewPurcRecId);
     }
 
-    void logPurchaseActivity (Purchase p, IabResult result) {
+    void logPurchaseActivity (Purchase p, IabResult result, boolean isConsumed, String notes) {
         Uri uri, purchUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "purchases");
         ContentResolver rs = getContentResolver();
         ContentValues contentValues = new ContentValues();
         String sku = p.getSku();
         contentValues.put("ProductIdCode", sku); // also called 'SKU'
         contentValues.put("DevPayload", p.getDeveloperPayload());
-        contentValues.put("PurchTypeID", p.getItemType());
-        // the different types of purchases; currently 'managed item', or 'subscription', but possibly others in the future.
+        contentValues.put("Type", p.getItemType()); // "inapp" for an in-app product or "subs" for subscriptions.
         contentValues.put("OrderIDCode", p.getOrderId());
         // corresponds to the Google payments order ID
         contentValues.put("PkgName", p.getPackageName());
@@ -1125,7 +1120,7 @@ public class MainVNActivity extends ActionBarActivity
         // standard: 0 (purchased), 1 (canceled), or 2 (refunded). or nonstandard: -1 (initiated)
         SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         long t = p.getPurchaseTime();
-        contentValues.put("TimePurchased", dateTimeFormat.format(new Date(t)));
+        contentValues.put("PurchaseTime", dateTimeFormat.format(new Date(t)));
         if (mInventory.hasDetails(sku)) {
             SkuDetails skuDetails = mInventory.getSkuDetails(sku);
             contentValues.put("Price", skuDetails.getPrice());
@@ -1136,9 +1131,14 @@ public class MainVNActivity extends ActionBarActivity
             contentValues.putNull("Description");
             contentValues.putNull("Title");
         }
-        contentValues.put("Consumed", 0);
+        contentValues.put("Consumed", isConsumed ? 1 : 0);
         contentValues.put("IABResponse", result.getResponse());
         contentValues.put("IABMessage", result.getMessage());
+        if (notes == null) {
+            contentValues.putNull("Notes");
+        } else {
+            contentValues.put("Notes", notes);
+        }
         // create a new record
         uri = rs.insert(purchUri, contentValues);
         mNewPurcRecId = Long.parseLong(uri.getLastPathSegment());
@@ -1211,7 +1211,7 @@ public class MainVNActivity extends ActionBarActivity
             // get an Analytics event tracker
             Tracker purchaseFinishedTracker = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
 
-            logPurchaseActivity(purchase, result);
+            logPurchaseActivity(purchase, result, false, "Purchase finished");
 
             // if we were disposed of in the meantime, quit.
             if (mHelper == null) {
@@ -1323,9 +1323,10 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
 //
 //            }
             if (result.isSuccess()) {
+                logPurchaseActivity(purchase, result, true, "Consumption successful");
                 // successfully consumed, so we apply the effects of the item in our
                 // game world's logic, which in our case means filling the gas tank a bit
-               if (LDebug.ON) Log.d(LOG_TAG, "Consumption successful. Accounting.");
+               if (LDebug.ON) Log.d(LOG_TAG, "Consumption successful");
                 // maybe record this in the database?
                 consumePurchaseTracker.send(new HitBuilders.EventBuilder()
                         .setCategory("Consume Purchase Event")
@@ -1340,6 +1341,7 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                 alert("Thank you for your donation!");
             }
             else {
+                logPurchaseActivity(purchase, result, false, "Error while consuming");
                 complain("Error while consuming: " + result);
                 consumePurchaseTracker.send(new HitBuilders.EventBuilder()
                         .setCategory("Consume Purchase Event")

@@ -77,8 +77,7 @@ public class ContentProvider_VegNab extends ContentProvider {
         tblHash.put(250, new TableStd("DocsCreatedTypes","doctypes"));
         tblHash.put(260, new TableStd("DocsSourcesTypes","docsources"));
         tblHash.put(270, new TableStd("PoliticalAdminAreas","political_admin_areas"));
-        tblHash.put(280, new TableStd("PurchaseTypes","purchasetypes"));
-        tblHash.put(290, new TableStd("Purchases","purchases"));
+        tblHash.put(280, new TableStd("Purchases","purchases"));
         // to implement new tables, enter the table name (correct spelling as
         // in the DB), and the base URI as desired.
         // Make sure the numbers never overlap any custom URI pattern
