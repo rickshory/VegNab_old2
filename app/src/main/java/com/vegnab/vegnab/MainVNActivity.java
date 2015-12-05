@@ -1096,23 +1096,7 @@ public class MainVNActivity extends ActionBarActivity
         mNewPurcRecId = Long.parseLong(uri.getLastPathSegment());
         if (LDebug.ON) Log.d(LOG_TAG, "mNewPurcRecId of tentative record stored in DB: " + mNewPurcRecId);
 
-        /*
 
-"_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
-"ProductIdCode" VARCHAR(255) NOT NULL, -- also called 'SKU'
-"DevPayload" VARCHAR(255) NOT NULL,
-"PurchTypeID" INTEGER NOT NULL, -- the different types of purchases; currently 'managed item', or 'subscription', but possibly others in the future.
-"OrderIDCode" VARCHAR(255) NOT NULL, -- corresponds to the Google payments order ID
-"PkgName" VARCHAR(255) NOT NULL,
-"Signature" VARCHAR(255) NOT NULL,
-"Token" VARCHAR(255) NOT NULL, -- uniquely identifies a purchase for a given item and user pair
-"PurchaseState" INTEGER NOT NULL DEFAULT 0, --  0 (purchased), 1 (canceled), or 2 (refunded).
-"TimePurchased" TIMESTAMP NOT NULL,
-"Price" VARCHAR(255) NOT NULL,
-"Description" VARCHAR(255) NOT NULL,
-"Title" VARCHAR(255) NOT NULL,
-"Consumed" BOOL NOT NULL DEFAULT 0, -- may not apply to all purchases
-*/
         // get an Analytics event tracker
         Tracker sendDonateTracker = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
         sendDonateTracker.send(new HitBuilders.EventBuilder()
@@ -1126,19 +1110,38 @@ public class MainVNActivity extends ActionBarActivity
                 mPurchaseFinishedListener, payload);
     }
 
-    long logPurchaseActivity (Purchase p) {
+    void logPurchaseActivity (ContentValues cv) {
+        // create a new record with whatever fields are provided in ContentValues
+        Uri uri, purchUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "purchases");
+        ContentResolver rs = getContentResolver();
+        // if no timestamp, provide a default of Now
+        if (!cv.containsKey("TimePurchased")) {
+            SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+            cv.put("TimePurchased", dateTimeFormat.format(new Date()));
+        }
+        // create a new record
+        uri = rs.insert(purchUri, cv);
+        mNewPurcRecId = Long.parseLong(uri.getLastPathSegment());
+        if (LDebug.ON) Log.d(LOG_TAG, "mNewPurcRecId of new record stored in DB: " + mNewPurcRecId);
+    }
+
+    void logPurchaseActivity (Purchase p) {
         Uri uri, purchUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "purchases");
         ContentResolver rs = getContentResolver();
         ContentValues contentValues = new ContentValues();
         String sku = p.getSku();
-        contentValues.put("ProductIdCode", sku);
+        contentValues.put("ProductIdCode", sku); // also called 'SKU'
         contentValues.put("DevPayload", p.getDeveloperPayload());
         contentValues.put("PurchTypeID", p.getItemType());
+        // the different types of purchases; currently 'managed item', or 'subscription', but possibly others in the future.
         contentValues.put("OrderIDCode", p.getOrderId());
+        // corresponds to the Google payments order ID
         contentValues.put("PkgName", p.getPackageName());
         contentValues.put("Signature", p.getSignature());
         contentValues.put("Token", p.getToken());
+        // uniquely identifies a purchase for a given item and user pair
         contentValues.put("PurchaseState", p.getPurchaseState());
+        // standard: 0 (purchased), 1 (canceled), or 2 (refunded). or nonstandard: -1 (initiated)
         SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         long t = p.getPurchaseTime();
         contentValues.put("TimePurchased", dateTimeFormat.format(new Date(t)));
@@ -1157,7 +1160,6 @@ public class MainVNActivity extends ActionBarActivity
         uri = rs.insert(purchUri, contentValues);
         mNewPurcRecId = Long.parseLong(uri.getLastPathSegment());
         if (LDebug.ON) Log.d(LOG_TAG, "mNewPurcRecId of new record stored in DB: " + mNewPurcRecId);
-        return mNewPurcRecId;
     };
 
     // experimental payload method
