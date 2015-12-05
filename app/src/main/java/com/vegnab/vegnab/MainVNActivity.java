@@ -221,7 +221,7 @@ public class MainVNActivity extends ActionBarActivity
         // set up in-app billing
         // following resource is in it's own file, listed in .gitignore
         String base64EncodedPublicKey = getString(R.string.app_license);
-        // set up the list of products
+        // set up the list of products, for now only donations
         mSkuCkList.add(SKU_DONATE_SMALL);
         mSkuCkList.add(SKU_DONATE_MEDIUM);
         mSkuCkList.add(SKU_DONATE_LARGE);
@@ -970,6 +970,16 @@ public class MainVNActivity extends ActionBarActivity
 
            if (LDebug.ON) Log.d(LOG_TAG, "Query inventory was successful.");
 
+            for (String sSku : mSkuCkList) {
+                Purchase p = inventory.getPurchase(sSku);
+                if (p == null) {
+                    // option if purchase was supposed to be there and is not
+                } else {
+                    // for now, since we only have donations, consume them and do nothing else
+                    logPurchaseActivity(p, null, false, "Found on startup, initiating consumption");
+                    mHelper.consumeAsync(p, mConsumeFinishedListener);
+                }
+            }
             mInventory = inventory; // save a reference to use outside this callback
 
 //            for (String sSku : mSkuCkList) {
@@ -1133,8 +1143,13 @@ public class MainVNActivity extends ActionBarActivity
         }
         contentValues.put("Consumed", isConsumed ? 1 : 0);
         contentValues.put("PurchJSON", p.getOriginalJson());
-        contentValues.put("IABResponse", result.getResponse());
-        contentValues.put("IABMessage", result.getMessage());
+        if (result == null) {
+            contentValues.putNull("IABResponse");
+            contentValues.putNull("IABMessage");
+        } else {
+            contentValues.put("IABResponse", result.getResponse());
+            contentValues.put("IABMessage", result.getMessage());
+        }
         if (notes == null) {
             contentValues.putNull("Notes");
         } else {
@@ -1324,11 +1339,11 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
 //
 //            }
             if (result.isSuccess()) {
+                // record this in the database
                 logPurchaseActivity(purchase, result, true, "Consumption successful");
                 // successfully consumed, so we apply the effects of the item in our
                 // game world's logic, which in our case means filling the gas tank a bit
                if (LDebug.ON) Log.d(LOG_TAG, "Consumption successful");
-                // maybe record this in the database?
                 consumePurchaseTracker.send(new HitBuilders.EventBuilder()
                         .setCategory("Consume Purchase Event")
                         .setAction("Complete, success")
@@ -1339,6 +1354,8 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
 //                mTank = mTank == TANK_MAX ? TANK_MAX : mTank + 1;
 //                saveData();
 //                alert("You filled 1/4 tank. Your tank is now " + String.valueOf(mTank) + "/4 full!");
+                // update the inventory
+//                mInventory.erasePurchase(purchase.getSku());
                 alert("Thank you for your donation!");
             }
             else {
