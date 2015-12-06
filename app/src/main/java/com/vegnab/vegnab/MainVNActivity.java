@@ -1116,39 +1116,45 @@ public class MainVNActivity extends ActionBarActivity
         Uri uri, purchUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "purchases");
         ContentResolver rs = getContentResolver();
         ContentValues contentValues = new ContentValues();
-        String sku = p.getSku();
-        contentValues.put("ProductIdCode", sku); // also called 'SKU'
-        contentValues.put("DevPayload", p.getDeveloperPayload());
-        contentValues.put("Type", p.getItemType()); // "inapp" for an in-app product or "subs" for subscriptions.
-        contentValues.put("OrderIDCode", p.getOrderId());
-        // corresponds to the Google payments order ID
-        contentValues.put("PkgName", p.getPackageName());
-        contentValues.put("Signature", p.getSignature());
-        contentValues.put("Token", p.getToken());
-        // uniquely identifies a purchase for a given item and user pair
-        contentValues.put("PurchaseState", p.getPurchaseState());
-        // standard: 0 (purchased), 1 (canceled), or 2 (refunded). or nonstandard: -1 (initiated)
-        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-        long t = p.getPurchaseTime();
-        contentValues.put("PurchaseTime", dateTimeFormat.format(new Date(t)));
-        try { // inventory object may not exist yet
-            if (mInventory.hasDetails(sku)) {
-                SkuDetails skuDetails = mInventory.getSkuDetails(sku);
-                contentValues.put("Price", skuDetails.getPrice());
-                contentValues.put("Description", skuDetails.getDescription());
-                contentValues.put("Title", skuDetails.getTitle());
-            } else {
-                contentValues.putNull("Price");
-                contentValues.putNull("Description");
-                contentValues.putNull("Title");
-            }
-        } catch (Exception e) {
-            contentValues.putNull("Price");
-            contentValues.putNull("Description");
-            contentValues.putNull("Title");
-        }
+         if (p == null) {
+             contentValues.put("ProductIdCode", "(purchase object is null)");
+             contentValues.put("PurchaseState", -2); // purchase is null
+         } else {
+             String sku = p.getSku();
+             contentValues.put("ProductIdCode", sku); // also called 'SKU'
+             contentValues.put("DevPayload", p.getDeveloperPayload());
+             contentValues.put("Type", p.getItemType()); // "inapp" for an in-app product or "subs" for subscriptions.
+             contentValues.put("OrderIDCode", p.getOrderId());
+             // corresponds to the Google payments order ID
+             contentValues.put("PkgName", p.getPackageName());
+             contentValues.put("Signature", p.getSignature());
+             contentValues.put("Token", p.getToken());
+             // uniquely identifies a purchase for a given item and user pair
+             contentValues.put("PurchaseState", p.getPurchaseState());
+             // standard: 0 (purchased), 1 (canceled), or 2 (refunded). or nonstandard: -1 (initiated), -2 (null)
+             SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+             long t = p.getPurchaseTime();
+             contentValues.put("PurchaseTime", dateTimeFormat.format(new Date(t)));
+             contentValues.put("PurchJSON", p.getOriginalJson());
+             try { // inventory object may not exist yet
+                 if (mInventory.hasDetails(sku)) {
+                     SkuDetails skuDetails = mInventory.getSkuDetails(sku);
+                     contentValues.put("Price", skuDetails.getPrice());
+                     contentValues.put("Description", skuDetails.getDescription());
+                     contentValues.put("Title", skuDetails.getTitle());
+                 } else {
+                     contentValues.putNull("Price");
+                     contentValues.putNull("Description");
+                     contentValues.putNull("Title");
+                 }
+             } catch (Exception e) {
+                 contentValues.putNull("Price");
+                 contentValues.putNull("Description");
+                 contentValues.putNull("Title");
+             }
+         }
+
         contentValues.put("Consumed", isConsumed ? 1 : 0);
-        contentValues.put("PurchJSON", p.getOriginalJson());
         if (result == null) {
             contentValues.putNull("IABResponse");
             contentValues.putNull("IABMessage");
