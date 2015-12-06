@@ -30,6 +30,12 @@
     <screenName name="com.vegnab.vegnab.EditSppItemDialog">
         VegNab Alpha Test EditSpeciesScreen
     </screenName>
+    <screenName name="com.vegnab.vegnab.DonateFragment">
+        VegNab Alpha Test DonateScreen
+    </screenName>
+    <screenName name="com.vegnab.vegnab.EditPlaceholderFragment">
+        VegNab Alpha Test EditPlaceholderScreen
+    </screenName>
     <!--  Tracking id for VegNab Alpha Test 1.0.0 -->
     <string name="ga_trackingId">UA-62236020-1</string>
 </resources>
