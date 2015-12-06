@@ -1118,6 +1118,7 @@ public class MainVNActivity extends ActionBarActivity
         ContentValues contentValues = new ContentValues();
          if (p == null) {
              contentValues.put("ProductIdCode", "(purchase object is null)");
+             contentValues.put("Type", "null");
              contentValues.put("PurchaseState", -2); // purchase is null
          } else {
              String sku = p.getSku();
