@@ -1002,8 +1002,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         String errTitle = c.getResources().getString(R.string.placeholder_validate_generic_title);
         ConfigurableMsgDialog flexErrDlg = new ConfigurableMsgDialog();
         mValues.clear(); // build up mValues while validating; if returns true all members are good
-        String stringPlaceholderCode = mViewPlaceholderCode.getText().toString().trim();
-        if (stringPlaceholderCode.length() == 0) {
+        mPlaceholderCode = mViewPlaceholderCode.getText().toString().trim();
+        if (mPlaceholderCode.length() == 0) {
             if (mValidationLevel > Validation.SILENT) {
                 stringProblem = c.getResources().getString(R.string.placeholder_validate_code_none);
                 if (mValidationLevel == Validation.QUIET) {
@@ -1019,7 +1019,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             }
             return false;
         }
-        if (!(stringPlaceholderCode.length() >= 3)) {
+        if (!(mPlaceholderCode.length() >= 3)) {
             if (mValidationLevel > Validation.SILENT) {
                 stringProblem = c.getResources().getString(R.string.placeholder_validate_code_short);
                 if (mValidationLevel == Validation.QUIET) {
@@ -1036,7 +1036,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             return false;
         }
 
-        if (stringPlaceholderCode.matches(VNRegex.NRCS_CODE)) {
+        if (mPlaceholderCode.matches(VNRegex.NRCS_CODE)) {
             if (mValidationLevel > Validation.SILENT) {
                 stringProblem = c.getResources().getString(R.string.placeholder_validate_code_bad);
                 if (mValidationLevel == Validation.QUIET) {
@@ -1053,7 +1053,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             return false;
         }
 
-        if (mExistingPlaceholderCodes.contains(stringPlaceholderCode)) {
+        if (mExistingPlaceholderCodes.contains(mPlaceholderCode)) {
             if (mValidationLevel > Validation.SILENT) {
                 stringProblem = c.getResources().getString(R.string.placeholder_validate_code_dup);
                 if (mValidationLevel == Validation.QUIET) {
@@ -1071,10 +1071,10 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         }
 
         // PlaceHolderCode is OK, store it
-        mValues.put("PlaceHolderCode", stringPlaceholderCode);
+        mValues.put("PlaceHolderCode", mPlaceholderCode);
 
-        String stringPlaceholderDescription = mViewPlaceholderDescription.getText().toString().trim();
-        if (stringPlaceholderDescription.length() == 0) {
+        mPlaceholderDescription = mViewPlaceholderDescription.getText().toString().trim();
+        if (mPlaceholderDescription.length() == 0) {
             if (mValidationLevel > Validation.SILENT) {
                 stringProblem = c.getResources().getString(R.string.placeholder_validate_description_none);
                 if (mValidationLevel == Validation.QUIET) {
@@ -1091,7 +1091,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             return false;
         }
 
-        if (!(stringPlaceholderDescription.length() >= 3)) {
+        if (!(mPlaceholderDescription.length() >= 3)) {
             if (mValidationLevel > Validation.SILENT) {
                 stringProblem = c.getResources().getString(R.string.placeholder_validate_description_short);
                 if (mValidationLevel == Validation.QUIET) {
@@ -1108,11 +1108,11 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             return false;
         }
 
-        mValues.put("Description", stringPlaceholderDescription); // Description is OK, store it
+        mValues.put("Description", mPlaceholderDescription); // Description is OK, store it
 
-        // Habitat is optional, put as-is or Null if missing
-        String stringHabitat = mAutoCompletePlaceholderHabitat.getText().toString().trim();
-        if (stringHabitat.length() == 0) {
+        // Habitat is required
+        mPlaceholderHabitat = mAutoCompletePlaceholderHabitat.getText().toString().trim();
+        if (mPlaceholderHabitat.length() == 0) {
             if (mValidationLevel > Validation.SILENT) {
                 stringProblem = c.getResources().getString(R.string.placeholder_validate_habitat_none);
                 if (mValidationLevel == Validation.QUIET) {
@@ -1128,7 +1128,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             }
             return false;
         }
-        if (!(stringHabitat.length() >= 3)) {
+        if (!(mPlaceholderHabitat.length() >= 3)) {
             if (mValidationLevel > Validation.SILENT) {
                 stringProblem = c.getResources().getString(R.string.placeholder_validate_habitat_short);
                 if (mValidationLevel == Validation.QUIET) {
@@ -1144,14 +1144,14 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             }
             return false;
         }
-        mValues.put("Habitat", stringHabitat);
+        mValues.put("Habitat", mPlaceholderHabitat);
 
         // LabelNum is optional, put as-is or Null if missing
-        String stringLabelNum = mViewPlaceholderIdentifier.getText().toString().trim();
-        if (stringLabelNum.length() == 0) {
+        mPlaceholderLabelNumber = mViewPlaceholderIdentifier.getText().toString().trim();
+        if (mPlaceholderLabelNumber.length() == 0) {
             mValues.putNull("LabelNum");
         } else {
-            mValues.put("LabelNum", stringLabelNum);
+            mValues.put("LabelNum", mPlaceholderLabelNumber);
         }
 
         // following ident components are only serviced on an Update, record ID != 0,
