@@ -164,7 +164,7 @@ public final class VNContract {
     }
 
     public static abstract class LDebug {
-        public static final boolean ON = false; // true or false to conditionally compile Log statements
+        public static final boolean ON = true; // true or false to conditionally compile Log statements
     }
 
     // class for use in grid view
