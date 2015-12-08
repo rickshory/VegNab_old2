@@ -499,6 +499,20 @@ public class SelectSpeciesFragment extends ListFragment
         getLoaderManager().restartLoader(Loaders.SPP_MATCHES, null, this);
     }
 
+    public void finishPlaceholder(EditPlaceholderFragment edPh) {
+        // this is mainly for fixing text that was sent to become a Placeholder, and
+        // the text was edited in the Placeholder fragment
+        if (!(edPh == null)) {
+            String phCode = edPh.mPlaceholderCode;
+            if (!(phCode == null)) {
+                if (mViewSearchChars.getText().toString().length() > 0) {
+                    // ignore, if nothing there to replace
+                    mViewSearchChars.setText(phCode);
+                }
+            }
+        }
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // This is called when a new Loader needs to be created.

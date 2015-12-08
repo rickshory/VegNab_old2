@@ -99,6 +99,7 @@ public class MainVNActivity extends ActionBarActivity
         SelectSpeciesFragment.OnEditPlaceholderListener,
         EditSppItemDialog.EditSppItemDialogListener,
         EditPlaceholderFragment.OnButtonListener,
+        EditPlaceholderFragment.EditPlaceholderFragmentListener,
         ConfirmDelVegItemDialog.ConfirmDeleteVegItemDialogListener,
         UnHideVisitDialog.ConfirmUnHideVisitDialogListener,
         GoogleApiClient.ConnectionCallbacks,
@@ -884,6 +885,14 @@ public class MainVNActivity extends ActionBarActivity
         NewVisitFragment newVisFragment = (NewVisitFragment)
                 getSupportFragmentManager().findFragmentByTag(Tags.NEW_VISIT);
         newVisFragment.refreshVisitsList();
+    }
+
+    @Override
+    public void onEditPlaceholderComplete(EditPlaceholderFragment editPlaceholderFragment) {
+       if (LDebug.ON) Log.d(LOG_TAG, "onEditPlaceholderComplete(EditPlaceholderFragment editPlaceholderFragment)");
+        SelectSpeciesFragment selSppFragment = (SelectSpeciesFragment)
+                getSupportFragmentManager().findFragmentByTag(Tags.SELECT_SPECIES);
+        selSppFragment.finishPlaceholder(editPlaceholderFragment);
     }
 
     @Override

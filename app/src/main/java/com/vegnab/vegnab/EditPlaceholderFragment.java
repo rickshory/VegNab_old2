@@ -61,6 +61,12 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         View.OnFocusChangeListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
+    public interface EditPlaceholderFragmentListener {
+        void onEditPlaceholderComplete(EditPlaceholderFragment editPlaceholderFragment);
+    }
+    EditPlaceholderFragmentListener mEditPhListener;
+
+
     private static final String LOG_TAG = EditPlaceholderFragment.class.getSimpleName();
 
     private int mValidationLevel = Validation.SILENT;
@@ -1281,6 +1287,11 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
            if (LDebug.ON) Log.d(LOG_TAG, "new record in savePlaceholderRecord; URI re-parsed: " + mUri.toString());
             numUpdated = 1;
             mViewPlaceholderCode.setFocusableInTouchMode(false); // disable editing the code
+            try {
+                mEditPhListener.onEditPlaceholderComplete(EditPlaceholderFragment.this);
+            } catch (Exception e) {
+                // ignore; fn is just to refresh the search text if Ph code edited
+            }
         } else { // update the existing record
            if (LDebug.ON) Log.d(LOG_TAG, "savePlaceholderRecord; updating existing record with mVisitId = " + mPlaceholderId);
             mValues.put("TimeLastEdited", mTimeFormat.format(new Date())); // update the last-changed time
