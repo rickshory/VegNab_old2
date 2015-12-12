@@ -1517,12 +1517,12 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
 
             case VNContract.Loaders.EXISTING_SPP:
                 // if there are species in the master list, record this is Preferences
-                boolean hasSpp;
-                if (finishedCursor.getLong(
-                        finishedCursor.getColumnIndexOrThrow("Ct")) > 0) {
-                    hasSpp = true;
-                } else {
-                    hasSpp = false;
+                boolean hasSpp = false;
+                while (finishedCursor.moveToNext()) { // should be just one record
+                    if (finishedCursor.getLong(
+                            finishedCursor.getColumnIndexOrThrow("Ct")) > 0) {
+                        hasSpp = true;
+                    }
                 }
                 SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
                 SharedPreferences.Editor prefEditor;
