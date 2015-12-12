@@ -62,12 +62,12 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
     // declare that the container Activity must implement this interface
     public interface OnButtonListener {
         // methods that must be implemented in the container Activity
-        public void onNewVisitGoButtonClicked();
+        void onNewVisitGoButtonClicked();
     }
     OnButtonListener mButtonCallback; // declare the interface
     public interface OnVisitClickListener {
         // methods that must be implemented in the container Activity
-        public void onExistingVisitListClicked(long visitId);
+        void onExistingVisitListClicked(long visitId);
     }
     OnVisitClickListener mListClickCallback;
     public interface ExportVisitListener {

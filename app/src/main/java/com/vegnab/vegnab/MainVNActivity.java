@@ -192,20 +192,21 @@ public class MainVNActivity extends ActionBarActivity
             prefEditor.commit();
         }
 
-        // Is there a description of what "local" is (e.g. "Iowa")? Initially, no.
+        // Is there a description of what "local" is (e.g. "Iowa")? Initially, no
         if (!sharedPref.contains(Prefs.LOCAL_SPECIES_LIST_DESCRIPTION)) {
             prefEditor = sharedPref.edit();
             prefEditor.putString(Prefs.LOCAL_SPECIES_LIST_DESCRIPTION, "");
             prefEditor.commit();
         }
 
-        // Has the regional species list been downloaded? Initially, no.
+        // Has the master species list been populated? As a default, assume not.
         if (!sharedPref.contains(Prefs.SPECIES_LIST_DOWNLOADED)) {
             prefEditor = sharedPref.edit();
-            // improve this, test if table contains any species
             prefEditor.putBoolean(Prefs.SPECIES_LIST_DOWNLOADED, false);
             prefEditor.commit();
         }
+        // start following loader, does not use UI, but tests if the master species list is populated
+        getSupportLoaderManager().restartLoader(VNContract.Loaders.EXISTING_SPP, null, this);
 
         // Have the user verify each species entered as presence/absence? Initially, yes.
         // user will probably turn this one off each session, but turn it on on each restart
@@ -1488,6 +1489,13 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                 cl = new CursorLoader(this, baseUri, null, select,
                         new String[] { "" + mPhProjID, "" + mPhNameId }, null);
                 break;
+
+            case VNContract.Loaders.EXISTING_SPP:
+               baseUri = ContentProvider_VegNab.SQL_URI;
+                select = "SELECT COUNT(Code) AS Ct FROM NRCSSpp;";
+                cl = new CursorLoader(this, baseUri, null, select,
+                        null, null);
+                break;
         }
         return cl;
     }
@@ -1506,6 +1514,22 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                                     finishedCursor.getColumnIndexOrThrow("_id")));
                 }
                 break;
+
+            case VNContract.Loaders.EXISTING_SPP:
+                // if there are species in the master list, record this is Preferences
+                boolean hasSpp;
+                if (finishedCursor.getLong(
+                        finishedCursor.getColumnIndexOrThrow("Ct")) > 0) {
+                    hasSpp = true;
+                } else {
+                    hasSpp = false;
+                }
+                SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor prefEditor;
+                prefEditor = sharedPref.edit();
+                prefEditor.putBoolean(Prefs.SPECIES_LIST_DOWNLOADED, hasSpp);
+                prefEditor.commit();
+                break;
         }
     }
 
@@ -1515,6 +1539,8 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
         // is about to be closed. Need to make sure it is no longer is use.
         switch (loader.getId()) {
             case VNContract.Loaders.EXISTING_PH_CODES:
+                break; // nothing to do with this one
+            case VNContract.Loaders.EXISTING_SPP:
                 break; // nothing to do with this one
         }
     }
