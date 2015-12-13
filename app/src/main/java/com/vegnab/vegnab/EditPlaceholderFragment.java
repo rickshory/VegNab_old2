@@ -460,6 +460,11 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         } catch (ClassCastException e) {
             throw new ClassCastException (activity.toString() + " must implement OnButtonListener");
         }
+        try {
+            mEditPhListener = (EditPlaceholderFragmentListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException (activity.toString() + " must implement EditPlaceholderFragmentListener");
+        }
     }
 
     @Override
