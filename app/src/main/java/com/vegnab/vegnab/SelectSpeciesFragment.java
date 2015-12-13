@@ -148,6 +148,10 @@ public class SelectSpeciesFragment extends ListFragment
                 R.layout.list_spp_search_item, null, 0);
         setListAdapter(mSppResultsAdapter);
         getLoaderManager().initLoader(Loaders.SPP_MATCHES, null, this);
+
+        // try this, to update mViewSearchChars if a newly created placeholder code was remotely edited
+        mViewSearchChars.setText(mStSearch);
+
         return rootView;
     }
 
@@ -508,6 +512,7 @@ public class SelectSpeciesFragment extends ListFragment
                 if (mViewSearchChars.getText().toString().length() > 0) {
                     // ignore, if nothing there to replace
                     mViewSearchChars.setText(phCode);
+                    mStSearch = phCode;
                 }
             }
         }
