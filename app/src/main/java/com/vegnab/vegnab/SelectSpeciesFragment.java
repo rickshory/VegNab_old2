@@ -84,7 +84,7 @@ public class SelectSpeciesFragment extends ListFragment
     OnPlaceholderRequestListener mPlaceholderRequestListener;
 
     long mRowCt;
-    String mStSearch = "", mStMatch = "";
+    String mStSearch = "", mStMatch = "", mPhCodeFixed = "";
     EditText mViewSearchChars;
 //	ListView mSppItemsList;
     TextWatcher sppCodeTextWatcher = new TextWatcher() {
@@ -150,7 +150,7 @@ public class SelectSpeciesFragment extends ListFragment
         getLoaderManager().initLoader(Loaders.SPP_MATCHES, null, this);
 
 //        // try this, to update mViewSearchChars if a newly created placeholder code was remotely edited
-//        mViewSearchChars.setText(mStSearch);
+//        mViewSearchChars.setText(mPhCodeFixed);
 
         return rootView;
     }
@@ -159,7 +159,7 @@ public class SelectSpeciesFragment extends ListFragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // try this, to update mViewSearchChars if a newly created placeholder code was remotely edited
-        mViewSearchChars.setText(mStSearch);
+        mViewSearchChars.setText(mPhCodeFixed);
     }
 
         @Override
@@ -187,6 +187,8 @@ public class SelectSpeciesFragment extends ListFragment
         mViewSearchChars.postDelayed(new Runnable() {
             @Override
             public void run() {
+                // try this, to update mViewSearchChars if a newly created placeholder code was remotely edited
+                mViewSearchChars.setText(mPhCodeFixed);
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(mViewSearchChars, 0);
             }
@@ -514,12 +516,12 @@ public class SelectSpeciesFragment extends ListFragment
         // this is mainly for fixing text that was sent to become a Placeholder, and
         // the text was edited in the Placeholder fragment
         if (!(edPh == null)) {
-            String phCode = edPh.mPlaceholderCode;
-            if (!(phCode == null)) {
+            mPhCodeFixed = edPh.mPlaceholderCode;
+            if (!(mPhCodeFixed == null)) {
                 if (mViewSearchChars.getText().toString().length() > 0) {
                     // ignore, if nothing there to replace
-                    mViewSearchChars.setText(phCode);
-                    mStSearch = phCode;
+                    mViewSearchChars.setText(mPhCodeFixed);
+                    mStSearch = mPhCodeFixed;
                 }
             }
         }
