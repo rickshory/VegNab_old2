@@ -149,17 +149,7 @@ public class SelectSpeciesFragment extends ListFragment
         setListAdapter(mSppResultsAdapter);
         getLoaderManager().initLoader(Loaders.SPP_MATCHES, null, this);
 
-//        // try this, to update mViewSearchChars if a newly created placeholder code was remotely edited
-//        mViewSearchChars.setText(mPhCodeFixed);
-
         return rootView;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        // try this, to update mViewSearchChars if a newly created placeholder code was remotely edited
-        mViewSearchChars.setText(mPhCodeFixed);
     }
 
         @Override
@@ -187,8 +177,11 @@ public class SelectSpeciesFragment extends ListFragment
         mViewSearchChars.postDelayed(new Runnable() {
             @Override
             public void run() {
-                // try this, to update mViewSearchChars if a newly created placeholder code was remotely edited
-                mViewSearchChars.setText(mPhCodeFixed);
+                // update mViewSearchChars if a newly created placeholder code was remotely edited
+                if (mPhCodeFixed != "") {
+                    mViewSearchChars.setText(mPhCodeFixed);
+                    mPhCodeFixed = "";
+                }
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(mViewSearchChars, 0);
             }
@@ -517,13 +510,6 @@ public class SelectSpeciesFragment extends ListFragment
         // the text was edited in the Placeholder fragment
         if (!(edPh == null)) {
             mPhCodeFixed = edPh.mPlaceholderCode;
-            if (!(mPhCodeFixed == null)) {
-                if (mViewSearchChars.getText().toString().length() > 0) {
-                    // ignore, if nothing there to replace
-                    mViewSearchChars.setText(mPhCodeFixed);
-                    mStSearch = mPhCodeFixed;
-                }
-            }
         }
     }
 
