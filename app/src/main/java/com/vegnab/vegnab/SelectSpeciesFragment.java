@@ -149,13 +149,20 @@ public class SelectSpeciesFragment extends ListFragment
         setListAdapter(mSppResultsAdapter);
         getLoaderManager().initLoader(Loaders.SPP_MATCHES, null, this);
 
-        // try this, to update mViewSearchChars if a newly created placeholder code was remotely edited
-        mViewSearchChars.setText(mStSearch);
+//        // try this, to update mViewSearchChars if a newly created placeholder code was remotely edited
+//        mViewSearchChars.setText(mStSearch);
 
         return rootView;
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        // try this, to update mViewSearchChars if a newly created placeholder code was remotely edited
+        mViewSearchChars.setText(mStSearch);
+    }
+
+        @Override
     public void onStart() {
         super.onStart();
         // during startup, check if arguments are passed to the fragment
