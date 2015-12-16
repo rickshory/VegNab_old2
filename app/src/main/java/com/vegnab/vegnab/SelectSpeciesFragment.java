@@ -71,7 +71,7 @@ public class SelectSpeciesFragment extends ListFragment
     // declare an interface the container Activity must implement
     public interface OnEditPlaceholderListener {
         // methods that must be implemented in the container Activity
-        public void onEditPlaceholder(Bundle args);
+        void onEditPlaceholder(Bundle args);
     }
     OnEditPlaceholderListener mEditPlaceholderCallback; // declare the interface
 
@@ -369,6 +369,8 @@ public class SelectSpeciesFragment extends ListFragment
                 }
 
                 phArgs.putLong(EditPlaceholderFragment.ARG_PLACEHOLDER_ID, 0); // new, may not be needed
+                phArgs.putLong(EditPlaceholderFragment.ARG_PH_PROJECT_ID, mProjectId);
+                phArgs.putLong(EditPlaceholderFragment.ARG_PH_NAMER_ID, mNamerId);
                 phArgs.putString(EditPlaceholderFragment.ARG_PLACEHOLDER_CODE, phCode);
                 phArgs.putBoolean(EditPlaceholderFragment.ARG_CODE_WAS_SHORTENED, wasShortened);
                 mEditPlaceholderCallback.onEditPlaceholder(phArgs);

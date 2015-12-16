@@ -113,6 +113,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
 
     // explicitly save/retrieve all these through Bundles, some versions have bugs that lose cursor
     final static String ARG_PLACEHOLDER_ID = "placeholderId";
+    final static String ARG_PH_PROJECT_ID = "phProjectId";
+    final static String ARG_PH_NAMER_ID = "phNamerId";
     final static String ARG_PLACEHOLDER_CODE = "placeholderCode";
     final static String ARG_CODE_WAS_SHORTENED = "phCodeShortened";
     final static String ARG_PLACEHOLDER_DESCRIPTION = "placeholderDescription";
@@ -235,8 +237,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             Bundle savedInstanceState) {
         // any Placeholder worked on here will always belong to the default project, namer, and visit
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        mPhProjId = sharedPref.getLong(Prefs.DEFAULT_PROJECT_ID, 0);
-        mPhNamerId = sharedPref.getLong(Prefs.DEFAULT_NAMER_ID, 0);
+//        mPhProjId = sharedPref.getLong(Prefs.DEFAULT_PROJECT_ID, 0);
+//        mPhNamerId = sharedPref.getLong(Prefs.DEFAULT_NAMER_ID, 0);
         mPhVisitId = sharedPref.getLong(Prefs.CURRENT_VISIT_ID, 0);
         // if the activity was re-created (e.g. from a screen rotate)
         // restore the previous screen, remembered by onSaveInstanceState()
@@ -246,6 +248,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mPlaceholderId = savedInstanceState.getLong(ARG_PLACEHOLDER_ID, 0);
             mPlaceholderCode = savedInstanceState.getString(ARG_PLACEHOLDER_CODE);
             mCodeWasShortened = savedInstanceState.getBoolean(ARG_CODE_WAS_SHORTENED, false);
+            mPhProjId = savedInstanceState.getLong(ARG_PH_PROJECT_ID, 0);
+            mPhNamerId = savedInstanceState.getLong(ARG_PH_NAMER_ID, 0);
             mPlaceholderDescription = savedInstanceState.getString(ARG_PLACEHOLDER_DESCRIPTION);
             mPlaceholderHabitat = savedInstanceState.getString(ARG_PLACEHOLDER_HABITAT);
             mPlaceholderLabelNumber = savedInstanceState.getString(ARG_PLACEHOLDER_LABELNUMBER);
@@ -422,6 +426,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 mPlaceholderId = args.getLong(ARG_PLACEHOLDER_ID, 0);
                 mPlaceholderCode = args.getString(ARG_PLACEHOLDER_CODE);
                 mCodeWasShortened = args.getBoolean(ARG_CODE_WAS_SHORTENED, false);
+                mPhProjId = args.getLong(ARG_PH_PROJECT_ID, 0);
+                mPhNamerId = args.getLong(ARG_PH_NAMER_ID, 0);
                 mViewPlaceholderDescription.requestFocus();
             }
         // also use for special arguments like screen layout
@@ -472,6 +478,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         super.onSaveInstanceState(outState);
         // save the current subplot arguments in case we need to re-create the fragment
         outState.putLong(ARG_PLACEHOLDER_ID, mPlaceholderId);
+        outState.putLong(ARG_PH_PROJECT_ID, mPhProjId);
+        outState.putLong(ARG_PH_NAMER_ID, mPhNamerId);
         outState.putString(ARG_PLACEHOLDER_CODE, mPlaceholderCode);
         outState.putBoolean(ARG_CODE_WAS_SHORTENED, mCodeWasShortened);
         outState.putString(ARG_PLACEHOLDER_DESCRIPTION, mPlaceholderDescription);
@@ -1275,8 +1283,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mValues.put("TimeFirstInput", mTimeFormat.format(new Date()));
             mValues.put("TimeLastEdited", mTimeFormat.format(new Date()));
             mValues.put("VisitIdWhereFirstFound", sharedPref.getLong(Prefs.CURRENT_VISIT_ID, 0));
-            mValues.put("ProjID", sharedPref.getLong(Prefs.DEFAULT_PROJECT_ID, 0));
-            mValues.put("NamerID", sharedPref.getLong(Prefs.DEFAULT_NAMER_ID, 0));
+            mValues.put("ProjID", mPhProjId);
+            mValues.put("NamerID", mPhNamerId);
 
             mUri = rs.insert(mPlaceholdersUri, mValues);
            if (LDebug.ON) Log.d(LOG_TAG, "new record in savePlaceholderRecord; returned URI: " + mUri.toString());
