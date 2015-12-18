@@ -395,4 +395,7 @@
     <string name="donate_button_text">Donate</string>
     <string name="donate_pls_wait">Please wait</string>
 
+    <string name="settings_dlg_title">Settings</string>
+    <string name="settings_cktxt_spp_once">Allow species only once per subplot</string>
+
 </resources>
