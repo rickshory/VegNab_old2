@@ -657,7 +657,9 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 
         case Loaders.VEG_ITEM_DUP_CODES:
             mDupSppCursor = c;
-            if (mDupSppCursor.getCount() == 0) {
+            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+            if ((mDupSppCursor.getCount() == 0) ||
+                    (!(sharedPref.getBoolean(Prefs.SPECIES_ONCE, true)))) {
                 mTxtSppDupLabel.setVisibility(View.GONE);
                 mNoDupCodes = true;
             }
