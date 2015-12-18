@@ -35,6 +35,7 @@ public final class VNContract {
         public static final String DEFAULT_IDENT_NAMER_ID = "DefaultIdentNamerId";
         public static final String DEFAULT_IDENT_REF_ID = "DefaultIdentRefId";
         public static final String DEFAULT_IDENT_METHOD_ID = "DefaultIdentMethodId";
+        public static final String SPECIES_ONCE = "SpeciesOnce"; // allow spp only once per subplot; true/false
 
     }
     // inner class to define loader IDs

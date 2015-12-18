@@ -220,6 +220,13 @@ public class MainVNActivity extends ActionBarActivity
             prefEditor.putLong(Prefs.DEFAULT_IDENT_METHOD_ID, 1);
             prefEditor.commit();
         }
+
+        // Set the default to allow species only once per subplot
+        if (!sharedPref.contains(Prefs.SPECIES_ONCE)) {
+            prefEditor = sharedPref.edit();
+            prefEditor.putBoolean(Prefs.SPECIES_ONCE, true);
+            prefEditor.commit();
+        }
         // set up in-app billing
         // following resource is in it's own file, listed in .gitignore
         String base64EncodedPublicKey = getString(R.string.app_license);

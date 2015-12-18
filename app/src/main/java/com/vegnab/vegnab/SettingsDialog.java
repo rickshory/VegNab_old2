@@ -1,21 +1,18 @@
 package com.vegnab.vegnab;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
 
+import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.LDebug;
-
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 public class SettingsDialog extends DialogFragment {
     private static final String LOG_TAG = SettingsDialog.class.getSimpleName();
@@ -28,12 +25,10 @@ public class SettingsDialog extends DialogFragment {
         return f;
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup rootView, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, rootView);
         mCkSpeciesOnce = (CheckBox) view.findViewById(R.id.ck_spp_once);
-
         getDialog().setTitle(R.string.settings_dlg_title);
         return view;
     }
@@ -49,5 +44,27 @@ public class SettingsDialog extends DialogFragment {
         if (args != null) {
             // we don't use any args yet
         }
+        setupUI();
+    }
+
+    void setupUI() {
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        mCkSpeciesOnce.setChecked((sharedPref.getBoolean(VNContract.Prefs.SPECIES_ONCE, true)));
+    }
+
+    @Override
+    public void onCancel (DialogInterface dialog) {
+        // update Preferences
+
+        if (LDebug.ON) Log.d(LOG_TAG, "Saving preferences in onCancel");
+
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefEditor;
+        prefEditor = sharedPref.edit();
+        prefEditor.putBoolean(VNContract.Prefs.SPECIES_ONCE, mCkSpeciesOnce.isChecked());
+        prefEditor.commit();
+// maybe implement a listener
+//        mSettingsListener.onSettingsComplete(SettingsDialog.this);
+
     }
 }
