@@ -356,6 +356,7 @@ public class MainVNActivity extends ActionBarActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+        Tracker optionsMenuTracker = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
         FragmentManager fm = getSupportFragmentManager();
         DialogFragment editProjDlg;
         switch (item.getItemId()) { // some of these are from Fragments, but handled here in the Activity
@@ -426,7 +427,16 @@ public class MainVNActivity extends ActionBarActivity
 //            return true;
 
         case R.id.action_settings:
-            Toast.makeText(getApplicationContext(), "''Settings'' is not implemented yet", Toast.LENGTH_SHORT).show();
+            if (LDebug.ON) Log.d(LOG_TAG, "Showing 'Settings' dialog");
+            optionsMenuTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("Options Menu")
+                    .setAction("Settings")
+                    .setLabel("Show Settings")
+                    .setValue(1)
+                    .build());
+            Bundle settingsArgs = new Bundle(); // we don't do anything with this yet
+            SettingsDialog settingsDlg = SettingsDialog.newInstance(settingsArgs);
+            settingsDlg.show(getSupportFragmentManager(), "frg_show_settings");
             return true;
 
         case R.id.action_donate:
