@@ -1770,7 +1770,8 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                if (LDebug.ON) Log.d(LOG_TAG, "cursor closed");
                 // get the Subplots for this Visit
                 long sbId;
-                String sbName, spCode, spDescr, spParams;
+                int sppIdLevel;
+                String sbName, spTxt, spCode, spDescr, spParams, spIdLevDescr;
                 sSQL = "SELECT Visits._id, PlotTypes.PlotTypeDescr, PlotTypes.Code, "
                         + "SubplotTypes.[_id] AS SubplotTypeId, "
                         + "SubplotTypes.SubplotDescription, SubplotTypes.OrderDone, "
@@ -1790,32 +1791,94 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                     writer.write("\r\n" + sbName + "\r\n");
                     // get the data for each subplot
                     if (resolvePh) {
-                        sSQL = "SELECT VegItems._id, VegItems.VisitID, VegItems.SubPlotID, "
-                                + "COALESCE(PlaceHolders.IdSppCode, VegItems.OrigCode) AS Code, "
-                                + "COALESCE(PlaceHolders.IdSppDescription, VegItems.OrigDescr) AS Descr, "
-                                + "VegItems.Height, VegItems.Cover, VegItems.Presence, "
-                                + "MAX(IFNULL(VegItems.IdLevelID,0), IFNULL(PlaceHolders.IdLevelID,0)) AS IdLev, "
-                                + "VegItems.TimeCreated, VegItems.TimeLastChanged "
-                                + "FROM VegItems LEFT JOIN PlaceHolders "
-                                + "ON VegItems.OrigCode = PlaceHolders.PlaceHolderCode "
+//                        sSQL = "SELECT VegItems._id, VegItems.VisitID, VegItems.SubPlotID, "
+//                                + "COALESCE(PlaceHolders.IdSppCode, VegItems.OrigCode) AS Code, "
+//                                + "COALESCE(PlaceHolders.IdSppDescription, VegItems.OrigDescr) AS Descr, "
+//                                + "VegItems.Height, VegItems.Cover, VegItems.Presence, "
+//                                + "MAX(IFNULL(VegItems.IdLevelID,0), IFNULL(PlaceHolders.IdLevelID,0)) AS IdLev, "
+//                                + "VegItems.TimeCreated, VegItems.TimeLastChanged "
+//                                + "FROM VegItems LEFT JOIN PlaceHolders "
+//                                + "ON VegItems.OrigCode = PlaceHolders.PlaceHolderCode "
+//                                + "WHERE (((VegItems.VisitID)=" + visId + ") "
+//                                + "AND ((VegItems.SubPlotID)=" + sbId + ") "
+//                                + "AND ((PlaceHolders.ProjID) Is Null Or (PlaceHolders.ProjID)=" + pjId + ") "
+//                                + "AND ((PlaceHolders.NamerID) Is Null Or (PlaceHolders.NamerID)=" + nmId + ")) ";
+                        sSQL = "SELECT VegItems.OrigCode || ': ' || NRCSSpp.Genus || "
+                                + "(CASE WHEN LENGTH(NRCSSpp.Species)>0 THEN (' ' || NRCSSpp.Species) ELSE '' END) || "
+                                + "(CASE WHEN LENGTH(NRCSSpp.SubsppVar)>0 THEN (' ' || NRCSSpp.SubsppVar) ELSE '' END) || "
+                                + "(CASE WHEN LENGTH(NRCSSpp.Vernacular)>0 THEN (', ' || NRCSSpp.Vernacular) ELSE '' END) "
+                                + "AS SppText, "
+                                + "VegItems.Height AS Height, VegItems.Cover AS Cover, VegItems.Presence AS Presence, "
+                                + "VegItems.IdLevelID AS IDLevel, IdLevels.IdLevelDescr AS IDDescription, "
+                                + "VegItems.TimeLastChanged AS TimeLastChanged "
+                                + "FROM (VegItems LEFT JOIN NRCSSpp ON VegItems.OrigCode = NRCSSpp.Code) "
+                                + "LEFT JOIN IdLevels ON VegItems.IdLevelID = IdLevels._id "
                                 + "WHERE (((VegItems.VisitID)=" + visId + ") "
                                 + "AND ((VegItems.SubPlotID)=" + sbId + ") "
-                                + "AND ((PlaceHolders.ProjID) Is Null Or (PlaceHolders.ProjID)=" + pjId + ") "
-                                + "AND ((PlaceHolders.NamerID) Is Null Or (PlaceHolders.NamerID)=" + nmId + ")) "
-                                + "ORDER BY VegItems.TimeLastChanged;";
-                    } else {
-                        sSQL = "SELECT VegItems._id, VegItems.VisitID, VegItems.SubPlotID, "
-                                + "VegItems.OrigCode AS Code, VegItems.OrigDescr AS Descr, VegItems.Height, VegItems.Cover, "
-                                + "VegItems.Presence, VegItems.IdLevelID AS IdLev, "
-                                + "VegItems.TimeCreated, VegItems.TimeLastChanged FROM VegItems "
+                                + "AND ((VegItems.SourceID)<2)) "
+                                + "UNION SELECT NRCSSpp.Code || ': ' || NRCSSpp.Genus || "
+                                + "(CASE WHEN LENGTH(NRCSSpp.Species)>0 THEN (' ' || NRCSSpp.Species) ELSE '' END) || "
+                                + "(CASE WHEN LENGTH(NRCSSpp.SubsppVar)>0 THEN (' ' || NRCSSpp.SubsppVar) ELSE '' END) || "
+                                + "(CASE WHEN LENGTH(NRCSSpp.Vernacular)>0 THEN (', ' || NRCSSpp.Vernacular) ELSE '' END) "
+                                + "AS SppText, "
+                                + "VegItems.Height, VegItems.Cover, VegItems.Presence, "
+                                + "PlaceHolders.IdLevelID, IdLevels.IdLevelDescr, VegItems.TimeLastChanged "
+                                + "FROM ((VegItems LEFT JOIN PlaceHolders ON VegItems.OrigCode = PlaceHolders.PlaceHolderCode) "
+                                + "LEFT JOIN NRCSSpp ON PlaceHolders.IdSppCode = NRCSSpp.Code) "
+                                + "LEFT JOIN IdLevels ON PlaceHolders.IdLevelID = IdLevels._id "
                                 + "WHERE (((VegItems.VisitID)=" + visId + ") "
-                                + "AND ((VegItems.SubPlotID)=" + sbId + ")) "
-                                + "ORDER BY VegItems.TimeLastChanged;";
+                                + "AND ((VegItems.SubPlotID)=" + sbId + ") "
+                                + "AND ((VegItems.SourceID)=2) "
+                                + "AND ((NRCSSpp.Code) Is Not Null) "
+                                + "AND ((PlaceHolders.NamerID)=" + nmId + ") "
+                                + "AND ((PlaceHolders.ProjID)=" + pjId + ")) "
+                                + "UNION SELECT PlaceHolders.PlaceHolderCode || ': ' || PlaceHolders.Description "
+                                + "AS SppText, "
+                                + "VegItems.Height, VegItems.Cover, VegItems.Presence, "
+                                + "4 AS IDLev, 'Not identified' AS IdDescr, VegItems.TimeLastChanged "
+                                + "FROM (VegItems LEFT JOIN PlaceHolders ON VegItems.OrigCode = PlaceHolders.PlaceHolderCode) "
+                                + "LEFT JOIN NRCSSpp ON PlaceHolders.IdSppCode = NRCSSpp.Code "
+                                + "WHERE (((VegItems.VisitID)=" + visId + ") "
+                                + "AND ((VegItems.SubPlotID)=" + sbId + ") "
+                                + "AND ((NRCSSpp.Code) Is Null) "
+                                + "AND ((VegItems.SourceID)=2) "
+                                + "AND ((PlaceHolders.NamerID)=" + nmId + ") "
+                                + "AND ((PlaceHolders.ProjID)=" + pjId + ")) "
+                                + "ORDER BY TimeLastChanged;";
+                    } else { // leave Placeholders as entered
+//                        sSQL = "SELECT VegItems._id, VegItems.VisitID, VegItems.SubPlotID, "
+//                                + "VegItems.OrigCode AS Code, VegItems.OrigDescr AS Descr, VegItems.Height, VegItems.Cover, "
+//                                + "VegItems.Presence, VegItems.IdLevelID AS IdLev, "
+//                                + "VegItems.TimeCreated, VegItems.TimeLastChanged FROM VegItems "
+//                                + "WHERE (((VegItems.VisitID)=" + visId + ") "
+//                                + "AND ((VegItems.SubPlotID)=" + sbId + ")) "
+//                                + "ORDER BY VegItems.TimeLastChanged;";
+                        sSQL = "SELECT VegItems.OrigCode || ': ' || NRCSSpp.Genus || "
+                                + "(CASE WHEN LENGTH(NRCSSpp.Species)>0 THEN (' ' || NRCSSpp.Species) ELSE '' END) || "
+                                + "(CASE WHEN LENGTH(NRCSSpp.SubsppVar)>0 THEN (' ' || NRCSSpp.SubsppVar) ELSE '' END) || "
+                                + "(CASE WHEN LENGTH(NRCSSpp.Vernacular)>0 THEN (', ' || NRCSSpp.Vernacular) ELSE '' END) "
+                                + "AS SppText, "
+                                + "VegItems.Height AS Height, VegItems.Cover AS Cover, VegItems.Presence AS Presence, "
+                                + "VegItems.IdLevelID AS IDLevel, IdLevels.IdLevelDescr AS IDDescription, "
+                                + "VegItems.TimeLastChanged AS TimeLastChanged "
+                                + "FROM (VegItems LEFT JOIN NRCSSpp ON VegItems.OrigCode = NRCSSpp.Code) "
+                                + "LEFT JOIN IdLevels ON VegItems.IdLevelID = IdLevels._id"
+                                + "WHERE (((VegItems.VisitID)=" + visId + ") "
+                                + "AND ((VegItems.SubPlotID)=" + sbId + ") "
+                                + "AND ((VegItems.SourceID)<2))"
+                                + "UNION SELECT VegItems.OrigCode || ': ' || VegItems.OrigDescr "
+                                + "AS SppText, VegItems.Height, VegItems.Cover, VegItems.Presence, "
+                                + "4 AS IDLevel, 'Not identified' AS IDDescription, VegItems.TimeLastChanged "
+                                + "FROM VegItems "
+                                + "WHERE (((VegItems.VisitID)=" + visId + ") "
+                                + "AND ((VegItems.SubPlotID)=" + sbId + ") "
+                                + "AND ((VegItems.SourceID)=2));";
                     }
                     thdVg = thdDb.getReadableDatabase().rawQuery(sSQL, null);
                     while (thdVg.moveToNext()) {
-                        spCode = thdVg.getString(thdVg.getColumnIndexOrThrow("Code"));
-                        spDescr = thdVg.getString(thdVg.getColumnIndexOrThrow("Descr"));
+                        spTxt = thdVg.getString(thdVg.getColumnIndexOrThrow("SppText"));
+//                        spCode = thdVg.getString(thdVg.getColumnIndexOrThrow("Code"));
+//                        spDescr = thdVg.getString(thdVg.getColumnIndexOrThrow("Descr"));
                         if (thdVg.isNull(thdVg.getColumnIndexOrThrow("Presence"))) {
                             // we should have Height and Cover
                             spParams = "\t\t" + thdVg.getString(thdVg.getColumnIndexOrThrow("Height")) + "cm, "
@@ -1826,7 +1889,13 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                                     + ((thdVg.getInt(thdVg.getColumnIndexOrThrow("Presence")) == 0)
                                     ? "Absent" : "Present");
                         }
-                        writer.write("\t" + spCode + ": " + spDescr + "\r\n");
+                        sppIdLevel = thdVg.getInt(thdVg.getColumnIndexOrThrow("IDLevel"));
+                        spIdLevDescr = thdVg.getString(thdVg.getColumnIndexOrThrow("IDDescription"));
+//                        writer.write("\t" + spCode + ": " + spDescr + "\r\n");
+                        writer.write(spTxt + "\r\n");
+                        if (sppIdLevel > 1) {
+                            writer.write("\t" +spIdLevDescr + "\r\n");
+                        }
                         writer.write(spParams + "\r\n");
                     }
                     thdVg.close();
@@ -1870,7 +1939,7 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
             Drive.DriveApi.getRootFolder(getGoogleApiClient())
                     .createFile(getGoogleApiClient(), changeSet, driveContents, executionOptions)
                     .setResultCallback(fileCallback);
-                }
+            }
             }.start();
         }
     };
