@@ -1862,17 +1862,18 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                                 + "VegItems.IdLevelID AS IDLevel, IdLevels.IdLevelDescr AS IDDescription, "
                                 + "VegItems.TimeLastChanged AS TimeLastChanged "
                                 + "FROM (VegItems LEFT JOIN NRCSSpp ON VegItems.OrigCode = NRCSSpp.Code) "
-                                + "LEFT JOIN IdLevels ON VegItems.IdLevelID = IdLevels._id"
+                                + "LEFT JOIN IdLevels ON VegItems.IdLevelID = IdLevels._id "
                                 + "WHERE (((VegItems.VisitID)=" + visId + ") "
                                 + "AND ((VegItems.SubPlotID)=" + sbId + ") "
-                                + "AND ((VegItems.SourceID)<2))"
+                                + "AND ((VegItems.SourceID)<2)) "
                                 + "UNION SELECT VegItems.OrigCode || ': ' || VegItems.OrigDescr "
                                 + "AS SppText, VegItems.Height, VegItems.Cover, VegItems.Presence, "
                                 + "4 AS IDLevel, 'Not identified' AS IDDescription, VegItems.TimeLastChanged "
                                 + "FROM VegItems "
                                 + "WHERE (((VegItems.VisitID)=" + visId + ") "
                                 + "AND ((VegItems.SubPlotID)=" + sbId + ") "
-                                + "AND ((VegItems.SourceID)=2));";
+                                + "AND ((VegItems.SourceID)=2)) "
+                                + "ORDER BY TimeLastChanged;";
                     }
                     thdVg = thdDb.getReadableDatabase().rawQuery(sSQL, null);
                     while (thdVg.moveToNext()) {
