@@ -2,6 +2,7 @@ package com.vegnab.vegnab;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
@@ -79,10 +80,11 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
     private int mHeight, mCover, mSublistOrder, mIsPlaceholder;
     private boolean isPresent = true; // assume present; explicit false by user means verified absent
     long mIDConfidence = 1; // default 'no doubt of ID'
-    Cursor mCFCursor = null, mDupSppCursor = null;
+    Cursor mCFCursor = null;
     boolean mAutoVerifyPresence = false;
     // following flags are used to auto verify
     boolean mOKToAutoAcceptItem = false, mNoDupCodes = false;
+    HashMap<Long, String> mDupCodes = new HashMap<Long, String>();
     private int mValidationLevel = Validation.SILENT;
     Uri mUri, mVegItemsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "vegitems");
     ContentValues mValues = new ContentValues();
@@ -293,6 +295,13 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
     }
 
     private int saveVegItemRecord() {
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        if (sharedPref.getBoolean(Prefs.SPECIES_ONCE, true)) {
+            if (mDupCodes.containsValue(mIDConfidence + mStrVegCode)) {
+                if (LDebug.ON) Log.d(LOG_TAG, "saveVegItemRecord, Conf&Code already exist: " + mIDConfidence + mStrVegCode);
+                return 0;
+            }
+        }
         Context c = getActivity();
         String strSaveDescription;
         mValues.clear();
@@ -365,7 +374,6 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
             mUri = ContentUris.withAppendedId(mVegItemsUri, mVegItemRecId);
            if (LDebug.ON) Log.d(LOG_TAG, "new record in saveVegItemRecord; URI re-parsed: " + mUri.toString());
             // save the timestamp, in seconds, when this occurred
-            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
             SharedPreferences.Editor prefEditor = sharedPref.edit();
             prefEditor.putLong(Prefs.LATEST_VEG_ITEM_SAVE, (new Date().getTime())/1000);
             prefEditor.commit();
@@ -568,7 +576,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
 
         case Loaders.VEG_ITEM_DUP_CODES:
             Uri dupSppUri = ContentProvider_VegNab.SQL_URI;
-            select = "SELECT OrigCode, IdLevelID FROM VegItems WHERE "
+            select = "SELECT _id, OrigCode, IdLevelID FROM VegItems WHERE "
                 + "VisitID = ? AND SubPlotID = ? AND OrigCode = ? AND _id != ?;";
             params = new String[] {"" + mCurVisitRecId, "" + mCurSubplotRecId, mStrVegCode, "" + mVegItemRecId };
             cl = new CursorLoader(getActivity(), dupSppUri,
@@ -656,12 +664,22 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
             break;
 
         case Loaders.VEG_ITEM_DUP_CODES:
-            mDupSppCursor = c;
+            mDupCodes.clear();
             SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-            if ((mDupSppCursor.getCount() == 0) ||
+            if ((c.getCount() == 0) ||
                     (!(sharedPref.getBoolean(Prefs.SPECIES_ONCE, true)))) {
                 mTxtSppDupLabel.setVisibility(View.GONE);
                 mNoDupCodes = true;
+            } else {
+                while (c.moveToNext()) {
+                    mDupCodes.put(c.getLong(c.getColumnIndexOrThrow("_id")),
+                            c.getInt(c.getColumnIndexOrThrow("IdLevelID"))
+                                    + c.getString(c.getColumnIndexOrThrow("OrigCode")));
+                }
+                if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, number of items in mDupCodes: " + mDupCodes.size());
+                if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, items in mDupCodes: " + mDupCodes.toString());
+                mTxtSppDupLabel.setVisibility(View.VISIBLE);
+                mNoDupCodes = false;
             }
 
             // in 50ms, check if we can auto verify
