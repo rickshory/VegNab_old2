@@ -1,5 +1,9 @@
 package com.vegnab.vegnab;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -1492,7 +1496,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         mAccuracy = mCurLocation.getAccuracy();
         long n = mCurLocation.getTime();
         mLocTime = mTimeFormat.format(new Date(n));
-       if (LDebug.ON) Log.d(LOG_TAG, "Location time: " + mLocTime);
+        if (LDebug.ON) Log.d(LOG_TAG, "Location time: " + mLocTime);
         if (mGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             mGoogleApiClient.disconnect();
@@ -1501,6 +1505,37 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                     + "\naccuracy " + mAccuracy + "m";
             mViewVisitLocation.setText(s);
         }
+        mViewVisitLocation.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //             String stringUrl = "http://maps.googleapis.com/maps/api/geocode/json?latlng="
+                //                     + "30.041063" + ","
+                //                     + "-101.103349" + "&sensor=false";
+                String stringUrl = "http://maps.googleapis.com/maps/api/geocode/json?latlng="
+                        + mLatitude + ","
+                        + mLongitude + "&sensor=false";
+                if (LDebug.ON) Log.d(LOG_TAG, "stringUrl: " + stringUrl);
+                StringBuffer response = new StringBuffer("");
+                try {
+                    URL url = new URL(stringUrl);
+                    HttpURLConnection httpconn = (HttpURLConnection)url.openConnection();
+                    if (httpconn.getResponseCode() == HttpURLConnection.HTTP_OK)
+                    {
+                        BufferedReader input = new BufferedReader(new InputStreamReader(httpconn.getInputStream()),8192);
+                        String strLine = null;
+                        while ((strLine = input.readLine()) != null)
+                        {
+                            response.append(strLine);
+                        }
+                        input.close();
+                    }
+                    String jsonOutput = response.toString();
+                    if (LDebug.ON) Log.d(LOG_TAG, "jsonOutput: " + jsonOutput);
+                } catch (Exception e) {
+
+                }
+            }
+        }, 50);
     }
 
     // if Google Play Services not available, would Location Services be?
