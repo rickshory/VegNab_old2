@@ -1532,7 +1532,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                     String jsonOutput = response.toString();
                     if (LDebug.ON) Log.d(LOG_TAG, "jsonOutput: " + jsonOutput);
                 } catch (Exception e) {
-
+                    if (LDebug.ON) Log.d(LOG_TAG, "spp localization exception: " + e);
                 }
             }
         }, 50);
