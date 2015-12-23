@@ -1530,7 +1530,8 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                         if (LDebug.ON) Log.d(LOG_TAG, "response: " + response.toString());
 
                         try {
-                            JSONArray locArray = (JSONArray) response.get("results");
+                            // maps API Reverse Geocoding (from lat/lon) considers all these 'formatted addresses'
+                            JSONArray addrArray = (JSONArray) response.get("results");
 
                             /* JSONArray jsonObject1 = (JSONArray) jb.get("results");
             JSONObject jsonObject2 = (JSONObject)jsonObject1.get(0);
@@ -1540,10 +1541,17 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             System.out.println( "Lat = "+location.get("lat"));
             System.out.println( "Lng = "+location.get("lng"));*/
 
-                            for (int i=0; i < locArray.length(); i++) {
-                                JSONObject locItem = locArray.getJSONObject(i);
+                            for (int i=0; i < addrArray.length(); i++) {
+                                JSONObject addrItem = addrArray.getJSONObject(i);
                                 if (LDebug.ON)
-                                    Log.d(LOG_TAG, "Received JSON location item " + i + ": " + locItem.toString());
+                                    Log.d(LOG_TAG, "Received JSON 'formatted_address' item " + i + ": " + addrItem.toString());
+                                JSONArray adrItemArray = (JSONArray) addrItem.get("formatted_address");
+                                for (int j=0; j < adrItemArray.length(); j++) {
+                                    JSONObject addrCompItem = adrItemArray.getJSONObject(j);
+                                    Log.d(LOG_TAG, "address component " + j + ": " + addrCompItem.toString());
+                                }
+
+
                             }
                         } catch (JSONException ex) {
                             ex.printStackTrace();
