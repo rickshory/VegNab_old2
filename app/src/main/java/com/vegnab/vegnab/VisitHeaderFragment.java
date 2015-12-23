@@ -10,6 +10,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -1505,37 +1511,28 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                     + "\naccuracy " + mAccuracy + "m";
             mViewVisitLocation.setText(s);
         }
-        mViewVisitLocation.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //             String stringUrl = "http://maps.googleapis.com/maps/api/geocode/json?latlng="
-                //                     + "30.041063" + ","
-                //                     + "-101.103349" + "&sensor=false";
-                String stringUrl = "http://maps.googleapis.com/maps/api/geocode/json?latlng="
-                        + mLatitude + ","
-                        + mLongitude + "&sensor=false";
-                if (LDebug.ON) Log.d(LOG_TAG, "stringUrl: " + stringUrl);
-                StringBuffer response = new StringBuffer("");
-                try {
-                    URL url = new URL(stringUrl);
-                    HttpURLConnection httpconn = (HttpURLConnection)url.openConnection();
-                    if (httpconn.getResponseCode() == HttpURLConnection.HTTP_OK)
-                    {
-                        BufferedReader input = new BufferedReader(new InputStreamReader(httpconn.getInputStream()),8192);
-                        String strLine = null;
-                        while ((strLine = input.readLine()) != null)
-                        {
-                            response.append(strLine);
-                        }
-                        input.close();
+
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        String stringUrl = "http://maps.googleapis.com/maps/api/geocode/json?latlng="
+                + mLatitude + ","
+                + mLongitude + "&sensor=false";
+        if (LDebug.ON) Log.d(LOG_TAG, "stringUrl: " + stringUrl);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, stringUrl,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the response string.
+                        if (LDebug.ON) Log.d(LOG_TAG, "response: " + response);
                     }
-                    String jsonOutput = response.toString();
-                    if (LDebug.ON) Log.d(LOG_TAG, "jsonOutput: " + jsonOutput);
-                } catch (Exception e) {
-                    if (LDebug.ON) Log.d(LOG_TAG, "spp localization exception: " + e);
-                }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (LDebug.ON) Log.d(LOG_TAG, "That didn't work!");
             }
-        }, 50);
+        });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+
     }
 
     // if Google Play Services not available, would Location Services be?
