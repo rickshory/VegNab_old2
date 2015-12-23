@@ -14,6 +14,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -79,6 +80,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONObject;
 
 public class VisitHeaderFragment extends Fragment implements OnClickListener,
         android.widget.AdapterView.OnItemSelectedListener,
@@ -1517,12 +1520,12 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 + mLatitude + ","
                 + mLongitude + "&sensor=false";
         if (LDebug.ON) Log.d(LOG_TAG, "stringUrl: " + stringUrl);
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, stringUrl,
-                new Response.Listener<String>() {
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, stringUrl, null, new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(String response) {
-                        // Display the response string.
-                        if (LDebug.ON) Log.d(LOG_TAG, "response: " + response);
+                    public void onResponse(JSONObject response) {
+                        // Display the response as a string
+                        if (LDebug.ON) Log.d(LOG_TAG, "response: " + response.toString());
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -1530,9 +1533,9 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 if (LDebug.ON) Log.d(LOG_TAG, "That didn't work!");
             }
         });
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
 
+        // Add the request to the RequestQueue.
+        queue.add(jsObjRequest);
     }
 
     // if Google Play Services not available, would Location Services be?
