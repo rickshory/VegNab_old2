@@ -81,6 +81,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class VisitHeaderFragment extends Fragment implements OnClickListener,
@@ -1526,6 +1528,28 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                     public void onResponse(JSONObject response) {
                         // Display the response as a string
                         if (LDebug.ON) Log.d(LOG_TAG, "response: " + response.toString());
+
+                        try {
+                            JSONArray locArray = (JSONArray) response.get("results");
+
+                            /* JSONArray jsonObject1 = (JSONArray) jb.get("results");
+            JSONObject jsonObject2 = (JSONObject)jsonObject1.get(0);
+            JSONObject jsonObject3 = (JSONObject)jsonObject2.get("geometry");
+            JSONObject location = (JSONObject) jsonObject3.get("location");
+
+            System.out.println( "Lat = "+location.get("lat"));
+            System.out.println( "Lng = "+location.get("lng"));*/
+
+                            for (int i=0; i < locArray.length(); i++) {
+                                JSONObject locItem = locArray.getJSONObject(i);
+                                if (LDebug.ON)
+                                    Log.d(LOG_TAG, "Received JSON location item " + i + ": " + locItem.toString());
+                            }
+                        } catch (JSONException ex) {
+                            ex.printStackTrace();
+                            if (LDebug.ON) Log.d(LOG_TAG, "JSON error retrieving location items");
+                            //
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override
