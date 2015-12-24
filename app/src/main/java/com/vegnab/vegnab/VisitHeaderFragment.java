@@ -1526,38 +1526,35 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 (Request.Method.GET, stringUrl, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        // get State and Country; kind of redundant but works for anywhere in the USA
                         String stState = "", stCountry = "";
-
-                        if (LDebug.ON) Log.d(LOG_TAG, "response: " + response.toString());
-
+//                        if (LDebug.ON) Log.d(LOG_TAG, "response: " + response.toString());
                         try {
                             JSONArray resultsArray = (JSONArray) response.get("results");
                             for (int i=0; i < resultsArray.length(); i++) {
                                 JSONObject resultItem = resultsArray.getJSONObject(i);
-                                if (LDebug.ON)
-                                    Log.d(LOG_TAG, "resultItem " + i + ": " + resultItem.toString());
+//                                if (LDebug.ON)
+//                                    Log.d(LOG_TAG, "resultItem " + i + ": " + resultItem.toString());
                                 JSONArray address_componentsArray = (JSONArray) resultItem.get("address_components");
-
                                 for (int j=0; j < address_componentsArray.length(); j++) {
                                     JSONObject address_componentsItem = address_componentsArray.getJSONObject(j);
-                                    if (LDebug.ON)
-                                        Log.d(LOG_TAG, "address_componentItem " + j + ": " + address_componentsItem.toString());
-
+//                                    if (LDebug.ON)
+//                                        Log.d(LOG_TAG, "address_componentItem " + j + ": " + address_componentsItem.toString());
                                     JSONArray typesArray = (JSONArray) address_componentsItem.get("types");
                                     for (int k=0; k < typesArray.length(); k++) {
                                         String typeItem = typesArray.getString(k);
-                                        if (LDebug.ON)
-                                            Log.d(LOG_TAG, "typeItem " + k + ": " + typeItem);
+//                                        if (LDebug.ON)
+//                                            Log.d(LOG_TAG, "typeItem " + k + ": " + typeItem);
                                         if (typeItem.equals("administrative_area_level_1")) {
-                                            String shortName = address_componentsItem.getString("short_name");
-                                            if (LDebug.ON)
-                                                Log.d(LOG_TAG, "short_name is: " + shortName);
+//                                            String shortName = address_componentsItem.getString("short_name");
+//                                            if (LDebug.ON)
+//                                                Log.d(LOG_TAG, "short_name is: " + shortName);
                                             stState = address_componentsItem.getString("short_name");
                                         }
                                         if (typeItem.equals("country")) {
-                                            String shortName = address_componentsItem.getString("short_name");
-                                            if (LDebug.ON)
-                                                Log.d(LOG_TAG, "short_name is: " + shortName);
+//                                            String shortName = address_componentsItem.getString("short_name");
+//                                            if (LDebug.ON)
+//                                                Log.d(LOG_TAG, "short_name is: " + shortName);
                                             stCountry = address_componentsItem.getString("short_name");
                                         }
                                     }
