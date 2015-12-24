@@ -36,6 +36,9 @@ public final class VNContract {
         public static final String DEFAULT_IDENT_REF_ID = "DefaultIdentRefId";
         public static final String DEFAULT_IDENT_METHOD_ID = "DefaultIdentMethodId";
         public static final String SPECIES_ONCE = "SpeciesOnce"; // allow spp only once per subplot; true/false
+        // string for WHERE clause that defines the current local species, e.g. "%USA (%OR%)%"
+        public static final String LOCAL_SPP_CRIT = "LocalSpeciesCriteria";
+
 
     }
     // inner class to define loader IDs

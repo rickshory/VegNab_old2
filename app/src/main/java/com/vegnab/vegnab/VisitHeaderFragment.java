@@ -1566,6 +1566,32 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                             //
                         }
                         if (LDebug.ON) Log.d(LOG_TAG, "Country " + stCountry + "; State " + stState);
+                        // if we got a State and Country
+                        if ((stCountry.length() > 0) && (stState.length() > 0)) {
+                            // build this better later, for now get it working for the USA
+                            if (stCountry.equals("US")) stCountry = "USA";
+                            String localSppCrit = "%" + stCountry + " (%" + stState + "%)%"; // e.g. "%USA (%OR%)%"
+                            Boolean updateLocal = false;
+                            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                            SharedPreferences.Editor prefEditor;
+                            if (!sharedPref.contains(Prefs.LOCAL_SPP_CRIT)) {
+                                prefEditor = sharedPref.edit();
+                                prefEditor.putString(Prefs.LOCAL_SPP_CRIT, localSppCrit);
+                                prefEditor.commit();
+                                updateLocal = true;
+                            } else {
+//                                String curLocSppCrit = sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "")
+                                if (!(sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "").equals(localSppCrit))) {
+                                    prefEditor = sharedPref.edit();
+                                    prefEditor.putString(Prefs.LOCAL_SPP_CRIT, localSppCrit);
+                                    prefEditor.commit();
+                                    updateLocal = true;
+                                }
+                            }
+                            if (updateLocal) {
+
+                            }
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override
