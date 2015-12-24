@@ -1581,11 +1581,34 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                             if (LDebug.ON) Log.d(LOG_TAG, "JSON error: " + ex.toString());
                             //
                         }
+                        // adjust Greenland from Google format to NRCS
+                        if (stCountry.equals("GL")) {
+                            stState = "GL";
+                            stCountry = "DEN";
+                        }
+                        // adjust for Saint Pierre - Miquelon
+                        if (stCountry.equals("SP")) {
+                            stState = "SPM";
+                            stCountry = "FRA";
+                        }
+                        // adjust for Puerto Rico
+                        if (stCountry.equals("PR")) {
+                            stState = "PR";
+                            stCountry = "USA+";
+                        }
+                        // adjust for U.S. Virgin Islands
+                        if (stCountry.equals("VI")) {
+                            stState = "VI";
+                            stCountry = "USA+";
+                        }
+                        // to do: minor outlying islands
+
                         if (LDebug.ON) Log.d(LOG_TAG, "Country " + stCountry + "; State " + stState);
                         // if we got a State and Country
                         if ((stCountry.length() > 0) && (stState.length() > 0)) {
-                            // build this better later, for now get it working for the USA
+                            // adjust country format from Google to NRCS
                             if (stCountry.equals("US")) stCountry = "USA";
+                            if (stCountry.equals("CA")) stCountry = "CAN";
                             String localSppCrit = "%" + stCountry + " (%" + stState + "%)%"; // e.g. "%USA (%OR%)%"
                             Boolean updateLocal = false;
                             SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
