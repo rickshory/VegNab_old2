@@ -1583,7 +1583,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                         }
                         // adjust Greenland from Google format to NRCS
                         if (stCountry.equals("GL")) {
-                            stState = "GL";
+                            stState = stCountry;
                             stCountry = "DEN";
                         }
                         // adjust for Saint Pierre - Miquelon
@@ -1591,16 +1591,12 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                             stState = "SPM";
                             stCountry = "FRA";
                         }
-                        // adjust for Puerto Rico
-                        if (stCountry.equals("PR")) {
-                            stState = "PR";
+                        // adjust for Puerto Rico and  U.S. Virgin Islands
+                        if (stCountry.equals("PR") || stCountry.equals("VI")) {
+                            stState = stCountry;
                             stCountry = "USA+";
                         }
-                        // adjust for U.S. Virgin Islands
-                        if (stCountry.equals("VI")) {
-                            stState = "VI";
-                            stCountry = "USA+";
-                        }
+
                         // to do: minor outlying islands
 
                         if (LDebug.ON) Log.d(LOG_TAG, "Country " + stCountry + "; State " + stState);
