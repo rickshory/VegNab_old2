@@ -66,6 +66,7 @@ public final class VNContract {
         public static final int LOCATIONS = 24;
         public static final int VISIT_REF_LOCATION = 25; // the reference Location for this Visit
         public static final int VISIT_PLACEHOLDERS_ENTERED = 26; // any Placeholders entered on this Visit, to allow or deny Namer change
+        public static final int UPDATE_LOCAL_SPP = 27; // set the 'Local' flag for species, based on location
         // in Edit Namer
         public static final int NAMER_TO_EDIT = 31;
         public static final int EXISTING_NAMERS = 32; // Namers other than the current, to check duplicates

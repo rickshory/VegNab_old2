@@ -538,6 +538,18 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             cl = new CursorLoader(getActivity(), baseUri,
                     null, select, new String[] { "" + mVisitId }, null);
             break;
+
+            case Loaders.UPDATE_LOCAL_SPP:
+                if (LDebug.ON) Log.d(LOG_TAG, "onCreateLoader, UPDATE_LOCAL_SPP");
+                baseUri = ContentProvider_VegNab.SQL_URI;
+                select = "UPDATE NRCSSpp SET Local=(CASE WHEN Distribution "
+                        + "LIKE ? THEN 1 ELSE 0 END);";
+                // e.g. "%USA (%OR%)%" for the state of Oregon
+                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                String locCrit = sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "%");
+                cl = new CursorLoader(getActivity(), baseUri,
+                        null, select, new String[] { locCrit }, null);
+                break;
         }
         return cl;
     }
@@ -617,6 +629,10 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 //                mCtPlaceholders = c.getLong(c.getColumnIndexOrThrow("PhCount"));
             }
             setupNamerSpinner(); // this can run multiple times, latest will be most correct
+            break;
+
+        case Loaders.UPDATE_LOCAL_SPP:
+            // an Update query that returns no cursor, nothing to do
             break;
         }
     }
@@ -1589,7 +1605,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                                 }
                             }
                             if (updateLocal) {
-
+                                updateLocalSpecies();
                             }
                         }
                     }
@@ -1602,6 +1618,11 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 
         // Add the request to the RequestQueue.
         queue.add(jsObjRequest);
+    }
+
+    public void updateLocalSpecies() {
+        if (LDebug.ON) Log.d(LOG_TAG, "in updateLocalSpecies");
+        getLoaderManager().initLoader(Loaders.UPDATE_LOCAL_SPP, null, this);
     }
 
     // if Google Play Services not available, would Location Services be?
