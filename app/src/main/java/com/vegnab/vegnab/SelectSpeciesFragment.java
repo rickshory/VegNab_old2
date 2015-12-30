@@ -612,14 +612,6 @@ public class SelectSpeciesFragment extends ListFragment
                             + "FROM PlaceHolders "
                             + "WHERE Description Like ? "
                             + "AND ProjID=? AND PlaceHolders.NamerID=? "
-                            + "UNION SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, "
-                            + "Code || ': ' || Genus || "
-                            + "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
-                            + "(CASE WHEN LENGTH(SubsppVar)>0 THEN (' ' || SubsppVar) ELSE '' END) || "
-                            + "(CASE WHEN LENGTH(Vernacular)>0 THEN (', ' || Vernacular) ELSE '' END) "
-                            + "AS MatchTxt, 3 AS SubListOrder, 0 AS IsPlaceholder, 1 AS IsIdentified "
-                            + "FROM NRCSSpp "
-                            + "WHERE Code LIKE ? AND Local = 1 AND HasBeenFound = 0 "
                             + "UNION SELECT docid, Code, Genus, Species, SubsppVar, Vernacular, "
                             + "Code || ': ' || Genus || "
                             + "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
@@ -629,14 +621,6 @@ public class SelectSpeciesFragment extends ListFragment
                             + "FROM NRCSSpp_fts "
                             + "WHERE NRCSSpp_fts MATCH ? "
                             + "AND Local = 1 AND HasBeenFound = 0 "
-                            + "UNION SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, "
-                            + "Code || ': ' || Genus || "
-                            + "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
-                            + "(CASE WHEN LENGTH(SubsppVar)>0 THEN (' ' || SubsppVar) ELSE '' END) || "
-                            + "(CASE WHEN LENGTH(Vernacular)>0 THEN (', ' || Vernacular) ELSE '' END) "
-                            + "AS MatchTxt, 5 AS SubListOrder, 0 AS IsPlaceholder, 1 AS IsIdentified "
-                            + "FROM NRCSSpp "
-                            + "WHERE Code LIKE ? AND Local = 0 AND HasBeenFound = 0 "
                             + "UNION SELECT docid, Code, Genus, Species, SubsppVar, Vernacular, "
                             + "Code || ': ' || Genus || "
                             + "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
@@ -649,7 +633,7 @@ public class SelectSpeciesFragment extends ListFragment
                             + "ORDER BY SubListOrder, Code;";
                     params = new String[] {mStSearch + "%", "" + mProjectId, "" + mNamerId,
                             mStMatch, "%" + mStSearch + "%", "" + mProjectId, "" + mNamerId,
-                            mStSearch + "%", mStMatch, mStSearch + "%", mStMatch };
+                            mStMatch, mStMatch };
                 }
             }
 
