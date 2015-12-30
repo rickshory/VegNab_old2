@@ -583,15 +583,7 @@ public class SelectSpeciesFragment extends ListFragment
                     // before the last space and a prefix match on the last item
                     // Items within the criteria are AND-ed together by default, the space being the 'AND'.
                     mStMatch = mStSearch.trim() + "*";
-                    select = "SELECT _id, Code, Genus, Species, SubsppVar, Vernacular, "
-                            + "Code || ': ' || Genus || "
-                            + "(CASE WHEN LENGTH(Species)>0 THEN (' ' || Species) ELSE '' END) || "
-                            + "(CASE WHEN LENGTH(SubsppVar)>0 THEN (' ' || SubsppVar) ELSE '' END) || "
-                            + "(CASE WHEN LENGTH(Vernacular)>0 THEN (', ' || Vernacular) ELSE '' END) "
-                            + "AS MatchTxt, 1 AS SubListOrder, 0 AS IsPlaceholder, 1 AS IsIdentified "
-                            + "FROM NRCSSpp "
-                            + "WHERE Code LIKE ? AND HasBeenFound = 1 "
-                            + "UNION SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
+                    select = "SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
                             + "'' AS SubsppVar, Description AS Vernacular, "
                             + "PlaceHolderCode || ': ' || Description "
                             + "|| IFNULL((' = ' || IdSppCode || (IFNULL((': ' || IdSppDescription), ''))), '') "
@@ -655,7 +647,7 @@ public class SelectSpeciesFragment extends ListFragment
                             + "WHERE NRCSSpp_fts MATCH ? "
                             + "AND Local = 0 AND HasBeenFound = 0 "
                             + "ORDER BY SubListOrder, Code;";
-                    params = new String[] {mStSearch + "%", mStSearch + "%", "" + mProjectId, "" + mNamerId,
+                    params = new String[] {mStSearch + "%", "" + mProjectId, "" + mNamerId,
                             mStMatch, "%" + mStSearch + "%", "" + mProjectId, "" + mNamerId,
                             mStSearch + "%", mStMatch, mStSearch + "%", mStMatch };
                 }
