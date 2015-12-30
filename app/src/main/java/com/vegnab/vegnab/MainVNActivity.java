@@ -984,14 +984,32 @@ public class MainVNActivity extends ActionBarActivity
     // Listener that's called when we finish querying the items and subscriptions we own
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
         public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
+            // get an Analytics event tracker
+            Tracker queryInventoryTracker = ((VNApplication) getApplicationContext())
+                    .getTracker(VNApplication.TrackerName.APP_TRACKER);
            if (LDebug.ON) Log.d(LOG_TAG, "Query inventory finished.");
 
             // Have we been disposed of in the meantime? If so, quit.
-            if (mHelper == null) return;
+            if (mHelper == null) {
+                queryInventoryTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Query Inventory Event")
+                        .setAction("Failed to query inventory")
+                        .setLabel("mHelper returned as null")
+                        .setValue(1)
+                        .build());
+                return;
+            }
+
 
             // Is it a failure?
             if (result.isFailure()) {
-                complain("Failed to query inventory: " + result);
+//                complain("Failed to query inventory: " + result);
+                queryInventoryTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Query Inventory Event")
+                        .setAction("Failed to query inventory")
+                        .setLabel(result.toString())
+                        .setValue(1)
+                        .build());
                 return;
             }
 

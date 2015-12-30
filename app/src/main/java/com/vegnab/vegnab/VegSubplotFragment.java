@@ -204,7 +204,7 @@ public class VegSubplotFragment extends ListFragment
 
     @Override
     public void onListItemClick(ListView l, View v, int pos, long id) {
-        Toast.makeText(this.getActivity(), "Clicked position " + pos + ", id " + id, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this.getActivity(), "Clicked position " + pos + ", id " + id, Toast.LENGTH_SHORT).show();
         // check if selected code is in mVegCodesAlreadyOnSubplot
 //    	getListView().getItemAtPosition(pos).toString(); // not useful, gets cursor wrapper
         mVegItemsCursor.moveToPosition(pos);
