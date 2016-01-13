@@ -38,7 +38,7 @@ public final class VNContract {
         public static final String SPECIES_ONCE = "SpeciesOnce"; // allow spp only once per subplot; true/false
         // string for WHERE clause that defines the current local species, e.g. "%USA (%OR%)%"
         public static final String LOCAL_SPP_CRIT = "LocalSpeciesCriteria";
-
+        public static final String USE_LOCAL_SPP = "UseLocalSpp"; // whether to use the 'Local' feature
 
     }
     // inner class to define loader IDs
@@ -67,6 +67,8 @@ public final class VNContract {
         public static final int VISIT_REF_LOCATION = 25; // the reference Location for this Visit
         public static final int VISIT_PLACEHOLDERS_ENTERED = 26; // any Placeholders entered on this Visit, to allow or deny Namer change
         public static final int UPDATE_LOCAL_SPP = 27; // set the 'Local' flag for species, based on location
+        public static final int UPDATE_LOCAL_NAME = 28; // store in Preferences the name of the local area, e.g. 'Oregon' for quick reference
+
         // in Edit Namer
         public static final int NAMER_TO_EDIT = 31;
         public static final int EXISTING_NAMERS = 32; // Namers other than the current, to check duplicates

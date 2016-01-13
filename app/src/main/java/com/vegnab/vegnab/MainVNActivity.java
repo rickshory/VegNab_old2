@@ -227,6 +227,21 @@ public class MainVNActivity extends ActionBarActivity
             prefEditor.putBoolean(Prefs.SPECIES_ONCE, true);
             prefEditor.commit();
         }
+
+        // Set the default to use the "local species" feature
+        if (!sharedPref.contains(Prefs.USE_LOCAL_SPP)) {
+            prefEditor = sharedPref.edit();
+            prefEditor.putBoolean(Prefs.USE_LOCAL_SPP, true);
+            prefEditor.commit();
+        }
+
+        // Set if there is no "local" yet, use the default of not actually filtering for local species
+        if (!sharedPref.contains(Prefs.LOCAL_SPP_CRIT)) {
+            prefEditor = sharedPref.edit();
+            prefEditor.putString(Prefs.LOCAL_SPP_CRIT, "%");
+            prefEditor.commit();
+        }
+
         // set up in-app billing
         // following resource is in it's own file, listed in .gitignore
         String base64EncodedPublicKey = getString(R.string.app_license);

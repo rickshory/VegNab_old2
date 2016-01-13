@@ -497,6 +497,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         CursorLoader cl = null;
         Uri baseUri;
         String select = null; // default for all-columns, unless re-assigned or overridden by raw SQL
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         switch (id) {
 
         case Loaders.VISIT_TO_EDIT:
@@ -542,13 +543,31 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             case Loaders.UPDATE_LOCAL_SPP:
                 if (LDebug.ON) Log.d(LOG_TAG, "onCreateLoader, UPDATE_LOCAL_SPP");
                 baseUri = ContentProvider_VegNab.SQL_URI;
-                select = "UPDATE NRCSSpp SET Local=(CASE WHEN Distribution "
-                        + "LIKE ? THEN 1 ELSE 0 END);";
-                // e.g. "%USA (%OR%)%" for the state of Oregon
-                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                Boolean useLocal = sharedPref.getBoolean(Prefs.USE_LOCAL_SPP, true);
+                if (useLocal) { // flag species for the 'Local' area
+                    select = "UPDATE NRCSSpp SET Local=(CASE WHEN Distribution "
+                            + "LIKE ? THEN 1 ELSE 0 END);";
+                    // e.g. "%USA (%OR%)%" for the state of Oregon
+                    String locCrit = sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "%");
+                    cl = new CursorLoader(getActivity(), baseUri,
+                            null, select, new String[] { locCrit }, null);
+                } else { // treat all species as 'Local"
+                    select = "UPDATE NRCSSpp SET Local=1;";
+                    cl = new CursorLoader(getActivity(), baseUri,
+                            null, select, null, null);
+                }
+                break;
+
+            case Loaders.UPDATE_LOCAL_NAME:
+                if (LDebug.ON) Log.d(LOG_TAG, "onCreateLoader, UPDATE_LOCAL_NAME");
+                baseUri = ContentProvider_VegNab.SQL_URI;
                 String locCrit = sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "%");
+                // e.g. "%USA (%OR%)%" for the state of Oregon
+                String[] parts = locCrit.split("%");
+                select = "SELECT LongName FROM PoliticalAdminAreas "
+                        + "WHERE ShortName = ?;";
                 cl = new CursorLoader(getActivity(), baseUri,
-                        null, select, new String[] { locCrit }, null);
+                        null, select, new String[] { parts[1] }, null);
                 break;
         }
         return cl;
@@ -557,6 +576,8 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
         // there will be various loaders, switch them out here
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefEditor;
         mRowCt = c.getCount();
         switch (loader.getId()) {
         case Loaders.EXISTING_VISITS:
@@ -633,6 +654,18 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
 
         case Loaders.UPDATE_LOCAL_SPP:
             // an Update query that returns no cursor, nothing to do
+            break;
+
+        case Loaders.UPDATE_LOCAL_NAME:
+            if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, UPDATE_LOCAL_NAME, records: " + c.getCount());
+            // should be just one record
+            if (c.moveToFirst()) {
+                String locName = c.getString(c.getColumnIndexOrThrow("LongName"));
+                // should be a name like 'Oregon'
+                prefEditor = sharedPref.edit();
+                prefEditor.putString(Prefs.LOCAL_SPECIES_LIST_DESCRIPTION, locName);
+                prefEditor.commit();
+            }
             break;
         }
     }
@@ -1609,19 +1642,12 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                             Boolean updateLocal = false;
                             SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
                             SharedPreferences.Editor prefEditor;
-                            if (!sharedPref.contains(Prefs.LOCAL_SPP_CRIT)) {
+//                                String curLocSppCrit = sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "")
+                            if (!(sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "").equals(localSppCrit))) {
                                 prefEditor = sharedPref.edit();
                                 prefEditor.putString(Prefs.LOCAL_SPP_CRIT, localSppCrit);
                                 prefEditor.commit();
                                 updateLocal = true;
-                            } else {
-//                                String curLocSppCrit = sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "")
-                                if (!(sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "").equals(localSppCrit))) {
-                                    prefEditor = sharedPref.edit();
-                                    prefEditor.putString(Prefs.LOCAL_SPP_CRIT, localSppCrit);
-                                    prefEditor.commit();
-                                    updateLocal = true;
-                                }
                             }
                             if (updateLocal) {
                                 updateLocalSpecies();
@@ -1642,6 +1668,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     public void updateLocalSpecies() {
         if (LDebug.ON) Log.d(LOG_TAG, "in updateLocalSpecies");
         getLoaderManager().initLoader(Loaders.UPDATE_LOCAL_SPP, null, this);
+        getLoaderManager().initLoader(Loaders.UPDATE_LOCAL_NAME, null, this);
     }
 
     // if Google Play Services not available, would Location Services be?
