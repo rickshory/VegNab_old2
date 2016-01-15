@@ -89,7 +89,13 @@ public class SettingsDialog extends DialogFragment {
         prefEditor.putBoolean(VNContract.Prefs.SPECIES_ONCE, mCkSpeciesOnce.isChecked());
         // test if 'UseLocal' has changed, and if so update the database
         if (!((mCkUseLocal.isChecked()) == (sharedPref.getBoolean(VNContract.Prefs.USE_LOCAL_SPP, true)))) {
-            mSetLocalSppCallback.onSettingsDialogUseLocalChanged();
+            // wait to call the update till Prefs have updated
+            mCkUseLocal.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mSetLocalSppCallback.onSettingsDialogUseLocalChanged();
+                }
+            }, 50);
         }
         prefEditor.putBoolean(VNContract.Prefs.USE_LOCAL_SPP, mCkUseLocal.isChecked());
         prefEditor.commit();
