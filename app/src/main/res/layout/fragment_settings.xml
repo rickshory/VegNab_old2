@@ -21,6 +21,32 @@
         android:layout_alignParentLeft="true"
         android:text="@string/settings_cktxt_spp_once"
         />
+    <CheckBox
+        android:id="@+id/ck_use_local"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/ck_spp_once"
+        android:text="@string/settings_cktxt_local_spp"
+        />
+
+    <TextView
+        android:id="@+id/lbl_local_name"
+        android:text="@string/settings_label_local_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/ck_use_local"
+        />
+
+    <TextView
+        android:id="@+id/txt_local_name"
+        android:text="@string/local_region_none"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/lbl_local_name"
+        android:layout_below="@id/lbl_local_name"
+        />
 
 </RelativeLayout>
 </ScrollView>

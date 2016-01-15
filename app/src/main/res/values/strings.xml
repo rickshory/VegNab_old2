@@ -397,5 +397,9 @@
 
     <string name="settings_dlg_title">Settings</string>
     <string name="settings_cktxt_spp_once">Allow species only once per subplot</string>
+    <string name="settings_cktxt_local_spp">Give local species higher relevance</string>
+    <string name="settings_label_local_name">Local region:</string>
+
+    <string name="local_region_none">(none)</string>
 
 </resources>

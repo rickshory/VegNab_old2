@@ -1651,6 +1651,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                             }
                             if (updateLocal) {
                                 updateLocalSpecies();
+                                updateLocalName();
                             }
                         }
                     }
@@ -1668,9 +1669,12 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     public void updateLocalSpecies() {
         if (LDebug.ON) Log.d(LOG_TAG, "in updateLocalSpecies");
         getLoaderManager().initLoader(Loaders.UPDATE_LOCAL_SPP, null, this);
-        getLoaderManager().initLoader(Loaders.UPDATE_LOCAL_NAME, null, this);
     }
 
+    public void updateLocalName() {
+        if (LDebug.ON) Log.d(LOG_TAG, "in updateLocalName");
+        getLoaderManager().initLoader(Loaders.UPDATE_LOCAL_NAME, null, this);
+    }
     // if Google Play Services not available, would Location Services be?
     // requestSingleUpdate
 

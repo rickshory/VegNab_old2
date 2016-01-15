@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
 import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.LDebug;
@@ -17,7 +18,8 @@ import com.vegnab.vegnab.database.VNContract.LDebug;
 public class SettingsDialog extends DialogFragment {
     private static final String LOG_TAG = SettingsDialog.class.getSimpleName();
 
-    private CheckBox mCkSpeciesOnce;
+    private CheckBox mCkSpeciesOnce, mCkUseLocal;
+    private TextView mLocalRegionName;
 
     static SettingsDialog newInstance(Bundle args) {
         SettingsDialog f = new SettingsDialog();
@@ -29,6 +31,8 @@ public class SettingsDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup rootView, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, rootView);
         mCkSpeciesOnce = (CheckBox) view.findViewById(R.id.ck_spp_once);
+        mCkUseLocal = (CheckBox) view.findViewById(R.id.ck_use_local);
+        mLocalRegionName = (TextView) view.findViewById(R.id.txt_local_name);
         getDialog().setTitle(R.string.settings_dlg_title);
         return view;
     }
@@ -50,6 +54,9 @@ public class SettingsDialog extends DialogFragment {
     void setupUI() {
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         mCkSpeciesOnce.setChecked((sharedPref.getBoolean(VNContract.Prefs.SPECIES_ONCE, true)));
+        mCkUseLocal.setChecked((sharedPref.getBoolean(VNContract.Prefs.USE_LOCAL_SPP, true)));
+        mLocalRegionName.setText((sharedPref.getString(VNContract.Prefs.LOCAL_SPECIES_LIST_DESCRIPTION,
+                this.getResources().getString(R.string.local_region_none))));
     }
 
     @Override
@@ -57,11 +64,11 @@ public class SettingsDialog extends DialogFragment {
         // update Preferences
 
         if (LDebug.ON) Log.d(LOG_TAG, "Saving preferences in onCancel");
-
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor prefEditor;
         prefEditor = sharedPref.edit();
         prefEditor.putBoolean(VNContract.Prefs.SPECIES_ONCE, mCkSpeciesOnce.isChecked());
+        prefEditor.putBoolean(VNContract.Prefs.USE_LOCAL_SPP, mCkUseLocal.isChecked());
         prefEditor.commit();
 // maybe implement a listener
 //        mSettingsListener.onSettingsComplete(SettingsDialog.this);

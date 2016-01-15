@@ -195,7 +195,8 @@ public class MainVNActivity extends ActionBarActivity
         // Is there a description of what "local" is (e.g. "Iowa")? Initially, no
         if (!sharedPref.contains(Prefs.LOCAL_SPECIES_LIST_DESCRIPTION)) {
             prefEditor = sharedPref.edit();
-            prefEditor.putString(Prefs.LOCAL_SPECIES_LIST_DESCRIPTION, "");
+            prefEditor.putString(Prefs.LOCAL_SPECIES_LIST_DESCRIPTION,
+                    this.getResources().getString(R.string.local_region_none));
             prefEditor.commit();
         }
 
