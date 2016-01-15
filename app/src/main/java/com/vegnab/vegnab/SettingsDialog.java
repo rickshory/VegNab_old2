@@ -1,5 +1,6 @@
 package com.vegnab.vegnab;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -20,11 +21,29 @@ public class SettingsDialog extends DialogFragment {
 
     private CheckBox mCkSpeciesOnce, mCkUseLocal;
     private TextView mLocalRegionName;
+    private Boolean mOrigStateOfUseLocal; // to track change
+    public interface OnUseLocalSppChange {
+        // methods that must be implemented in the container Activity
+        public void onSettingsDialogUseLocalChanged();
+    }
+    OnUseLocalSppChange mSetLocalSppCallback; // declare the interface
 
     static SettingsDialog newInstance(Bundle args) {
         SettingsDialog f = new SettingsDialog();
         f.setArguments(args);
         return f;
+    }
+
+    // Test to make sure implemented:
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        // assure the container activity has implemented the callback interface
+        try {
+            mSetLocalSppCallback = (OnUseLocalSppChange) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException (activity.toString() + " must implement OnUseLocalSppChange");
+        }
     }
 
     @Override
@@ -68,6 +87,10 @@ public class SettingsDialog extends DialogFragment {
         SharedPreferences.Editor prefEditor;
         prefEditor = sharedPref.edit();
         prefEditor.putBoolean(VNContract.Prefs.SPECIES_ONCE, mCkSpeciesOnce.isChecked());
+        // test if 'UseLocal' has changed, and if so update the database
+        if (!((mCkUseLocal.isChecked()) == (sharedPref.getBoolean(VNContract.Prefs.USE_LOCAL_SPP, true)))) {
+            mSetLocalSppCallback.onSettingsDialogUseLocalChanged();
+        }
         prefEditor.putBoolean(VNContract.Prefs.USE_LOCAL_SPP, mCkUseLocal.isChecked());
         prefEditor.commit();
 // maybe implement a listener

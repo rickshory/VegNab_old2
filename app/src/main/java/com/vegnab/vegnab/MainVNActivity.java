@@ -107,7 +107,8 @@ public class MainVNActivity extends ActionBarActivity
 //        NewVisitFragment.ExportVisitListener,
         ExportVisitDialog.ExportVisitListener,
         LoaderManager.LoaderCallbacks<Cursor>,
-        SelectSpeciesFragment.OnPlaceholderRequestListener
+        SelectSpeciesFragment.OnPlaceholderRequestListener,
+        SettingsDialog.OnUseLocalSppChange
         {
         //
 
@@ -996,6 +997,28 @@ public class MainVNActivity extends ActionBarActivity
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
+    @Override
+    public void onSettingsDialogUseLocalChanged() {
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        Boolean useLocal = sharedPref.getBoolean(Prefs.USE_LOCAL_SPP, false);
+        // track if users ever change this setting
+        Tracker changeUseLocalSppTracker = ((VNApplication) getApplicationContext())
+                .getTracker(VNApplication.TrackerName.APP_TRACKER);
+        changeUseLocalSppTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Settings Change Event")
+                .setAction("Setting to Use Local Species")
+                .setLabel("Setting changed; before change was ")
+                .setValue(useLocal ? 1 : 0)
+                .build());
+        if (LDebug.ON) Log.d(LOG_TAG, "User changed 'Use Local Spp' setting. Before this change it was: " + (useLocal ? "true" : "false"));
+        
+
+        /*
+
+                */
+    }
+
 
     // Listener that's called when we finish querying the items and subscriptions we own
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
