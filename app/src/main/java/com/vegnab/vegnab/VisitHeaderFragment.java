@@ -164,7 +164,12 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     // declare that the container Activity must implement this interface
     public interface OnButtonListener {
         // methods that must be implemented in the container Activity
-        public void onVisitHeaderGoButtonClicked(long visitId);
+        void onVisitHeaderGoButtonClicked(long visitId);
+    }
+    OnSppLocationChange mSppLocChangeCallback; // declare the interface
+    public interface OnSppLocationChange {
+        // methods that must be implemented in the container Activity
+        void onSppLocalChanged();
     }
 
     public static VisitHeaderFragment newInstance(Bundle args) {
@@ -400,6 +405,11 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         } catch (ClassCastException e) {
             throw new ClassCastException (activity.toString() + " must implement OnButtonListener");
         }
+        try {
+            mSppLocChangeCallback = (OnSppLocationChange) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException (activity.toString() + " must implement OnSppLocationChange");
+        }
     }
 
     @Override
@@ -540,35 +550,35 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                     null, select, new String[] { "" + mVisitId }, null);
             break;
 
-            case Loaders.UPDATE_LOCAL_SPP:
-                if (LDebug.ON) Log.d(LOG_TAG, "onCreateLoader, UPDATE_LOCAL_SPP");
-                baseUri = ContentProvider_VegNab.SQL_URI;
-                Boolean useLocal = sharedPref.getBoolean(Prefs.USE_LOCAL_SPP, true);
-                if (useLocal) { // flag species for the 'Local' area
-                    select = "UPDATE NRCSSpp SET Local=(CASE WHEN Distribution "
-                            + "LIKE ? THEN 1 ELSE 0 END);";
-                    // e.g. "%USA (%OR%)%" for the state of Oregon
-                    String locCrit = sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "%");
-                    cl = new CursorLoader(getActivity(), baseUri,
-                            null, select, new String[] { locCrit }, null);
-                } else { // treat all species as 'Local"
-                    select = "UPDATE NRCSSpp SET Local=1;";
-                    cl = new CursorLoader(getActivity(), baseUri,
-                            null, select, null, null);
-                }
-                break;
-
-            case Loaders.UPDATE_LOCAL_NAME:
-                if (LDebug.ON) Log.d(LOG_TAG, "onCreateLoader, UPDATE_LOCAL_NAME");
-                baseUri = ContentProvider_VegNab.SQL_URI;
-                String locCrit = sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "%");
-                // e.g. "%USA (%OR%)%" for the state of Oregon
-                String[] parts = locCrit.split("%");
-                select = "SELECT LongName FROM PoliticalAdminAreas "
-                        + "WHERE ShortName = ?;";
-                cl = new CursorLoader(getActivity(), baseUri,
-                        null, select, new String[] { parts[1] }, null);
-                break;
+//            case Loaders.UPDATE_LOCAL_SPP:
+//                if (LDebug.ON) Log.d(LOG_TAG, "onCreateLoader, UPDATE_LOCAL_SPP");
+//                baseUri = ContentProvider_VegNab.SQL_URI;
+//                Boolean useLocal = sharedPref.getBoolean(Prefs.USE_LOCAL_SPP, true);
+//                if (useLocal) { // flag species for the 'Local' area
+//                    select = "UPDATE NRCSSpp SET Local=(CASE WHEN Distribution "
+//                            + "LIKE ? THEN 1 ELSE 0 END);";
+//                    // e.g. "%USA (%OR%)%" for the state of Oregon
+//                    String locCrit = sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "%");
+//                    cl = new CursorLoader(getActivity(), baseUri,
+//                            null, select, new String[] { locCrit }, null);
+//                } else { // treat all species as 'Local"
+//                    select = "UPDATE NRCSSpp SET Local=1;";
+//                    cl = new CursorLoader(getActivity(), baseUri,
+//                            null, select, null, null);
+//                }
+//                break;
+//
+//            case Loaders.UPDATE_LOCAL_NAME:
+//                if (LDebug.ON) Log.d(LOG_TAG, "onCreateLoader, UPDATE_LOCAL_NAME");
+//                baseUri = ContentProvider_VegNab.SQL_URI;
+//                String locCrit = sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "%");
+//                // e.g. "%USA (%OR%)%" for the state of Oregon
+//                String[] parts = locCrit.split("%");
+//                select = "SELECT LongName FROM PoliticalAdminAreas "
+//                        + "WHERE ShortName = ?;";
+//                cl = new CursorLoader(getActivity(), baseUri,
+//                        null, select, new String[] { parts[1] }, null);
+//                break;
         }
         return cl;
     }
@@ -652,21 +662,21 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             setupNamerSpinner(); // this can run multiple times, latest will be most correct
             break;
 
-        case Loaders.UPDATE_LOCAL_SPP:
-            // an Update query that returns no cursor, nothing to do
-            break;
-
-        case Loaders.UPDATE_LOCAL_NAME:
-            if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, UPDATE_LOCAL_NAME, records: " + c.getCount());
-            // should be just one record
-            if (c.moveToFirst()) {
-                String locName = c.getString(c.getColumnIndexOrThrow("LongName"));
-                // should be a name like 'Oregon'
-                prefEditor = sharedPref.edit();
-                prefEditor.putString(Prefs.LOCAL_SPECIES_LIST_DESCRIPTION, locName);
-                prefEditor.commit();
-            }
-            break;
+//        case Loaders.UPDATE_LOCAL_SPP:
+//            // an Update query that returns no cursor, nothing to do
+//            break;
+//
+//        case Loaders.UPDATE_LOCAL_NAME:
+//            if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, UPDATE_LOCAL_NAME, records: " + c.getCount());
+//            // should be just one record
+//            if (c.moveToFirst()) {
+//                String locName = c.getString(c.getColumnIndexOrThrow("LongName"));
+//                // should be a name like 'Oregon'
+//                prefEditor = sharedPref.edit();
+//                prefEditor.putString(Prefs.LOCAL_SPECIES_LIST_DESCRIPTION, locName);
+//                prefEditor.commit();
+//            }
+//            break;
         }
     }
 
@@ -1649,9 +1659,15 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                                 prefEditor.commit();
                                 updateLocal = true;
                             }
-                            if (updateLocal) {
-                                updateLocalSpecies();
-                                updateLocalName();
+                            if (updateLocal) { // update the database
+//                                updateLocalSpecies();
+//                                updateLocalName();
+                                mViewVisitLocation.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mSppLocChangeCallback.onSppLocalChanged();
+                                    }
+                                }, 50);
                             }
                         }
                     }
@@ -1666,15 +1682,16 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         queue.add(jsObjRequest);
     }
 
-    public void updateLocalSpecies() {
-        if (LDebug.ON) Log.d(LOG_TAG, "in updateLocalSpecies");
-        getLoaderManager().initLoader(Loaders.UPDATE_LOCAL_SPP, null, this);
-    }
-
-    public void updateLocalName() {
-        if (LDebug.ON) Log.d(LOG_TAG, "in updateLocalName");
-        getLoaderManager().initLoader(Loaders.UPDATE_LOCAL_NAME, null, this);
-    }
+//    public void updateLocalSpecies() {
+//        if (LDebug.ON) Log.d(LOG_TAG, "in updateLocalSpecies");
+//        getLoaderManager().initLoader(Loaders.UPDATE_LOCAL_SPP, null, this);
+//    }
+//
+//    public void updateLocalName() {
+//        if (LDebug.ON) Log.d(LOG_TAG, "in updateLocalName");
+//        getLoaderManager().initLoader(Loaders.UPDATE_LOCAL_NAME, null, this);
+//    }
+//
     // if Google Play Services not available, would Location Services be?
     // requestSingleUpdate
 

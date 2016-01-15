@@ -18,10 +18,8 @@ import com.vegnab.vegnab.database.VNContract.LDebug;
 
 public class SettingsDialog extends DialogFragment {
     private static final String LOG_TAG = SettingsDialog.class.getSimpleName();
-
     private CheckBox mCkSpeciesOnce, mCkUseLocal;
     private TextView mLocalRegionName;
-    private Boolean mOrigStateOfUseLocal; // to track change
     public interface OnUseLocalSppChange {
         // methods that must be implemented in the container Activity
         public void onSettingsDialogUseLocalChanged();
@@ -89,7 +87,7 @@ public class SettingsDialog extends DialogFragment {
         prefEditor.putBoolean(VNContract.Prefs.SPECIES_ONCE, mCkSpeciesOnce.isChecked());
         // test if 'UseLocal' has changed, and if so update the database
         if (!((mCkUseLocal.isChecked()) == (sharedPref.getBoolean(VNContract.Prefs.USE_LOCAL_SPP, true)))) {
-            // wait to call the update till Prefs have updated
+            // wait to call the update till Prefs have settled
             mCkUseLocal.postDelayed(new Runnable() {
                 @Override
                 public void run() {

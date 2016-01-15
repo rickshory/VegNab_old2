@@ -92,6 +92,7 @@ public class MainVNActivity extends ActionBarActivity
         NewVisitFragment.OnVisitClickListener,
         VisitHeaderFragment.OnButtonListener,
         VisitHeaderFragment.EditVisitDialogListener,
+        VisitHeaderFragment.OnSppLocationChange,
         VegSubplotFragment.OnButtonListener,
         EditNamerDialog.EditNamerDialogListener,
         ConfirmDelNamerDialog.EditNamerDialogListener,
@@ -1015,6 +1016,25 @@ public class MainVNActivity extends ActionBarActivity
         updateLocalSpecies();
     }
 
+    @Override
+    public void onSppLocalChanged() {
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        // track when user changes major location, e.g. state
+        String locCrit = sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "%");
+        // e.g. "%USA (%OR%)%" for the state of Oregon
+        Tracker changeSppLocalTracker = ((VNApplication) getApplicationContext())
+                .getTracker(VNApplication.TrackerName.APP_TRACKER);
+        changeSppLocalTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Spp Location Change Event")
+                .setAction("New major location, e.g. state")
+                .setLabel("Relevant species are for: " + locCrit)
+                .setValue(1)
+                .build());
+        if (LDebug.ON) Log.d(LOG_TAG, "User changed major location criteria to: " + locCrit);
+        updateLocalSpecies();
+        updateLocalName();
+    }
+
     public void updateLocalSpecies() {
         if (LDebug.ON) Log.d(LOG_TAG, "in updateLocalSpecies");
         getSupportLoaderManager().initLoader(VNContract.Loaders.UPDATE_LOCAL_SPP, null, this);
@@ -1601,10 +1621,11 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                 String locCrit = sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "%");
                 // e.g. "%USA (%OR%)%" for the state of Oregon
                 String[] parts = locCrit.split("%");
+                String locShortName = parts[1];
                 select = "SELECT LongName FROM PoliticalAdminAreas "
                         + "WHERE ShortName = ?;";
                 cl = new CursorLoader(this, baseUri,
-                        null, select, new String[] { parts[1] }, null);
+                        null, select, new String[] { locShortName }, null);
                 break;
         }
         return cl;
