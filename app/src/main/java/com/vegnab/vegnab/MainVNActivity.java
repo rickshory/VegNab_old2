@@ -1011,14 +1011,19 @@ public class MainVNActivity extends ActionBarActivity
                 .setLabel("Setting changed; before change was ")
                 .setValue(useLocal ? 1 : 0)
                 .build());
-        if (LDebug.ON) Log.d(LOG_TAG, "User changed 'Use Local Spp' setting. Before this change it was: " + (useLocal ? "true" : "false"));
-        
-
-        /*
-
-                */
+        if (LDebug.ON) Log.d(LOG_TAG, "User changed 'Use Local Spp' setting to: " + (useLocal ? "true" : "false"));
+        updateLocalSpecies();
     }
 
+    public void updateLocalSpecies() {
+        if (LDebug.ON) Log.d(LOG_TAG, "in updateLocalSpecies");
+        getSupportLoaderManager().initLoader(VNContract.Loaders.UPDATE_LOCAL_SPP, null, this);
+    }
+
+    public void updateLocalName() {
+        if (LDebug.ON) Log.d(LOG_TAG, "in updateLocalName");
+        getSupportLoaderManager().initLoader(VNContract.Loaders.UPDATE_LOCAL_NAME, null, this);
+    }
 
     // Listener that's called when we finish querying the items and subscriptions we own
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
@@ -1553,6 +1558,7 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
         CursorLoader cl = null;
         Uri baseUri;
         String select = null; // default for all-columns, unless re-assigned or overridden by raw SQL
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         switch (id) {
             case VNContract.Loaders.EXISTING_PH_CODES:
                baseUri = ContentProvider_VegNab.SQL_URI;
@@ -1570,6 +1576,36 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                 cl = new CursorLoader(this, baseUri, null, select,
                         null, null);
                 break;
+
+            case VNContract.Loaders.UPDATE_LOCAL_SPP:
+                if (LDebug.ON) Log.d(LOG_TAG, "onCreateLoader, UPDATE_LOCAL_SPP");
+                baseUri = ContentProvider_VegNab.SQL_URI;
+                Boolean useLocal = sharedPref.getBoolean(Prefs.USE_LOCAL_SPP, true);
+                if (useLocal) { // flag species for the 'Local' area
+                    select = "UPDATE NRCSSpp SET Local=(CASE WHEN Distribution "
+                            + "LIKE ? THEN 1 ELSE 0 END);";
+                    // e.g. "%USA (%OR%)%" for the state of Oregon
+                    String locCrit = sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "%");
+                    cl = new CursorLoader(this, baseUri,
+                            null, select, new String[] { locCrit }, null);
+                } else { // treat all species as 'Local"
+                    select = "UPDATE NRCSSpp SET Local=1;";
+                    cl = new CursorLoader(this, baseUri,
+                            null, select, null, null);
+                }
+                break;
+
+            case VNContract.Loaders.UPDATE_LOCAL_NAME:
+                if (LDebug.ON) Log.d(LOG_TAG, "onCreateLoader, UPDATE_LOCAL_NAME");
+                baseUri = ContentProvider_VegNab.SQL_URI;
+                String locCrit = sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "%");
+                // e.g. "%USA (%OR%)%" for the state of Oregon
+                String[] parts = locCrit.split("%");
+                select = "SELECT LongName FROM PoliticalAdminAreas "
+                        + "WHERE ShortName = ?;";
+                cl = new CursorLoader(this, baseUri,
+                        null, select, new String[] { parts[1] }, null);
+                break;
         }
         return cl;
     }
@@ -1577,6 +1613,8 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor finishedCursor) {
         mRowCt = finishedCursor.getCount();
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefEditor;
         // there will be various loaders, switch them out here
         switch (loader.getId()) {
             case VNContract.Loaders.EXISTING_PH_CODES:
@@ -1598,11 +1636,27 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                         hasSpp = true;
                     }
                 }
-                SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-                SharedPreferences.Editor prefEditor;
                 prefEditor = sharedPref.edit();
                 prefEditor.putBoolean(Prefs.SPECIES_LIST_DOWNLOADED, hasSpp);
                 prefEditor.commit();
+                break;
+
+            case VNContract.Loaders.UPDATE_LOCAL_SPP:
+                // an Update query that returns no cursor, nothing to do
+                break;
+
+            case VNContract.Loaders.UPDATE_LOCAL_NAME:
+                if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, UPDATE_LOCAL_NAME, records: "
+                        + finishedCursor.getCount());
+                // should be just one record
+                if (finishedCursor.moveToFirst()) {
+                    String locName = finishedCursor.getString(
+                            finishedCursor.getColumnIndexOrThrow("LongName"));
+                    // should be a name like 'Oregon'
+                    prefEditor = sharedPref.edit();
+                    prefEditor.putString(Prefs.LOCAL_SPECIES_LIST_DESCRIPTION, locName);
+                    prefEditor.commit();
+                }
                 break;
         }
     }
