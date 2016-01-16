@@ -44,9 +44,11 @@
         android:text="@string/local_region_none"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/lbl_local_name"
-        android:layout_below="@id/lbl_local_name"
-        />
+        android:layout_alignTop="@+id/lbl_local_name"
+        android:layout_toRightOf="@+id/lbl_local_name"
+        android:layout_toEndOf="@+id/lbl_local_name"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"/>
 
 </RelativeLayout>
 </ScrollView>
