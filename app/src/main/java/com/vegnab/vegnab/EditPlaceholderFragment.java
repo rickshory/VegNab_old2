@@ -16,7 +16,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v7.internal.widget.AdapterViewCompat.AdapterContextMenuInfo;
+
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -1515,7 +1515,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     // This is executed when the user selects an option
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
     if (info == null) {
        if (LDebug.ON) Log.d(LOG_TAG, "onContextItemSelected info is null");
     } else {
