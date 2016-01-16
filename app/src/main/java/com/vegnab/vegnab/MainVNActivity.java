@@ -1037,12 +1037,12 @@ public class MainVNActivity extends ActionBarActivity
 
     public void updateLocalSpecies() {
         if (LDebug.ON) Log.d(LOG_TAG, "in updateLocalSpecies");
-        getSupportLoaderManager().initLoader(VNContract.Loaders.UPDATE_LOCAL_SPP, null, this);
+        getSupportLoaderManager().restartLoader(VNContract.Loaders.UPDATE_LOCAL_SPP, null, this);
     }
 
     public void updateLocalName() {
         if (LDebug.ON) Log.d(LOG_TAG, "in updateLocalName");
-        getSupportLoaderManager().initLoader(VNContract.Loaders.UPDATE_LOCAL_NAME, null, this);
+        getSupportLoaderManager().restartLoader(VNContract.Loaders.UPDATE_LOCAL_NAME, null, this);
     }
 
     // Listener that's called when we finish querying the items and subscriptions we own
