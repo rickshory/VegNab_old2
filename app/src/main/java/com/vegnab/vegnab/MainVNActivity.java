@@ -1621,7 +1621,16 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                 String locCrit = sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "%");
                 // e.g. "%USA (%OR%)%" for the state of Oregon
                 String[] parts = locCrit.split("%");
-                String locShortName = parts[1];
+                // 0 is empty string
+                // 1 is 'USA ('
+                // 2 is 'OR'
+                // 3 is empty string
+                String locShortName;
+                try {
+                    locShortName = parts[2];
+                } catch (Exception e) {
+                    locShortName = "_";
+                }
                 select = "SELECT LongName FROM PoliticalAdminAreas "
                         + "WHERE ShortName = ?;";
                 cl = new CursorLoader(this, baseUri,
