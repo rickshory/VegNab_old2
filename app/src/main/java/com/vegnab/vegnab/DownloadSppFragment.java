@@ -30,7 +30,10 @@ import com.vegnab.vegnab.database.VNContract.Prefs;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
+// This fragment is no longer used. DB now comes with complete US/Canada spp list. App
+// auto-detects region by location, and gives local spp higher relevance.
+// This fragment kept for possible use as template for future feature to update
+// spp records with relevant vernacular names, etc.
 public class DownloadSppFragment extends Fragment
         implements OnClickListener {
     private boolean downloadInProgress;

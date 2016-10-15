@@ -39,7 +39,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     /**
      * Constructor
      * Takes and keeps a reference of the passed context in order to 
-     * access to the application assets and resources.
+     * access the application assets and resources.
      * @param context
      */
     public DataBaseHelper(Context context) {
@@ -49,15 +49,15 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     }	
  
   /**
-     * Creates a empty database on the system and rewrites it with your own database.
+     * Creates a empty database on the system and overwrites it with your own database.
      * */
     public void createDataBase() throws IOException{
         boolean dbExist = checkDataBase();
         if(dbExist){
             //do nothing - database already exist
         }else{
-            //By calling this method an empty database will be created into the default system path
-               //of your application so we are gonna be able to overwrite that database with our database.
+            //An empty database will be created in the default system path
+               //of the application. Then that DB will be overwritten.
             this.getReadableDatabase();
             try {
                 copyDataBase();
@@ -86,8 +86,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     }
  
     /**
-     * Copies your database from your local assets-folder to the just created empty database in the
-     * system folder, from where it can be accessed and handled.
+     * Copies the database from the local assets-folder to the just created empty database in
+     * the system folder, from where it can be accessed and handled.
      * This is done by transferring bytestream.
      * */
     private void copyDataBase() throws IOException{
@@ -135,6 +135,11 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public String fillSpeciesTable(ParcelFileDescriptor fileDescr) {
+        // This fn is no longer used. DB now comes with complete US/Canada spp list. App
+        // auto-detects region by location, and gives local spp higher relevance.
+        // This fn kept as template for future feature to update some spp records with
+        // relevant vernacular names, etc.
+        //  Old code below:
         // expects the file to be text
         // First line is geographical area of the species list, such as a state like "Oregon"
         // appropriate for forming a message like, "species list for Oregon"
