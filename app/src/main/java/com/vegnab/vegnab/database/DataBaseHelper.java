@@ -43,14 +43,11 @@ public class DataBaseHelper extends SQLiteOpenHelper{
      * @param context
      */
     public DataBaseHelper(Context context) {
- 
         super(context, DB_NAME, null, 1);
         this.myContext = context;
     }	
  
-  /**
-     * Creates a empty database on the system and overwrites it with your own database.
-     * */
+  // Creates an empty database on the system and overwrites it with your own database.
     public void createDataBase() throws IOException{
         boolean dbExist = checkDataBase();
         if(dbExist){
@@ -74,7 +71,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     private boolean checkDataBase(){
         SQLiteDatabase checkDB = null;
         try {
-            String myPath = DB_PATH + DB_NAME;
+//            String myPath = DB_PATH + DB_NAME;
+            String myPath = myContext.getDatabasePath(DB_NAME) + DB_NAME;
             checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
         } catch (SQLiteException e){
             //database does't exist yet.
@@ -82,7 +80,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         if(checkDB != null){
             checkDB.close();
         }
-        return checkDB != null ? true : false;
+        return checkDB != null;
     }
  
     /**
@@ -124,14 +122,42 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     }
  
     @Override
-    public void onCreate(SQLiteDatabase db) {}
+    public void onCreate(SQLiteDatabase db) {
+        // Copying a database from the application package assets to internal storage inside this
+        // method will result in a corrupted database. The database in internal storage will not
+        // have the same creation timestamp as the one in the cache causing the database in
+        // internal storage to be marked as corrupted.
+        // When the database has been copied, then this method is called the first time a reference
+        // to the database is retrieved after the database is copied since the database last cached
+        // by SQLiteOpenHelper is different than the database in internal storage.
+
+    }
  
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
- 
-        // Add your public helper methods to access and get content from the database.
-       // You could return cursors by doing "return myDataBase.query(....)" so it'd be easy
-       // for you to create adapters for your views.
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // The app should iterate over the update statements and run any that are needed. No matter
+        // what previous version was and regardless of what more recent version they upgrade to, the
+        // app will run the proper statements to take the app from the older schema to the properly
+        // upgraded one.
+        switch(oldVersion) {
+            case 1:
+                //upgrade logic from version 1 to 2
+            case 2:
+                //upgrade logic from version 2 to 3
+            case 3:
+                //upgrade logic from version 3 to 4
+                break;
+            default:
+                throw new IllegalStateException(
+                        "onUpgrade() with unknown oldVersion " + oldVersion);
+        }
+    }
+    // Note the missing break statement in cases 1 and 2. This causes incremental upgrades.
+    // If the old version is 2 and new version is 4, then the logic will upgrade the
+    // database from 2 to 3 and then to 4.
+    // If old version is 3 and new version is 4, it will only run the upgrade logic for 3 to 4
+
+
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public String fillSpeciesTable(ParcelFileDescriptor fileDescr) {

@@ -171,6 +171,10 @@ public final class VNContract {
         public static final int PLACEHOLDER_MAX_LENGTH = 10; // maximum allowed length for a Placeholder code
     }
 
+    public static abstract class VNPermissions {
+        public static final int REQUEST_ACCESS_FINE_LOCATION = 10; //
+    }
+
     public static abstract class LDebug {
         public static final boolean ON = true; // true or false to conditionally compile Log statements
     }

@@ -36,6 +36,7 @@ import com.vegnab.vegnab.database.VNContract.Validation;
 import com.vegnab.vegnab.database.VNContract.LDebug;
 import com.vegnab.vegnab.database.VNContract.Loaders;
 import com.vegnab.vegnab.database.VNContract.Prefs;
+import com.vegnab.vegnab.database.VNContract.VNPermissions;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -397,18 +398,23 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         // assure the container activity has implemented the callback interface
-        try {
-            mButtonCallback = (OnButtonListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException (activity.toString() + " must implement OnButtonListener");
-        }
-        try {
-            mSppLocChangeCallback = (OnSppLocationChange) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException (activity.toString() + " must implement OnSppLocationChange");
+        Activity a;
+
+        if (context instanceof Activity){
+            a=(Activity) context;
+            try {
+                mButtonCallback = (OnButtonListener) a;
+            } catch (ClassCastException e) {
+                throw new ClassCastException (a.toString() + " must implement OnButtonListener");
+            }
+            try {
+                mSppLocChangeCallback = (OnSppLocationChange) a;
+            } catch (ClassCastException e) {
+                throw new ClassCastException (a.toString() + " must implement OnSppLocationChange");
+            }
         }
     }
 
