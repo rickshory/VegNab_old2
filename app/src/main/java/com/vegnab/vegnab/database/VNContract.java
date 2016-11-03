@@ -173,6 +173,8 @@ public final class VNContract {
 
     public static abstract class VNPermissions {
         public static final int REQUEST_ACCESS_FINE_LOCATION = 10; //
+
+        public static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000; //
     }
 
     public static abstract class LDebug {

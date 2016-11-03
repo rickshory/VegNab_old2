@@ -21,6 +21,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -1479,16 +1480,19 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             }
         }
     }
-    
-    private boolean servicesAvailable() {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
 
-        if (ConnectionResult.SUCCESS == resultCode) {
-            return true;
-        } else {
-            GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(), 0).show();
+    private boolean servicesAvailable() {
+        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+        int result = googleAPI.isGooglePlayServicesAvailable(getActivity());
+        if(result != ConnectionResult.SUCCESS) {
+            if(googleAPI.isUserResolvableError(result)) {
+                googleAPI.getErrorDialog(getActivity(), result,
+                        VNPermissions.PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            }
+
             return false;
         }
+        return true;
     }
 
     @Override
@@ -1647,9 +1651,6 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     // Checks if external storage is available for read and write
     public boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
+        return Environment.MEDIA_MOUNTED.equals(state);
     }
 }
