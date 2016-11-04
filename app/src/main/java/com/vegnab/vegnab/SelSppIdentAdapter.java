@@ -20,9 +20,9 @@ public class SelSppIdentAdapter extends ResourceCursorAdapter {
     public void bindView(View v, Context ctx, Cursor c) {
 // example of formatting by position
 //		if(c.getPosition()%2==1) {
-//			view.setBackgroundColor(ctx.getResources().getColor(R.color.background_odd));
+//			view.setBackgroundColor(ContextCompat.getColor(ctx, R.color.background_odd));
 //		} else {
-//			view.setBackgroundColor(ctx.getResources().getColor(R.color.background_even));
+//			view.setBackgroundColor(ContextCompat.getColor(ctx, R.color.background_even));
 //		}
         TextView sppText = (TextView) v.findViewById(R.id.spp_descr_text);
         sppText.setText(c.getString(c.getColumnIndexOrThrow("MatchTxt")));

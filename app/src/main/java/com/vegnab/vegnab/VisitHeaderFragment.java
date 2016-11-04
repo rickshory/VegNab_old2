@@ -1313,7 +1313,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         headerContextTracker.send(new HitBuilders.EventBuilder()
                 .setCategory("Visit Header Event")
                 .setAction("Context Menu")
-                .setLabel("Permission")
+                .setLabel("Location Permission dialog")
                 .setValue(1)
                 .build());
         // enter location manually
