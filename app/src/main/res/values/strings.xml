@@ -149,6 +149,7 @@
     <string name="vis_hdr_ctxmenu_loc_reacquire">Re-acquire</string>
     <string name="vis_hdr_ctxmenu_loc_accept">Accept accuracy</string>
     <string name="vis_hdr_ctxmenu_loc_manual">Enter manually</string>
+    <string name="vis_hdr_ctxmenu_loc_permission">Permission</string>
     <string name="vis_hdr_ctxmenu_loc_details">Details</string>
     <string name="vis_hdr_ctxmenu_loc_help">Help</string>
     

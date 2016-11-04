@@ -1308,6 +1308,18 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         // enter location manually
         notYetDlg.show(getFragmentManager(), null);
         return true;
+    case R.id.vis_hdr_loc_permission:
+        if (LDebug.ON) Log.d(LOG_TAG, "'Permission' selected");
+        headerContextTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Visit Header Event")
+                .setAction("Context Menu")
+                .setLabel("Permission")
+                .setValue(1)
+                .build());
+        // enter location manually
+        notYetDlg.show(getFragmentManager(), null);
+        return true;
+
     case R.id.vis_hdr_loc_details:
        if (LDebug.ON) Log.d(LOG_TAG, "'Details' selected");
         headerContextTracker.send(new HitBuilders.EventBuilder()

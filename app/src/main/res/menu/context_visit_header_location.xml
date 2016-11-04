@@ -9,6 +9,8 @@
         android:title="@string/vis_hdr_ctxmenu_loc_accept" />
     <item android:id="@+id/vis_hdr_loc_manual"
         android:title="@string/vis_hdr_ctxmenu_loc_manual" />
+    <item android:id="@+id/vis_hdr_loc_permission"
+          android:title="@string/vis_hdr_ctxmenu_loc_permission" />
     <item android:id="@+id/vis_hdr_loc_details"
         android:title="@string/vis_hdr_ctxmenu_loc_details" />
     <item android:id="@+id/vis_hdr_loc_help"
