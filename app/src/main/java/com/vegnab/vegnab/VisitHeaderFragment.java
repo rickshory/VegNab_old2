@@ -1120,6 +1120,35 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             break;
         case R.id.txt_visit_location:
             inflater.inflate(R.menu.context_visit_header_location, menu);
+            // adjust Location context menu based on following example from other fragment
+
+            /*
+            available IDs:
+id/vis_hdr_loc_restore_prev
+id/vis_hdr_loc_reacquire
+id/vis_hdr_loc_accept
+id/vis_hdr_loc_manual
+id/vis_hdr_loc_permission
+id/vis_hdr_loc_details
+id/vis_hdr_loc_help
+"Restore previous" should only appear if there is a previous
+"Re-acquire" should disappear if not acquired yet, or acquisition incomplete
+"Accept accuracy" should only appear while acquisition is incomplete
+"Enter manually" should only appear if not able to acquire anything at all, of if permission is turned off
+"Permission" should only appear if permission is off; pops up the dialog to ask for location permission, and if OK by user starts to automatically acquire.
+"Details" gives timestamp of location, as well as how acquired; GPS or manually. If incomplete or none, say that.
+"Help"
+
+            if (mStSearch.trim().length() == 0) {
+                // can't add placeholder if no text yet to use
+                menu.removeItem(R.id.sel_spp_search_add_placeholder);
+            }
+            if (mPlaceholderRequestListener
+                    .onRequestGetCountOfExistingPlaceholders() == 0) {
+                // if no placeholders, don't show option to pick from them
+                menu.removeItem(R.id.sel_spp_search_pick_placeholder);
+            }
+            */
             break;
         case R.id.txt_visit_azimuth:
             inflater.inflate(R.menu.context_visit_header_azimuth, menu);
