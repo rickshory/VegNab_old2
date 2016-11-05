@@ -117,6 +117,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     private float mAccuracy, mAccuracyTargetForVisitLoc;
     private String mLocTime;
     private Location mCurLocation, mPrevLocation;
+    private boolean mHasPrevLoc = false, mHasLocPermission = true;
     // Request code to use when launching the resolution activity
     private static final int REQUEST_RESOLVE_ERROR = 1001;
     // Unique tag for the error dialog fragment
@@ -157,6 +158,8 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     final static String ARG_SUBPLOT = "subplot"; // dummy value, eventually get rid of this one
     final static String ARG_VISIT_ID = "visitId";
     final static String ARG_LOC_GOOD_FLAG = "locGood";
+    final static String ARG_LOC_PREV_FLAG = "locPrevExists";
+    final static String ARG_LOC_PERMISSION_FLAG = "hasLocPermission";
     final static String ARG_CUR_LOCATION = "curLocation";
     final static String ARG_PREV_LOCATION = "prevLocation";
     final static String ARG_LOC_LATITUDE = "locLatitude";
@@ -262,6 +265,8 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             mVisitId = savedInstanceState.getLong(ARG_VISIT_ID, 0);
            if (LDebug.ON) Log.d(LOG_TAG, "In onCreateView, retrieved mVisitId: " + mVisitId);
             mLocIsGood = savedInstanceState.getBoolean(ARG_LOC_GOOD_FLAG, false);
+            mHasPrevLoc = savedInstanceState.getBoolean(ARG_LOC_PREV_FLAG, false);
+            mHasLocPermission = savedInstanceState.getBoolean(ARG_LOC_PERMISSION_FLAG, true);
             mCurLocation = savedInstanceState.getParcelable(ARG_CUR_LOCATION);
             mPrevLocation = savedInstanceState.getParcelable(ARG_PREV_LOCATION);
             mCtPlaceholders = savedInstanceState.getLong(ARG_PH_COUNT);
@@ -431,6 +436,8 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         outState.putInt(ARG_SUBPLOT, mCurrentSubplot);
         outState.putLong(ARG_VISIT_ID, mVisitId);
         outState.putBoolean(ARG_LOC_GOOD_FLAG, mLocIsGood);
+        outState.putBoolean(ARG_LOC_PREV_FLAG, mHasPrevLoc);
+        outState.putBoolean(ARG_LOC_PERMISSION_FLAG, mHasLocPermission);
         outState.putParcelable(ARG_CUR_LOCATION, mCurLocation);
         outState.putParcelable(ARG_PREV_LOCATION, mPrevLocation);
         outState.putLong(ARG_PH_COUNT, mCtPlaceholders);
@@ -1120,34 +1127,22 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             break;
         case R.id.txt_visit_location:
             inflater.inflate(R.menu.context_visit_header_location, menu);
-            // adjust Location context menu based on following example from other fragment
-
+            // can't restore previous if no previous
+            if (!mHasPrevLoc) menu.removeItem(R.id.vis_hdr_loc_restore_prev);
+            // re-aquire only if already acquired
+            if (!mLocIsGood) menu.removeItem(R.id.vis_hdr_loc_reacquire);
+            // opt to accept accuracy only if in the process of acquiring
+            if (mLocIsGood) menu.removeItem(R.id.vis_hdr_loc_accept);
+            // need to request permission only if don't have permission
+            if (mHasLocPermission) menu.removeItem(R.id.vis_hdr_loc_permission);
             /*
-            available IDs:
-id/vis_hdr_loc_restore_prev
-id/vis_hdr_loc_reacquire
-id/vis_hdr_loc_accept
+            other available IDs:
 id/vis_hdr_loc_manual
-id/vis_hdr_loc_permission
 id/vis_hdr_loc_details
 id/vis_hdr_loc_help
-"Restore previous" should only appear if there is a previous
-"Re-acquire" should disappear if not acquired yet, or acquisition incomplete
-"Accept accuracy" should only appear while acquisition is incomplete
 "Enter manually" should only appear if not able to acquire anything at all, of if permission is turned off
-"Permission" should only appear if permission is off; pops up the dialog to ask for location permission, and if OK by user starts to automatically acquire.
 "Details" gives timestamp of location, as well as how acquired; GPS or manually. If incomplete or none, say that.
 "Help"
-
-            if (mStSearch.trim().length() == 0) {
-                // can't add placeholder if no text yet to use
-                menu.removeItem(R.id.sel_spp_search_add_placeholder);
-            }
-            if (mPlaceholderRequestListener
-                    .onRequestGetCountOfExistingPlaceholders() == 0) {
-                // if no placeholders, don't show option to pick from them
-                menu.removeItem(R.id.sel_spp_search_pick_placeholder);
-            }
             */
             break;
         case R.id.txt_visit_azimuth:
@@ -1499,6 +1494,7 @@ id/vis_hdr_loc_help
                 LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
                         mLocationRequest, this);
             } else { // don't yet have this permission
+                mHasLocPermission = false;
                 // decide whether to tap the user
                 if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                         Manifest.permission.ACCESS_FINE_LOCATION)) {
