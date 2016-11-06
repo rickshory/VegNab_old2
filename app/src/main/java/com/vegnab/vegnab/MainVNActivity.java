@@ -2093,7 +2093,7 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                     DriveId driveId = result.getDriveFile().getDriveId();
                     showMessage("Created file: " + driveId);
                     if (LDebug.ON) Log.d(LOG_TAG, "XXX Created file: " + driveId);
-                    DriveFile file = Drive.DriveApi.getFile(getGoogleApiClient(), driveId);
+                    DriveFile file = driveId.asDriveFile();
                     file.addChangeSubscription(getGoogleApiClient());
 
                     if (LDebug.ON) Log.d(LOG_TAG, "XXX resource ID file: "
