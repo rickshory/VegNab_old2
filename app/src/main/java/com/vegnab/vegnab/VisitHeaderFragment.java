@@ -1491,6 +1491,7 @@ id/vis_hdr_loc_help
             if (ContextCompat.checkSelfPermission(getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION) ==
                     PackageManager.PERMISSION_GRANTED) {
+                mHasLocPermission = true;
                 LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
                         mLocationRequest, this);
             } else { // don't yet have this permission
