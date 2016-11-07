@@ -55,6 +55,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
@@ -1340,8 +1341,9 @@ id/vis_hdr_loc_help
                 .setLabel("Location Permission dialog")
                 .setValue(1)
                 .build());
-        // enter location manually
-        notYetDlg.show(getFragmentManager(), null);
+        // explain to user that app needs location permission
+        new askUserForLocPermission().execute();
+//        notYetDlg.show(getFragmentManager(), null);
         return true;
 
     case R.id.vis_hdr_loc_details:
@@ -1502,7 +1504,8 @@ id/vis_hdr_loc_help
                     // Show an explanation to the user *asynchronously* -- don't block
                     // this thread waiting for the user's response! After the user
                     // sees the explanation, try again to request the permission.
-                    // send and explanation
+                    new askUserForLocPermission().execute();
+                    //
                 } else { // send off the request for location permission
                     ActivityCompat.requestPermissions(getActivity(),
                             new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -1510,6 +1513,24 @@ id/vis_hdr_loc_help
                     // response comes through onRequestPermissionsResult callback
                 }
             }
+        }
+    }
+
+    private class askUserForLocPermission extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            ConfigurableMsgDialog locReqDlg = ConfigurableMsgDialog.newInstance(
+                    getActivity().getResources().getString(R.string.vis_hdr_loc_req_title),
+                    getActivity().getResources().getString(R.string.vis_hdr_loc_req_msg));
+            locReqDlg.show(getFragmentManager(), "frg_loc_req");
+            return null;
+        }
+
+        protected void onPostExecute(Void result) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    VNPermissions.REQUEST_ACCESS_FINE_LOCATION);
+            // response comes through onRequestPermissionsResult callback
         }
     }
 
@@ -1521,12 +1542,12 @@ id/vis_hdr_loc_help
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+                    mHasLocPermission = true;
                     // permission was granted, yay! Do the
                     // location-related task you need to do.
 
                 } else {
-
+                    mHasLocPermission = false;
                     // permission denied, boo! Disable the
                     // functionality that depends on location permission.
                 }
