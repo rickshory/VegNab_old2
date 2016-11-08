@@ -1341,7 +1341,7 @@ id/vis_hdr_loc_help
                 .setLabel("Location Permission dialog")
                 .setValue(1)
                 .build());
-        // explain to user that app needs location permission
+        // explain to user that app needs location permission, and run the dialog
         new askUserForLocPermission().execute();
 //        notYetDlg.show(getFragmentManager(), null);
         return true;
@@ -1355,7 +1355,35 @@ id/vis_hdr_loc_help
                 .setValue(1)
                 .build());
         // show location details
-        notYetDlg.show(getFragmentManager(), null);
+        helpTitle = c.getResources().getString(R.string.vis_hdr_loc_detail_title);
+        if (!mLocIsGood) {
+            helpMessage = c.getResources().getString(R.string.vis_hdr_loc_detail_notyet);
+        } else {
+            long n = mCurLocation.getTime();
+            String tm = mTimeFormat.format(new Date(n));
+            String locSrc;
+            switch (mLocationSource) {
+                case INTERNAL_GPS:
+                    locSrc = "internal GPS";
+                    break;
+                case NETWORK:
+                    locSrc = "network";
+                    break;
+                case MANUAL_ENTRY:
+                    locSrc = "manual entry";
+                    break;
+                default:
+                    locSrc = "unknown source";
+                    break;
+            }
+            helpMessage = "" + mCurLocation.getLatitude() + ", " + mCurLocation.getLongitude()
+                    + "\naccuracy " + mCurLocation.getAccuracy() + "m"
+                    + "\nacquired " + tm + ""
+                    + "\nfrom " + locSrc;
+        }
+        flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+        flexHlpDlg.show(getFragmentManager(), "frg_help_detail");
+//        notYetDlg.show(getFragmentManager(), null);
         return true;
     case R.id.vis_hdr_loc_help:
        if (LDebug.ON) Log.d(LOG_TAG, "'Location Help' selected");

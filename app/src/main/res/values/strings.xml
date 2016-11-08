@@ -191,6 +191,10 @@
     <string name="vis_hdr_loc_req_title">Permission required</string>
     <string name="vis_hdr_loc_req_msg">Grant VegNab permission to retrieve locations? Otherwise, you will have to enter locations manually.</string>
 
+    <string name="vis_hdr_loc_detail_title">Location details</string>
+    <string name="vis_hdr_loc_detail_notyet">Location not acquired yet.</string>
+
+
     <string name="sel_spp_search_hint">Type here to search species</string>
     <string name="sel_spp_search_hint_found_code">Search found species by code</string>
     <string name="sel_spp_search_hint_found_text">Search found species by full text</string>
