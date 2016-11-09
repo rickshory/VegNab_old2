@@ -109,15 +109,15 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     private static final int INTERNAL_GPS = 1;
     private static final int NETWORK = 2;
     private static final int MANUAL_ENTRY = 3;
-    private static final int USER_OKD_ACCURACY = 4;
     private int mLocationSource = INTERNAL_GPS; // default till changed
     protected GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private boolean mLocIsGood = false, mLocIsSaved = false; // default until retrieved or established true
+    private boolean mUserOKdAccuracy = false;
     private double mLatitude, mLongitude;
     private float mAccuracy, mAccuracyTargetForVisitLoc;
-    private String mLocTime;
-    private Location mCurLocation, mPrevLocation;
+    private String mLocTime, mLocProvider;
+    private Location mCurLocation, mLastLocation, mPrevLocation;
     private boolean mHasPrevLoc = false, mHasLocPermission = true;
     // Request code to use when launching the resolution activity
     private static final int REQUEST_RESOLVE_ERROR = 1001;
@@ -167,6 +167,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     final static String ARG_LOC_LONGITUDE = "locLongitude";
     final static String ARG_LOC_ACCURACY = "locAccuracy";
     final static String ARG_LOC_TIME = "locTimeStamp";
+    final static String ARG_LOC_PROVIDER = "locProvider";
     final static String ARG_PH_COUNT = "phCount";
 
     int mCurrentSubplot = -1;
@@ -276,6 +277,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 mLongitude = savedInstanceState.getDouble(ARG_LOC_LONGITUDE);
                 mAccuracy = savedInstanceState.getFloat(ARG_LOC_ACCURACY);
                 mLocTime = savedInstanceState.getString(ARG_LOC_TIME);
+                mLocProvider = savedInstanceState.getString(ARG_LOC_PROVIDER);
             }
         } else {
            if (LDebug.ON) Log.d(LOG_TAG, "In onCreateView, savedInstanceState == null, mVisitId: " + mVisitId);
@@ -447,6 +449,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             outState.putDouble(ARG_LOC_LONGITUDE, mLongitude);
             outState.putFloat(ARG_LOC_ACCURACY, mAccuracy);
             outState.putString(ARG_LOC_TIME, mLocTime);
+            outState.putString(ARG_LOC_PROVIDER, mLocProvider);
         }
     }
 
@@ -1281,7 +1284,7 @@ id/vis_hdr_loc_help
                     .build());
 
             helpTitle = c.getResources().getString(R.string.vis_hdr_loc_good_ok_title);
-            if (mLocationSource == USER_OKD_ACCURACY) {
+            if (mUserOKdAccuracy) {
                 helpMessage = c.getResources().getString(R.string.vis_hdr_loc_good_prev_ok);
             } else {
                 helpMessage = c.getResources().getString(R.string.vis_hdr_loc_good_ok_text_pre)
@@ -1313,7 +1316,7 @@ id/vis_hdr_loc_help
                 .setLabel("Accept Location Accuracy, accepted")
                 .setValue(1)
                 .build());
-        mLocationSource = USER_OKD_ACCURACY;
+        mUserOKdAccuracy = true;
         finalizeLocation(); // depends on mCurLocation, tested above
         helpTitle = c.getResources().getString(R.string.vis_hdr_loc_good_ack_title);
         helpMessage = c.getResources().getString(R.string.vis_hdr_loc_good_ack_text_pre)
@@ -1347,8 +1350,8 @@ id/vis_hdr_loc_help
         return true;
 
     case R.id.vis_hdr_loc_details:
-       if (LDebug.ON) Log.d(LOG_TAG, "'Details' selected");
-        headerContextTracker.send(new HitBuilders.EventBuilder()
+        if (LDebug.ON) Log.d(LOG_TAG, "'Details' selected");
+            headerContextTracker.send(new HitBuilders.EventBuilder()
                 .setCategory("Visit Header Event")
                 .setAction("Context Menu")
                 .setLabel("Show Location Details")
@@ -1359,27 +1362,10 @@ id/vis_hdr_loc_help
         if (!mLocIsGood) {
             helpMessage = c.getResources().getString(R.string.vis_hdr_loc_detail_notyet);
         } else {
-            long n = mCurLocation.getTime();
-            String tm = mTimeFormat.format(new Date(n));
-            String locSrc;
-            switch (mLocationSource) {
-                case INTERNAL_GPS:
-                    locSrc = "internal GPS";
-                    break;
-                case NETWORK:
-                    locSrc = "network";
-                    break;
-                case MANUAL_ENTRY:
-                    locSrc = "manual entry";
-                    break;
-                default:
-                    locSrc = "unknown source";
-                    break;
-            }
-            helpMessage = "" + mCurLocation.getLatitude() + ", " + mCurLocation.getLongitude()
-                    + "\naccuracy " + mCurLocation.getAccuracy() + "m"
-                    + "\nacquired " + tm + ""
-                    + "\nfrom " + locSrc;
+            helpMessage = "" + mLatitude + ", " + mLongitude
+                    + "\naccuracy " + mAccuracy + "m"
+                    + "\nacquired " + mLocTime + ""
+                    + "\nfrom " + mLocProvider;
         }
         flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
         flexHlpDlg.show(getFragmentManager(), "frg_help_detail");
@@ -1522,6 +1508,19 @@ id/vis_hdr_loc_help
                     Manifest.permission.ACCESS_FINE_LOCATION) ==
                     PackageManager.PERMISSION_GRANTED) {
                 mHasLocPermission = true;
+                // in case it turns out that no fix is possible, try to get some sort of
+                // previous location, no matter how poor
+                if (mHasPrevLoc) { // skip this if we already have a previous location stored
+                    // mPrevLocation holds the last good location, if requested to re-acquire, but
+                    // then re-acquire fails
+                } else {
+                    mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                            mGoogleApiClient);
+                    if (mLastLocation != null) {
+                        mHasPrevLoc = true;
+                        mPrevLocation.set(mLastLocation);
+                    }
+                }
                 LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
                         mLocationRequest, this);
             } else { // don't yet have this permission
@@ -1643,6 +1642,7 @@ id/vis_hdr_loc_help
             mLocTime = mTimeFormat.format(new Date(n));
             mLatitude = loc.getLatitude();
             mLongitude = loc.getLongitude();
+            mLocProvider = loc.getProvider();
             s = "" + mLatitude + ", " + mLongitude
                 + "\naccuracy " + mAccuracy + "m"
                 + "\ntarget accuracy " + mAccuracyTargetForVisitLoc + "m"
@@ -1660,6 +1660,7 @@ id/vis_hdr_loc_help
         mLatitude = mCurLocation.getLatitude();
         mLongitude = mCurLocation.getLongitude();
         mAccuracy = mCurLocation.getAccuracy();
+        mLocProvider = mCurLocation.getProvider();
         long n = mCurLocation.getTime();
         mLocTime = mTimeFormat.format(new Date(n));
         if (LDebug.ON) Log.d(LOG_TAG, "Location time: " + mLocTime);
