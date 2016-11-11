@@ -1369,7 +1369,6 @@ id/vis_hdr_loc_help
         }
         flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
         flexHlpDlg.show(getFragmentManager(), "frg_help_detail");
-//        notYetDlg.show(getFragmentManager(), null);
         return true;
     case R.id.vis_hdr_loc_help:
        if (LDebug.ON) Log.d(LOG_TAG, "'Location Help' selected");
