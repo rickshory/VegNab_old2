@@ -62,22 +62,24 @@ public class ContentProvider_VegNab extends ContentProvider {
         tblHash.put(100, new TableStd("Projects","projects"));
         tblHash.put(110, new TableStd("Visits","visits"));
         tblHash.put(120, new TableStd("Locations","locations"));
-        tblHash.put(130, new TableStd("Namers","namers"));
-        tblHash.put(140, new TableStd("PlotTypes","plottypes"));
-        tblHash.put(150, new TableStd("SubplotTypes","subplottypes"));
-        tblHash.put(160, new TableStd("VegItems","vegitems"));
-        tblHash.put(170, new TableStd("Placeholders","placeholders"));
-        tblHash.put(180, new TableStd("PlaceHolderPix","placeholderpix"));
-        tblHash.put(190, new TableStd("IdNamers","idnamers"));
-        tblHash.put(200, new TableStd("IdRefs","idrefs"));
-        tblHash.put(210, new TableStd("IdMethods","idmethods"));
-        tblHash.put(220, new TableStd("IdLevels","idlevels"));
-        tblHash.put(230, new TableStd("NRCSSpp","species"));
-        tblHash.put(240, new TableStd("DocsCreated","docs"));
-        tblHash.put(250, new TableStd("DocsCreatedTypes","doctypes"));
-        tblHash.put(260, new TableStd("DocsSourcesTypes","docsources"));
-        tblHash.put(270, new TableStd("PoliticalAdminAreas","political_admin_areas"));
-        tblHash.put(280, new TableStd("Purchases","purchases"));
+        tblHash.put(130, new TableStd("LocationSources","locationsources"));
+        tblHash.put(140, new TableStd("AccuracySources","accuracysources"));
+        tblHash.put(150, new TableStd("Namers","namers"));
+        tblHash.put(160, new TableStd("PlotTypes","plottypes"));
+        tblHash.put(170, new TableStd("SubplotTypes","subplottypes"));
+        tblHash.put(180, new TableStd("VegItems","vegitems"));
+        tblHash.put(190, new TableStd("Placeholders","placeholders"));
+        tblHash.put(200, new TableStd("PlaceHolderPix","placeholderpix"));
+        tblHash.put(210, new TableStd("IdNamers","idnamers"));
+        tblHash.put(220, new TableStd("IdRefs","idrefs"));
+        tblHash.put(230, new TableStd("IdMethods","idmethods"));
+        tblHash.put(240, new TableStd("IdLevels","idlevels"));
+        tblHash.put(250, new TableStd("NRCSSpp","species"));
+        tblHash.put(260, new TableStd("DocsCreated","docs"));
+        tblHash.put(270, new TableStd("DocsCreatedTypes","doctypes"));
+        tblHash.put(280, new TableStd("DocsSourcesTypes","docsources"));
+        tblHash.put(290, new TableStd("PoliticalAdminAreas","political_admin_areas"));
+        tblHash.put(300, new TableStd("Purchases","purchases"));
         // to implement new tables, enter the table name (correct spelling as
         // in the DB), and the base URI as desired.
         // Make sure the numbers never overlap any custom URI pattern

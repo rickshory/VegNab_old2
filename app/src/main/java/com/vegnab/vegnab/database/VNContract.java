@@ -60,14 +60,16 @@ public final class VNContract {
         public static final int EXISTING_PROJCODES = 11; // to disallow duplicates
         public static final int PROJECT_TO_EDIT = 12; //
         // in Visit Header
-        public static final int VISIT_TO_EDIT = 21; // the current Visit
-        public static final int EXISTING_VISITS = 22; // Visits other than the current, to check duplicates
-        public static final int NAMERS = 23; // all Namers, to choose from
-        public static final int LOCATIONS = 24;
-        public static final int VISIT_REF_LOCATION = 25; // the reference Location for this Visit
-        public static final int VISIT_PLACEHOLDERS_ENTERED = 26; // any Placeholders entered on this Visit, to allow or deny Namer change
-        public static final int UPDATE_LOCAL_SPP = 27; // set the 'Local' flag for species, based on location
-        public static final int UPDATE_LOCAL_NAME = 28; // store in Preferences the name of the local area, e.g. 'Oregon' for quick reference
+        public static final int VISIT_TO_EDIT = 221; // the current Visit
+        public static final int EXISTING_VISITS = 222; // Visits other than the current, to check duplicates
+        public static final int NAMERS = 223; // all Namers, to choose from
+        public static final int LOCATIONS = 224;
+        public static final int VISIT_REF_LOCATION = 225; // the reference Location for this Visit
+        public static final int VISIT_PLACEHOLDERS_ENTERED = 226; // any Placeholders entered on this Visit, to allow or deny Namer change
+        public static final int UPDATE_LOCAL_SPP = 227; // set the 'Local' flag for species, based on location
+        public static final int UPDATE_LOCAL_NAME = 228; // store in Preferences the name of the local area, e.g. 'Oregon' for quick reference
+        public static final int EXISTING_LOC_PROVIDERS = 229; // For quick lookup
+        public static final int EXISTING_LOC_ACCURACY_SOURCES = 230; // For quick lookup
 
         // in Edit Namer
         public static final int NAMER_TO_EDIT = 31;
