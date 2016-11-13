@@ -116,7 +116,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     private boolean mUserOKdAccuracy = false;
     private double mLatitude, mLongitude;
     private float mAccuracy, mAccuracyTargetForVisitLoc;
-    private String mLocTime, mLocProvider;
+    private String mLocTime, mAccSource, mLocProvider;
     private Location mCurLocation, mLastLocation, mPrevLocation;
     private boolean mHasPrevLoc = false, mHasLocPermission = true;
     // Request code to use when launching the resolution activity
@@ -166,6 +166,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     final static String ARG_LOC_LATITUDE = "locLatitude";
     final static String ARG_LOC_LONGITUDE = "locLongitude";
     final static String ARG_LOC_ACCURACY = "locAccuracy";
+    final static String ARG_LOC_ACC_SOURCE = "locAccSource";
     final static String ARG_LOC_TIME = "locTimeStamp";
     final static String ARG_LOC_PROVIDER = "locProvider";
     final static String ARG_PH_COUNT = "phCount";
@@ -276,6 +277,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 mLatitude = savedInstanceState.getDouble(ARG_LOC_LATITUDE);
                 mLongitude = savedInstanceState.getDouble(ARG_LOC_LONGITUDE);
                 mAccuracy = savedInstanceState.getFloat(ARG_LOC_ACCURACY);
+                mAccSource = savedInstanceState.getString(ARG_LOC_ACC_SOURCE);
                 mLocTime = savedInstanceState.getString(ARG_LOC_TIME);
                 mLocProvider = savedInstanceState.getString(ARG_LOC_PROVIDER);
             }
@@ -448,6 +450,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             outState.putDouble(ARG_LOC_LATITUDE, mLatitude);
             outState.putDouble(ARG_LOC_LONGITUDE, mLongitude);
             outState.putFloat(ARG_LOC_ACCURACY, mAccuracy);
+            outState.putString(ARG_LOC_ACC_SOURCE, mAccSource);
             outState.putString(ARG_LOC_TIME, mLocTime);
             outState.putString(ARG_LOC_PROVIDER, mLocProvider);
         }
@@ -630,6 +633,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 mLatitude = c.getDouble(c.getColumnIndexOrThrow("Latitude"));
                 mLongitude = c.getDouble(c.getColumnIndexOrThrow("Longitude"));
                 mAccuracy = c.getFloat(c.getColumnIndexOrThrow("Accuracy"));
+                // mAccSource
                 mViewVisitLocation.setText("" + mLatitude + ", " + mLongitude
                         + "\naccuracy " + mAccuracy + "m");
             }
