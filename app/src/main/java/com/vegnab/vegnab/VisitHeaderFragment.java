@@ -135,6 +135,8 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     Uri mUri;
     Uri mVisitsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "visits");
     Uri mLocationsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "locations");
+    Uri mLocProvidersUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "locationsources");
+    Uri mLocAccSourcesUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "accuracysources");
     ContentValues mValues = new ContentValues();
     HashMap<Long, String> mExistingVisitNames = new HashMap<Long, String>();
     HashMap<Long, String> mExistingLocationProviders = new HashMap<Long, String>();
