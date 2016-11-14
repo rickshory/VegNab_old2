@@ -137,6 +137,8 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     Uri mLocationsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "locations");
     ContentValues mValues = new ContentValues();
     HashMap<Long, String> mExistingVisitNames = new HashMap<Long, String>();
+    HashMap<Long, String> mExistingLocationProviders = new HashMap<Long, String>();
+    HashMap<Long, String> mExistingLocAccuracySources = new HashMap<Long, String>();
     private EditText mViewVisitName, mViewVisitDate, mViewVisitScribe, mViewVisitLocation,
             mViewAzimuth, mViewVisitNotes;
     private Spinner mNamerSpinner;
