@@ -578,6 +578,14 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             cl = new CursorLoader(getActivity(), baseUri,
                     null, select, new String[] { "" + mVisitId }, null);
             break;
+
+        case Loaders.EXISTING_LOC_PROVIDERS:
+
+            break;
+
+        case Loaders.EXISTING_LOC_ACCURACY_SOURCES:
+
+            break;
         }
         return cl;
     }
@@ -661,6 +669,14 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             }
             setupNamerSpinner(); // this can run multiple times, latest will be most correct
             break;
+
+        case Loaders.EXISTING_LOC_PROVIDERS:
+
+            break;
+
+        case Loaders.EXISTING_LOC_ACCURACY_SOURCES:
+
+            break;
         }
     }
 
@@ -735,6 +751,11 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         case Loaders.VISIT_PLACEHOLDERS_ENTERED:
             break;
 
+        case Loaders.EXISTING_LOC_PROVIDERS:
+            break;
+
+        case Loaders.EXISTING_LOC_ACCURACY_SOURCES:
+            break;
         }
     }
 
