@@ -580,10 +580,12 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             break;
 
         case Loaders.EXISTING_LOC_PROVIDERS:
+//            Uri mLocProvidersUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "locationsources");
 
             break;
 
         case Loaders.EXISTING_LOC_ACCURACY_SOURCES:
+//            Uri mLocAccSourcesUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "accuracysources");
 
             break;
         }
@@ -671,10 +673,12 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             break;
 
         case Loaders.EXISTING_LOC_PROVIDERS:
+//            HashMap<Long, String> mExistingLocationProviders = new HashMap<Long, String>();
 
             break;
 
         case Loaders.EXISTING_LOC_ACCURACY_SOURCES:
+//            HashMap<Long, String> mExistingLocAccuracySources = new HashMap<Long, String>();
 
             break;
         }
