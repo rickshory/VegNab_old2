@@ -673,8 +673,19 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             break;
 
         case Loaders.EXISTING_LOC_PROVIDERS:
-//            HashMap<Long, String> mExistingLocationProviders = new HashMap<Long, String>();
+            mExistingLocationProviders.clear();
+            while (c.moveToNext()) {
+                if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, add to HashMap: "
+                        + c.getString(c.getColumnIndexOrThrow("LocationSource")));
 
+            }
+//            HashMap<Long, String> mExistingLocationProviders = new HashMap<Long, String>();
+/*
+                    mExistingLocationProviders.add(c.getString(c.getColumnIndexOrThrow("LocationSource")));
+                }
+               if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, number of items in mExistingLocationProviders: " + mExistingLocationProviders.size());
+               if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, items in mExistingLocationProviders: " + mExistingLocationProviders.toString());
+*/
             break;
 
         case Loaders.EXISTING_LOC_ACCURACY_SOURCES:
