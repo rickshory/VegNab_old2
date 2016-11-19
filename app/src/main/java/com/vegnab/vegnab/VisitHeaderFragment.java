@@ -675,18 +675,35 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         case Loaders.EXISTING_LOC_PROVIDERS:
             mExistingLocationProviders.clear();
             while (c.moveToNext()) {
-                if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, add to HashMap: "
+                if (LDebug.ON) Log.d(LOG_TAG,
+                        "onLoadFinished, add to HashMap mExistingLocationProviders: "
                         + c.getString(c.getColumnIndexOrThrow("LocationSource")));
                 mExistingLocationProviders.put(c.getLong(c.getColumnIndexOrThrow("_id")),
                         c.getString(c.getColumnIndexOrThrow("LocationSource")));
             }
-            if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, number of items in mExistingLocationProviders: " + mExistingLocationProviders.size());
-            if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, items in mExistingLocationProviders: " + mExistingLocationProviders.toString());
+            if (LDebug.ON) Log.d(LOG_TAG,
+                    "onLoadFinished, number of items in mExistingLocationProviders: "
+                            + mExistingLocationProviders.size());
+            if (LDebug.ON) Log.d(LOG_TAG,
+                    "onLoadFinished, items in mExistingLocationProviders: "
+                            + mExistingLocationProviders.toString());
             break;
 
         case Loaders.EXISTING_LOC_ACCURACY_SOURCES:
-//            HashMap<Long, String> mExistingLocAccuracySources = new HashMap<Long, String>();
-
+            mExistingLocAccuracySources.clear();
+            while (c.moveToNext()) {
+                if (LDebug.ON) Log.d(LOG_TAG,
+                        "onLoadFinished, add to HashMap mExistingLocAccuracySources: "
+                        + c.getString(c.getColumnIndexOrThrow("AccuracySource")));
+                mExistingLocAccuracySources.put(c.getLong(c.getColumnIndexOrThrow("_id")),
+                        c.getString(c.getColumnIndexOrThrow("AccuracySource")));
+            }
+            if (LDebug.ON) Log.d(LOG_TAG,
+                    "onLoadFinished, number of items in mExistingLocAccuracySources: "
+                            + mExistingLocationProviders.size());
+            if (LDebug.ON) Log.d(LOG_TAG,
+                    "onLoadFinished, items in mExistingLocAccuracySources: "
+                            + mExistingLocationProviders.toString());
             break;
         }
     }
