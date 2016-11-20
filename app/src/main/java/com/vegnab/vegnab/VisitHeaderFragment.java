@@ -135,8 +135,6 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     Uri mUri;
     Uri mVisitsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "visits");
     Uri mLocationsUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "locations");
-    Uri mLocProvidersUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "locationsources");
-    Uri mLocAccSourcesUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "accuracysources");
     ContentValues mValues = new ContentValues();
     HashMap<Long, String> mExistingVisitNames = new HashMap<Long, String>();
     HashMap<Long, String> mExistingLocationProviders = new HashMap<Long, String>();
@@ -580,13 +578,17 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             break;
 
         case Loaders.EXISTING_LOC_PROVIDERS:
-//            Uri mLocProvidersUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "locationsources");
-
+            Uri mLocProvidersUri = Uri.withAppendedPath(
+                    ContentProvider_VegNab.CONTENT_URI, "locationsources");
+            cl = new CursorLoader(getActivity(), mLocProvidersUri,
+                    null, select, null, null);
             break;
 
         case Loaders.EXISTING_LOC_ACCURACY_SOURCES:
-//            Uri mLocAccSourcesUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "accuracysources");
-
+            Uri mLocAccSourcesUri = Uri.withAppendedPath(
+                    ContentProvider_VegNab.CONTENT_URI, "accuracysources");
+            cl = new CursorLoader(getActivity(), mLocAccSourcesUri,
+                    null, select, null, null);
             break;
         }
         return cl;
