@@ -382,6 +382,9 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         getLoaderManager().initLoader(Loaders.VISIT_TO_EDIT, null, this);
         getLoaderManager().initLoader(Loaders.EXISTING_VISITS, null, this);
         getLoaderManager().initLoader(Loaders.VISIT_PLACEHOLDERS_ENTERED, null, this);
+        // have these two loaders ready too, even though they don't involve the UI
+        getLoaderManager().initLoader(Loaders.EXISTING_LOC_PROVIDERS, null, this);
+        getLoaderManager().initLoader(Loaders.EXISTING_LOC_ACCURACY_SOURCES, null, this);
     }
 
     @Override
