@@ -54,6 +54,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -1722,6 +1723,22 @@ id/vis_hdr_loc_help
         mLongitude = mCurLocation.getLongitude();
         mAccuracy = mCurLocation.getAccuracy();
         mLocProvider = mCurLocation.getProvider();
+        switch (mLocProvider) { // translate these into our format
+            case LocationManager.GPS_PROVIDER:
+                mLocProvider = "Internal GPS";
+                break;
+            case LocationManager.NETWORK_PROVIDER:
+                mLocProvider = "Network";
+                break;
+            // let any new ones remain as-is
+            // other option
+            // mLocProvider = "Manual entry";
+        }
+        mAccSource = "Automatic";
+        // other options
+//        mAccSource = "User accepted";
+//        mAccSource = "User supplied";
+
         long n = mCurLocation.getTime();
         mLocTime = mTimeFormat.format(new Date(n));
         if (LDebug.ON) Log.d(LOG_TAG, "Location time: " + mLocTime);
