@@ -1734,9 +1734,12 @@ id/vis_hdr_loc_help
             // other option
             // mLocProvider = "Manual entry";
         }
-        mAccSource = "Automatic";
-        // other options
-//        mAccSource = "User accepted";
+        if (mUserOKdAccuracy) {
+            mAccSource = "User accepted";
+        } else {
+            mAccSource = "Automatic";
+        }
+        // other option
 //        mAccSource = "User supplied";
 
         long n = mCurLocation.getTime();
