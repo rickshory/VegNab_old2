@@ -121,6 +121,7 @@
 
     <string name="latitude_label">Latitude: </string>
     <string name="longitude_label">Longitude: </string>
+    <string name="accuracy_label">Accuracy: </string>
     
     <string name="visit_header_go_button_msg">Start subplots</string>
     <string name="visit_header_map_button_msg">Map more locations</string>
@@ -187,6 +188,8 @@
     <string name="vis_hdr_loc_good_ack_text_pre">Current location accepted, at </string>
     <string name="vis_hdr_loc_good_ack_text_post">m accuracy</string>
     <string name="vis_hdr_loc_retrieving">(retrieving previously recorded visit location)</string>
+    <string name="vis_hdr_loc_manl_entry_title">Enter coordinates</string>
+
 
     <string name="vis_hdr_loc_req_title">Permission required</string>
     <string name="vis_hdr_loc_req_msg">Grant VegNab permission to retrieve locations? Otherwise, you will have to enter locations manually.</string>
