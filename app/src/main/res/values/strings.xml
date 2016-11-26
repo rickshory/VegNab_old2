@@ -121,7 +121,7 @@
 
     <string name="latitude_label">Latitude: </string>
     <string name="longitude_label">Longitude: </string>
-    <string name="accuracy_label">Accuracy: </string>
+    <string name="accuracy_label">Accuracy (m): </string>
     
     <string name="visit_header_go_button_msg">Start subplots</string>
     <string name="visit_header_map_button_msg">Map more locations</string>

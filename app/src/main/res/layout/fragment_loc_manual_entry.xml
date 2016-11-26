@@ -32,7 +32,7 @@
 
     <TextView
     android:id="@+id/lbl_manual_longitude"
-    android:text="@string/latitude_label"
+    android:text="@string/longitude_label"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentLeft="true"
@@ -49,7 +49,7 @@
 
     <TextView
         android:id="@+id/lbl_manual_accuracy"
-        android:text="@string/latitude_label"
+        android:text="@string/accuracy_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
