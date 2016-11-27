@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.vegnab.vegnab.database.VNContract;
@@ -50,10 +51,10 @@ public class LocManualEntryDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup rootView, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_loc_manual_entry, rootView);
 
-        mManualLatitude = (TextView) view.findViewById(R.id.txt_manual_latitude);
-        mManualLongitude = (TextView) view.findViewById(R.id.txt_manual_longitude);
-        mManualAccuracy = (TextView) view.findViewById(R.id.txt_manual_accuracy);
-        getDialog().setTitle(R.string.settings_dlg_title);
+        mManualLatitude = (EditText) view.findViewById(R.id.txt_manual_latitude);
+        mManualLongitude = (EditText) view.findViewById(R.id.txt_manual_longitude);
+        mManualAccuracy = (EditText) view.findViewById(R.id.txt_manual_accuracy);
+        getDialog().setTitle(R.string.vis_hdr_loc_manl_entry_title);
         return view;
     }
 
