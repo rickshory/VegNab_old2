@@ -13,13 +13,16 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.LDebug;
 
 public class LocManualEntryDialog extends DialogFragment {
+    private int mValidationLevel = VNContract.Validation.SILENT;
     private static final String LOG_TAG = LocManualEntryDialog.class.getSimpleName();
     private TextView mManualLatitude, mManualLongitude, mManualAccuracy;
+    private float mLatitude, mLongitude, mAccuracy;
 /*
     public interface OnUseLocalSppChange {
         // methods that must be implemented in the container Activity
@@ -93,4 +96,137 @@ public class LocManualEntryDialog extends DialogFragment {
 //        mSettingsListener.onSettingsComplete(LocManualEntryDialog.this);
 
     }
+
+    private boolean validateManualLocValues() {
+        // validate all user-accessible items
+        Context c = getActivity();
+        String stringProblem;
+        String errTitle = c.getResources().getString(R.string.vis_hdr_validate_generic_title);
+        ConfigurableMsgDialog flexErrDlg = new ConfigurableMsgDialog();
+
+        float Lat, Lon, Ac;
+        // verify numeric Latitude, Longitude & Accuracy
+        // validate Latitude
+        String stringLat = mManualLatitude.getText().toString().trim();
+        if (stringLat.length() == 0) {
+            if (LDebug.ON) Log.d(LOG_TAG, "Latitude is length zero");
+            if (mValidationLevel > VNContract.Validation.SILENT) {
+                stringProblem = c.getResources().getString(R.string.loc_manual_entry_msg_no_latitude);
+                if (mValidationLevel == VNContract.Validation.QUIET) {
+                    Toast.makeText(this.getActivity(),
+                            stringProblem,
+                            Toast.LENGTH_LONG).show();
+                }
+                if (mValidationLevel == VNContract.Validation.CRITICAL) {
+                    flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
+                    flexErrDlg.show(getFragmentManager(), "frg_err_latitude_out_of_range");
+                    mManualLatitude.requestFocus();
+                }
+            } // end of validation not silent
+            return false; // end of Ht length zero
+        } else {
+            try {
+                Lat = Float.parseFloat(stringLat);
+                if ((Lat < -90) || (Lat > 90)) { // latitude can only be +- 90 degrees
+                    if (LDebug.ON) Log.d(LOG_TAG, "Latitude is out of range");
+                    if (mValidationLevel > VNContract.Validation.SILENT) {
+                        stringProblem = c.getResources().getString(R.string.loc_manual_entry_msg_latitude_bad);
+                        if (mValidationLevel == VNContract.Validation.QUIET) {
+                            Toast.makeText(this.getActivity(),
+                                    stringProblem,
+                                    Toast.LENGTH_LONG).show();
+                        }
+                        if (mValidationLevel == VNContract.Validation.CRITICAL) {
+                            flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
+                            flexErrDlg.show(getFragmentManager(), "frg_err_latitude_out_of_range");
+                            mManualLatitude.requestFocus();
+                        }
+                    } // end of validation not silent
+                    return false; // end of Lat out of range
+                }
+            } catch(NumberFormatException e) {
+                if (LDebug.ON) Log.d(LOG_TAG, "Latitude is not a valid number");
+                if (mValidationLevel > VNContract.Validation.SILENT) {
+                    stringProblem = c.getResources().getString(R.string.loc_manual_entry_msg_latitude_bad);
+                    if (mValidationLevel == VNContract.Validation.QUIET) {
+                        Toast.makeText(this.getActivity(),
+                                stringProblem,
+                                Toast.LENGTH_LONG).show();
+                    }
+                    if (mValidationLevel == VNContract.Validation.CRITICAL) {
+                        flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
+                        flexErrDlg.show(getFragmentManager(), "frg_err_latitude_out_of_range");
+                        mManualLatitude.requestFocus();
+                    }
+                } // end of validation not silent
+                return false; // end of Ht invalid number
+            }
+        } // end of validate Latitude
+
+        // validate Longitude
+        String stringLon = mManualLongitude.getText().toString().trim();
+        if (stringLon.length() == 0) {
+            if (LDebug.ON) Log.d(LOG_TAG, "Longitude is length zero");
+            if (mValidationLevel > VNContract.Validation.SILENT) {
+                stringProblem = c.getResources().getString(R.string.loc_manual_entry_msg_no_longitude);
+                if (mValidationLevel == VNContract.Validation.QUIET) {
+                    Toast.makeText(this.getActivity(),
+                            stringProblem,
+                            Toast.LENGTH_LONG).show();
+                }
+                if (mValidationLevel == VNContract.Validation.CRITICAL) {
+                    flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
+                    flexErrDlg.show(getFragmentManager(), "frg_err_longitude_out_of_range");
+                    mManualLongitude.requestFocus();
+                }
+            } // end of validation not silent
+            return false; // end of Cv length zero
+        } else {
+            try {
+                Lon = Float.parseFloat(stringLon);
+                if ((Lon < -180) || (Lon > 180)) { // Longitude can only be +-180 degrees
+                    if (LDebug.ON) Log.d(LOG_TAG, "Longitude is out of range");
+                    if (mValidationLevel > VNContract.Validation.SILENT) {
+                        stringProblem = c.getResources().getString(R.string.loc_manual_entry_msg_longitude_bad);
+                        if (mValidationLevel == VNContract.Validation.QUIET) {
+                            Toast.makeText(this.getActivity(),
+                                    stringProblem,
+                                    Toast.LENGTH_LONG).show();
+                        }
+                        if (mValidationLevel == VNContract.Validation.CRITICAL) {
+                            flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
+                            flexErrDlg.show(getFragmentManager(), "frg_err_longitude_out_of_range");
+                            mManualLongitude.requestFocus();
+                        }
+                    } // end of validation not silent
+                    return false; // end of Lon out of range
+                }
+            } catch(NumberFormatException e) {
+                if (LDebug.ON) Log.d(LOG_TAG, "Longitude is not a valid number");
+                if (mValidationLevel > VNContract.Validation.SILENT) {
+                    stringProblem = c.getResources().getString(R.string.loc_manual_entry_msg_longitude_bad);
+                    if (mValidationLevel == VNContract.Validation.QUIET) {
+                        Toast.makeText(this.getActivity(),
+                                stringProblem,
+                                Toast.LENGTH_LONG).show();
+                    }
+                    if (mValidationLevel == VNContract.Validation.CRITICAL) {
+                        flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
+                        flexErrDlg.show(getFragmentManager(), "frg_err_longitude_out_of_range");
+                        mManualLongitude.requestFocus();
+                    }
+                } // end of validation not silent
+                return false; // end of Lon invalid number
+            }
+        } // end of verify Longitude
+
+        // mManualAccuracy
+        mLatitude = Lat;
+        mLongitude = Lon;
+        // mAccuracy;
+        mManualLatitude.setText("" + Lat);
+        mManualLongitude.setText("" + Lon);
+        return true;
+
+    } // end of validation
 }

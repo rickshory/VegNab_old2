@@ -122,7 +122,14 @@
     <string name="latitude_label">Latitude: </string>
     <string name="longitude_label">Longitude: </string>
     <string name="accuracy_label">Accuracy (m): </string>
-    
+
+    <string name="loc_manual_entry_msg_no_latitude">Need Latitude</string>
+    <string name="loc_manual_entry_msg_no_longitude">Need Longitude</string>
+    <string name="loc_manual_entry_msg_no_accuracy">Need Accuracy</string>
+    <string name="loc_manual_entry_msg_latitude_bad">Need a number for Latitude, between -90 and 90</string>
+    <string name="loc_manual_entry_msg_longitude_bad">Need a number for Longitude between -180 and 180</string>
+    <string name="loc_manual_entry_msg_accuracy_bad">Need a number for Accuracy, zero means not known</string>
+
     <string name="visit_header_go_button_msg">Start subplots</string>
     <string name="visit_header_map_button_msg">Map more locations</string>
     <string name="visit_header_photo_button_msg">Add pictures</string>
