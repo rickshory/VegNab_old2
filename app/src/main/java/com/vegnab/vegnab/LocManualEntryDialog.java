@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.LDebug;
+import com.vegnab.vegnab.util.InputFilterMinMaxFloat;
 
 public class LocManualEntryDialog extends DialogFragment {
     private int mValidationLevel = VNContract.Validation.SILENT;
@@ -53,9 +55,10 @@ public class LocManualEntryDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup rootView, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_loc_manual_entry, rootView);
-
         mManualLatitude = (EditText) view.findViewById(R.id.txt_manual_latitude);
+        mManualLatitude.setFilters(new InputFilter[]{ new InputFilterMinMaxFloat("-90", "90")});
         mManualLongitude = (EditText) view.findViewById(R.id.txt_manual_longitude);
+        mManualLongitude.setFilters(new InputFilter[]{ new InputFilterMinMaxFloat("-180", "180")});
         mManualAccuracy = (EditText) view.findViewById(R.id.txt_manual_accuracy);
         getDialog().setTitle(R.string.vis_hdr_loc_manl_entry_title);
         return view;
