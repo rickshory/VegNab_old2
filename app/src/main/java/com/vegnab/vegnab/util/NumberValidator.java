@@ -23,6 +23,7 @@ public class NumberValidator {
     public float mValidFloat;
 
     public NumberValidator(String stringToValidate) {
+        mNumberToCheck = stringToValidate;
         if ((stringToValidate == null) || (stringToValidate.trim().isEmpty())) {
             mValueIsMissing = true;
         } else {
@@ -34,6 +35,28 @@ public class NumberValidator {
         }
     }
 
+    public NumberValidator(String stringToValidate, boolean isFloat) {
+        mNumberToCheck = stringToValidate;
+        mTreatAsFloat = isFloat;
+        if ((stringToValidate == null) || (stringToValidate.trim().isEmpty())) {
+            mValueIsMissing = true;
+        } else {
+            if (isFloat) {
+                try {
+                    mValidFloat = Float.parseFloat(stringToValidate.trim());
+                } catch (NumberFormatException e) {
+                    mValueInvalid = true;
+                }
+            } else {
+                try {
+                    mValidInt = Integer.parseInt(stringToValidate.trim());
+                } catch (NumberFormatException e) {
+                    mValueInvalid = true;
+                }
+            }
+        }
+    }
+    
     public NumberValidator(String stringToValidate, float minAllowed, float maxAllowed,
                            String problemIfEmpty, String problemIfNAN, String problemIfOutOfRange) {
 
