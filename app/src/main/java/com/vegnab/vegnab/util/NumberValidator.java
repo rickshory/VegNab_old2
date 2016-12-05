@@ -14,6 +14,7 @@ public class NumberValidator {
     private boolean mCheckRange = false;
     public int mMinInt, mMaxInt;
     public float mMinFloat, mMaxFloat;
+    public boolean mValueOutOfRange = false;
     public String mMsgIfOutOfRange = "value out of range";
     private boolean mCheckSpecialValue = false;
     public int mSpecialInt;
@@ -56,7 +57,24 @@ public class NumberValidator {
             }
         }
     }
-    
+
+    public NumberValidator(String stringToValidate, int minAllowed, int maxAllowed) {
+        mNumberToCheck = stringToValidate;
+        mCheckRange = true;
+        if ((stringToValidate == null) || (stringToValidate.trim().isEmpty())) {
+            mValueIsMissing = true;
+        } else {
+            try {
+                mValidInt = Integer.parseInt(stringToValidate.trim());
+                if ((mValidInt < minAllowed) || (mValidInt > maxAllowed)) {
+                    mValueOutOfRange = true;
+                }
+
+            } catch (NumberFormatException e) {
+                mValueInvalid = true;
+            }
+        }
+    }
     public NumberValidator(String stringToValidate, float minAllowed, float maxAllowed,
                            String problemIfEmpty, String problemIfNAN, String problemIfOutOfRange) {
 
