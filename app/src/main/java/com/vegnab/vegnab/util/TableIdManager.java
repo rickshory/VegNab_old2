@@ -9,4 +9,13 @@ package com.vegnab.vegnab.util;
  */
 
 public class TableIdManager {
+    private String mTextToFind;
+    private String mFieldName;
+    private String mTableName;
+    private long mKey;
+
+    TableIdManager(String tableToUse) {
+        mTableName = tableToUse;
+
+    }
 }
