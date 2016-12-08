@@ -1,5 +1,7 @@
 package com.vegnab.vegnab.util;
 
+import java.util.HashMap;
+
 /**
  * Created by rshory on 12/6/2016.
  * For database tables that have only 2 fields, [_id] and a text field, this class allows
@@ -13,6 +15,7 @@ public class TableIdManager {
     private String mFieldName;
     private String mTableName;
     private long mKey;
+    private HashMap<Long, String> mExistingItems = new HashMap<Long, String>();
 
     TableIdManager(String tableToUse) {
         mTableName = tableToUse;
