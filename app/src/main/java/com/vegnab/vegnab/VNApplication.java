@@ -5,12 +5,15 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.util.inappbilling.Inventory;
 
+import com.vegnab.vegnab.database.VNContract.Loaders;
+
 import java.util.HashMap;
 
 public class VNApplication extends Application {
     private static final String PROPERTY_ID = "UA-62236020-1";
     private static final String LOG_TAG = VNApplication.class.getSimpleName();
     public static int GENERAL_TRACKER = 0;
+    private static int maxTableLoaderId = Loaders.TABLE_MANAGER_LOADERS_STARTVALUE;
 
     /**
      * Enum used to identify the tracker that needs to be used for tracking.

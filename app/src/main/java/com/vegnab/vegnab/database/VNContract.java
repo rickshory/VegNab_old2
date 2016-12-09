@@ -46,6 +46,9 @@ public final class VNContract {
     public static abstract class Loaders {
         public static final int TEST_SQL = 0; // test loading from raw SQL
 
+        // start value for loaderIdFactory in Application
+        public static final int TABLE_MANAGER_LOADERS_STARTVALUE = 8000;
+
         // in Main Activity
         public static final int EXISTING_PH_CODES = 5000; // Placeholder codes already defined, to check before add/edit
         public static final int EXISTING_SPP = 5010; // check whether species list is loaded
