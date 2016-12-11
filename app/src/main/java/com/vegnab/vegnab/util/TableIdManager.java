@@ -1,6 +1,13 @@
 package com.vegnab.vegnab.util;
 
+import com.vegnab.vegnab.VNApplication;
+
 import java.util.HashMap;
+import android.app.Activity;
+import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+
+import static java.security.AccessController.getContext;
 
 /**
  * Created by rshory on 12/6/2016.
@@ -11,13 +18,22 @@ import java.util.HashMap;
  */
 
 public class TableIdManager {
+    public Activity activity;
+
+    private long mLoaderID;
     private String mTextToFind;
     private String mFieldName;
     private String mTableName;
     private long mKey;
     private HashMap<Long, String> mExistingItems = new HashMap<Long, String>();
 
-    TableIdManager(String tableToUse) {
+    TableIdManager(Activity act, String tableToUse) {
+        this.activity = act;
+        //((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+        mLoaderID = this.activity.getApplication().getUniqueLoaderId();
+        mLoaderID = VNApplication.getUniqueLoaderId();
+        ((VNApplication) act.getApplication())act.getTracker(VNApplication.TrackerName.APP_TRACKER);
+        ((VNApplication) getContext().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
         mTableName = tableToUse;
 
     }
