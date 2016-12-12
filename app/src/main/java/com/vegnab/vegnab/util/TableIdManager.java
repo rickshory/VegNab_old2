@@ -28,12 +28,11 @@ public class TableIdManager {
     private HashMap<Long, String> mExistingItems = new HashMap<Long, String>();
 
     TableIdManager(Activity act, String tableToUse) {
-        this.activity = act;
+        // format of Tracker; does not work here
         //((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
-        mLoaderID = this.activity.getApplication().getUniqueLoaderId();
-        mLoaderID = VNApplication.getUniqueLoaderId();
-        ((VNApplication) act.getApplication())act.getTracker(VNApplication.TrackerName.APP_TRACKER);
-        ((VNApplication) getContext().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+        this.activity = act;
+        VNApplication app = (VNApplication) act.getApplication();
+        mLoaderID = app.getUniqueLoaderId();
         mTableName = tableToUse;
 
     }
