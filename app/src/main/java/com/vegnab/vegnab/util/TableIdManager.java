@@ -4,8 +4,12 @@ import com.vegnab.vegnab.VNApplication;
 
 import java.util.HashMap;
 import android.app.Activity;
+import android.database.Cursor;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 
 import static java.security.AccessController.getContext;
 
@@ -17,7 +21,7 @@ import static java.security.AccessController.getContext;
  *  If it is not yet in the table, adds a new record and returns that ID
  */
 
-public class TableIdManager {
+public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
     public Activity activity;
 
     private long mLoaderID;
@@ -34,6 +38,21 @@ public class TableIdManager {
         VNApplication app = (VNApplication) act.getApplication();
         mLoaderID = app.getUniqueLoaderId();
         mTableName = tableToUse;
+
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
 
     }
 }
