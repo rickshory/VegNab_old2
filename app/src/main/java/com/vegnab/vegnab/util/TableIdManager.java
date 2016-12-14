@@ -1,14 +1,17 @@
 package com.vegnab.vegnab.util;
 
 import com.vegnab.vegnab.VNApplication;
+import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 
 import java.util.HashMap;
 import android.app.Activity;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
 import static java.security.AccessController.getContext;
@@ -22,8 +25,7 @@ import static java.security.AccessController.getContext;
  */
 
 public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
-    public Activity activity;
-
+    public Activity mActivity;
     private long mLoaderID;
     private String mTextToFind;
     private String mFieldName;
@@ -34,7 +36,7 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
     TableIdManager(Activity act, String tableToUse) {
         // format of Tracker; does not work here
         //((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
-        this.activity = act;
+        mActivity = act;
         VNApplication app = (VNApplication) act.getApplication();
         mLoaderID = app.getUniqueLoaderId();
         mTableName = tableToUse;
@@ -45,6 +47,13 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return null;
     }
+        CursorLoader cl = null;
+        Uri baseUri = ContentProvider_VegNab.SQL_URI;
+        String select =  "SELECT * FROM Namers;";
+//        cl = new CursorLoader(mActivity, baseUri, null, select, null, null);
+        cl = new CursorLoader(mActivity);
+        cl.setURI(baseUri);
+        cl.setSelect(select);
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
