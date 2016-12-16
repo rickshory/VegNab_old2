@@ -46,16 +46,15 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
-    }
         Uri baseUri = ContentProvider_VegNab.SQL_URI;
-//        String select =  "SELECT * FROM " + mTableName + ";";
-        String select =  "SELECT * FROM ?;";
-        String[] params = new String[] {"" + mTableName};
-//        CursorLoader cl = new CursorLoader(mActivity, baseUri, null, select, null, null);
+        //        String select =  "SELECT * FROM " + mTableName + ";";
+        String select = "SELECT * FROM ?;";
+        String[] params = new String[]{"" + mTableName};
+        //        CursorLoader cl = new CursorLoader(mActivity, baseUri, null, select, null, null);
         // will table name work correctly as a parameter?
         CursorLoader cl = new CursorLoader(mActivity, baseUri, null, select, params, null);
-
+        return cl;
+}
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
