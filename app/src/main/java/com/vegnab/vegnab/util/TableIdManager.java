@@ -49,7 +49,7 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
         return null;
     }
         Uri baseUri = ContentProvider_VegNab.SQL_URI;
-        String select =  "SELECT * FROM Namers;";
+        String select =  "SELECT * FROM " + mTableName + ";";
         CursorLoader cl = new CursorLoader(mActivity, baseUri, null, select, null, null);
 
 
