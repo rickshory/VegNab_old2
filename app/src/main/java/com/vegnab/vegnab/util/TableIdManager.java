@@ -5,6 +5,7 @@ import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 
 import java.util.HashMap;
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -47,16 +48,16 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return null;
     }
-        CursorLoader cl = null;
         Uri baseUri = ContentProvider_VegNab.SQL_URI;
         String select =  "SELECT * FROM Namers;";
-//        cl = new CursorLoader(mActivity, baseUri, null, select, null, null);
-        cl = new CursorLoader(mActivity);
-        cl.setURI(baseUri);
-        cl.setSelect(select);
+        CursorLoader cl = new CursorLoader(mActivity, baseUri, null, select, null, null);
+
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        // will use following to get string field name
+        // getColumnName(int columnIndex)
+        // Returns the column name at the given zero-based column index.
 
     }
 
