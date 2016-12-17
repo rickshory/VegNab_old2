@@ -2,6 +2,7 @@ package com.vegnab.vegnab.util;
 
 import com.vegnab.vegnab.VNApplication;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
+import com.vegnab.vegnab.database.VNContract;
 
 import java.util.HashMap;
 import android.app.Activity;
@@ -14,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 
 import static java.security.AccessController.getContext;
 
@@ -26,6 +28,7 @@ import static java.security.AccessController.getContext;
  */
 
 public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
+    private static final String LOG_TAG = TableIdManager.class.getSimpleName();
     public Activity mActivity;
     private long mLoaderID;
     private String mTextToFind;
@@ -44,6 +47,11 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
 
     }
 
+    /*logic to check presence
+    * if (mDupCodes.containsValue(mIDConfidence + mStrVegCode)) {
+                if (LDebug.ON) Log.d(LOG_TAG, "saveVegItemRecord, Conf&Code already exist: " + mIDConfidence + mStrVegCode);
+                return 0;*/
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri baseUri = ContentProvider_VegNab.SQL_URI;
@@ -57,11 +65,16 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
 }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        // will use following to get string field name
+    public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
+        if (VNContract.LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, records: " + c.getCount());
+        mExistingItems.clear();
+        // don't even need to know the string column name, but if we want it:
         // getColumnName(int columnIndex)
-        // Returns the column name at the given zero-based column index.
-
+        // returns the column name at the given zero-based column index
+        while (c.moveToNext()) {
+            mExistingItems.put(c.getLong(c.getColumnIndexOrThrow("_id")),
+                    c.getString(1)); // the string is always in the '2nd' (0-indexed) column
+        }
     }
 
     @Override
