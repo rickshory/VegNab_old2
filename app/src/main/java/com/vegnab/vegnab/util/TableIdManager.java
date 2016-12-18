@@ -36,6 +36,7 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
     private String mTableName;
     private long mKey;
     private HashMap<Long, String> mExistingItems = new HashMap<Long, String>();
+    private LoaderManager mLoaderManager;
 
     TableIdManager(Activity act, String tableToUse) {
         // format of Tracker; does not work here
@@ -44,6 +45,9 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
         VNApplication app = (VNApplication) act.getApplication();
         mLoaderID = app.getUniqueLoaderId();
         mTableName = tableToUse;
+        // fire off this database request
+        mLoaderManager = (LoaderManager) mActivity.getLoaderManager().initLoader(mLoaderID, null,
+                (android.app.LoaderManager.LoaderCallbacks<Cursor>) this);
 
     }
 
@@ -79,6 +83,6 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        // nothing to do here since no adapter
     }
 }
