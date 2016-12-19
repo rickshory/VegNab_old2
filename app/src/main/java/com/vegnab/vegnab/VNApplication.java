@@ -13,7 +13,7 @@ public class VNApplication extends Application {
     private static final String PROPERTY_ID = "UA-62236020-1";
     private static final String LOG_TAG = VNApplication.class.getSimpleName();
     public static int GENERAL_TRACKER = 0;
-    private static long maxTableLoaderId = Loaders.TABLE_MANAGER_LOADERS_STARTVALUE;
+    private static int maxTableLoaderId = Loaders.TABLE_MANAGER_LOADERS_STARTVALUE;
 
     /**
      * Enum used to identify the tracker that needs to be used for tracking.
@@ -51,7 +51,7 @@ public class VNApplication extends Application {
         return mTrackers.get(trackerId);
     }
 
-    public synchronized long getUniqueLoaderId() {
+    public synchronized int getUniqueLoaderId() {
         return maxTableLoaderId++;
     }
 }

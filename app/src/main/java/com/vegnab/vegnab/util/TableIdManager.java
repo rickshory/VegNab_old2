@@ -30,7 +30,7 @@ import static java.security.AccessController.getContext;
 public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = TableIdManager.class.getSimpleName();
     public Activity mActivity;
-    private long mLoaderID;
+    private int mLoaderID;
     private String mTextToFind;
     private String mFieldName;
     private String mTableName;
