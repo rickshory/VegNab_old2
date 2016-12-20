@@ -12,9 +12,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
+//import android.support.v4.app.LoaderManager;
+//import android.support.v4.content.CursorLoader;
+//import android.support.v4.content.Loader;
+
 import android.util.Log;
 
 import static java.security.AccessController.getContext;
@@ -36,6 +40,7 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
     private String mTableName;
     private long mKey;
     private HashMap<Long, String> mExistingItems = new HashMap<Long, String>();
+    private Context mContext;
     private LoaderManager mLoaderManager;
 
     TableIdManager(Activity act, String tableToUse) {
@@ -46,9 +51,8 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
         mLoaderID = app.getUniqueLoaderId();
         mTableName = tableToUse;
         // fire off this database request
-        mLoaderManager = (LoaderManager) mActivity.getLoaderManager().initLoader(mLoaderID, null,
-                (android.app.LoaderManager.LoaderCallbacks<Cursor>) this);
-
+        mLoaderManager = mActivity.getLoaderManager();
+        mLoaderManager.initLoader(mLoaderID, null, this);
     }
 
     /*logic to check presence
