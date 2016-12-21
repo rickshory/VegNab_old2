@@ -39,7 +39,7 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
     private String mFieldName;
     private String mTableName;
     private long mKey;
-    private HashMap<Long, String> mExistingItems = new HashMap<Long, String>();
+    private HashMap<String, Long> mExistingItems = new HashMap<String, Long>();
     private Context mContext;
     private LoaderManager mLoaderManager;
 
@@ -55,10 +55,13 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
         mLoaderManager.initLoader(mLoaderID, null, this);
     }
 
-    /*logic to check presence
-    * if (mDupCodes.containsValue(mIDConfidence + mStrVegCode)) {
-                if (LDebug.ON) Log.d(LOG_TAG, "saveVegItemRecord, Conf&Code already exist: " + mIDConfidence + mStrVegCode);
-                return 0;*/
+    public long getID(String stringToFind) {
+        if (mExistingItems.containsKey(stringToFind)) {
+            return mExistingItems.get(stringToFind);
+        } else {
+            return 0; // fix this later
+        }
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -80,8 +83,10 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
         // getColumnName(int columnIndex)
         // returns the column name at the given zero-based column index
         while (c.moveToNext()) {
-            mExistingItems.put(c.getLong(c.getColumnIndexOrThrow("_id")),
-                    c.getString(1)); // the string is always in the '2nd' (0-indexed) column
+            // the string is always in the '2nd' (0-indexed) column of the cursor
+            // in the hash map, index it the opposite way, by the string
+            mExistingItems.put(c.getString(1),
+                    c.getLong(c.getColumnIndexOrThrow("_id")));
         }
     }
 
