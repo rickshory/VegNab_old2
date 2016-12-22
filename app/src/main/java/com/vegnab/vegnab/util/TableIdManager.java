@@ -79,12 +79,10 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
     public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
         if (VNContract.LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, records: " + c.getCount());
         mExistingItems.clear();
-        // don't even need to know the string column name, but if we want it:
-        // getColumnName(int columnIndex)
-        // returns the column name at the given zero-based column index
+        // the string field is always the '2nd' (0-indexed) column of the cursor
+        mFieldName = c.getColumnName(1); // will need this to add any records
         while (c.moveToNext()) {
-            // the string is always in the '2nd' (0-indexed) column of the cursor
-            // in the hash map, index it the opposite way, by the string
+            // in the hash map, index the ID by the string
             mExistingItems.put(c.getString(1),
                     c.getLong(c.getColumnIndexOrThrow("_id")));
         }
