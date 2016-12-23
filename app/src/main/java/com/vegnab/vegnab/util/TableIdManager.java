@@ -59,6 +59,9 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
         if (mExistingItems.containsKey(stringToFind)) {
             return mExistingItems.get(stringToFind);
         } else {
+            // add new record here, and get its ID
+            
+            mLoaderManager.restartLoader(mLoaderID, null, this);
             return 0; // fix this later
         }
     }
