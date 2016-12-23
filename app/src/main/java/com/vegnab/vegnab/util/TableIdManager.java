@@ -6,6 +6,7 @@ import com.vegnab.vegnab.database.VNContract;
 
 import java.util.HashMap;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -60,7 +61,8 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
             return mExistingItems.get(stringToFind);
         } else {
             // add new record here, and get its ID
-            
+            ContentResolver rs = mActivity.getContentResolver();
+
             mLoaderManager.restartLoader(mLoaderID, null, this);
             return 0; // fix this later
         }
