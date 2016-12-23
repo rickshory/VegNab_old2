@@ -7,6 +7,7 @@ import com.vegnab.vegnab.database.VNContract;
 import java.util.HashMap;
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -43,6 +44,8 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
     private HashMap<String, Long> mExistingItems = new HashMap<String, Long>();
     private Context mContext;
     private LoaderManager mLoaderManager;
+    Uri mUri;
+    ContentValues mValues = new ContentValues();
 
     TableIdManager(Activity act, String tableToUse) {
         // format of Tracker; does not work here
