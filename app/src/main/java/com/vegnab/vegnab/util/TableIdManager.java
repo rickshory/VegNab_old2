@@ -3,6 +3,7 @@ package com.vegnab.vegnab.util;
 import com.vegnab.vegnab.VNApplication;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract;
+import com.vegnab.vegnab.database.VegNabDbHelper;
 
 import java.util.HashMap;
 import android.app.Activity;
@@ -65,8 +66,12 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
             return mExistingItems.get(stringToFind);
         } else {
             // add new record here, and get its ID
+            VegNabDbHelper database;
+//            database = new VegNabDbHelper(getContext());
+            database = new VegNabDbHelper(mActivity);
             SQLiteDatabase sqlDB = database.getWritableDatabase();
             long id;
+            id = sqlDB.insert(tblHash.get(uriType).tableName, null, values);
             ContentResolver rs = mActivity.getContentResolver();
             mUri = ContentProvider_VegNab.SQL_URI;
 
