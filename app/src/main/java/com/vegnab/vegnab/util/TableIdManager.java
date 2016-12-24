@@ -66,12 +66,13 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
             return mExistingItems.get(stringToFind);
         } else {
             // add new record here, and get its ID
+            mValues.put(mFieldName, stringToFind);
             VegNabDbHelper database;
 //            database = new VegNabDbHelper(getContext());
             database = new VegNabDbHelper(mActivity);
             SQLiteDatabase sqlDB = database.getWritableDatabase();
             long id;
-            id = sqlDB.insert(tblHash.get(uriType).tableName, null, values);
+            id = sqlDB.insert(tblHash.get(uriType).tableName, null, mValues);
             ContentResolver rs = mActivity.getContentResolver();
             mUri = ContentProvider_VegNab.SQL_URI;
 
