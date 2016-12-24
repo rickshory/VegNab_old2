@@ -10,6 +10,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -64,6 +65,8 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
             return mExistingItems.get(stringToFind);
         } else {
             // add new record here, and get its ID
+            SQLiteDatabase sqlDB = database.getWritableDatabase();
+            long id;
             ContentResolver rs = mActivity.getContentResolver();
             mUri = ContentProvider_VegNab.SQL_URI;
 
