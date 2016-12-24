@@ -65,6 +65,7 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
         } else {
             // add new record here, and get its ID
             ContentResolver rs = mActivity.getContentResolver();
+            mUri = ContentProvider_VegNab.SQL_URI;
 
             mLoaderManager.restartLoader(mLoaderID, null, this);
             return 0; // fix this later
