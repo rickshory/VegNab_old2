@@ -72,12 +72,9 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
             database = new VegNabDbHelper(mActivity);
             SQLiteDatabase sqlDB = database.getWritableDatabase();
             long id;
-            id = sqlDB.insert(tblHash.get(uriType).tableName, null, mValues);
-            ContentResolver rs = mActivity.getContentResolver();
-            mUri = ContentProvider_VegNab.SQL_URI;
-
+            id = sqlDB.insert(mTableName, null, mValues);
             mLoaderManager.restartLoader(mLoaderID, null, this);
-            return 0; // fix this later
+            return id;
         }
     }
 
