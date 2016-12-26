@@ -7,25 +7,16 @@ import com.vegnab.vegnab.database.VegNabDbHelper;
 
 import java.util.HashMap;
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
-//import android.support.v4.app.LoaderManager;
-//import android.support.v4.content.CursorLoader;
-//import android.support.v4.content.Loader;
-
 import android.util.Log;
-
-import static java.security.AccessController.getContext;
 
 /**
  * Created by rshory on 12/6/2016.
