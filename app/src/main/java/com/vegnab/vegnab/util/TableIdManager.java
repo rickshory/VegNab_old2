@@ -57,19 +57,25 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
             return mExistingItems.get(stringToFind);
         } else {
             // add new record here, and get its ID
-            mValues.put(mFieldName, stringToFind);
-            VegNabDbHelper database;
-            database = new VegNabDbHelper(mActivity);
-            SQLiteDatabase sqlDB = database.getWritableDatabase();
-            long id;
-            id = sqlDB.insert(mTableName, null, mValues);
-            if (id < 1) { // adding new record failed
+            try {
+                mValues.put(mFieldName, stringToFind);
+                VegNabDbHelper database;
+                database = new VegNabDbHelper(mActivity);
+                SQLiteDatabase sqlDB = database.getWritableDatabase();
+                long id;
+                id = sqlDB.insert(mTableName, null, mValues);
+                if (id < 1) { // adding new record failed
+                    return 0;
+                } else { // success
+                    // send off a request to restart the loader, to
+                    // include this new item in the hashmap
+                    mLoaderManager.restartLoader(mLoaderID, null, this);
+                    return id;
+                }
+            } catch (Exception e) {
                 return 0;
-            } else { // success
-                // send off a request to restart the loader, to include this new item in the hashmap
-                mLoaderManager.restartLoader(mLoaderID, null, this);
-                return id;
             }
+
         }
     }
 
