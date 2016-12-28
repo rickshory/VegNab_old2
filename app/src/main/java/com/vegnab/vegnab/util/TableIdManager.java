@@ -96,11 +96,15 @@ public class TableIdManager implements LoaderManager.LoaderCallbacks<Cursor> {
         if (VNContract.LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, records: " + c.getCount());
         mExistingItems.clear();
         // the string field is always the '2nd' (0-indexed) column of the cursor
-        mFieldName = c.getColumnName(1); // will need this to add any records
-        while (c.moveToNext()) {
-            // in the hash map, index the ID by the string
-            mExistingItems.put(c.getString(1),
-                    c.getLong(c.getColumnIndexOrThrow("_id")));
+        try { // in case table has <2 fields, no _id field, col(1) is not string, etc.
+            mFieldName = c.getColumnName(1); // will need this to add any records
+            while (c.moveToNext()) {
+                // in the hash map, index the ID by the string
+                mExistingItems.put(c.getString(1),
+                        c.getLong(c.getColumnIndexOrThrow("_id")));
+            }
+        } catch (Exception e) {
+            if (VNContract.LDebug.ON) Log.d(LOG_TAG, "onLoadFinished exception: " + e.toString());
         }
     }
 
