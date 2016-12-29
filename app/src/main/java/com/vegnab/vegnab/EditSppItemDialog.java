@@ -170,7 +170,7 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
         if (args != null) {
             mVegItemRecId = args.getLong(VEG_ITEM_REC_ID);
             mPresenceOnly = args.getBoolean(PRESENCE_ONLY);
-            if (mVegItemRecId == 0) { // new record
+            if (mVegItemRecId == 0) { // new record, fill in any unsaved entries input so far
                 mCurVisitRecId = args.getLong(CUR_VISIT_REC_ID);
                 mCurSubplotRecId = args.getLong(CUR_SUBPLOT_REC_ID);
                 mRecSource = args.getInt(REC_SOURCE);
@@ -185,8 +185,8 @@ public class EditSppItemDialog extends DialogFragment implements android.view.Vi
                 mIsPlaceholder = args.getInt(VEG_IS_PLACEHOLDER);
                 mTxtSpeciesItemLabel.setText(mStrDescription);
                 setupUI();
-            } else {
-                // fill the fields with defaults
+            } else { // editing a record
+                // fill the fields with defaults until the record is retrieved
                 mCurVisitRecId = 0;
                 mCurSubplotRecId = 0;
                 mRecSource = 0;
