@@ -126,7 +126,7 @@ public class LocManualEntryDialog extends DialogFragment {
                     mManualLatitude.requestFocus();
                 }
             } // end of validation not silent
-            return false; // end of Ht length zero
+            return false; // end of Lat length zero
         } else {
             try {
                 Lat = Float.parseFloat(stringLat);
@@ -162,7 +162,7 @@ public class LocManualEntryDialog extends DialogFragment {
                         mManualLatitude.requestFocus();
                     }
                 } // end of validation not silent
-                return false; // end of Ht invalid number
+                return false; // end of Lat invalid number
             }
         } // end of validate Latitude
 
@@ -183,7 +183,7 @@ public class LocManualEntryDialog extends DialogFragment {
                     mManualLongitude.requestFocus();
                 }
             } // end of validation not silent
-            return false; // end of Cv length zero
+            return false; // end of Lon length zero
         } else {
             try {
                 Lon = Float.parseFloat(stringLon);
