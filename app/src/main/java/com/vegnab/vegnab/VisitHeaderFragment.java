@@ -706,10 +706,10 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             }
             if (LDebug.ON) Log.d(LOG_TAG,
                     "onLoadFinished, number of items in mExistingLocAccuracySources: "
-                            + mExistingLocationProviders.size());
+                            + mExistingLocAccuracySources.size());
             if (LDebug.ON) Log.d(LOG_TAG,
                     "onLoadFinished, items in mExistingLocAccuracySources: "
-                            + mExistingLocationProviders.toString());
+                            + mExistingLocAccuracySources.toString());
             break;
         }
     }
