@@ -1580,6 +1580,7 @@ id/vis_hdr_loc_help
                             mGoogleApiClient);
                     if (mLastLocation != null) {
                         mHasPrevLoc = true;
+// following line causes null pointer exception; find out why
                         mPrevLocation.set(mLastLocation);
                     }
                 }
