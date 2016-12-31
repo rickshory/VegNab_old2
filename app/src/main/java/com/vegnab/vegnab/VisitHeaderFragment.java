@@ -1580,8 +1580,12 @@ id/vis_hdr_loc_help
                             mGoogleApiClient);
                     if (mLastLocation != null) {
                         mHasPrevLoc = true;
-// following line causes null pointer exception; find out why
-                        mPrevLocation.set(mLastLocation);
+                        if (mPrevLocation == null) {
+                            mPrevLocation = new Location (mLastLocation);
+                        } else {
+// null pointer exception appears to be fixed
+                            mPrevLocation.set(mLastLocation);
+                        }
                     }
                 }
                 LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
