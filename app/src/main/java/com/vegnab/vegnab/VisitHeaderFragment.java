@@ -118,8 +118,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     private double mLatitude, mLongitude;
     private float mAccuracy, mAccuracyTargetForVisitLoc;
     private String mLocTime, mAccSource, mLocProvider;
-    private Location mCurLocation = new Location ("gps"),
-            mLastLocation = new Location ("gps"),
+    private Location mCurLocation, mLastLocation,
             mPrevLocation = new Location ("gps"); // use string constructor as default
     private boolean mHasPrevLoc = false, mHasLocPermission = true;
     // Request code to use when launching the resolution activity
