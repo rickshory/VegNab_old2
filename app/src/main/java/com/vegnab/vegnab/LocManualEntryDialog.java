@@ -223,12 +223,63 @@ public class LocManualEntryDialog extends DialogFragment {
             }
         } // end of verify Longitude
 
-        // mManualAccuracy
+        // validate Accuracy
+        String stringAc = mManualAccuracy.getText().toString().trim();
+        if (stringAc.length() == 0) { // valid to not put in any accuracy
+            if (LDebug.ON) Log.d(LOG_TAG, "Accuracy is length zero");
+            Ac = 0; // use default which means no accuracy given
+        } else {
+
+
+
+
+            try {
+                Ac = Float.parseFloat(stringAc);
+/*
+                if ((Ac > 2000)) { // maybe limit accuracy
+                    if (LDebug.ON) Log.d(LOG_TAG, "Accuracy input is > 2000");
+                    if (mValidationLevel > VNContract.Validation.SILENT) {
+                        stringProblem = c.getResources().getString(R.string.loc_manual_entry_msg_accuracy_bad);
+                        if (mValidationLevel == VNContract.Validation.QUIET) {
+                            Toast.makeText(this.getActivity(),
+                                    stringProblem,
+                                    Toast.LENGTH_LONG).show();
+                        }
+                        if (mValidationLevel == VNContract.Validation.CRITICAL) {
+                            flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
+                            flexErrDlg.show(getFragmentManager(), "frg_err_accuracy_out_of_range");
+                            mManualLatitude.requestFocus();
+                        }
+                    } // end of validation not silent
+                    return false; // end of Ac out of range
+                }
+*/
+            } catch(NumberFormatException e) {
+                if (LDebug.ON) Log.d(LOG_TAG, "Accuracy is not a valid number");
+                if (mValidationLevel > VNContract.Validation.SILENT) {
+                    stringProblem = c.getResources().getString(R.string.loc_manual_entry_msg_accuracy_bad);
+                    if (mValidationLevel == VNContract.Validation.QUIET) {
+                        Toast.makeText(this.getActivity(),
+                                stringProblem,
+                                Toast.LENGTH_LONG).show();
+                    }
+                    if (mValidationLevel == VNContract.Validation.CRITICAL) {
+                        flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
+                        flexErrDlg.show(getFragmentManager(), "frg_err_accuracy_out_of_range");
+                        mManualAccuracy.requestFocus();
+                    }
+                } // end of validation not silent
+                return false; // end of Ac invalid number
+            }
+        } // end of validate Accuracy
+
+
         mLatitude = Lat;
         mLongitude = Lon;
-        // mAccuracy;
+        mAccuracy = Ac;
         mManualLatitude.setText("" + Lat);
         mManualLongitude.setText("" + Lon);
+        mManualAccuracy.setText("" + Ac);
         return true;
 
     } // end of validation
