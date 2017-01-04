@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+// android.app.DialogFragment; // maybe use this instead
 import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,32 +26,33 @@ public class LocManualEntryDialog extends DialogFragment {
     private static final String LOG_TAG = LocManualEntryDialog.class.getSimpleName();
     private TextView mManualLatitude, mManualLongitude, mManualAccuracy;
     private float mLatitude, mLongitude, mAccuracy;
-/*
-    public interface OnUseLocalSppChange {
+
+    public interface LocManualEntryListener {
         // methods that must be implemented in the container Activity
-        public void onSettingsDialogUseLocalChanged();
+        public void onLocManualEntry(DialogFragment dialog);
     }
-    OnUseLocalSppChange mSetLocalSppCallback; // declare the interface
-*/
+    // Use this instance of the interface to deliver action events
+    LocManualEntryListener mLocManualEntryCallback; // declare the interface
+
     static LocManualEntryDialog newInstance(Bundle args) {
         LocManualEntryDialog f = new LocManualEntryDialog();
         f.setArguments(args);
         return f;
     }
 
-    /*
+
     // Test to make sure implemented:
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         // assure the container activity has implemented the callback interface
         try {
-            mSetLocalSppCallback = (OnUseLocalSppChange) activity;
+            mLocManualEntryCallback = (LocManualEntryListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException (activity.toString() + " must implement OnUseLocalSppChange");
+            throw new ClassCastException (activity.toString()
+                + " must implement LocManualEntryListener");
         }
     }
-*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup rootView, Bundle savedInstanceState) {
