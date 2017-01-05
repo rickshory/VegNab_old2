@@ -93,6 +93,7 @@ public class MainVNActivity extends ActionBarActivity
         VisitHeaderFragment.OnButtonListener,
         VisitHeaderFragment.EditVisitDialogListener,
         VisitHeaderFragment.OnSppLocationChange,
+        LocManualEntryDialog.LocManualEntryListener,
         VegSubplotFragment.OnButtonListener,
         EditNamerDialog.EditNamerDialogListener,
         ConfirmDelNamerDialog.EditNamerDialogListener,
@@ -488,6 +489,9 @@ public class MainVNActivity extends ActionBarActivity
     return;
     }
 */
+    public void onLocManualEntry(DialogFragment dialog) {
+        if (LDebug.ON) Log.d(LOG_TAG, "in onLocManualEntry");
+    }
 
     public void onVisitHeaderGoButtonClicked(long visitId) {
         mVisitId = visitId;
