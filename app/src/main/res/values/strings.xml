@@ -119,6 +119,7 @@
     <string name="visit_header_label_notes">Notes</string>
     <string name="visit_header_hint_notes">Notes</string>
 
+    <string name="loc_manual_header">Enter location manually</string>
     <string name="latitude_label">Latitude: </string>
     <string name="longitude_label">Longitude: </string>
     <string name="accuracy_label">Accuracy (m): </string>

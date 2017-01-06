@@ -13,6 +13,33 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     >
+    <Button
+        android:id="@+id/manual_loc_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="left|center_vertical"
+        android:layout_alignParentLeft="true"
+        android:background="@android:drawable/ic_menu_close_clear_cancel"
+         />
+
+    <TextView
+        android:id="@+id/lbl_manual_header"
+        android:text="@string/loc_manual_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/manual_loc_cancel"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"/>
+
+    <Button
+        android:id="@+id/manual_loc_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="right|center_vertical"
+        android:text="@string/action_save"
+        android:layout_toRightOf="@id/lbl_manual_header"
+        />
 
     <TextView
         android:id="@+id/lbl_manual_latitude"
@@ -20,6 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_below="@id/manual_loc_cancel"
         />
 
     <EditText
