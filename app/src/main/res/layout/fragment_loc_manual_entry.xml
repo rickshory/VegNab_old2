@@ -22,13 +22,29 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
+        <RelativeLayout
+            android:id="@+id/manl_loc_toolbar_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            >
+
         <Button
             android:id="@+id/manual_loc_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:background="@android:drawable/ic_menu_close_clear_cancel"
             style="@style/Widget.AppCompat.Button.Small"
-            android:layout_gravity="left"
+            />
+            
+        <Button
+            android:id="@+id/manual_loc_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="@string/action_save"
             />
 
         <TextView
@@ -36,21 +52,14 @@
             android:text="@string/loc_manual_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/manual_loc_cancel"
+            android:layout_toLeftOf="@id/manual_loc_save"
             android:textColor="@android:color/white"
             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-            android:layout_gravity="center"
             />
-
-        <Button
-            android:id="@+id/manual_loc_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:text="@string/action_save"
-            android:layout_gravity="right"
-            />
+        </RelativeLayout>
     </android.support.v7.widget.Toolbar>
-    
+
     <TextView
         android:id="@+id/lbl_manual_latitude"
         android:text="@string/latitude_label"
