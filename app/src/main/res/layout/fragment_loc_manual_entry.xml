@@ -1,5 +1,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ScrollView01"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/ScrollView01"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
@@ -17,11 +18,11 @@
         android:id="@+id/manual_loc_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:background="@android:drawable/ic_menu_close_clear_cancel"
-         />
+        android:textSize="14sp"
+        style="@style/Widget.AppCompat.Button.Small"/>
 
     <Button
         android:id="@+id/manual_loc_save"
@@ -48,8 +49,8 @@
         android:text="@string/latitude_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/manual_loc_cancel"
+        android:layout_alignLeft="@id/manual_loc_cancel"
+        android:layout_below="@+id/lbl_manual_header"
         />
 
     <EditText
