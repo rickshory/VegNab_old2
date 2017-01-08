@@ -1,7 +1,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:appcompat="http://schemas.android.com/apk/res-auto"
+            xmlns:android.support.v7.appcompat="http://schemas.android.com/apk/res-auto"
             android:id="@+id/ScrollView01"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
@@ -22,8 +22,8 @@
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        appcompat:collapseIcon="@android:drawable/ic_menu_close_clear_cancel"
-        appcompat:title="@string/loc_manual_header"
+        android.support.v7.appcompat:collapseIcon="@android:drawable/ic_menu_close_clear_cancel"
+        android.support.v7.appcompat:title="@string/loc_manual_header"
         android:textColor="@android:color/white"
         style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
         />

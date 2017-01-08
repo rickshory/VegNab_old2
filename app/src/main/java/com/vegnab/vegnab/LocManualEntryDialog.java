@@ -1,6 +1,7 @@
 package com.vegnab.vegnab;
 
 import android.app.Activity;
+import android.app.ActionBar;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -75,7 +76,7 @@ public class LocManualEntryDialog extends DialogFragment {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         return dialog;
     }
-    
+
     @Override
     public void onStart() {
         super.onStart();
