@@ -231,10 +231,6 @@ public class LocManualEntryDialog extends DialogFragment {
             if (LDebug.ON) Log.d(LOG_TAG, "Accuracy is length zero");
             Ac = 0; // use default which means no accuracy given
         } else {
-
-
-
-
             try {
                 Ac = Float.parseFloat(stringAc);
 /*
@@ -275,7 +271,6 @@ public class LocManualEntryDialog extends DialogFragment {
             }
         } // end of validate Accuracy
 
-
         mLatitude = Lat;
         mLongitude = Lon;
         mAccuracy = Ac;
@@ -283,6 +278,5 @@ public class LocManualEntryDialog extends DialogFragment {
         mManualLongitude.setText("" + Lon);
         mManualAccuracy.setText("" + Ac);
         return true;
-
     } // end of validation
 }

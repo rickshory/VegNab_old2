@@ -1398,7 +1398,10 @@ id/vis_hdr_loc_help
                 .setValue(1)
                 .build());
         // enter location manually
-        notYetDlg.show(getFragmentManager(), null);
+        LocManualEntryDialog locMnlDlg = LocManualEntryDialog.newInstance(null);
+        locMnlDlg.show(getFragmentManager(), "frg_loc_manl_entry");
+
+//        notYetDlg.show(getFragmentManager(), null);
         return true;
     case R.id.vis_hdr_loc_permission:
         if (LDebug.ON) Log.d(LOG_TAG, "'Permission' selected");
