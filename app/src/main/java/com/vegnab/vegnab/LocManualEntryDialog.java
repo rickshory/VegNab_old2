@@ -1,6 +1,7 @@
 package com.vegnab.vegnab;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -66,6 +68,14 @@ public class LocManualEntryDialog extends DialogFragment {
         return view;
     }
 
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Remove dialog title
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
+    }
+    
     @Override
     public void onStart() {
         super.onStart();
