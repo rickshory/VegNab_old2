@@ -63,6 +63,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -85,7 +86,7 @@ import org.json.JSONObject;
 
 import static com.vegnab.vegnab.PhPixGridFragment.*;
 
-public class MainVNActivity extends ActionBarActivity 
+public class MainVNActivity extends AppCompatActivity
         implements DonateFragment.OnButtonListener,
         DonateFragment.OnIAPDoneListener,
         NewVisitFragment.OnButtonListener,
