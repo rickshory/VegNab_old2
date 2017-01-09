@@ -1,0 +1,131 @@
+import groovy.swing.SwingBuilder
+
+// for making UI inputs when there is no console
+apply plugin: 'com.android.application'
+
+android {
+//    dexOptions {
+//        preDexLibraries = false
+//    }
+//    def Properties versionProps = new Properties()
+//    def versionPropsFile = file('version.properties')
+//    if(versionPropsFile.exists())
+//        versionProps.load(new FileInputStream(versionPropsFile))
+//    versionProps['VERSION_CODE'] = code.toString()
+//    versionProps.store(versionPropsFile.newWriter(), null)
+//
+//    if (versionPropsFile.canRead()) {
+//        def Properties versionProps = new Properties()
+//
+//        versionProps.load(new FileInputStream(versionPropsFile))
+//
+//        def code = versionProps['VERSION_CODE'].toInteger() + 1
+//
+//        versionProps['VERSION_CODE']=code.toString()
+//        versionProps.store(versionPropsFile.newWriter(), null)
+    signingConfigs {
+        // as long as this file is listed in .gitignore, and not public on GitHub, it is
+        // OK to have the passwords right here. If it is ever public, then we need to
+        // use one of the indirect methods
+        release {
+        }
+//        basic {
+//            storeFile file("gradlekeystore.jks")
+////            storePassword System.console().readLine("\nKeystore password: ")
+//            storePassword ""
+//            keyAlias "vegnaba"
+////            keyPassword System.console().readLine("\nKey password: ")
+//            keyPassword ""
+//        }
+        alpha {
+            storeFile file('C:/Users/rshory/Documents/CurrentWork/AndroidStudioProjects/VegNab/app/vegnabalpha.jks')
+            storePassword 'veg0a0nab'
+            keyAlias 'vnalpha'
+            keyPassword 'bana0gev'
+        }
+        beta {
+        }
+    }
+    compileSdkVersion 25
+    buildToolsVersion '25.0.2'
+    defaultConfig {
+        applicationId "com.vegnab.vegnab"
+        // minSdkVersion 11 // previously used
+        minSdkVersion 18 // Android 4.3, JELLY_BEAN_MR2
+        targetSdkVersion 25
+        //      versionCode code
+        versionCode 1
+        //      versionName "1.1." + code
+        versionName "1.0"
+        buildConfigField "String", "PUBLIC_DB_FOLDER", '"VegNab"'
+    }
+
+    productFlavors {
+        alphatest {
+            applicationId "com.vegnab.alphatest"
+            versionName 'alphatest-0.3'
+            buildConfigField "String", "PUBLIC_DB_FOLDER", '"VegNabAlphaTest"'
+            versionCode 4
+        }
+        betatest {
+            applicationId "com.vegnab.betatest"
+            versionName "betatest-1.0"
+            buildConfigField "String", "PUBLIC_DB_FOLDER", '"VegNabBetaTest"'
+        }
+        full {
+            applicationId "com.vegnab.full"
+            versionName "1.0"
+            buildConfigField "String", "PUBLIC_DB_FOLDER", '"VegNab"'
+        }
+    }
+
+    buildTypes {
+        release {
+            debuggable false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+//            signingConfig signingConfigs.releaseConfig
+            //Only use the release key on a release buildType
+//            productFlavors.alphatest.signingConfig signingConfigs.basic
+//            productFlavors.full.signingConfig signingConfigs.basic
+            signingConfig signingConfigs.alpha
+        }
+        debug {
+            debuggable true
+            applicationIdSuffix ".debug"
+        }
+    }
+}
+
+dependencies {
+    compile files('libs/sqliteassethelper-2.0.1.jar')
+    compile project(':volley')
+    compile 'com.android.support:support-core-utils:25.1.0'
+    compile 'com.google.android.gms:play-services:10.0.1'
+    compile 'com.google.android.gms:play-services-ads:10.0.1'
+    compile 'com.google.android.gms:play-services-identity:10.0.1'
+    compile 'com.google.android.gms:play-services-gcm:10.0.1'
+}
+
+//// this part goes outside the <android> tags
+//def Properties props = new Properties()
+//def propFile = new File('signing.properties')
+//if (propFile.canRead()){
+//    props.load(new FileInputStream(propFile))
+//
+//    if (props!=null && props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
+//            props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
+//        android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
+//        android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
+//        android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
+//        android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
+//    } else {
+//        println 'signing.properties found but some entries are missing'
+//        android.buildTypes.release.signingConfig = null
+//    }
+//}else {
+//    println 'signing.properties not found'
+//    android.buildTypes.release.signingConfig = null
+//}
+
+
+apply from: "../artifacts.gradle"
