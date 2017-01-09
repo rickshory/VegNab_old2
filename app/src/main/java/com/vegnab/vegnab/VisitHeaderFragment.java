@@ -420,23 +420,18 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
         // assure the container activity has implemented the callback interface
-        Activity a;
-
-        if (context instanceof Activity){
-            a=(Activity) context;
-            try {
-                mButtonCallback = (OnButtonListener) a;
-            } catch (ClassCastException e) {
-                throw new ClassCastException (a.toString() + " must implement OnButtonListener");
-            }
-            try {
-                mSppLocChangeCallback = (OnSppLocationChange) a;
-            } catch (ClassCastException e) {
-                throw new ClassCastException (a.toString() + " must implement OnSppLocationChange");
-            }
+        try {
+            mButtonCallback = (OnButtonListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException (activity.toString() + " must implement OnButtonListener");
+        }
+        try {
+            mSppLocChangeCallback = (OnSppLocationChange) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException (activity.toString() + " must implement OnSppLocationChange");
         }
     }
 

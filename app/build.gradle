@@ -4,9 +4,6 @@ import groovy.swing.SwingBuilder
 apply plugin: 'com.android.application'
 
 android {
-//    dexOptions {
-//        preDexLibraries = false
-//    }
 //    def Properties versionProps = new Properties()
 //    def versionPropsFile = file('version.properties')
 //    if(versionPropsFile.exists())
@@ -50,8 +47,7 @@ android {
     buildToolsVersion '25.0.2'
     defaultConfig {
         applicationId "com.vegnab.vegnab"
-        // minSdkVersion 11 // previously used
-        minSdkVersion 18 // Android 4.3, JELLY_BEAN_MR2
+        minSdkVersion 18
         targetSdkVersion 25
         //      versionCode code
         versionCode 1
@@ -99,11 +95,10 @@ android {
 dependencies {
     compile files('libs/sqliteassethelper-2.0.1.jar')
     compile project(':volley')
-    compile 'com.android.support:support-core-utils:25.1.0'
-    compile 'com.google.android.gms:play-services:10.0.1'
-    compile 'com.google.android.gms:play-services-ads:10.0.1'
-    compile 'com.google.android.gms:play-services-identity:10.0.1'
-    compile 'com.google.android.gms:play-services-gcm:10.0.1'
+    compile 'com.google.android.gms:play-services:8.1.0'
+    compile 'com.google.android.gms:play-services-ads:8.1.0'
+    compile 'com.google.android.gms:play-services-identity:8.1.0'
+    compile 'com.google.android.gms:play-services-gcm:8.1.0'
 }
 
 //// this part goes outside the <android> tags
