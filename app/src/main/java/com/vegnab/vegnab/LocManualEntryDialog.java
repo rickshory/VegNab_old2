@@ -61,6 +61,16 @@ public class LocManualEntryDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup rootView, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_loc_manual_entry, rootView);
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.loc_manl_entry_toolbar);
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getDialog().onBackPressed();
+                }
+            });
+        }
+
         mManualLatitude = (EditText) view.findViewById(R.id.txt_manual_latitude);
         mManualLatitude.setFilters(new InputFilter[]{ new InputFilterMinMaxFloat("-90", "90")});
         mManualLongitude = (EditText) view.findViewById(R.id.txt_manual_longitude);
