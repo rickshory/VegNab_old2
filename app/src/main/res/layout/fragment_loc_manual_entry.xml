@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:id="@+id/btn_manl_loc_save"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:background="?android:attr/selectableItemBackground"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
