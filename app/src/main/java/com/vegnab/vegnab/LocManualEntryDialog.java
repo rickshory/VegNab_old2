@@ -75,7 +75,15 @@ public class LocManualEntryDialog extends DialogFragment {
         mSaveButton = (Button) view.findViewById(R.id.btn_manl_loc_save);
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // Perform action on click
+                if (validateManualLocValues()) {
+                    Toast.makeText(getParentFragment().getActivity(),
+                            "Validated OK",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getParentFragment().getActivity(),
+                            "Did not validated",
+                            Toast.LENGTH_LONG).show();
+                }
             }
         });
         mManualLatitude = (EditText) view.findViewById(R.id.txt_manual_latitude);
