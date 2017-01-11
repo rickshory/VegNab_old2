@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -30,6 +31,7 @@ public class LocManualEntryDialog extends DialogFragment {
     private static final String LOG_TAG = LocManualEntryDialog.class.getSimpleName();
     private TextView mManualLatitude, mManualLongitude, mManualAccuracy;
     private float mLatitude, mLongitude, mAccuracy;
+    private Button mSaveButton;
 
     public interface LocManualEntryListener {
         // methods that must be implemented in the container Activity
@@ -70,7 +72,12 @@ public class LocManualEntryDialog extends DialogFragment {
                 }
             });
         }
-
+        mSaveButton = (Button) view.findViewById(R.id.btn_manl_loc_save);
+        mSaveButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+            }
+        });
         mManualLatitude = (EditText) view.findViewById(R.id.txt_manual_latitude);
         mManualLatitude.setFilters(new InputFilter[]{ new InputFilterMinMaxFloat("-90", "90")});
         mManualLongitude = (EditText) view.findViewById(R.id.txt_manual_longitude);
