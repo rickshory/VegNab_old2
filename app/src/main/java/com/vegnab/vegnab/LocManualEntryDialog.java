@@ -76,12 +76,12 @@ public class LocManualEntryDialog extends DialogFragment {
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (validateManualLocValues()) {
-                    Toast.makeText(getParentFragment().getActivity(),
+                    Toast.makeText(getContext(),
                             "Validated OK",
                             Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getParentFragment().getActivity(),
-                            "Did not validated",
+                    Toast.makeText(getContext(),
+                            "Did not validate",
                             Toast.LENGTH_LONG).show();
                 }
             }
