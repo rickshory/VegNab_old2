@@ -52,7 +52,7 @@
 
     <EditText
         android:id="@+id/txt_manual_latitude"
-        android:inputType="numberDecimal"
+        android:inputType="numberDecimal|numberSigned"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/lbl_manual_latitude"
@@ -70,7 +70,7 @@
 
     <EditText
         android:id="@+id/txt_manual_longitude"
-        android:inputType="numberDecimal"
+        android:inputType="numberDecimal|numberSigned"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/lbl_manual_longitude"
