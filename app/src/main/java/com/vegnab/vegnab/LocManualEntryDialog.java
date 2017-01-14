@@ -87,9 +87,7 @@ public class LocManualEntryDialog extends DialogFragment {
             }
         });
         mManualLatitude = (EditText) view.findViewById(R.id.txt_manual_latitude);
-        mManualLatitude.setFilters(new InputFilter[]{ new InputFilterMinMaxFloat("-90", "90")});
         mManualLongitude = (EditText) view.findViewById(R.id.txt_manual_longitude);
-        mManualLongitude.setFilters(new InputFilter[]{ new InputFilterMinMaxFloat("-180", "180")});
         mManualAccuracy = (EditText) view.findViewById(R.id.txt_manual_accuracy);
 //        getDialog().setTitle(R.string.vis_hdr_loc_manl_entry_title);
         return view;
