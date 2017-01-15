@@ -42,58 +42,64 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <TextView
-        android:id="@+id/lbl_manual_latitude"
-        android:text="@string/latitude_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/loc_manl_entry_toolbar"
+    <RelativeLayout
+        android:id="@+id/manl_loc_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp" >
+
+        <TextView
+            android:id="@+id/lbl_manual_latitude"
+            android:text="@string/latitude_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <EditText
+            android:id="@+id/txt_manual_latitude"
+            android:inputType="numberDecimal|numberSigned"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/lbl_manual_latitude"
+            android:layout_below="@+id/lbl_manual_latitude"
         />
 
-    <EditText
-        android:id="@+id/txt_manual_latitude"
-        android:inputType="numberDecimal|numberSigned"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/lbl_manual_latitude"
-        android:layout_below="@+id/lbl_manual_latitude"
-    />
-
-    <TextView
-    android:id="@+id/lbl_manual_longitude"
-    android:text="@string/longitude_label"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignParentLeft="true"
-    android:layout_below="@id/txt_manual_latitude"
-    />
-
-    <EditText
-        android:id="@+id/txt_manual_longitude"
-        android:inputType="numberDecimal|numberSigned"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/lbl_manual_longitude"
-        android:layout_below="@+id/lbl_manual_longitude"
-        />
-
-    <TextView
-        android:id="@+id/lbl_manual_accuracy"
-        android:text="@string/accuracy_label"
+        <TextView
+        android:id="@+id/lbl_manual_longitude"
+        android:text="@string/longitude_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@id/txt_manual_longitude"
+        android:layout_below="@id/txt_manual_latitude"
         />
 
-    <EditText
-        android:id="@+id/txt_manual_accuracy"
-        android:inputType="numberDecimal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/lbl_manual_accuracy"
-        android:layout_below="@+id/lbl_manual_accuracy"
-        />
+        <EditText
+            android:id="@+id/txt_manual_longitude"
+            android:inputType="numberDecimal|numberSigned"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/lbl_manual_longitude"
+            android:layout_below="@+id/lbl_manual_longitude"
+            />
 
+        <TextView
+            android:id="@+id/lbl_manual_accuracy"
+            android:text="@string/accuracy_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/txt_manual_longitude"
+            />
+
+        <EditText
+            android:id="@+id/txt_manual_accuracy"
+            android:inputType="numberDecimal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/lbl_manual_accuracy"
+            android:layout_below="@+id/lbl_manual_accuracy"
+            />
+    </RelativeLayout>
 </RelativeLayout>
 </ScrollView>
