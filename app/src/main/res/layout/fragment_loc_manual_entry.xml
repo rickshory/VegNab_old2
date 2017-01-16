@@ -44,6 +44,7 @@
 
     <RelativeLayout
         android:id="@+id/manl_loc_content"
+        android:layout_below="@+id/loc_manl_entry_toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="16dp"
