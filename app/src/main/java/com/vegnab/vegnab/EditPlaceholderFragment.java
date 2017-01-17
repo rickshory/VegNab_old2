@@ -458,18 +458,21 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         // assure the container activity has implemented the callback interfaces
-        try {
-            mButtonCallback = (OnButtonListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException (activity.toString() + " must implement OnButtonListener");
-        }
-        try {
-            mEditPhListener = (EditPlaceholderFragmentListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException (activity.toString() + " must implement EditPlaceholderFragmentListener");
+        if (context instanceof Activity){
+            Activity a = (Activity) context;
+            try {
+                mButtonCallback = (OnButtonListener) a;
+            } catch (ClassCastException e) {
+                throw new ClassCastException (a.toString() + " must implement OnButtonListener");
+            }
+            try {
+                mEditPhListener = (EditPlaceholderFragmentListener) a;
+            } catch (ClassCastException e) {
+                throw new ClassCastException (a.toString() + " must implement EditPlaceholderFragmentListener");
+            }
         }
     }
 
