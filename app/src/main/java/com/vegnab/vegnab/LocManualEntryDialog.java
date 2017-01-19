@@ -40,6 +40,10 @@ public class LocManualEntryDialog extends DialogFragment {
     // Use this instance of the interface to deliver action events
     LocManualEntryListener mLocManualEntryCallback; // declare the interface
 
+    final static String ARG_LATITUDE_STRING = "latStr";
+    final static String ARG_LONGITUDE_STRING = "lonStr";
+    final static String ARG_ACCURACY_STRING = "accStr";
+
     static LocManualEntryDialog newInstance(Bundle args) {
         LocManualEntryDialog f = new LocManualEntryDialog();
         f.setArguments(args);

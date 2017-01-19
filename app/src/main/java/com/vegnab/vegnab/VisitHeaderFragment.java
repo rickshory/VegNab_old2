@@ -1394,9 +1394,9 @@ id/vis_hdr_loc_help
                 .build());
         // enter location manually
         Bundle args = new Bundle();
-        args.putDouble(ARG_LOC_LATITUDE, mLatitude);
-        args.putDouble(ARG_LOC_LONGITUDE, mLongitude);
-        args.putFloat(ARG_LOC_ACCURACY, mAccuracy);
+        args.putString(LocManualEntryDialog.ARG_LATITUDE_STRING, "" + mLatitude);
+        args.putString(LocManualEntryDialog.ARG_LONGITUDE_STRING, "" + mLongitude);
+        args.putString(LocManualEntryDialog.ARG_ACCURACY_STRING, "" + mAccuracy);
         LocManualEntryDialog locMnlDlg = LocManualEntryDialog.newInstance(args);
         locMnlDlg.show(getFragmentManager(), "frg_loc_manl_entry");
 
