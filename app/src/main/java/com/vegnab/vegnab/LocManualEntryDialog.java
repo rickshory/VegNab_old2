@@ -94,6 +94,9 @@ public class LocManualEntryDialog extends DialogFragment {
         mManualLongitude = (EditText) view.findViewById(R.id.txt_manual_longitude);
         mManualAccuracy = (EditText) view.findViewById(R.id.txt_manual_accuracy);
 //        getDialog().setTitle(R.string.vis_hdr_loc_manl_entry_title);
+        mManualLatitude.setText(this.getArguments().getString(ARG_LATITUDE_STRING));
+        mManualLongitude.setText(this.getArguments().getString(ARG_LONGITUDE_STRING));
+        mManualAccuracy.setText(this.getArguments().getString(ARG_ACCURACY_STRING));
         return view;
     }
 

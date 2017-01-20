@@ -1400,7 +1400,6 @@ id/vis_hdr_loc_help
         LocManualEntryDialog locMnlDlg = LocManualEntryDialog.newInstance(args);
         locMnlDlg.show(getFragmentManager(), "frg_loc_manl_entry");
 
-//        notYetDlg.show(getFragmentManager(), null);
         return true;
     case R.id.vis_hdr_loc_permission:
         if (LDebug.ON) Log.d(LOG_TAG, "'Permission' selected");
