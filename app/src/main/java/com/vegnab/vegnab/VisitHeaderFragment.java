@@ -1396,7 +1396,11 @@ id/vis_hdr_loc_help
         Bundle args = new Bundle();
         args.putString(LocManualEntryDialog.ARG_LATITUDE_STRING, "" + mLatitude);
         args.putString(LocManualEntryDialog.ARG_LONGITUDE_STRING, "" + mLongitude);
-        args.putString(LocManualEntryDialog.ARG_ACCURACY_STRING, "" + mAccuracy);
+        if (mAccuracy == 0.0) {
+            args.putString(LocManualEntryDialog.ARG_ACCURACY_STRING, "");
+        } else {
+            args.putString(LocManualEntryDialog.ARG_ACCURACY_STRING, "" + mAccuracy);
+        }
         LocManualEntryDialog locMnlDlg = LocManualEntryDialog.newInstance(args);
         locMnlDlg.show(getFragmentManager(), "frg_loc_manl_entry");
 
