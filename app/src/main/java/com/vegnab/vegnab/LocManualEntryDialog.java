@@ -27,7 +27,7 @@ import com.vegnab.vegnab.database.VNContract.LDebug;
 import com.vegnab.vegnab.util.InputFilterMinMaxFloat;
 
 public class LocManualEntryDialog extends DialogFragment {
-    private int mValidationLevel = VNContract.Validation.SILENT;
+    private int mValidationLevel = VNContract.Validation.CRITICAL;
     private static final String LOG_TAG = LocManualEntryDialog.class.getSimpleName();
     private TextView mManualLatitude, mManualLongitude, mManualAccuracy;
     private float mLatitude, mLongitude, mAccuracy;
