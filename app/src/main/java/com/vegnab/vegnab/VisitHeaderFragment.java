@@ -120,7 +120,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     private String mLocTime, mAccSource, mLocProvider;
     private Location mCurLocation, mLastLocation,
             mPrevLocation = new Location ("gps"); // use string constructor as default
-    private boolean mHasPrevLoc = false, mHasLocPermission = true;
+    private boolean mHasPrevLoc = false, mHasLocPermission = true, mGotSomeLocation = false;
     // Request code to use when launching the resolution activity
     private static final int REQUEST_RESOLVE_ERROR = 1001;
     // Unique tag for the error dialog fragment
@@ -652,6 +652,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 // mAccSource
                 mViewVisitLocation.setText("" + mLatitude + ", " + mLongitude
                         + "\naccuracy " + mAccuracy + "m");
+                mGotSomeLocation = true;
             }
             break;
 
@@ -1394,12 +1395,18 @@ id/vis_hdr_loc_help
                 .build());
         // enter location manually
         Bundle args = new Bundle();
-        args.putString(LocManualEntryDialog.ARG_LATITUDE_STRING, "" + mLatitude);
-        args.putString(LocManualEntryDialog.ARG_LONGITUDE_STRING, "" + mLongitude);
-        if (mAccuracy == 0.0) {
-            args.putString(LocManualEntryDialog.ARG_ACCURACY_STRING, "");
+        if (mGotSomeLocation) {
+            args.putString(LocManualEntryDialog.ARG_LATITUDE_STRING, "" + mLatitude);
+            args.putString(LocManualEntryDialog.ARG_LONGITUDE_STRING, "" + mLongitude);
+            if (mAccuracy == 0.0) {
+                args.putString(LocManualEntryDialog.ARG_ACCURACY_STRING, "");
+            } else {
+                args.putString(LocManualEntryDialog.ARG_ACCURACY_STRING, "" + mAccuracy);
+            }
         } else {
-            args.putString(LocManualEntryDialog.ARG_ACCURACY_STRING, "" + mAccuracy);
+            args.putString(LocManualEntryDialog.ARG_LATITUDE_STRING, "");
+            args.putString(LocManualEntryDialog.ARG_LONGITUDE_STRING, "");
+            args.putString(LocManualEntryDialog.ARG_ACCURACY_STRING, "");
         }
         LocManualEntryDialog locMnlDlg = LocManualEntryDialog.newInstance(args);
         locMnlDlg.show(getFragmentManager(), "frg_loc_manl_entry");
@@ -1721,6 +1728,7 @@ id/vis_hdr_loc_help
                 + "\ntarget accuracy " + mAccuracyTargetForVisitLoc + "m"
                 + "\ncontinuing to acquire";
             mViewVisitLocation.setText(s);
+            mGotSomeLocation = true;
         }
     }
 
@@ -1763,6 +1771,7 @@ id/vis_hdr_loc_help
             s = "" + mLatitude + ", " + mLongitude
                     + "\naccuracy " + mAccuracy + "m";
             mViewVisitLocation.setText(s);
+            mGotSomeLocation = true;
         }
 
         RequestQueue queue = Volley.newRequestQueue(getActivity());
