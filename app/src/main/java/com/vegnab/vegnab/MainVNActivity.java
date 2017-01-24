@@ -492,6 +492,7 @@ public class MainVNActivity extends AppCompatActivity
 */
     public void onLocManualEntry(DialogFragment dialog) {
         if (LDebug.ON) Log.d(LOG_TAG, "in onLocManualEntry");
+
     }
 
     public void onVisitHeaderGoButtonClicked(long visitId) {

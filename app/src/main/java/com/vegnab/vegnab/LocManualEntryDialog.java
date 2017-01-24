@@ -83,6 +83,11 @@ public class LocManualEntryDialog extends DialogFragment {
                     Toast.makeText(getContext(),
                             "Validated OK",
                             Toast.LENGTH_LONG).show();
+                    try { // can fail with null pointer exception if fragment is gone
+                        mLocManualEntryCallback.onLocManualEntry(LocManualEntryDialog.this);
+                    } catch (Exception e) {
+                        // ignore; if fails, will not update with manual entry
+                    }
                 } else {
                     Toast.makeText(getContext(),
                             "Did not validate",
