@@ -1881,6 +1881,9 @@ id/vis_hdr_loc_help
     // if Google Play Services not available, would Location Services be?
     // requestSingleUpdate
 
+    public void setLocation(Bundle args) {
+        // used to set the location when e.g entered manually, or reset to previous
+    }
 
     // Checks if external storage is available for read and write
     public boolean isExternalStorageWritable() {
