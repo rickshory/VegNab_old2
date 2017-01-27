@@ -35,7 +35,7 @@ public class LocManualEntryDialog extends DialogFragment {
 
     public interface LocManualEntryListener {
         // methods that must be implemented in the container Activity
-        public void onLocManualEntry(DialogFragment dialog);
+        public void onLocManualEntry(DialogFragment dialog, Bundle args);
     }
     // Use this instance of the interface to deliver action events
     LocManualEntryListener mLocManualEntryCallback; // declare the interface
@@ -84,7 +84,8 @@ public class LocManualEntryDialog extends DialogFragment {
                             "Validated OK",
                             Toast.LENGTH_LONG).show();
                     try { // can fail with null pointer exception if fragment is gone
-                        mLocManualEntryCallback.onLocManualEntry(LocManualEntryDialog.this);
+                        Bundle args = getArguments();
+                        mLocManualEntryCallback.onLocManualEntry(LocManualEntryDialog.this, args);
                     } catch (Exception e) {
                         // ignore; if fails, will not update with manual entry
                     }
@@ -323,7 +324,18 @@ public class LocManualEntryDialog extends DialogFragment {
         mAccuracy = Ac;
         mManualLatitude.setText("" + Lat);
         mManualLongitude.setText("" + Lon);
-        mManualAccuracy.setText("" + Ac);
+        if (Ac == 0.0)
+            mManualAccuracy.setText("");
+        else
+            mManualAccuracy.setText("" + Ac);
+        Bundle args = new Bundle();
+        args.putString(ARG_LATITUDE_STRING, "" + Lat);
+        args.putString(ARG_LONGITUDE_STRING, "" + Lon);
+        if (Ac == 0.0)
+            args.putString(ARG_ACCURACY_STRING, "");
+        else
+            args.putString(ARG_ACCURACY_STRING, "" + Ac);
+        this.setArguments(args);
         return true;
     } // end of validation
 }

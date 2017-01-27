@@ -490,13 +490,13 @@ public class MainVNActivity extends AppCompatActivity
     return;
     }
 */
-    public void onLocManualEntry(DialogFragment dialog) {
+    public void onLocManualEntry(DialogFragment dialog, Bundle args) {
         if (LDebug.ON) Log.d(LOG_TAG, "in onLocManualEntry");
-        // set up bundle with lat/lon/acc here
-        Bundle args = dialog.getArguments();
+        // method receives bundle with lat/lon/acc
         VisitHeaderFragment visHdrFragment = (VisitHeaderFragment)
                 getSupportFragmentManager().findFragmentByTag(Tags.VISIT_HEADER);
         try {
+            // pass bundle back to fragment that originally posted the dialog
             visHdrFragment.setLocation(args);
         } catch (Exception e) {
             if (LDebug.ON) Log.d(LOG_TAG, "exception: " + e.getMessage());
