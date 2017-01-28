@@ -84,7 +84,10 @@ public class LocManualEntryDialog extends DialogFragment {
                             "Validated OK",
                             Toast.LENGTH_LONG).show();
                     try { // can fail with null pointer exception if fragment is gone
-                        Bundle args = getArguments();
+                        Bundle args = new Bundle();
+                        args.putString(ARG_LATITUDE_STRING, mManualLatitude.getText().toString().trim());
+                        args.putString(ARG_LONGITUDE_STRING, mManualLongitude.getText().toString().trim());
+                        args.putString(ARG_ACCURACY_STRING, mManualAccuracy.getText().toString().trim());
                         mLocManualEntryCallback.onLocManualEntry(LocManualEntryDialog.this, args);
                     } catch (Exception e) {
                         // ignore; if fails, will not update with manual entry
@@ -328,14 +331,7 @@ public class LocManualEntryDialog extends DialogFragment {
             mManualAccuracy.setText("");
         else
             mManualAccuracy.setText("" + Ac);
-        Bundle args = new Bundle();
-        args.putString(ARG_LATITUDE_STRING, "" + Lat);
-        args.putString(ARG_LONGITUDE_STRING, "" + Lon);
-        if (Ac == 0.0)
-            args.putString(ARG_ACCURACY_STRING, "");
-        else
-            args.putString(ARG_ACCURACY_STRING, "" + Ac);
-        this.setArguments(args);
+
         return true;
     } // end of validation
 }
