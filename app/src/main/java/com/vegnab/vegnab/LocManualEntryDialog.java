@@ -30,7 +30,8 @@ public class LocManualEntryDialog extends DialogFragment {
     private int mValidationLevel = VNContract.Validation.CRITICAL;
     private static final String LOG_TAG = LocManualEntryDialog.class.getSimpleName();
     private TextView mManualLatitude, mManualLongitude, mManualAccuracy;
-    private float mLatitude, mLongitude, mAccuracy;
+    private double mLatitude, mLongitude;
+    private float mAccuracy;
     private Button mSaveButton;
 
     public interface LocManualEntryListener {
@@ -40,6 +41,9 @@ public class LocManualEntryDialog extends DialogFragment {
     // Use this instance of the interface to deliver action events
     LocManualEntryListener mLocManualEntryCallback; // declare the interface
 
+    final static String ARG_LATITUDE_VALUE = "latVal";
+    final static String ARG_LONGITUDE_VALUE = "lonVal";
+    final static String ARG_ACCURACY_VALUE = "accVal";
     final static String ARG_LATITUDE_STRING = "latStr";
     final static String ARG_LONGITUDE_STRING = "lonStr";
     final static String ARG_ACCURACY_STRING = "accStr";
@@ -85,6 +89,10 @@ public class LocManualEntryDialog extends DialogFragment {
                             Toast.LENGTH_LONG).show();
                     try { // can fail with null pointer exception if fragment is gone
                         Bundle args = new Bundle();
+                        // for now, pass both the values and the strings
+                        args.putDouble(ARG_LATITUDE_VALUE, mLatitude);
+                        args.putDouble(ARG_LONGITUDE_VALUE, mLongitude);
+                        args.putFloat(ARG_ACCURACY_VALUE, mAccuracy);
                         args.putString(ARG_LATITUDE_STRING, mManualLatitude.getText().toString().trim());
                         args.putString(ARG_LONGITUDE_STRING, mManualLongitude.getText().toString().trim());
                         args.putString(ARG_ACCURACY_STRING, mManualAccuracy.getText().toString().trim());
@@ -160,7 +168,8 @@ public class LocManualEntryDialog extends DialogFragment {
         String errTitle = c.getResources().getString(R.string.vis_hdr_validate_generic_title);
         ConfigurableMsgDialog flexErrDlg = new ConfigurableMsgDialog();
 
-        float Lat, Lon, Ac;
+        double Lat, Lon;
+        float Ac;
         // verify numeric Latitude, Longitude & Accuracy
         // validate Latitude
         String stringLat = mManualLatitude.getText().toString().trim();
@@ -182,7 +191,7 @@ public class LocManualEntryDialog extends DialogFragment {
             return false; // end of Lat length zero
         } else {
             try {
-                Lat = Float.parseFloat(stringLat);
+                Lat = Double.parseDouble(stringLat);
                 if ((Lat < -90) || (Lat > 90)) { // latitude can only be +- 90 degrees
                     if (LDebug.ON) Log.d(LOG_TAG, "Latitude is out of range");
                     if (mValidationLevel > VNContract.Validation.SILENT) {
@@ -239,7 +248,7 @@ public class LocManualEntryDialog extends DialogFragment {
             return false; // end of Lon length zero
         } else {
             try {
-                Lon = Float.parseFloat(stringLon);
+                Lon = Double.parseDouble(stringLon);
                 if ((Lon < -180) || (Lon > 180)) { // Longitude can only be +-180 degrees
                     if (LDebug.ON) Log.d(LOG_TAG, "Longitude is out of range");
                     if (mValidationLevel > VNContract.Validation.SILENT) {

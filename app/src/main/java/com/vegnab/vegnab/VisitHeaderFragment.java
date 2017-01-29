@@ -1883,6 +1883,9 @@ id/vis_hdr_loc_help
 
     public void setLocation(Bundle args) {
         // used to set the location when e.g entered manually, or reset to previous
+        mLatitude = args.getDouble(LocManualEntryDialog.ARG_LATITUDE_VALUE);
+        mLongitude = args.getDouble(LocManualEntryDialog.ARG_LONGITUDE_VALUE);
+        mAccuracy = args.getFloat(LocManualEntryDialog.ARG_ACCURACY_VALUE);
     }
 
     // Checks if external storage is available for read and write
