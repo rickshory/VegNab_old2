@@ -1773,7 +1773,10 @@ id/vis_hdr_loc_help
             mViewVisitLocation.setText(s);
             mGotSomeLocation = true;
         }
+        updateLocalSpecies();
+    } // end of finalizeLocation
 
+    public void updateLocalSpecies() {
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         String stringUrl = "http://maps.googleapis.com/maps/api/geocode/json?latlng="
                 + mLatitude + ","
@@ -1868,11 +1871,11 @@ id/vis_hdr_loc_help
                         }
                     }
                 }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (LDebug.ON) Log.d(LOG_TAG, "That didn't work!");
-            }
-        });
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (LDebug.ON) Log.d(LOG_TAG, "That didn't work!");
+                    }
+                });
 
         // Add the request to the RequestQueue.
         queue.add(jsObjRequest);
