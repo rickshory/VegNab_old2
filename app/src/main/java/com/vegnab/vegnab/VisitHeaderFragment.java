@@ -1889,6 +1889,27 @@ id/vis_hdr_loc_help
         mLatitude = args.getDouble(LocManualEntryDialog.ARG_LATITUDE_VALUE);
         mLongitude = args.getDouble(LocManualEntryDialog.ARG_LONGITUDE_VALUE);
         mAccuracy = args.getFloat(LocManualEntryDialog.ARG_ACCURACY_VALUE);
+        mLocProvider = "Manual entry"; // change this depending on source, maybe pass in in bundle
+        if (mCurLocation == null) {
+            mCurLocation = new Location(mLocProvider);
+        }
+        mCurLocation.setProvider(mLocProvider);
+        mCurLocation.setLatitude(mLatitude);
+        mCurLocation.setLongitude(mLongitude);
+        mCurLocation.setAccuracy(mAccuracy);
+        mLocIsGood = true;
+        mAccSource = "User supplied";
+/* figure out how to get the time
+        long n = mCurLocation.getTime();
+        mLocTime = mTimeFormat.format(new Date(n));
+        if (LDebug.ON) Log.d(LOG_TAG, "Location time: " + mLocTime);
+*/
+        // overwrite the message
+        String s = "" + mLatitude + ", " + mLongitude
+                + "\naccuracy " + mAccuracy + "m";
+        mViewVisitLocation.setText(s);
+        mGotSomeLocation = true;
+        updateLocalSpecies();
     }
 
     // Checks if external storage is available for read and write
