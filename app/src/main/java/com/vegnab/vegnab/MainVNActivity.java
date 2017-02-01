@@ -500,8 +500,11 @@ public class MainVNActivity extends AppCompatActivity
             visHdrFragment.setLocation(args);
         } catch (Exception e) {
             if (LDebug.ON) Log.d(LOG_TAG, "exception: " + e.getMessage());
+        } finally {
+            dialog.dismiss();
         }
     }
+
 
     public void onVisitHeaderGoButtonClicked(long visitId) {
         mVisitId = visitId;
