@@ -1899,11 +1899,9 @@ id/vis_hdr_loc_help
         mCurLocation.setAccuracy(mAccuracy);
         mLocIsGood = true;
         mAccSource = "User supplied";
-/* figure out how to get the time
-        long n = mCurLocation.getTime();
-        mLocTime = mTimeFormat.format(new Date(n));
+        mCurLocation.setTime(System.currentTimeMillis());
+        mLocTime = mTimeFormat.format(new Date(mCurLocation.getTime()));
         if (LDebug.ON) Log.d(LOG_TAG, "Location time: " + mLocTime);
-*/
         // overwrite the message
         String s = "" + mLatitude + ", " + mLongitude
                 + "\naccuracy " + mAccuracy + "m";
