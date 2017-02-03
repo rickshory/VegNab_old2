@@ -1093,10 +1093,12 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             } catch (Exception e) {
                 // ignore; fn is just to refresh the screen and that will happen on fragment rebuild
             }
-
-
         }
         return numUpdated;
+    }
+
+    private int saveVisitLoc() {
+        return 0;
     }
 
     @Override
