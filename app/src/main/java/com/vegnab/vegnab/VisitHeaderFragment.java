@@ -1098,6 +1098,37 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     }
 
     private int saveVisitLoc() {
+        if (mLocIsGood) {
+            ContentResolver rs = getActivity().getContentResolver();
+            mValues.clear();
+            mValues.put("LocName", "Reference Location");
+            mValues.put("SourceID", mLocationSource);
+            mValues.put("VisitID", mVisitId);
+            mValues.put("Latitude", mLatitude);
+            mValues.put("Longitude", mLongitude);
+            mValues.put("Accuracy", mAccuracy);
+            mValues.put("TimeStamp", mLocTime);
+            if (mLocId == 0) { // has not been saved to the database yet
+                // add the location record
+                mUri = rs.insert(mLocationsUri, mValues);
+                long newLocID = Long.parseLong(mUri.getLastPathSegment());
+                if (newLocID < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
+                    if (LDebug.ON) Log.d(LOG_TAG, "new Location record in saveVisitLoc has Id == " +
+                            newLocID + "); canceled");
+                } else {
+                    mLocId = newLocID;
+                    if (LDebug.ON) Log.d(LOG_TAG, "saveVisitLoc; new Location record created, locID = " + mLocId);
+                }
+            } else { // visit location exists, update
+                mUri = ContentUris.withAppendedId(mLocationsUri, mLocId);
+                int numUpdated = rs.update(mUri, mValues, null, null);
+                if (numUpdated == 0) {
+                    if (LDebug.ON) Log.d(LOG_TAG, "saveVisitLoc; Location record NOT updated with locID = " + mLocId);
+                } else {
+                    if (LDebug.ON) Log.d(LOG_TAG, "saveVisitLoc; Location record updated with locID = " + mLocId);
+                }
+            }
+        }
         return 0;
     }
 
