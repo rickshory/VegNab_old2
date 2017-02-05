@@ -1115,21 +1115,26 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 if (newLocID < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
                     if (LDebug.ON) Log.d(LOG_TAG, "new Location record in saveVisitLoc has Id == " +
                             newLocID + "); canceled");
+                    return -1;
                 } else {
                     mLocId = newLocID;
                     if (LDebug.ON) Log.d(LOG_TAG, "saveVisitLoc; new Location record created, locID = " + mLocId);
+                    return 0;
                 }
             } else { // visit location exists, update
                 mUri = ContentUris.withAppendedId(mLocationsUri, mLocId);
                 int numUpdated = rs.update(mUri, mValues, null, null);
                 if (numUpdated == 0) {
                     if (LDebug.ON) Log.d(LOG_TAG, "saveVisitLoc; Location record NOT updated with locID = " + mLocId);
+                    return 2;
                 } else {
                     if (LDebug.ON) Log.d(LOG_TAG, "saveVisitLoc; Location record updated with locID = " + mLocId);
+                    return 1;
                 }
             }
+        } else {
+            return 1;
         }
-        return 0;
     }
 
     @Override
