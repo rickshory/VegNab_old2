@@ -1098,42 +1098,49 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     }
 
     private int saveVisitLoc() {
-        if (mLocIsGood) {
-            ContentResolver rs = getActivity().getContentResolver();
-            mValues.clear();
-            mValues.put("LocName", "Reference Location");
-            mValues.put("SourceID", mLocationSource);
-            mValues.put("VisitID", mVisitId);
-            mValues.put("Latitude", mLatitude);
-            mValues.put("Longitude", mLongitude);
-            mValues.put("Accuracy", mAccuracy);
-            mValues.put("TimeStamp", mLocTime);
-            if (mLocId == 0) { // has not been saved to the database yet
-                // add the location record
-                mUri = rs.insert(mLocationsUri, mValues);
-                long newLocID = Long.parseLong(mUri.getLastPathSegment());
-                if (newLocID < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
-                    if (LDebug.ON) Log.d(LOG_TAG, "new Location record in saveVisitLoc has Id == " +
-                            newLocID + "); canceled");
-                    return -1;
-                } else {
-                    mLocId = newLocID;
-                    if (LDebug.ON) Log.d(LOG_TAG, "saveVisitLoc; new Location record created, locID = " + mLocId);
-                    return 0;
-                }
-            } else { // visit location exists, update
-                mUri = ContentUris.withAppendedId(mLocationsUri, mLocId);
-                int numUpdated = rs.update(mUri, mValues, null, null);
-                if (numUpdated == 0) {
-                    if (LDebug.ON) Log.d(LOG_TAG, "saveVisitLoc; Location record NOT updated with locID = " + mLocId);
-                    return 2;
-                } else {
-                    if (LDebug.ON) Log.d(LOG_TAG, "saveVisitLoc; Location record updated with locID = " + mLocId);
-                    return 1;
-                }
+        // return values:
+        // 1 create succeeded
+        // 2 update succeeded
+        // 3 fail; location not good yet
+        // 4 fail; visit not saved yet
+        // 5 fail; could not create
+        // 6 fail; could not update
+        if (!mLocIsGood) return 3;
+        if (mVisitId == 0) return 4;
+
+        ContentResolver rs = getActivity().getContentResolver();
+        ContentValues locValues = new ContentValues();
+        locValues.clear();
+        locValues.put("LocName", "Reference Location");
+        locValues.put("SourceID", mLocationSource);
+        locValues.put("VisitID", mVisitId);
+        locValues.put("Latitude", mLatitude);
+        locValues.put("Longitude", mLongitude);
+        locValues.put("Accuracy", mAccuracy);
+        locValues.put("TimeStamp", mLocTime);
+        if (mLocId == 0) { // has not been saved to the database yet
+            // add the location record
+            mUri = rs.insert(mLocationsUri, locValues);
+            long newLocID = Long.parseLong(mUri.getLastPathSegment());
+            if (newLocID < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
+                if (LDebug.ON) Log.d(LOG_TAG, "new Location record in saveVisitLoc has Id == " +
+                        newLocID + "); canceled");
+                return 5;
+            } else {
+                mLocId = newLocID;
+                if (LDebug.ON) Log.d(LOG_TAG, "saveVisitLoc; new Location record created, locID = " + mLocId);
+                return 1;
             }
-        } else {
-            return 1;
+        } else { // visit location exists, update
+            mUri = ContentUris.withAppendedId(mLocationsUri, mLocId);
+            int numUpdated = rs.update(mUri, locValues, null, null);
+            if (numUpdated == 0) {
+                if (LDebug.ON) Log.d(LOG_TAG, "saveVisitLoc; Location record NOT updated with locID = " + mLocId);
+                return 2;
+            } else {
+                if (LDebug.ON) Log.d(LOG_TAG, "saveVisitLoc; Location record updated with locID = " + mLocId);
+                return 6;
+            }
         }
     }
 
