@@ -1150,10 +1150,10 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             int numUpdated = rs.update(mUri, locValues, null, null);
             if (numUpdated == 0) {
                 if (LDebug.ON) Log.d(LOG_TAG, "saveVisitLoc; Location record NOT updated with locID = " + mLocId);
-                return 2;
+                return 6;
             } else {
                 if (LDebug.ON) Log.d(LOG_TAG, "saveVisitLoc; Location record updated with locID = " + mLocId);
-                return 6;
+                return 2;
             }
         }
     }
@@ -1970,10 +1970,10 @@ id/vis_hdr_loc_help
         if (result <= 2) { // successfully created or updated this location
             if (LDebug.ON) {
                 if (result == 1) Log.d(LOG_TAG, "setLocation; Saved new Location");
-                if (result == 2) Log.d(LOG_TAG, "setLocation;Updated existing Location");
+                if (result == 2) Log.d(LOG_TAG, "setLocation; Updated existing Location");
             }
         } else {
-            if (LDebug.ON) Log.d(LOG_TAG, "setLocation;Could not store Location; result: "  + result);
+            if (LDebug.ON) Log.d(LOG_TAG, "setLocation; Could not store Location; result: "  + result);
         }
         updateLocalSpecies();
     }
