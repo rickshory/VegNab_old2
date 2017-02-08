@@ -1966,6 +1966,15 @@ id/vis_hdr_loc_help
                 + "\naccuracy " + mAccuracy + "m";
         mViewVisitLocation.setText(s);
         mGotSomeLocation = true;
+        int result = saveVisitLoc();
+        if (result <= 2) { // successfully created or updated this location
+            if (LDebug.ON) {
+                if (result == 1) Log.d(LOG_TAG, "Saved new Location");
+                if (result == 2) Log.d(LOG_TAG, "Updated existing Location");
+            }
+        } else {
+            if (LDebug.ON) Log.d(LOG_TAG, "Could not store Location; result: "  + result);
+        }
         updateLocalSpecies();
     }
 
