@@ -1041,6 +1041,19 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             SharedPreferences.Editor prefEditor = sharedPref.edit();
             prefEditor.putLong(Prefs.CURRENT_VISIT_ID, mVisitId);
             prefEditor.commit();
+            if (saveVisitLoc() == 1) { // successfully created and saved location
+                // update it in the Visit record
+                mValues.clear();
+                mValues.put("RefLocID", mLocId);
+                mUri = ContentUris.withAppendedId(mVisitsUri, mVisitId);
+                numUpdated = rs.update(mUri, mValues, null, null);
+                if (numUpdated == 0) {
+                    if (LDebug.ON) Log.d(LOG_TAG, "saveVisitRecord; new Visit record NOT updated with locID = " + mLocId);
+                } else {
+                    if (LDebug.ON) Log.d(LOG_TAG, "saveVisitRecord; new Visit record updated with locID = " + mLocId);
+                }
+            }
+/*
             if (mLocIsGood) { // add the location record
                 mValues.clear();
                 mValues.put("LocName", "Reference Location");
@@ -1072,6 +1085,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                     }
                 }
             }
+*/
             numUpdated = 1;
         } else { // update the existing record
            if (LDebug.ON) Log.d(LOG_TAG, "saveVisitRecord; updating existing record with mVisitId = " + mVisitId);
