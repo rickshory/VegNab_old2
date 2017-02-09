@@ -1454,6 +1454,8 @@ id/vis_hdr_loc_help
                 .build());
         // enter location manually
         Bundle args = new Bundle();
+        args.putString(LocManualEntryDialog.ARG_TOOLBAR_HEADER,
+                c.getResources().getString(R.string.loc_manual_header));
         if (mGotSomeLocation) {
             args.putString(LocManualEntryDialog.ARG_LATITUDE_STRING, "" + mLatitude);
             args.putString(LocManualEntryDialog.ARG_LONGITUDE_STRING, "" + mLongitude);

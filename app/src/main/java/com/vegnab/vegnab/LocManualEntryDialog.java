@@ -41,6 +41,7 @@ public class LocManualEntryDialog extends DialogFragment {
     // Use this instance of the interface to deliver action events
     LocManualEntryListener mLocManualEntryCallback; // declare the interface
 
+    final static String ARG_TOOLBAR_HEADER = "hdrStr";
     final static String ARG_LATITUDE_VALUE = "latVal";
     final static String ARG_LONGITUDE_VALUE = "lonVal";
     final static String ARG_ACCURACY_VALUE = "accVal";
