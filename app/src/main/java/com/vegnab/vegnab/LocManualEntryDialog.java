@@ -80,6 +80,7 @@ public class LocManualEntryDialog extends DialogFragment {
                     getDialog().onBackPressed();
                 }
             });
+            toolbar.setTitle(this.getArguments().getString(ARG_TOOLBAR_HEADER));
         }
         mSaveButton = (Button) view.findViewById(R.id.btn_manl_loc_save);
         mSaveButton.setOnClickListener(new View.OnClickListener() {

@@ -119,7 +119,7 @@
     <string name="visit_header_label_notes">Notes</string>
     <string name="visit_header_hint_notes">Notes</string>
 
-    <string name="loc_manual_header">Enter location manually</string>
+    <string name="loc_manual_header">Enter location</string>
     <string name="loc_prev_header">Previous location</string>
     <string name="loc_edit_header">Edit location</string>
     <string name="latitude_label">Latitude: </string>

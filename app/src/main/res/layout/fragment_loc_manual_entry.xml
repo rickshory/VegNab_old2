@@ -23,7 +23,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         toolbar:navigationIcon="@android:drawable/ic_menu_close_clear_cancel"
-        toolbar:title="@string/loc_manual_header"
+        toolbar:title="@string/visit_header_hint_location"
         android:textColor="@android:color/white"
         style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
         >
