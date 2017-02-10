@@ -1444,6 +1444,11 @@ id/vis_hdr_loc_help
         flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
         flexHlpDlg.show(getFragmentManager(), "frg_loc_acc_accept");
         return true;
+
+    case R.id.vis_hdr_loc_other_visit:
+        notYetDlg.show(getFragmentManager(), null);
+        return true;
+    
     case R.id.vis_hdr_loc_manual:
        if (LDebug.ON) Log.d(LOG_TAG, "'Enter manually' selected");
         headerContextTracker.send(new HitBuilders.EventBuilder()
@@ -1507,6 +1512,7 @@ id/vis_hdr_loc_help
         flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
         flexHlpDlg.show(getFragmentManager(), "frg_help_detail");
         return true;
+
     case R.id.vis_hdr_loc_help:
        if (LDebug.ON) Log.d(LOG_TAG, "'Location Help' selected");
         headerContextTracker.send(new HitBuilders.EventBuilder()

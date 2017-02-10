@@ -7,8 +7,10 @@
         android:title="@string/vis_hdr_ctxmenu_loc_reacquire" />
     <item android:id="@+id/vis_hdr_loc_accept"
         android:title="@string/vis_hdr_ctxmenu_loc_accept" />
+    <item android:id="@+id/vis_hdr_loc_other_visit"
+        android:title="@string/vis_hdr_ctxmenu_loc_from_visit" />
     <item android:id="@+id/vis_hdr_loc_manual"
-        android:title="@string/vis_hdr_ctxmenu_loc_manual" />
+          android:title="@string/vis_hdr_ctxmenu_loc_manual" />
     <item android:id="@+id/vis_hdr_loc_permission"
           android:title="@string/vis_hdr_ctxmenu_loc_permission" />
     <item android:id="@+id/vis_hdr_loc_details"
