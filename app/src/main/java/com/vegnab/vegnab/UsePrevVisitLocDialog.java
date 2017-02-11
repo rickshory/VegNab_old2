@@ -23,12 +23,12 @@ import com.vegnab.vegnab.database.VNContract.Loaders;
 public class UsePrevVisitLocDialog extends DialogFragment implements View.OnClickListener,
         LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = UsePrevVisitLocDialog.class.getSimpleName();
-    final static String ARG_VISIT_ID_TO_UNHIDE = "visIdUnHide";
-    ListView mHiddenVisitsList;
-    public interface ConfirmUnHideVisitDialogListener {
-        void onUnHideVisitConfirm(DialogFragment dialog);
+    final static String ARG_VISIT_USE_LOC = "visIdUse";
+    ListView mPrevVisitLocsList;
+    public interface UsePrevVisitLocDialogListener {
+        void onUsePrevVisitLoc(DialogFragment dialog);
     }
-    ConfirmUnHideVisitDialogListener mConfirmUnHideVisitListener;
+    UsePrevVisitLocDialogListener mUsePrevVisitLocListener;
 
     SimpleCursorAdapter mListAdapter; // to link the list's data
 
@@ -43,46 +43,46 @@ public class UsePrevVisitLocDialog extends DialogFragment implements View.OnClic
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
-            mConfirmUnHideVisitListener = (ConfirmUnHideVisitDialogListener) getActivity();
-           if (LDebug.ON) Log.d(LOG_TAG, "(ConfirmUnHideVisitDialogListener) getActivity()");
+            mUsePrevVisitLocListener = (UsePrevVisitLocDialogListener) getActivity();
+           if (LDebug.ON) Log.d(LOG_TAG, "(UsePrevVisitLocDialogListener) getActivity()");
         } catch (ClassCastException e) {
-            throw new ClassCastException("Main Activity must implement ConfirmUnHideVisitDialogListener interface");
+            throw new ClassCastException("Main Activity must implement UsePrevVisitLocDialogListener interface");
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup root, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_unhide_visit, root);
-        mHiddenVisitsList = (ListView) view.findViewById(R.id.list_hidden_visits);
+        View view = inflater.inflate(R.layout.fragment_visit_locs, root);
+        mPrevVisitLocsList = (ListView) view.findViewById(R.id.list_prev_visit_locs);
 
         String[] fromColumns = {"VisitName", "VisitDate"}; // VisitName, VisitDate
         int[] toViews = {android.R.id.text1, android.R.id.text2};
         mListAdapter = new SimpleCursorAdapter(getActivity(),
                 android.R.layout.simple_list_item_2, null,
                 fromColumns, toViews, 0);
-        mHiddenVisitsList.setAdapter(mListAdapter);
+        mPrevVisitLocsList.setAdapter(mListAdapter);
         getLoaderManager().initLoader(Loaders.HIDDEN_VISITS, null, this);
-        mHiddenVisitsList.setOnItemClickListener(new OnItemClickListener () {
+        mPrevVisitLocsList.setOnItemClickListener(new OnItemClickListener () {
             @Override
             public void onItemClick(AdapterView<?> arg0, View v, int position,
                     long id) {
-                Cursor cr = ((SimpleCursorAdapter) mHiddenVisitsList.getAdapter()).getCursor();
+                Cursor cr = ((SimpleCursorAdapter) mPrevVisitLocsList.getAdapter()).getCursor();
                 cr.moveToPosition(position);
                if (LDebug.ON) Log.d(LOG_TAG, "In onCreateView setOnItemClickListener, list item clicked, id = " + id);
                 Bundle args = getArguments();
                 if (args != null) {
-                    args.putLong(ARG_VISIT_ID_TO_UNHIDE, id);
-                   if (LDebug.ON) Log.d(LOG_TAG, "put ARG_VISIT_ID_TO_UNHIDE =" + id);
+                    args.putLong(ARG_VISIT_USE_LOC, id);
+                   if (LDebug.ON) Log.d(LOG_TAG, "put ARG_VISIT_USE_LOC =" + id);
                 } else {
                    if (LDebug.ON) Log.d(LOG_TAG, "getArguments() returned null");
                 }
-               if (LDebug.ON) Log.d(LOG_TAG, "About to call onUnHideVisitConfirm=" + id);
-                mConfirmUnHideVisitListener.onUnHideVisitConfirm(UsePrevVisitLocDialog.this);
+               if (LDebug.ON) Log.d(LOG_TAG, "About to call onUsePrevVisitLoc=" + id);
+                mUsePrevVisitLocListener.onUsePrevVisitLoc(UsePrevVisitLocDialog.this);
                 dismiss();
             }
         });
 
-        getDialog().setTitle(R.string.action_unhide_visit);
+        getDialog().setTitle(R.string.action_use_prev_visit_loc);
         return view;
     }
 

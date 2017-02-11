@@ -10,18 +10,18 @@
     >
 
     <TextView
-        android:id="@+id/lbl_hid_visits_details"
-        android:text="@string/unhide_vis_details"
+        android:id="@+id/lbl_visit_locs_details"
+        android:text="@string/prev_vis_loc_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />
 
     <ListView
-        android:id="@+id/list_hidden_visits"
+        android:id="@+id/list_prev_visit_locs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/lbl_hid_visits_details"
-        android:layout_below="@id/lbl_hid_visits_details"
+        android:layout_alignLeft="@id/lbl_visit_locs_details"
+        android:layout_below="@id/lbl_visit_locs_details"
         />
 
 </RelativeLayout>

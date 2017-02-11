@@ -133,6 +133,11 @@
     <string name="loc_manual_entry_msg_longitude_bad">Need a number for Longitude between -180 and 180</string>
     <string name="loc_manual_entry_msg_accuracy_bad">Need a number for Accuracy, zero means not known</string>
 
+    <string name="action_use_prev_visit_loc">Use Location from ...</string>
+    <string name="prev_visit_locs_hdr">Location to use</string>
+
+    <string name="prev_vis_loc_details">Tap the Location to use</string>
+
     <string name="visit_header_go_button_msg">Start subplots</string>
     <string name="visit_header_map_button_msg">Map more locations</string>
     <string name="visit_header_photo_button_msg">Add pictures</string>
