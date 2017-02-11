@@ -1448,7 +1448,7 @@ id/vis_hdr_loc_help
     case R.id.vis_hdr_loc_other_visit:
         notYetDlg.show(getFragmentManager(), null);
         return true;
-    
+
     case R.id.vis_hdr_loc_manual:
        if (LDebug.ON) Log.d(LOG_TAG, "'Enter manually' selected");
         headerContextTracker.send(new HitBuilders.EventBuilder()
