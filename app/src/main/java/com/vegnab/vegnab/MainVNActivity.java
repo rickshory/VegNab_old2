@@ -94,6 +94,7 @@ public class MainVNActivity extends AppCompatActivity
         VisitHeaderFragment.OnButtonListener,
         VisitHeaderFragment.EditVisitDialogListener,
         VisitHeaderFragment.OnSppLocationChange,
+        UsePrevVisitLocDialog.UsePrevVisitLocDialogListener,
         LocManualEntryDialog.LocManualEntryListener,
         VegSubplotFragment.OnButtonListener,
         EditNamerDialog.EditNamerDialogListener,

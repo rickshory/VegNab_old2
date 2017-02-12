@@ -24,6 +24,10 @@ public class UsePrevVisitLocDialog extends DialogFragment implements View.OnClic
         LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = UsePrevVisitLocDialog.class.getSimpleName();
     final static String ARG_VISIT_USE_LOC = "visIdUse";
+    final static String ARG_LATITIDE_STRING = "prevVisLatStr";
+    final static String ARG_LONGITUDE_STRING = "prevVisLonStr";
+    final static String ARG_ACCURACY_STRING = "prevVisAccStr";
+
     ListView mPrevVisitLocsList;
     public interface UsePrevVisitLocDialogListener {
         void onUsePrevVisitLoc(DialogFragment dialog);
