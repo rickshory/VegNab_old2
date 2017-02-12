@@ -98,6 +98,14 @@ public class LocManualEntryDialog extends DialogFragment {
                         args.putString(ARG_LATITUDE_STRING, mManualLatitude.getText().toString().trim());
                         args.putString(ARG_LONGITUDE_STRING, mManualLongitude.getText().toString().trim());
                         args.putString(ARG_ACCURACY_STRING, mManualAccuracy.getText().toString().trim());
+
+                        // try sending args this way
+                        args.putDouble(VisitHeaderFragment.ARG_LOC_LATITUDE, mLatitude);
+                        args.putDouble(VisitHeaderFragment.ARG_LOC_LONGITUDE, mLongitude);
+                        args.putDouble(VisitHeaderFragment.ARG_LOC_ACCURACY, mAccuracy);
+                        args.putString(VisitHeaderFragment.ARG_LOC_ACC_SOURCE, "User supplied");
+                        args.putString(VisitHeaderFragment.ARG_LOC_PROVIDER, "Manual entry");
+                        
                         mLocManualEntryCallback.onLocManualEntry(LocManualEntryDialog.this, args);
                     } catch (Exception e) {
                         // ignore; if fails, will not update with manual entry
