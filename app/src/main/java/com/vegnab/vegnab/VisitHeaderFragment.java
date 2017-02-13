@@ -1953,10 +1953,11 @@ id/vis_hdr_loc_help
 
     public void setLocation(Bundle args) {
         // used to set the location when e.g entered manually, or reset to previous
-        mLatitude = args.getDouble(LocManualEntryDialog.ARG_LATITUDE_VALUE);
-        mLongitude = args.getDouble(LocManualEntryDialog.ARG_LONGITUDE_VALUE);
-        mAccuracy = args.getFloat(LocManualEntryDialog.ARG_ACCURACY_VALUE);
-        mLocProvider = "Manual entry"; // change this depending on source, maybe pass in in bundle
+        mLatitude = args.getDouble(ARG_LOC_LATITUDE);
+        mLongitude = args.getDouble(ARG_LOC_LONGITUDE);
+        mAccuracy = args.getFloat(ARG_LOC_ACCURACY);
+        mAccSource = args.getString(ARG_LOC_ACC_SOURCE);
+        mLocProvider = args.getString(ARG_LOC_PROVIDER);
         if (mCurLocation == null) {
             mCurLocation = new Location(mLocProvider);
         }
@@ -1965,7 +1966,6 @@ id/vis_hdr_loc_help
         mCurLocation.setLongitude(mLongitude);
         mCurLocation.setAccuracy(mAccuracy);
         mLocIsGood = true;
-        mAccSource = "User supplied";
         mCurLocation.setTime(System.currentTimeMillis());
         mLocTime = mTimeFormat.format(new Date(mCurLocation.getTime()));
         if (LDebug.ON) Log.d(LOG_TAG, "Location time: " + mLocTime);
