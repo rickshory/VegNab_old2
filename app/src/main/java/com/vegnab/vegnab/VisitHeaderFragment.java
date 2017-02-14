@@ -1462,6 +1462,11 @@ id/vis_hdr_loc_help
         args.putString(LocManualEntryDialog.ARG_TOOLBAR_HEADER,
                 c.getResources().getString(R.string.loc_manual_header));
         if (mGotSomeLocation) {
+            // send args with keys from this class
+            args.putDouble(ARG_LOC_LATITUDE, mLatitude);
+            args.putDouble(ARG_LOC_LONGITUDE, mLongitude);
+            args.putFloat(ARG_LOC_ACCURACY, mAccuracy);
+            // while debugging, send also with keys from dialog class
             args.putString(LocManualEntryDialog.ARG_LATITUDE_STRING, "" + mLatitude);
             args.putString(LocManualEntryDialog.ARG_LONGITUDE_STRING, "" + mLongitude);
             if (mAccuracy == 0.0) {
