@@ -122,9 +122,19 @@ public class LocManualEntryDialog extends DialogFragment {
         mManualLongitude = (EditText) view.findViewById(R.id.txt_manual_longitude);
         mManualAccuracy = (EditText) view.findViewById(R.id.txt_manual_accuracy);
 //        getDialog().setTitle(R.string.vis_hdr_loc_manl_entry_title);
-        mManualLatitude.setText(this.getArguments().getString(ARG_LATITUDE_STRING));
-        mManualLongitude.setText(this.getArguments().getString(ARG_LONGITUDE_STRING));
-        mManualAccuracy.setText(this.getArguments().getString(ARG_ACCURACY_STRING));
+//        mManualLatitude.setText(this.getArguments().getString(ARG_LATITUDE_STRING));
+//        mManualLongitude.setText(this.getArguments().getString(ARG_LONGITUDE_STRING));
+//        mManualAccuracy.setText(this.getArguments().getString(ARG_ACCURACY_STRING));
+        Bundle a = this.getArguments();
+        if (a.containsKey(VisitHeaderFragment.ARG_LOC_LATITUDE))
+            mManualLatitude.setText(""
+                + a.getDouble(VisitHeaderFragment.ARG_LOC_LATITUDE));
+        if (a.containsKey(VisitHeaderFragment.ARG_LOC_LONGITUDE))
+            mManualLongitude.setText(""
+                + a.getDouble(VisitHeaderFragment.ARG_LOC_LONGITUDE));
+        if (a.containsKey(VisitHeaderFragment.ARG_LOC_ACCURACY))
+            mManualAccuracy.setText(""
+                + a.getFloat(VisitHeaderFragment.ARG_LOC_ACCURACY));
         return view;
     }
 
