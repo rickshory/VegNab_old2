@@ -1053,39 +1053,6 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                     if (LDebug.ON) Log.d(LOG_TAG, "saveVisitRecord; new Visit record updated with locID = " + mLocId);
                 }
             }
-/*
-            if (mLocIsGood) { // add the location record
-                mValues.clear();
-                mValues.put("LocName", "Reference Location");
-                mValues.put("SourceID", mLocationSource);
-                mValues.put("VisitID", mVisitId);
-                //mValues.put("SubplotID", 0); // N/A, for the whole site, not any subplot
-                //mValues.put("ListingOrder", 0); // use the default=0
-                mValues.put("Latitude", mLatitude);
-                mValues.put("Longitude", mLongitude);
-                mValues.put("TimeStamp", mLocTime);
-                mValues.put("Accuracy", mAccuracy);
-                mUri = rs.insert(mLocationsUri, mValues);
-                long newLocID = Long.parseLong(mUri.getLastPathSegment());
-                if (newLocID < 1) { // returns -1 on error, e.g. if not valid to save because of missing required field
-                   if (LDebug.ON) Log.d(LOG_TAG, "new Location record in saveVisitRecord has Id == " +
-                            newLocID + "); canceled");
-                } else {
-                    mLocId = newLocID;
-                   if (LDebug.ON) Log.d(LOG_TAG, "saveVisitRecord; new Location record created, locID = " + mLocId);
-                    // update the Visit record to include the Location
-                    mValues.clear();
-                    mValues.put("RefLocID", mLocId);
-                    mUri = ContentUris.withAppendedId(mVisitsUri, mVisitId);
-                    numUpdated = rs.update(mUri, mValues, null, null);
-                    if (numUpdated == 0) {
-                       if (LDebug.ON) Log.d(LOG_TAG, "saveVisitRecord; new Visit record NOT updated with locID = " + mLocId);
-                    } else {
-                       if (LDebug.ON) Log.d(LOG_TAG, "saveVisitRecord; new Visit record updated with locID = " + mLocId);
-                    }
-                }
-            }
-*/
             numUpdated = 1;
         } else { // update the existing record
            if (LDebug.ON) Log.d(LOG_TAG, "saveVisitRecord; updating existing record with mVisitId = " + mVisitId);
@@ -1466,18 +1433,6 @@ id/vis_hdr_loc_help
             args.putDouble(ARG_LOC_LATITUDE, mLatitude);
             args.putDouble(ARG_LOC_LONGITUDE, mLongitude);
             args.putFloat(ARG_LOC_ACCURACY, mAccuracy);
-            // while debugging, send also with keys from dialog class
-            args.putString(LocManualEntryDialog.ARG_LATITUDE_STRING, "" + mLatitude);
-            args.putString(LocManualEntryDialog.ARG_LONGITUDE_STRING, "" + mLongitude);
-            if (mAccuracy == 0.0) {
-                args.putString(LocManualEntryDialog.ARG_ACCURACY_STRING, "");
-            } else {
-                args.putString(LocManualEntryDialog.ARG_ACCURACY_STRING, "" + mAccuracy);
-            }
-        } else {
-            args.putString(LocManualEntryDialog.ARG_LATITUDE_STRING, "");
-            args.putString(LocManualEntryDialog.ARG_LONGITUDE_STRING, "");
-            args.putString(LocManualEntryDialog.ARG_ACCURACY_STRING, "");
         }
         LocManualEntryDialog locMnlDlg = LocManualEntryDialog.newInstance(args);
         locMnlDlg.show(getFragmentManager(), "frg_loc_manl_entry");

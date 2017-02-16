@@ -91,22 +91,14 @@ public class LocManualEntryDialog extends DialogFragment {
                             Toast.LENGTH_LONG).show();
                     try { // can fail with null pointer exception if fragment is gone
                         Bundle args = new Bundle();
-                        // for now, pass both the values and the strings
-                        args.putDouble(ARG_LATITUDE_VALUE, mLatitude);
-                        args.putDouble(ARG_LONGITUDE_VALUE, mLongitude);
-                        args.putFloat(ARG_ACCURACY_VALUE, mAccuracy);
-                        args.putString(ARG_LATITUDE_STRING, mManualLatitude.getText().toString().trim());
-                        args.putString(ARG_LONGITUDE_STRING, mManualLongitude.getText().toString().trim());
-                        args.putString(ARG_ACCURACY_STRING, mManualAccuracy.getText().toString().trim());
-
-                        // try sending args this way, generalized for VisitHeaderFragment
+                        // send args generalized for VisitHeaderFragment
                         args.putDouble(VisitHeaderFragment.ARG_LOC_LATITUDE, mLatitude);
                         args.putDouble(VisitHeaderFragment.ARG_LOC_LONGITUDE, mLongitude);
-                        args.putDouble(VisitHeaderFragment.ARG_LOC_ACCURACY, mAccuracy);
+                        args.putFloat(VisitHeaderFragment.ARG_LOC_ACCURACY, mAccuracy);
                         args.putString(VisitHeaderFragment.ARG_LOC_ACC_SOURCE, "User supplied");
                         args.putString(VisitHeaderFragment.ARG_LOC_PROVIDER, "Manual entry");
 
-                        // Send the dialog only to dismiss it in the activity. Can we dismiss it here?
+                        // We send the dialog only to dismiss it in the activity. Can we dismiss it here?
                         mLocManualEntryCallback.onLocManualEntry(LocManualEntryDialog.this, args);
                     } catch (Exception e) {
                         // ignore; if fails, will not update with manual entry

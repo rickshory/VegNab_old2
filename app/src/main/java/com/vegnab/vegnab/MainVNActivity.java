@@ -493,7 +493,7 @@ public class MainVNActivity extends AppCompatActivity
 */
     public void onLocManualEntry(DialogFragment dialog, Bundle args) {
         if (LDebug.ON) Log.d(LOG_TAG, "in onLocManualEntry");
-        // method receives bundle with lat/lon/acc
+        // method receives bundle with lat/lon/acc/source/provider
         VisitHeaderFragment visHdrFragment = (VisitHeaderFragment)
                 getSupportFragmentManager().findFragmentByTag(Tags.VISIT_HEADER);
         try {
