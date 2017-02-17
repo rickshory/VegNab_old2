@@ -1413,6 +1413,13 @@ id/vis_hdr_loc_help
         return true;
 
     case R.id.vis_hdr_loc_other_visit:
+        if (LDebug.ON) Log.d(LOG_TAG, "'Location from other visit' selected");
+        headerContextTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Visit Header Event")
+                .setAction("Context Menu")
+                .setLabel("Location from other visit")
+                .setValue(1)
+                .build());
         notYetDlg.show(getFragmentManager(), null);
         return true;
 
