@@ -59,13 +59,13 @@ public class UsePrevVisitLocDialog extends DialogFragment implements View.OnClic
         View view = inflater.inflate(R.layout.fragment_visit_locs, root);
         mPrevVisitLocsList = (ListView) view.findViewById(R.id.list_prev_visit_locs);
 
-        String[] fromColumns = {"VisitName", "VisitDate"}; // VisitName, VisitDate
+        String[] fromColumns = {"LatLon", "VisDescr"};
         int[] toViews = {android.R.id.text1, android.R.id.text2};
         mListAdapter = new SimpleCursorAdapter(getActivity(),
                 android.R.layout.simple_list_item_2, null,
                 fromColumns, toViews, 0);
         mPrevVisitLocsList.setAdapter(mListAdapter);
-        getLoaderManager().initLoader(Loaders.HIDDEN_VISITS, null, this);
+        getLoaderManager().initLoader(Loaders.PREVIOUS_VISIT_LOCATIONS, null, this);
         mPrevVisitLocsList.setOnItemClickListener(new OnItemClickListener () {
             @Override
             public void onItemClick(AdapterView<?> arg0, View v, int position,
@@ -96,11 +96,17 @@ public class UsePrevVisitLocDialog extends DialogFragment implements View.OnClic
         Uri baseUri;
         String select = null; // default for all-columns, unless re-assigned or overridden by raw SQL
         switch (id) {
-        case Loaders.HIDDEN_VISITS:
+        case Loaders.PREVIOUS_VISIT_LOCATIONS:
             baseUri = ContentProvider_VegNab.SQL_URI;
-            select = "SELECT _id, VisitName, VisitDate FROM Visits "
-                    + "WHERE ShowOnMobile = 0 AND IsDeleted = 0 "
-                    + "ORDER BY VisitDate DESC;";
+            select = "SELECT (Locations.Latitude || ', ' || Locations.Longitude) AS LatLon, "
+                    + "(Visits.VisitDate || ', ' || Visits.VisitName ||  "
+                    + "(IFNULL((', ' || Visits.VisitNotes), ''))) AS VisDescr, "
+                    + "Locations.Latitude, Locations.Longitude, Locations.Accuracy "
+                    + "FROM Visits LEFT JOIN Locations ON Visits.RefLocID = Locations._id "
+                    + "WHERE Visits.ShowOnMobile = 1 AND Visits.IsDeleted = 0 "
+                    + "AND Locations.Latitude LIKE '%' AND Locations.Longitude LIKE '%' "
+                    + "ORDER BY Visits.VisitDate DESC;";
+
             cl = new CursorLoader(getActivity(), baseUri,
                     null, select, null, null);
             break;
@@ -111,7 +117,7 @@ public class UsePrevVisitLocDialog extends DialogFragment implements View.OnClic
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor finishedCursor) {
         switch (loader.getId()) {
-        case Loaders.HIDDEN_VISITS:
+        case Loaders.PREVIOUS_VISIT_LOCATIONS:
             mListAdapter.swapCursor(finishedCursor);
             break;
         }
@@ -120,7 +126,7 @@ public class UsePrevVisitLocDialog extends DialogFragment implements View.OnClic
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         switch (loader.getId()) {
-        case Loaders.HIDDEN_VISITS:
+        case Loaders.PREVIOUS_VISIT_LOCATIONS:
             mListAdapter.swapCursor(null);
             break;
         }
