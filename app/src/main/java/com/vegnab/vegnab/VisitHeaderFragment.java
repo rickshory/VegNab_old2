@@ -1420,7 +1420,29 @@ id/vis_hdr_loc_help
                 .setLabel("Location from other visit")
                 .setValue(1)
                 .build());
-        notYetDlg.show(getFragmentManager(), null);
+        /* should just disappear the menu option if no previous visits yet
+                        if (mCtPreviousVisits == 0) {
+                    Toast.makeText(getActivity(),
+                            getActivity().getResources().getString(R.string.new_visit_previous_visit_none),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Bundle args = new Bundle();
+                    // don't put anything in the bundle yet, following line only shows format
+                    //args.putLong(UsePrevVisitLocDialog.ARG_VISIT_ID_TO_SHOW, mCtPrevVisits);
+                    // maybe pass the cursor?
+                    UsePrevVisitLocDialog  prevLocDlg = UsePrevVisitLocDialog.newInstance(args);
+                    prevLocDlg.show(getActivity().getSupportFragmentManager(), "frg_prev_vis_locs");
+                }
+                */
+//        notYetDlg.show(getFragmentManager(), null);
+        {
+            Bundle args = new Bundle();
+            // don't put anything in the bundle yet, following line only shows format
+            //args.putLong(UsePrevVisitLocDialog.ARG_VISIT_ID_TO_SHOW, mCtPrevVisits);
+            // maybe pass the cursor?
+            UsePrevVisitLocDialog  prevLocDlg = UsePrevVisitLocDialog.newInstance(args);
+            prevLocDlg.show(getActivity().getSupportFragmentManager(), "frg_prev_vis_locs");
+        }
         return true;
 
     case R.id.vis_hdr_loc_manual:
