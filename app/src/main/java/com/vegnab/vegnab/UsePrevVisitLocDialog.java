@@ -106,7 +106,8 @@ public class UsePrevVisitLocDialog extends DialogFragment implements View.OnClic
         switch (id) {
         case Loaders.PREVIOUS_VISIT_LOCATIONS:
             baseUri = ContentProvider_VegNab.SQL_URI;
-            select = "SELECT (Locations.Latitude || ', ' || Locations.Longitude) AS LatLon, "
+            select = "SELECT Locations._id, "
+                    + "(Locations.Latitude || ', ' || Locations.Longitude) AS LatLon, "
                     + "(Visits.VisitDate || ', ' || Visits.VisitName ||  "
                     + "(IFNULL((', ' || Visits.VisitNotes), ''))) AS VisDescr, "
                     + "Locations.Latitude, Locations.Longitude, Locations.Accuracy "
