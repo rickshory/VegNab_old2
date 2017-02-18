@@ -30,7 +30,7 @@ public class UsePrevVisitLocDialog extends DialogFragment implements View.OnClic
 
     ListView mPrevVisitLocsList;
     public interface UsePrevVisitLocDialogListener {
-        void onUsePrevVisitLoc(DialogFragment dialog);
+        void onUsePrevVisitLoc(DialogFragment dialog, Bundle args);
     }
     UsePrevVisitLocDialogListener mUsePrevVisitLocListener;
 
@@ -73,16 +73,24 @@ public class UsePrevVisitLocDialog extends DialogFragment implements View.OnClic
                 Cursor cr = ((SimpleCursorAdapter) mPrevVisitLocsList.getAdapter()).getCursor();
                 cr.moveToPosition(position);
                if (LDebug.ON) Log.d(LOG_TAG, "In onCreateView setOnItemClickListener, list item clicked, id = " + id);
-                Bundle args = getArguments();
-                if (args != null) {
-                    args.putLong(ARG_VISIT_USE_LOC, id);
-                   if (LDebug.ON) Log.d(LOG_TAG, "put ARG_VISIT_USE_LOC =" + id);
-                } else {
-                   if (LDebug.ON) Log.d(LOG_TAG, "getArguments() returned null");
+                try { // can fail with null pointer exception if fragment is gone
+                    Bundle args = new Bundle();
+                    // send args generalized for VisitHeaderFragment
+                    args.putDouble(VisitHeaderFragment.ARG_LOC_LATITUDE,
+                            cr.getDouble(cr.getColumnIndexOrThrow("Latitude")));
+                    args.putDouble(VisitHeaderFragment.ARG_LOC_LONGITUDE,
+                            cr.getDouble(cr.getColumnIndexOrThrow("Longitude")));
+                    args.putFloat(VisitHeaderFragment.ARG_LOC_ACCURACY, (float)0);
+                    args.putString(VisitHeaderFragment.ARG_LOC_ACC_SOURCE, "User supplied");
+                    args.putString(VisitHeaderFragment.ARG_LOC_PROVIDER, "Manual entry");
+
+                    // We send the dialog only to dismiss it in the activity. Can we dismiss it here?
+                    if (LDebug.ON) Log.d(LOG_TAG, "About to call onUsePrevVisitLoc");
+                    mUsePrevVisitLocListener.onUsePrevVisitLoc(UsePrevVisitLocDialog.this, args);
+//                    dismiss();
+                } catch (Exception e) {
+                    // ignore; if fails, will not update with previous plot location
                 }
-               if (LDebug.ON) Log.d(LOG_TAG, "About to call onUsePrevVisitLoc=" + id);
-                mUsePrevVisitLocListener.onUsePrevVisitLoc(UsePrevVisitLocDialog.this);
-                dismiss();
             }
         });
 

@@ -506,13 +506,8 @@ public class MainVNActivity extends AppCompatActivity
         }
     }
 
-    public void onUsePrevVisitLoc(DialogFragment dialog) {
+    public void onUsePrevVisitLoc(DialogFragment dialog, Bundle args) {
         if (LDebug.ON) Log.d(LOG_TAG, "in onUsePrevVisitLoc");
-        Bundle args = dialog.getArguments();
-        // T0DO
-        // fix this up to get the args we need
-        long recIdToUse = args.getLong(UsePrevVisitLocDialog.ARG_VISIT_USE_LOC);
-
         // method receives bundle with lat/lon/acc
         VisitHeaderFragment visHdrFragment = (VisitHeaderFragment)
                 getSupportFragmentManager().findFragmentByTag(Tags.VISIT_HEADER);
