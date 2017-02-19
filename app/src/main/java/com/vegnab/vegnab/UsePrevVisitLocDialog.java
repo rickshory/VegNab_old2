@@ -106,6 +106,7 @@ public class UsePrevVisitLocDialog extends DialogFragment implements View.OnClic
         switch (id) {
         case Loaders.PREVIOUS_VISIT_LOCATIONS:
             baseUri = ContentProvider_VegNab.SQL_URI;
+            // need an ID field in the query, even if we don't use it, to make the list work right
             select = "SELECT Locations._id, "
                     + "(Locations.Latitude || ', ' || Locations.Longitude) AS LatLon, "
                     + "(Visits.VisitDate || ', ' || Visits.VisitName ||  "
@@ -114,10 +115,12 @@ public class UsePrevVisitLocDialog extends DialogFragment implements View.OnClic
                     + "FROM Visits LEFT JOIN Locations ON Visits.RefLocID = Locations._id "
                     + "WHERE Visits.ShowOnMobile = 1 AND Visits.IsDeleted = 0 "
                     + "AND Locations.Latitude LIKE '%' AND Locations.Longitude LIKE '%' "
+                    + "AND Visits._id != ? "
                     + "ORDER BY Visits.VisitDate DESC;";
-
+            // get the current visit ID, which was  passed in a bundle, to exclude it from the list of choices
+            String[] params = new String[] {"" + getArguments().getLong(VisitHeaderFragment.ARG_VISIT_ID) };
             cl = new CursorLoader(getActivity(), baseUri,
-                    null, select, null, null);
+                    null, select, params, null);
             break;
         }
         return cl;

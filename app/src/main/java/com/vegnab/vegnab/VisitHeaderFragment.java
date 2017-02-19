@@ -1425,21 +1425,13 @@ id/vis_hdr_loc_help
                     Toast.makeText(getActivity(),
                             getActivity().getResources().getString(R.string.new_visit_previous_visit_none),
                             Toast.LENGTH_SHORT).show();
-                } else {
-                    Bundle args = new Bundle();
-                    // don't put anything in the bundle yet, following line only shows format
-                    //args.putLong(UsePrevVisitLocDialog.ARG_VISIT_ID_TO_SHOW, mCtPrevVisits);
-                    // maybe pass the cursor?
-                    UsePrevVisitLocDialog  prevLocDlg = UsePrevVisitLocDialog.newInstance(args);
-                    prevLocDlg.show(getActivity().getSupportFragmentManager(), "frg_prev_vis_locs");
-                }
+}
                 */
 //        notYetDlg.show(getFragmentManager(), null);
         {
             Bundle args = new Bundle();
-            // don't put anything in the bundle yet, following line only shows format
-            //args.putLong(UsePrevVisitLocDialog.ARG_VISIT_ID_TO_SHOW, mCtPrevVisits);
-            // maybe pass the cursor?
+            // send the current visit ID, so dialog can exclude that one from choices
+            args.putLong(ARG_VISIT_ID, mVisitId);
             UsePrevVisitLocDialog  prevLocDlg = UsePrevVisitLocDialog.newInstance(args);
             prevLocDlg.show(getActivity().getSupportFragmentManager(), "frg_prev_vis_locs");
         }
