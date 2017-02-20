@@ -75,6 +75,7 @@ public final class VNContract {
         public static final int UPDATE_LOCAL_NAME = 228; // store in Preferences the name of the local area, e.g. 'Oregon' for quick reference
         public static final int EXISTING_LOC_PROVIDERS = 229; // For quick lookup
         public static final int EXISTING_LOC_ACCURACY_SOURCES = 230; // For quick lookup
+        public static final int VISITS_HAVING_LOC_AVAILABLE = 231; // Visits, other than the current one, user can copy the location from
 
         // in Edit Namer
         public static final int NAMER_TO_EDIT = 31;

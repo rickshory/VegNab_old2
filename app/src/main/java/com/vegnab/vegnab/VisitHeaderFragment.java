@@ -120,7 +120,8 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     private String mLocTime, mAccSource, mLocProvider;
     private Location mCurLocation, mLastLocation,
             mPrevLocation = new Location ("gps"); // use string constructor as default
-    private boolean mHasPrevLoc = false, mHasLocPermission = true, mGotSomeLocation = false;
+    private boolean mHasPrevLoc = false, mHasLocPermission = true,
+            mGotSomeLocation = false, mOtherVisLocsAvailable = true;
     // Request code to use when launching the resolution activity
     private static final int REQUEST_RESOLVE_ERROR = 1001;
     // Unique tag for the error dialog fragment
@@ -164,6 +165,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     final static String ARG_VISIT_ID = "visitId";
     final static String ARG_LOC_GOOD_FLAG = "locGood";
     final static String ARG_LOC_PREV_FLAG = "locPrevExists";
+    final static String ARG_OTHER_VIS_LOCS_AVAILABLE = "locsAvailFromOtherVisits";
     final static String ARG_LOC_PERMISSION_FLAG = "hasLocPermission";
     final static String ARG_CUR_LOCATION = "curLocation";
     final static String ARG_PREV_LOCATION = "prevLocation";
@@ -273,6 +275,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
            if (LDebug.ON) Log.d(LOG_TAG, "In onCreateView, retrieved mVisitId: " + mVisitId);
             mLocIsGood = savedInstanceState.getBoolean(ARG_LOC_GOOD_FLAG, false);
             mHasPrevLoc = savedInstanceState.getBoolean(ARG_LOC_PREV_FLAG, false);
+            mOtherVisLocsAvailable = savedInstanceState.getBoolean(ARG_OTHER_VIS_LOCS_AVAILABLE, true);
             mHasLocPermission = savedInstanceState.getBoolean(ARG_LOC_PERMISSION_FLAG, true);
             mCurLocation = savedInstanceState.getParcelable(ARG_CUR_LOCATION);
             mPrevLocation = savedInstanceState.getParcelable(ARG_PREV_LOCATION);
@@ -384,6 +387,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         getLoaderManager().initLoader(Loaders.VISIT_TO_EDIT, null, this);
         getLoaderManager().initLoader(Loaders.EXISTING_VISITS, null, this);
         getLoaderManager().initLoader(Loaders.VISIT_PLACEHOLDERS_ENTERED, null, this);
+        getLoaderManager().initLoader(Loaders.VISITS_HAVING_LOC_AVAILABLE, null, this);
         // have these two loaders ready too, even though they don't involve the UI
         getLoaderManager().initLoader(Loaders.EXISTING_LOC_PROVIDERS, null, this);
         getLoaderManager().initLoader(Loaders.EXISTING_LOC_ACCURACY_SOURCES, null, this);
@@ -444,6 +448,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         outState.putLong(ARG_VISIT_ID, mVisitId);
         outState.putBoolean(ARG_LOC_GOOD_FLAG, mLocIsGood);
         outState.putBoolean(ARG_LOC_PREV_FLAG, mHasPrevLoc);
+        outState.putBoolean(ARG_OTHER_VIS_LOCS_AVAILABLE, mOtherVisLocsAvailable);
         outState.putBoolean(ARG_LOC_PERMISSION_FLAG, mHasLocPermission);
         outState.putParcelable(ARG_CUR_LOCATION, mCurLocation);
         outState.putParcelable(ARG_PREV_LOCATION, mPrevLocation);
@@ -552,6 +557,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             cl = new CursorLoader(getActivity(), baseUri,
                     null, select, null, null);
             break;
+
         case Loaders.EXISTING_VISITS:
             baseUri = ContentProvider_VegNab.SQL_URI;
             select = "SELECT _id, VisitName FROM Visits "
@@ -589,6 +595,18 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                     ContentProvider_VegNab.CONTENT_URI, "accuracysources");
             cl = new CursorLoader(getActivity(), mLocAccSourcesUri,
                     null, select, null, null);
+            break;
+
+        case Loaders.VISITS_HAVING_LOC_AVAILABLE:
+            baseUri = ContentProvider_VegNab.SQL_URI;
+            // only need a count, so only get ID column
+            select = "SELECT Visits._id "
+                    + "FROM Visits LEFT JOIN Locations ON Visits.RefLocID = Locations._id "
+                    + "WHERE Visits.ShowOnMobile = 1 AND Visits.IsDeleted = 0 "
+                    + "AND Locations.Latitude LIKE '%' AND Locations.Longitude LIKE '%' "
+                    + "AND Visits._id != ?;";
+            cl = new CursorLoader(getActivity(), baseUri,
+                    null, select, new String[] { "" + mVisitId }, null);
             break;
         }
         return cl;
@@ -708,6 +726,18 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                     "onLoadFinished, items in mExistingLocAccuracySources: "
                             + mExistingLocAccuracySources.toString());
             break;
+
+        case Loaders.VISITS_HAVING_LOC_AVAILABLE:
+            if (c.getCount() == 0) {
+                // no other visits available to copy location from
+                mOtherVisLocsAvailable = false;
+                // do we ever need to update this?
+                // no, even if current visit saved, it is not available as an "other" visit
+            }
+
+            break;
+
+
         }
     }
 
@@ -726,7 +756,6 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 mNamerSpinner.setEnabled(false); // lock spinner to prevent Namer/Placeholder mismatch
                 mLblNewNamerSpinnerCover.bringToFront(); // user sees Namer, but click brings up message
             }
-
         }
     }
 
@@ -786,6 +815,9 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             break;
 
         case Loaders.EXISTING_LOC_ACCURACY_SOURCES:
+            break;
+
+        case Loaders.VISITS_HAVING_LOC_AVAILABLE:
             break;
         }
     }
@@ -1219,6 +1251,8 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             inflater.inflate(R.menu.context_visit_header_location, menu);
             // can't restore previous if no previous
             if (!mHasPrevLoc) menu.removeItem(R.id.vis_hdr_loc_restore_prev);
+            // can't copy location from other visit if there are none
+            if (!mOtherVisLocsAvailable) menu.removeItem(R.id.vis_hdr_loc_other_visit);
             // re-aquire only if already acquired
             if (!mLocIsGood) menu.removeItem(R.id.vis_hdr_loc_reacquire);
             // opt to accept accuracy only if in the process of acquiring
