@@ -669,8 +669,9 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 mAccuracy = c.getFloat(c.getColumnIndexOrThrow("Accuracy"));
                 // mAccSource
                 mViewVisitLocation.setText("" + mLatitude + ", " + mLongitude
-                        + "\naccuracy " + mAccuracy + "m");
+                        + ((mAccuracy == 0.0) ? "" : "\naccuracy " + mAccuracy + "m"));
                 mGotSomeLocation = true;
+
             }
             break;
 
@@ -1520,7 +1521,7 @@ id/vis_hdr_loc_help
             helpMessage = c.getResources().getString(R.string.vis_hdr_loc_detail_notyet);
         } else {
             helpMessage = "" + mLatitude + ", " + mLongitude
-                    + "\naccuracy " + mAccuracy + "m"
+                    + "\naccuracy " + ((mAccuracy == 0.0) ? "(not known)" : mAccuracy + "m")
                     + "\nacquired " + mLocTime + ""
                     + "\nfrom " + mLocProvider;
         }
@@ -1805,8 +1806,9 @@ id/vis_hdr_loc_help
             mLatitude = loc.getLatitude();
             mLongitude = loc.getLongitude();
             mLocProvider = loc.getProvider();
+            // should always have a numeric accuracy here, but test just in case
             s = "" + mLatitude + ", " + mLongitude
-                + "\naccuracy " + mAccuracy + "m"
+                + ((mAccuracy == 0.0) ? "" : "\naccuracy " + mAccuracy + "m")
                 + "\ntarget accuracy " + mAccuracyTargetForVisitLoc + "m"
                 + "\ncontinuing to acquire";
             mViewVisitLocation.setText(s);
@@ -1851,7 +1853,7 @@ id/vis_hdr_loc_help
             mGoogleApiClient.disconnect();
             // overwrite the message
             s = "" + mLatitude + ", " + mLongitude
-                    + "\naccuracy " + mAccuracy + "m";
+                    + ((mAccuracy == 0.0) ? "" : "\naccuracy " + mAccuracy + "m");
             mViewVisitLocation.setText(s);
             mGotSomeLocation = true;
         }
@@ -1986,7 +1988,7 @@ id/vis_hdr_loc_help
         if (LDebug.ON) Log.d(LOG_TAG, "Location time: " + mLocTime);
         // overwrite the message
         String s = "" + mLatitude + ", " + mLongitude
-                + "\naccuracy " + mAccuracy + "m";
+                + ((mAccuracy == 0.0) ? "" : "\naccuracy " + mAccuracy + "m");
         mViewVisitLocation.setText(s);
         mGotSomeLocation = true;
         int result = saveVisitLoc();
