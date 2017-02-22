@@ -668,8 +668,11 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                 mLongitude = c.getDouble(c.getColumnIndexOrThrow("Longitude"));
                 mAccuracy = c.getFloat(c.getColumnIndexOrThrow("Accuracy"));
                 // mAccSource
+                Context ct = getActivity();
                 mViewVisitLocation.setText("" + mLatitude + ", " + mLongitude
-                        + ((mAccuracy == 0.0) ? "" : "\naccuracy " + mAccuracy + "m"));
+                        + ((mAccuracy == 0.0) ? ""
+                        : "\n" + ct.getResources().getString(R.string.loc_vw_acc) + " "
+                        + mAccuracy + ct.getResources().getString(R.string.loc_vw_m)));
                 mGotSomeLocation = true;
 
             }
@@ -1521,9 +1524,11 @@ id/vis_hdr_loc_help
             helpMessage = c.getResources().getString(R.string.vis_hdr_loc_detail_notyet);
         } else {
             helpMessage = "" + mLatitude + ", " + mLongitude
-                    + "\naccuracy " + ((mAccuracy == 0.0) ? "(not known)" : mAccuracy + "m")
-                    + "\nacquired " + mLocTime + ""
-                    + "\nfrom " + mLocProvider;
+                    + "\n" + c.getResources().getString(R.string.loc_vw_acc) + " "
+                    + ((mAccuracy == 0.0) ? c.getResources().getString(R.string.loc_vw_not_knw)
+                    : mAccuracy + c.getResources().getString(R.string.loc_vw_m))
+                    + "\n" + c.getResources().getString(R.string.loc_vw_acq) + " " + mLocTime + ""
+                    + "\n" + c.getResources().getString(R.string.loc_vw_from) + " " + mLocProvider;
         }
         flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
         flexHlpDlg.show(getFragmentManager(), "frg_help_detail");
@@ -1795,7 +1800,6 @@ id/vis_hdr_loc_help
     }
 
     public void handleLocation(Location loc) {
-        String s;
         mCurLocation = new Location(loc); // hold the latest value
         mAccuracy = loc.getAccuracy();
         if (mAccuracy <= mAccuracyTargetForVisitLoc) {
@@ -1807,17 +1811,19 @@ id/vis_hdr_loc_help
             mLongitude = loc.getLongitude();
             mLocProvider = loc.getProvider();
             // should always have a numeric accuracy here, but test just in case
-            s = "" + mLatitude + ", " + mLongitude
-                + ((mAccuracy == 0.0) ? "" : "\naccuracy " + mAccuracy + "m")
-                + "\ntarget accuracy " + mAccuracyTargetForVisitLoc + "m"
-                + "\ncontinuing to acquire";
+            Context c = getActivity();
+            String s = "" + mLatitude + ", " + mLongitude
+                + ((mAccuracy == 0.0) ? "" : "\n" + c.getResources().getString(R.string.loc_vw_acc)
+                    + " " + mAccuracy + c.getResources().getString(R.string.loc_vw_m))
+                + "\n" + c.getResources().getString(R.string.loc_vw_targacc)
+                    + " " + mAccuracyTargetForVisitLoc + c.getResources().getString(R.string.loc_vw_m)
+                + "\n" + c.getResources().getString(R.string.loc_vw_cont_acq) + "";
             mViewVisitLocation.setText(s);
             mGotSomeLocation = true;
         }
     }
 
     public void finalizeLocation() {
-        String s;
         if (mCurLocation == null) {
             return;
         }
@@ -1852,8 +1858,11 @@ id/vis_hdr_loc_help
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             mGoogleApiClient.disconnect();
             // overwrite the message
-            s = "" + mLatitude + ", " + mLongitude
-                    + ((mAccuracy == 0.0) ? "" : "\naccuracy " + mAccuracy + "m");
+            Context c = getActivity();
+            String s = "" + mLatitude + ", " + mLongitude
+                    + ((mAccuracy == 0.0) ? ""
+                    : "\n" + c.getResources().getString(R.string.loc_vw_acc) + " "
+                    + mAccuracy + c.getResources().getString(R.string.loc_vw_m));
             mViewVisitLocation.setText(s);
             mGotSomeLocation = true;
         }
@@ -1987,8 +1996,10 @@ id/vis_hdr_loc_help
         mLocTime = mTimeFormat.format(new Date(mCurLocation.getTime()));
         if (LDebug.ON) Log.d(LOG_TAG, "Location time: " + mLocTime);
         // overwrite the message
+        Context c = getActivity();
         String s = "" + mLatitude + ", " + mLongitude
-                + ((mAccuracy == 0.0) ? "" : "\naccuracy " + mAccuracy + "m");
+                + ((mAccuracy == 0.0) ? "" : "\n" + c.getResources().getString(R.string.loc_vw_acc)
+                + " " + mAccuracy + c.getResources().getString(R.string.loc_vw_m));
         mViewVisitLocation.setText(s);
         mGotSomeLocation = true;
         int result = saveVisitLoc();

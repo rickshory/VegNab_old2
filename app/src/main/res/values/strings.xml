@@ -126,6 +126,15 @@
     <string name="longitude_label">Longitude: </string>
     <string name="accuracy_label">Accuracy (m): </string>
 
+    <string name="loc_vw_acc">accuracy</string>
+    <string name="loc_vw_m">m</string>
+    <string name="loc_vw_targacc">target accuracy</string>
+    <string name="loc_vw_acq">acquired</string>
+    <string name="loc_vw_from">from</string>
+    <string name="loc_vw_by">by</string>
+    <string name="loc_vw_cont_acq">continuing to acquire</string>
+    <string name="loc_vw_not_knw">(not known)</string>
+
     <string name="loc_manual_entry_msg_no_latitude">Need Latitude</string>
     <string name="loc_manual_entry_msg_no_longitude">Need Longitude</string>
     <string name="loc_manual_entry_msg_no_accuracy">Need Accuracy</string>
