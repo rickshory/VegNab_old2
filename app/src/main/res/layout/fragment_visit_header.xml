@@ -89,31 +89,12 @@
         />
 
     <TextView
-        android:id="@+id/lbl_visit_scribe"
-        android:text="@string/visit_header_label_scribe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/sel_spp_namer_spinner"
-        android:layout_below="@id/sel_spp_namer_spinner"
-        />
-
-    <EditText
-        android:id="@+id/txt_visit_scribe"
-        android:hint="@string/visit_header_hint_scribe"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/lbl_visit_scribe"
-        android:layout_below="@id/lbl_visit_scribe"
-        android:inputType="text"
-        android:maxLength="16" />
-
-    <TextView
         android:id="@+id/lbl_visit_location"
         android:text="@string/visit_header_label_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/txt_visit_scribe"
-        android:layout_below="@id/txt_visit_scribe"
+        android:layout_alignLeft="@id/sel_spp_namer_spinner"
+        android:layout_below="@id/sel_spp_namer_spinner"
         />
 
     <EditText
@@ -128,12 +109,31 @@
         />
 
     <TextView
-        android:id="@+id/lbl_visit_azimuth"
-        android:text="@string/visit_header_label_azimuth"
+        android:id="@+id/lbl_visit_scribe"
+        android:text="@string/visit_header_label_scribe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/txt_visit_location"
         android:layout_below="@id/txt_visit_location"
+        />
+
+    <EditText
+        android:id="@+id/txt_visit_scribe"
+        android:hint="@string/visit_header_hint_scribe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/lbl_visit_scribe"
+        android:layout_below="@id/lbl_visit_scribe"
+        android:inputType="text"
+        android:maxLength="16" />
+
+    <TextView
+        android:id="@+id/lbl_visit_azimuth"
+        android:text="@string/visit_header_label_azimuth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/txt_visit_scribe"
+        android:layout_below="@id/txt_visit_scribe"
         />
 
     <EditText
