@@ -107,9 +107,9 @@
         android:focusable="false"
         android:inputType="textMultiLine"
         />
-    
+
     <RelativeLayout
-        android:id="@+id/vis_hdr_opt_fields_veiw_group"
+        android:id="@+id/vis_hdr_opt_fields_view_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -181,8 +181,8 @@
         android:layout_height="wrap_content"
         android:text="@string/visit_header_go_button_msg"
         android:padding="10dp"
-        android:layout_alignLeft="@id/vis_hdr_opt_fields_veiw_group"
-        android:layout_below="@id/vis_hdr_opt_fields_veiw_group"
+        android:layout_alignLeft="@id/vis_hdr_opt_fields_view_group"
+        android:layout_below="@id/vis_hdr_opt_fields_view_group"
         />
 
     <Button

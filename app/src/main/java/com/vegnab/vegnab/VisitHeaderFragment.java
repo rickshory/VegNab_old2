@@ -346,11 +346,18 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
         mViewVisitNotes = (EditText) rootView.findViewById(R.id.txt_visit_notes);
         mViewVisitNotes.setOnFocusChangeListener(this);
         registerForContextMenu(mViewVisitNotes); // enable long-press
-        // set click listener for the button in the view
-        Button b = (Button) rootView.findViewById(R.id.visit_header_go_button);
-        b.setOnClickListener(this);
+        // set click listener for the buttons in the view
+        Button btGo = (Button) rootView.findViewById(R.id.visit_header_go_button);
+        btGo.setOnClickListener(this);
+        Button btOpt = (Button) rootView.findViewById(R.id.vis_hdr_opt_fields_button);
+        btOpt.setOnClickListener(this);
+        btOpt.setText(getActivity().getResources().getString(R.string.vis_hdr_opt_fields_button_show_msg));
         // if more, loop through all the child items of the ViewGroup rootView and
         // set the onclicklistener for all the Button instances found
+
+        // initially hide the optional fields
+        ViewGroup vgOptFlds = (ViewGroup) rootView.findViewById(R.id.vis_hdr_opt_fields_view_group);
+        vgOptFlds.setVisibility(View.GONE);
         return rootView;
     }
 
@@ -486,8 +493,8 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
                         getActivity().getResources().getString(R.string.namer_locked_message));
                 nmrLockDlg.show(getFragmentManager(), "frg_err_namer_lock");
             }
-
             break;
+
         case R.id.visit_header_go_button:
             // create or update the Visit record in the database, if everything is valid
             mValidationLevel = Validation.CRITICAL; // save if possible, and announce anything invalid
@@ -504,7 +511,23 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             mButtonCallback.onVisitHeaderGoButtonClicked(mVisitId);
            if (LDebug.ON) Log.d(LOG_TAG, "in onClick, completed 'mButtonCallback.onVisitHeaderGoButtonClicked()'");
             break;
-        }
+
+        case R.id.vis_hdr_opt_fields_button:
+            String btnMsg;
+            Button b = (Button) this.getView().findViewById(R.id.vis_hdr_opt_fields_button);
+            // show or hide the optional fields
+            ViewGroup vgOptFlds = (ViewGroup) this.getView().findViewById(R.id.vis_hdr_opt_fields_view_group);
+            if (vgOptFlds.getVisibility() == View.VISIBLE) {
+                vgOptFlds.setVisibility(View.GONE);
+                btnMsg = getActivity().getResources().getString(R.string.vis_hdr_opt_fields_button_show_msg);
+            } else { // optional fields are not visible, show them
+                vgOptFlds.setVisibility(View.VISIBLE);
+                btnMsg = getActivity().getResources().getString(R.string.vis_hdr_opt_fields_button_hide_msg);
+            }
+            b.setText(btnMsg);
+            break;
+        } // end of switch/case for onClick
+
     }
 
     private void fireOffDatePicker() {
