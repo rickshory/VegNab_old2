@@ -134,12 +134,9 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
                     unHideVisDlg.show(getActivity().getSupportFragmentManager(), "frg_unhide_vis");
                 }
                 return true;
-
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -186,9 +183,9 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
         getLoaderManager().initLoader(VNContract.Loaders.PLOTTYPES, null, this);
 
         mVisitListAdapter = new SimpleCursorAdapter(getActivity(),
-                android.R.layout.simple_list_item_1, null,
-                new String[] {"VisitName"},
-                new int[] {android.R.id.text1}, 0);
+                android.R.layout.simple_list_item_2, null,
+                new String[] {"VisitName", "VisDescr"},
+                new int[] {android.R.id.text1, android.R.id.text2}, 0);
         setListAdapter(mVisitListAdapter);
         getLoaderManager().initLoader(VNContract.Loaders.PREV_VISITS, null, this);
 
@@ -510,7 +507,9 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
 
             case VNContract.Loaders.PREV_VISITS:
                 baseUri = ContentProvider_VegNab.SQL_URI;
-                select = "SELECT _id, VisitName, VisitDate FROM Visits "
+                select = "SELECT _id, VisitName, "
+                        + "(Visits.VisitDate || (IFNULL((', ' || Visits.VisitNotes), ''))) AS VisDescr "
+                        + "FROM Visits "
                         + "WHERE ShowOnMobile = 1 AND IsDeleted = 0 "
                         + "ORDER BY LastChanged DESC;";
                 cl = new CursorLoader(getActivity(), baseUri,
