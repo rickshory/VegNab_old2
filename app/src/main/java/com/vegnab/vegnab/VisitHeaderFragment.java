@@ -1418,6 +1418,9 @@ id/vis_hdr_loc_help
                 .build());
        if (LDebug.ON) Log.d(LOG_TAG, "'Re-acquire' selected");
         // re-acquire location
+        // copy current location to previous
+//        mLocIsGood = false;
+
         notYetDlg.show(getFragmentManager(), null);
         return true;
     case R.id.vis_hdr_loc_accept:
