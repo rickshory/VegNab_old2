@@ -2005,29 +2005,21 @@ id/vis_hdr_loc_help
 
     public void setLocation(Bundle args) {
         // used to set the location when e.g entered manually, or reset to previous
-        mLatitude = args.getDouble(ARG_LOC_LATITUDE);
-        mLongitude = args.getDouble(ARG_LOC_LONGITUDE);
-        mAccuracy = args.getFloat(ARG_LOC_ACCURACY);
-        mAccSource = args.getString(ARG_LOC_ACC_SOURCE);
+        // Provider (can be any string) is the one field required to create a Location
         mLocProvider = args.getString(ARG_LOC_PROVIDER);
         if (mCurLocation == null) {
             mCurLocation = new Location(mLocProvider);
+        } else {
+            mCurLocation.setProvider(mLocProvider);
         }
-        mCurLocation.setProvider(mLocProvider);
-        mCurLocation.setLatitude(mLatitude);
-        mCurLocation.setLongitude(mLongitude);
-        mCurLocation.setAccuracy(mAccuracy);
-        mLocIsGood = true;
+        // finalizeLocation will copy lat/lon/acc/time etc to global members
+        mCurLocation.setLatitude(args.getDouble(ARG_LOC_LATITUDE));
+        mCurLocation.setLongitude(args.getDouble(ARG_LOC_LONGITUDE));
+        mCurLocation.setAccuracy(args.getFloat(ARG_LOC_ACCURACY));
         mCurLocation.setTime(System.currentTimeMillis());
-        mLocTime = mTimeFormat.format(new Date(mCurLocation.getTime()));
-        if (LDebug.ON) Log.d(LOG_TAG, "Location time: " + mLocTime);
-        // overwrite the message
-        Context c = getActivity();
-        String s = "" + mLatitude + ", " + mLongitude
-                + ((mAccuracy == 0.0) ? "" : "\n" + c.getResources().getString(R.string.loc_vw_acc)
-                + " " + mAccuracy + c.getResources().getString(R.string.loc_vw_m));
-        mViewVisitLocation.setText(s);
-        mGotSomeLocation = true;
+        // set other globals directly here
+        mAccSource = args.getString(ARG_LOC_ACC_SOURCE);
+        finalizeLocation();
         int result = saveVisitLoc();
         if (result <= 2) { // successfully created or updated this location
             if (LDebug.ON) {
@@ -2037,7 +2029,6 @@ id/vis_hdr_loc_help
         } else {
             if (LDebug.ON) Log.d(LOG_TAG, "setLocation; Could not store Location; result: "  + result);
         }
-        updateLocalSpecies();
     }
 
     // Checks if external storage is available for read and write
