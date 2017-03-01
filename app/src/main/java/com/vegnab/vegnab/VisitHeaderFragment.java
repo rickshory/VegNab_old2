@@ -1324,6 +1324,7 @@ id/vis_hdr_loc_help
             .getTracker(VNApplication.TrackerName.APP_TRACKER);
 
     switch (item.getItemId()) {
+        
     case R.id.vis_hdr_visname_help:
        if (LDebug.ON) Log.d(LOG_TAG, "'Visit Name Help' selected");
         headerContextTracker.send(new HitBuilders.EventBuilder()
@@ -1338,6 +1339,7 @@ id/vis_hdr_loc_help
         flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
         flexHlpDlg.show(getFragmentManager(), "frg_help_visname");
         return true;
+
     case R.id.vis_hdr_namer_edit:
        if (LDebug.ON) Log.d(LOG_TAG, "'Edit Namer' selected");
         headerContextTracker.send(new HitBuilders.EventBuilder()
@@ -1355,6 +1357,7 @@ id/vis_hdr_loc_help
         EditNamerDialog editNmrDlg = EditNamerDialog.newInstance(defaultNamerId);
         editNmrDlg.show(getFragmentManager(), "frg_edit_namer");
         return true;
+
     case R.id.vis_hdr_namer_delete:
        if (LDebug.ON) Log.d(LOG_TAG, "'Delete Namer' selected");
         headerContextTracker.send(new HitBuilders.EventBuilder()
@@ -1367,6 +1370,7 @@ id/vis_hdr_loc_help
         DelNamerDialog delNamerDlg = new DelNamerDialog();
         delNamerDlg.show(getFragmentManager(), "frg_del_namer");
         return true;
+
     case R.id.vis_hdr_namer_help:
         // drop through to the same Help for the text view that covers the
         //  Namer spinner to catch the first '(add new)' click
@@ -1384,6 +1388,7 @@ id/vis_hdr_loc_help
         flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
         flexHlpDlg.show(getFragmentManager(), "frg_help_namer");
         return true;
+
     case R.id.vis_hdr_scribe_help:
        if (LDebug.ON) Log.d(LOG_TAG, "'Scribe Help' selected");
         headerContextTracker.send(new HitBuilders.EventBuilder()
@@ -1398,6 +1403,7 @@ id/vis_hdr_loc_help
         flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
         flexHlpDlg.show(getFragmentManager(), "frg_help_scribe");
         return true;
+
     case R.id.vis_hdr_loc_restore_prev:
        if (LDebug.ON) Log.d(LOG_TAG, "'Restore Previous' selected");
         headerContextTracker.send(new HitBuilders.EventBuilder()
@@ -1406,9 +1412,10 @@ id/vis_hdr_loc_help
                 .setLabel("Restore Previous Location")
                 .setValue(1)
                 .build());
-        // re-acquire location
+        // restore previous location, if there is one
         notYetDlg.show(getFragmentManager(), null);
         return true;
+
     case R.id.vis_hdr_loc_reacquire:
         headerContextTracker.send(new HitBuilders.EventBuilder()
                 .setCategory("Visit Header Event")
@@ -1418,11 +1425,19 @@ id/vis_hdr_loc_help
                 .build());
        if (LDebug.ON) Log.d(LOG_TAG, "'Re-acquire' selected");
         // re-acquire location
-        // copy current location to previous
-//        mLocIsGood = false;
-
-        notYetDlg.show(getFragmentManager(), null);
+        // copy current location to previous so can undo
+        if (mCurLocation != null) {
+            if (mPrevLocation == null) {
+                mPrevLocation = new Location(mCurLocation);
+            } else {
+                mPrevLocation.set(mCurLocation);
+            }
+            mHasPrevLoc = true;
+        }
+        mLocIsGood = false;
+        mGoogleApiClient.connect();
         return true;
+
     case R.id.vis_hdr_loc_accept:
        if (LDebug.ON) Log.d(LOG_TAG, "'Accept accuracy' selected");
         if (mLocIsGood) { // message that accuracy is already OK
@@ -1521,8 +1536,8 @@ id/vis_hdr_loc_help
         }
         LocManualEntryDialog locMnlDlg = LocManualEntryDialog.newInstance(args);
         locMnlDlg.show(getFragmentManager(), "frg_loc_manl_entry");
-
         return true;
+
     case R.id.vis_hdr_loc_permission:
         if (LDebug.ON) Log.d(LOG_TAG, "'Permission' selected");
         headerContextTracker.send(new HitBuilders.EventBuilder()
@@ -1574,6 +1589,7 @@ id/vis_hdr_loc_help
         flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
         flexHlpDlg.show(getFragmentManager(), "frg_help_loc");
         return true;
+
     case R.id.vis_hdr_azimuth_help:
        if (LDebug.ON) Log.d(LOG_TAG, "'Azimuth Help' selected");
         headerContextTracker.send(new HitBuilders.EventBuilder()
@@ -1588,6 +1604,7 @@ id/vis_hdr_loc_help
         flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
         flexHlpDlg.show(getFragmentManager(), "frg_help_azimuth");
         return true;
+
     case R.id.vis_hdr_notes_help:
        if (LDebug.ON) Log.d(LOG_TAG, "'Notes Help' selected");
         headerContextTracker.send(new HitBuilders.EventBuilder()
