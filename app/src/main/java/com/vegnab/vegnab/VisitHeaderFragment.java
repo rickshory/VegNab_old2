@@ -1324,7 +1324,7 @@ id/vis_hdr_loc_help
             .getTracker(VNApplication.TrackerName.APP_TRACKER);
 
     switch (item.getItemId()) {
-        
+
     case R.id.vis_hdr_visname_help:
        if (LDebug.ON) Log.d(LOG_TAG, "'Visit Name Help' selected");
         headerContextTracker.send(new HitBuilders.EventBuilder()
@@ -1413,7 +1413,25 @@ id/vis_hdr_loc_help
                 .setValue(1)
                 .build());
         // restore previous location, if there is one
-        notYetDlg.show(getFragmentManager(), null);
+        if (mHasPrevLoc) {
+            if (mPrevLocation != null) {
+                // for now, try to swap current with previous
+                Boolean hadCurrentLoc = true;
+                if (mCurLocation != null) {
+                    Location tmpLoc = new Location("new");
+                    tmpLoc.set(mCurLocation);
+                } else { // should not have to create it here, but fail-safe
+                    hadCurrentLoc = false;
+                    mCurLocation = new Location("new");
+                }
+                mCurLocation.set(mPrevLocation);
+                if (hadCurrentLoc == true) {
+                    mPrevLocation.set(mCurLocation);
+                }
+            finalizeLocation();
+            }
+        }
+//        notYetDlg.show(getFragmentManager(), null);
         return true;
 
     case R.id.vis_hdr_loc_reacquire:
