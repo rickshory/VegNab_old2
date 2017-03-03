@@ -1441,7 +1441,7 @@ id/vis_hdr_loc_help
                 .setLabel("Re-acquire Location")
                 .setValue(1)
                 .build());
-       if (LDebug.ON) Log.d(LOG_TAG, "'Re-acquire' selected");
+        if (LDebug.ON) Log.d(LOG_TAG, "'Re-acquire' selected");
         // re-acquire location
         // copy current location to previous so can undo
         if (mCurLocation != null) {
@@ -1453,6 +1453,8 @@ id/vis_hdr_loc_help
             mHasPrevLoc = true;
         }
         mLocIsGood = false;
+        // may have to do this if retrieved pre-existing header record
+        buildGoogleApiClient();
         mGoogleApiClient.connect();
         return true;
 
