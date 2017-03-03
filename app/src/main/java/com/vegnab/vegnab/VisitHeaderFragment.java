@@ -1503,6 +1503,15 @@ id/vis_hdr_loc_help
                 .build());
         mUserOKdAccuracy = true;
         finalizeLocation(); // depends on mCurLocation, tested above
+        int result = saveVisitLoc();
+        if (result <= 2) { // successfully created or updated this location
+            if (LDebug.ON) {
+                if (result == 1) Log.d(LOG_TAG, "setLocation; Saved new Location");
+                if (result == 2) Log.d(LOG_TAG, "setLocation; Updated existing Location");
+            }
+        } else {
+            if (LDebug.ON) Log.d(LOG_TAG, "setLocation; Could not store Location; result: "  + result);
+        }
         helpTitle = c.getResources().getString(R.string.vis_hdr_loc_good_ack_title);
         helpMessage = c.getResources().getString(R.string.vis_hdr_loc_good_ack_text_pre)
                 + " " + mAccuracy
