@@ -1341,7 +1341,10 @@ id/vis_hdr_loc_help
         return true;
 
     case R.id.vis_hdr_namer_edit:
-       if (LDebug.ON) Log.d(LOG_TAG, "'Edit Namer' selected");
+    // drop through to the same Edit dialog for the text view that covers the
+    // Namer spinner to catch the first '(add new)' click
+    case R.id.vis_hdr_namer_cover_edit:
+        if (LDebug.ON) Log.d(LOG_TAG, "'Edit Namer' selected");
         headerContextTracker.send(new HitBuilders.EventBuilder()
                 .setCategory("Visit Header Event")
                 .setAction("Context Menu")
