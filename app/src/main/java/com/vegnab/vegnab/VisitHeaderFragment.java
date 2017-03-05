@@ -1267,6 +1267,10 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             break;
         case R.id.sel_spp_namer_spinner:
             inflater.inflate(R.menu.context_visit_header_namer, menu);
+            // can't delete Namer if has Placeholders
+            // for now, always remove this menu item
+            // TODO make another way to delete unused Namers
+            if (true) menu.removeItem(R.id.vis_hdr_namer_delete);
             break;
         case R.id.lbl_spp_namer_spinner_cover:
             inflater.inflate(R.menu.context_visit_header_namer_cover, menu);
