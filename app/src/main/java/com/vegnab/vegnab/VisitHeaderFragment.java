@@ -1270,6 +1270,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             // can't delete Namer if has Placeholders
             // for now, always remove this menu item
             // TODO make another way to delete unused Namers
+            // TODO maybe through a drawer
             if (true) menu.removeItem(R.id.vis_hdr_namer_delete);
             break;
         case R.id.lbl_spp_namer_spinner_cover:
