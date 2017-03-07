@@ -1269,9 +1269,9 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
             inflater.inflate(R.menu.context_visit_header_namer, menu);
             // can't delete Namer if has Placeholders
             // for now, always remove this menu item
+            if (true) menu.removeItem(R.id.vis_hdr_namer_delete);
             // TODO make another way to delete unused Namers
             // TODO maybe through a drawer
-            if (true) menu.removeItem(R.id.vis_hdr_namer_delete);
             break;
         case R.id.lbl_spp_namer_spinner_cover:
             inflater.inflate(R.menu.context_visit_header_namer_cover, menu);
@@ -1461,6 +1461,8 @@ id/vis_hdr_loc_help
             mHasPrevLoc = true;
         }
         mLocIsGood = false;
+        mViewVisitLocation.setText("");
+        mGotSomeLocation = false;
         // may have to do this if retrieved pre-existing header record
         buildGoogleApiClient();
         mGoogleApiClient.connect();
