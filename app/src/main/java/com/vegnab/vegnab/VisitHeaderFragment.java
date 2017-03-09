@@ -1433,13 +1433,12 @@ id/vis_hdr_loc_help
                     mCurLocation = new Location("new");
                 }
                 mCurLocation.set(mPrevLocation);
-                if (hadCurrentLoc == true) {
+                if (hadCurrentLoc) {
                     mPrevLocation.set(mCurLocation);
                 }
             finalizeLocation();
             }
         }
-//        notYetDlg.show(getFragmentManager(), null);
         return true;
 
     case R.id.vis_hdr_loc_reacquire:
@@ -1529,14 +1528,14 @@ id/vis_hdr_loc_help
                 .setLabel("Location from other visit")
                 .setValue(1)
                 .build());
-        /* should just disappear the menu option if no previous visits yet
-                        if (mCtPreviousVisits == 0) {
-                    Toast.makeText(getActivity(),
-                            getActivity().getResources().getString(R.string.new_visit_previous_visit_none),
-                            Toast.LENGTH_SHORT).show();
-}
-                */
-//        notYetDlg.show(getFragmentManager(), null);
+        // should just disappear the menu option if no previous visits yet
+        // but this is here for fail safe
+        if (!mOtherVisLocsAvailable) {
+            Toast.makeText(getActivity(),
+                    getActivity().getResources().getString(R.string.new_visit_no_visits_msg),
+                    Toast.LENGTH_SHORT).show();
+            return true;
+        }
         {
             Bundle args = new Bundle();
             // send the current visit ID, so dialog can exclude that one from choices
@@ -1578,7 +1577,6 @@ id/vis_hdr_loc_help
                 .build());
         // explain to user that app needs location permission, and run the dialog
         new askUserForLocPermission().execute();
-//        notYetDlg.show(getFragmentManager(), null);
         return true;
 
     case R.id.vis_hdr_loc_details:
