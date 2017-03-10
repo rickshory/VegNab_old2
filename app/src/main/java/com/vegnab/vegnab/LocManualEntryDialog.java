@@ -32,29 +32,21 @@ public class LocManualEntryDialog extends DialogFragment {
     private TextView mManualLatitude, mManualLongitude, mManualAccuracy;
     private double mLatitude, mLongitude;
     private float mAccuracy;
-    private Button mSaveButton;
 
     public interface LocManualEntryListener {
         // methods that must be implemented in the container Activity
-        public void onLocManualEntry(DialogFragment dialog, Bundle args);
+        void onLocManualEntry(DialogFragment dialog, Bundle args);
     }
     // Use this instance of the interface to deliver action events
     LocManualEntryListener mLocManualEntryCallback; // declare the interface
 
     final static String ARG_TOOLBAR_HEADER = "hdrStr";
-    final static String ARG_LATITUDE_VALUE = "latVal";
-    final static String ARG_LONGITUDE_VALUE = "lonVal";
-    final static String ARG_ACCURACY_VALUE = "accVal";
-    final static String ARG_LATITUDE_STRING = "latStr";
-    final static String ARG_LONGITUDE_STRING = "lonStr";
-    final static String ARG_ACCURACY_STRING = "accStr";
 
     static LocManualEntryDialog newInstance(Bundle args) {
         LocManualEntryDialog f = new LocManualEntryDialog();
         f.setArguments(args);
         return f;
     }
-
 
     // Test to make sure implemented:
     @Override
@@ -82,8 +74,8 @@ public class LocManualEntryDialog extends DialogFragment {
             });
             toolbar.setTitle(this.getArguments().getString(ARG_TOOLBAR_HEADER));
         }
-        mSaveButton = (Button) view.findViewById(R.id.btn_manl_loc_save);
-        mSaveButton.setOnClickListener(new View.OnClickListener() {
+        Button  saveButton = (Button) view.findViewById(R.id.btn_manl_loc_save);
+        saveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (validateManualLocValues()) {
                     Toast.makeText(getContext(),
@@ -113,10 +105,6 @@ public class LocManualEntryDialog extends DialogFragment {
         mManualLatitude = (EditText) view.findViewById(R.id.txt_manual_latitude);
         mManualLongitude = (EditText) view.findViewById(R.id.txt_manual_longitude);
         mManualAccuracy = (EditText) view.findViewById(R.id.txt_manual_accuracy);
-//        getDialog().setTitle(R.string.vis_hdr_loc_manl_entry_title);
-//        mManualLatitude.setText(this.getArguments().getString(ARG_LATITUDE_STRING));
-//        mManualLongitude.setText(this.getArguments().getString(ARG_LONGITUDE_STRING));
-//        mManualAccuracy.setText(this.getArguments().getString(ARG_ACCURACY_STRING));
         Bundle a = this.getArguments();
         if (a.containsKey(VisitHeaderFragment.ARG_LOC_LATITUDE))
             mManualLatitude.setText(""
@@ -124,9 +112,14 @@ public class LocManualEntryDialog extends DialogFragment {
         if (a.containsKey(VisitHeaderFragment.ARG_LOC_LONGITUDE))
             mManualLongitude.setText(""
                 + a.getDouble(VisitHeaderFragment.ARG_LOC_LONGITUDE));
-        if (a.containsKey(VisitHeaderFragment.ARG_LOC_ACCURACY))
-            mManualAccuracy.setText(""
-                + a.getFloat(VisitHeaderFragment.ARG_LOC_ACCURACY));
+        if (a.containsKey(VisitHeaderFragment.ARG_LOC_ACCURACY)) {
+            float Ac = a.getFloat(VisitHeaderFragment.ARG_LOC_ACCURACY);
+            if (Ac == 0.0) {
+                mManualAccuracy.setText("");
+            } else {
+                mManualAccuracy.setText("" + Ac);
+            }
+        }
         return view;
     }
 
@@ -145,23 +138,10 @@ public class LocManualEntryDialog extends DialogFragment {
         // this is where to do this because the layout has been applied
         // to the fragment
         Bundle args = getArguments();
-
-        if (args != null) {
-            // we don't use any args yet
-        }
         setupUI();
     }
 
     void setupUI() {
-/*
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        mManualLatitude.setText((sharedPref.getString(VNContract.Prefs.LOCAL_SPECIES_LIST_DESCRIPTION,
-                this.getResources().getString(R.string.local_region_none))));
-        mManualLongitude.setText((sharedPref.getString(VNContract.Prefs.LOCAL_SPECIES_LIST_DESCRIPTION,
-                this.getResources().getString(R.string.local_region_none))));
-        mManualAccuracy.setText((sharedPref.getString(VNContract.Prefs.LOCAL_SPECIES_LIST_DESCRIPTION,
-                this.getResources().getString(R.string.local_region_none))));
-*/
     }
 
     @Override
@@ -179,7 +159,7 @@ public class LocManualEntryDialog extends DialogFragment {
         Context c = getActivity();
         String stringProblem;
         String errTitle = c.getResources().getString(R.string.vis_hdr_validate_generic_title);
-        ConfigurableMsgDialog flexErrDlg = new ConfigurableMsgDialog();
+        ConfigurableMsgDialog flexErrDlg;
 
         double Lat, Lon;
         float Ac;
