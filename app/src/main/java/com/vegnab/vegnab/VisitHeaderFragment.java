@@ -1951,108 +1951,117 @@ id/vis_hdr_loc_help
     } // end of finalizeLocation
 
     public void updateLocalSpecies() {
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String stringUrl = "http://maps.googleapis.com/maps/api/geocode/json?latlng="
-                + mLatitude + ","
-                + mLongitude + "&sensor=false";
-        if (LDebug.ON) Log.d(LOG_TAG, "stringUrl: " + stringUrl);
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, stringUrl, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        // get State and Country; kind of redundant but works for anywhere in the USA
-                        String stState = "", stCountry = "";
-//                        if (LDebug.ON) Log.d(LOG_TAG, "response: " + response.toString());
-                        try {
-                            JSONArray resultsArray = (JSONArray) response.get("results");
-                            for (int i=0; i < resultsArray.length(); i++) {
-                                JSONObject resultItem = resultsArray.getJSONObject(i);
-//                                if (LDebug.ON)
-//                                    Log.d(LOG_TAG, "resultItem " + i + ": " + resultItem.toString());
-                                JSONArray address_componentsArray = (JSONArray) resultItem.get("address_components");
-                                for (int j=0; j < address_componentsArray.length(); j++) {
-                                    JSONObject address_componentsItem = address_componentsArray.getJSONObject(j);
-//                                    if (LDebug.ON)
-//                                        Log.d(LOG_TAG, "address_componentItem " + j + ": " + address_componentsItem.toString());
-                                    JSONArray typesArray = (JSONArray) address_componentsItem.get("types");
-                                    for (int k=0; k < typesArray.length(); k++) {
-                                        String typeItem = typesArray.getString(k);
-//                                        if (LDebug.ON)
-//                                            Log.d(LOG_TAG, "typeItem " + k + ": " + typeItem);
-                                        if (typeItem.equals("administrative_area_level_1")) {
-//                                            String shortName = address_componentsItem.getString("short_name");
-//                                            if (LDebug.ON)
-//                                                Log.d(LOG_TAG, "short_name is: " + shortName);
-                                            stState = address_componentsItem.getString("short_name");
-                                        }
-                                        if (typeItem.equals("country")) {
-//                                            String shortName = address_componentsItem.getString("short_name");
-//                                            if (LDebug.ON)
-//                                                Log.d(LOG_TAG, "short_name is: " + shortName);
-                                            stCountry = address_componentsItem.getString("short_name");
+        try { // if any error, fail silently
+            RequestQueue queue = Volley.newRequestQueue(getActivity());
+            String stringUrl = "http://maps.googleapis.com/maps/api/geocode/json?latlng="
+                    + mLatitude + ","
+                    + mLongitude + "&sensor=false";
+            if (LDebug.ON) Log.d(LOG_TAG, "stringUrl: " + stringUrl);
+            JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                    (Request.Method.GET, stringUrl, null, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            // get State and Country; kind of redundant but works for anywhere in the USA
+                            String stState = "", stCountry = "";
+    //                        if (LDebug.ON) Log.d(LOG_TAG, "response: " + response.toString());
+                            try {
+                                JSONArray resultsArray = (JSONArray) response.get("results");
+                                for (int i=0; i < resultsArray.length(); i++) {
+                                    JSONObject resultItem = resultsArray.getJSONObject(i);
+    //                                if (LDebug.ON)
+    //                                    Log.d(LOG_TAG, "resultItem " + i + ": " + resultItem.toString());
+                                    JSONArray address_componentsArray = (JSONArray) resultItem.get("address_components");
+                                    for (int j=0; j < address_componentsArray.length(); j++) {
+                                        JSONObject address_componentsItem = address_componentsArray.getJSONObject(j);
+    //                                    if (LDebug.ON)
+    //                                        Log.d(LOG_TAG, "address_componentItem " + j + ": " + address_componentsItem.toString());
+                                        JSONArray typesArray = (JSONArray) address_componentsItem.get("types");
+                                        for (int k=0; k < typesArray.length(); k++) {
+                                            String typeItem = typesArray.getString(k);
+    //                                        if (LDebug.ON)
+    //                                            Log.d(LOG_TAG, "typeItem " + k + ": " + typeItem);
+                                            if (typeItem.equals("administrative_area_level_1")) {
+    //                                            String shortName = address_componentsItem.getString("short_name");
+    //                                            if (LDebug.ON)
+    //                                                Log.d(LOG_TAG, "short_name is: " + shortName);
+                                                stState = address_componentsItem.getString("short_name");
+                                            }
+                                            if (typeItem.equals("country")) {
+    //                                            String shortName = address_componentsItem.getString("short_name");
+    //                                            if (LDebug.ON)
+    //                                                Log.d(LOG_TAG, "short_name is: " + shortName);
+                                                stCountry = address_componentsItem.getString("short_name");
+                                            }
                                         }
                                     }
                                 }
+                            } catch (JSONException ex) {
+                                ex.printStackTrace();
+                                if (LDebug.ON) Log.d(LOG_TAG, "JSON error: " + ex.toString());
+                                //
                             }
-                        } catch (JSONException ex) {
-                            ex.printStackTrace();
-                            if (LDebug.ON) Log.d(LOG_TAG, "JSON error: " + ex.toString());
-                            //
-                        }
-                        // adjust Greenland from Google format to NRCS
-                        if (stCountry.equals("GL")) {
-                            stState = stCountry;
-                            stCountry = "DEN";
-                        }
-                        // adjust for Saint Pierre - Miquelon
-                        if (stCountry.equals("SP")) {
-                            stState = "SPM";
-                            stCountry = "FRA";
-                        }
-                        // adjust for Puerto Rico and  U.S. Virgin Islands
-                        if (stCountry.equals("PR") || stCountry.equals("VI")) {
-                            stState = stCountry;
-                            stCountry = "USA+";
-                        }
-
-                        // to do: minor outlying islands
-
-                        if (LDebug.ON) Log.d(LOG_TAG, "Country " + stCountry + "; State " + stState);
-                        // if we got a State and Country
-                        if ((stCountry.length() > 0) && (stState.length() > 0)) {
-                            // adjust country format from Google to NRCS
-                            if (stCountry.equals("US")) stCountry = "USA";
-                            if (stCountry.equals("CA")) stCountry = "CAN";
-                            String localSppCrit = "%" + stCountry + " (%" + stState + "%)%"; // e.g. "%USA (%OR%)%"
-                            Boolean updateLocal = false;
-                            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                            SharedPreferences.Editor prefEditor;
-//                                String curLocSppCrit = sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "")
-                            if (!(sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "").equals(localSppCrit))) {
-                                prefEditor = sharedPref.edit();
-                                prefEditor.putString(Prefs.LOCAL_SPP_CRIT, localSppCrit);
-                                prefEditor.commit();
-                                updateLocal = true;
+                            // adjust Greenland from Google format to NRCS
+                            if (stCountry.equals("GL")) {
+                                stState = stCountry;
+                                stCountry = "DEN";
                             }
-                            if (updateLocal) { // update the database
-                                mViewVisitLocation.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        mSppLocChangeCallback.onSppLocalChanged();
-                                    }
-                                }, 50);
+                            // adjust for Saint Pierre - Miquelon
+                            if (stCountry.equals("SP")) {
+                                stState = "SPM";
+                                stCountry = "FRA";
+                            }
+                            // adjust for Puerto Rico and  U.S. Virgin Islands
+                            if (stCountry.equals("PR") || stCountry.equals("VI")) {
+                                stState = stCountry;
+                                stCountry = "USA+";
+                            }
+
+                            // TODO: minor outlying islands
+
+                            if (LDebug.ON) Log.d(LOG_TAG, "Country " + stCountry + "; State " + stState);
+                            // if we got a State and Country
+                            if ((stCountry.length() > 0) && (stState.length() > 0)) {
+                                // adjust country format from Google to NRCS
+                                if (stCountry.equals("US")) stCountry = "USA";
+                                if (stCountry.equals("CA")) stCountry = "CAN";
+                                String localSppCrit = "%" + stCountry + " (%" + stState + "%)%"; // e.g. "%USA (%OR%)%"
+                                Boolean updateLocal = false;
+                                if (LDebug.ON) Log.d(LOG_TAG, "Country " + stCountry + "; State " + stState);
+                                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                                SharedPreferences.Editor prefEditor;
+    //                                String curLocSppCrit = sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "")
+                                if (!(sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "").equals(localSppCrit))) {
+                                    prefEditor = sharedPref.edit();
+                                    prefEditor.putString(Prefs.LOCAL_SPP_CRIT, localSppCrit);
+                                    prefEditor.commit();
+                                    updateLocal = true;
+                                }
+                                if (updateLocal) { // update the database
+                                    mViewVisitLocation.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mSppLocChangeCallback.onSppLocalChanged();
+                                        }
+                                    }, 50);
+                                }
                             }
                         }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if (LDebug.ON) Log.d(LOG_TAG, "That didn't work!");
-                    }
-                });
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            if (LDebug.ON) Log.d(LOG_TAG, "That didn't work!");
+                        }
+                    });
 
-        // Add the request to the RequestQueue.
-        queue.add(jsObjRequest);
+            // Add the request to the RequestQueue.
+            queue.add(jsObjRequest);
+        } catch (Exception e) { // fail silently
+            if (LDebug.ON) Log.d(LOG_TAG, "exception: " + e.getMessage());
+        }
+            /*
+         finally {
+            ;
+        }*/
     }
 
     // if Google Play Services not available, would Location Services be?
