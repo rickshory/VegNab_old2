@@ -2021,28 +2021,33 @@ id/vis_hdr_loc_help
                             if (LDebug.ON) Log.d(LOG_TAG, "Country " + stCountry + "; State " + stState);
                             // if we got a State and Country
                             if ((stCountry.length() > 0) && (stState.length() > 0)) {
-                                // adjust country format from Google to NRCS
-                                if (stCountry.equals("US")) stCountry = "USA";
-                                if (stCountry.equals("CA")) stCountry = "CAN";
-                                String localSppCrit = "%" + stCountry + " (%" + stState + "%)%"; // e.g. "%USA (%OR%)%"
-                                Boolean updateLocal = false;
-                                if (LDebug.ON) Log.d(LOG_TAG, "Country " + stCountry + "; State " + stState);
-                                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                                SharedPreferences.Editor prefEditor;
-    //                                String curLocSppCrit = sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "")
-                                if (!(sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "").equals(localSppCrit))) {
-                                    prefEditor = sharedPref.edit();
-                                    prefEditor.putString(Prefs.LOCAL_SPP_CRIT, localSppCrit);
-                                    prefEditor.commit();
-                                    updateLocal = true;
-                                }
-                                if (updateLocal) { // update the database
-                                    mViewVisitLocation.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            mSppLocChangeCallback.onSppLocalChanged();
-                                        }
-                                    }, 50);
+                                try {
+                                    // adjust country format from Google to NRCS
+                                    if (stCountry.equals("US")) stCountry = "USA";
+                                    if (stCountry.equals("CA")) stCountry = "CAN";
+                                    String localSppCrit = "%" + stCountry + " (%" + stState + "%)%"; // e.g. "%USA (%OR%)%"
+                                    Boolean updateLocal = false;
+                                    if (LDebug.ON) Log.d(LOG_TAG, "Country " + stCountry + "; State " + stState);
+                                    // following line sometimes gives null pointer exception
+                                    SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                                    SharedPreferences.Editor prefEditor;
+        //                                String curLocSppCrit = sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "")
+                                    if (!(sharedPref.getString(Prefs.LOCAL_SPP_CRIT, "").equals(localSppCrit))) {
+                                        prefEditor = sharedPref.edit();
+                                        prefEditor.putString(Prefs.LOCAL_SPP_CRIT, localSppCrit);
+                                        prefEditor.commit();
+                                        updateLocal = true;
+                                    }
+                                    if (updateLocal) { // update the database
+                                        mViewVisitLocation.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                mSppLocChangeCallback.onSppLocalChanged();
+                                            }
+                                        }, 50);
+                                    }
+                                } catch (Exception e) { // fail silently
+                                    if (LDebug.ON) Log.d(LOG_TAG, "exception: " + e.getMessage());
                                 }
                             }
                         }
