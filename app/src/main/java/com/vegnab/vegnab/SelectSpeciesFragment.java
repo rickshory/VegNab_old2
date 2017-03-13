@@ -129,6 +129,10 @@ public class SelectSpeciesFragment extends ListFragment
         // This is mostly needed in fixed-pane layouts
         if (savedInstanceState != null) {
             // restore search text and any search options
+            mCurVisitRecId = savedInstanceState.getLong(ARG_VISIT_ID);
+            mCurSubplotTypeRecId = savedInstanceState.getLong(ARG_SUBPLOT_TYPE_ID);
+            mPresenceOnly = savedInstanceState.getBoolean(ARG_PRESENCE_ONLY_SUBPLOT);
+            mPickPlaceholder = savedInstanceState.getBoolean(ARG_PICK_PLACEHOLDER);
             mStSearch = savedInstanceState.getString(ARG_SEARCH_TEXT);
             mProjectId = savedInstanceState.getLong(ARG_PROJECT_ID);
             mNamerId = savedInstanceState.getLong(ARG_NAMER_ID);
@@ -164,6 +168,11 @@ public class SelectSpeciesFragment extends ListFragment
             mCurSubplotTypeRecId = args.getLong(ARG_SUBPLOT_TYPE_ID);
             mPresenceOnly = args.getBoolean(ARG_PRESENCE_ONLY_SUBPLOT);
             mPickPlaceholder = args.getBoolean(ARG_PICK_PLACEHOLDER);
+            if (args.containsKey(ARG_SEARCH_TEXT)) {
+                mStSearch = args.getString(ARG_SEARCH_TEXT);
+            } else {
+                mStSearch = "";
+            }
             mProjectId = args.getLong(ARG_PROJECT_ID);
             mNamerId = args.getLong(ARG_NAMER_ID);
         }
