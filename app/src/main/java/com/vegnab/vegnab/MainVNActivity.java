@@ -32,7 +32,6 @@ import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.drive.ExecutionOptions;
 import com.google.android.gms.drive.MetadataChangeSet;
 import com.google.android.gms.plus.Plus;
-import com.vegnab.vegnab.BuildConfig;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.LDebug;
