@@ -214,6 +214,13 @@ public class SelectSpeciesFragment extends ListFragment
     }
 
     @Override
+    public void onResume(){
+        if (LDebug.ON) Log.d(LOG_TAG, "in 'onResume'");
+        super.onResume();
+        refreshMatchList(); // if Placeholders were IDd, show changes
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         // save the current search text and any options
