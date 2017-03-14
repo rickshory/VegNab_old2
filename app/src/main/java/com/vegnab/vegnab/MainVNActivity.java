@@ -482,7 +482,7 @@ public class MainVNActivity extends AppCompatActivity
         }
 
 //		Fragment currentFragment = this.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-//		if (currentFragment.getTag() == Tags.DATA_SCREENS_CONTAINER) {
+//		if (currentFragment.getTag().equals(Tags.DATA_SCREENS_CONTAINER)) {
 //			finish();
 //			return;
 //		}
@@ -911,7 +911,7 @@ public class MainVNActivity extends AppCompatActivity
                 getSupportFragmentManager().findFragmentByTag(Tags.VISIT_HEADER);
         if (visHdrFragment != null) {
             try {
-                if (UriTarget == "namers") {
+                if (UriTarget.equals("namers")) {
                     visHdrFragment.refreshNamerSpinner();
                 }
             } catch (Exception e) {
@@ -924,13 +924,13 @@ public class MainVNActivity extends AppCompatActivity
                 getSupportFragmentManager().findFragmentByTag(Tags.EDIT_PLACEHOLDER);
         if (editPhFragment != null) {
             try {
-                if (UriTarget == "idnamers") {
+                if (UriTarget.equals("idnamers")) {
                     editPhFragment.refreshIdNamerSpinner();
                 }
-                if (UriTarget == "idrefs") {
+                if (UriTarget.equals("idrefs")) {
                     editPhFragment.refreshIdRefSpinner();
                 }
-                if (UriTarget == "idmethods") {
+                if (UriTarget.equals("idmethods")) {
                     editPhFragment.refreshIdMethodSpinner();
                 }
             } catch (Exception e) {
@@ -1011,7 +1011,7 @@ public class MainVNActivity extends AppCompatActivity
 //			vegSubpFragment.refreshSppList();
 //		}
         Fragment currentFragment = this.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (currentFragment.getTag() == Tags.SELECT_SPECIES) {
+        if (currentFragment.getTag().equals(Tags.SELECT_SPECIES)) {
             super.onBackPressed();
         }
     }
@@ -1370,7 +1370,7 @@ public class MainVNActivity extends AppCompatActivity
         if (LDebug.ON) Log.d(LOG_TAG, "Payload received back from purchase: " + payLoadReturned);
         String payLoadToCheck = makePayload(p.getSku());
         if (LDebug.ON) Log.d(LOG_TAG, "Payload regenerated, to check: " + payLoadToCheck);
-        if (payLoadToCheck == payLoadReturned) {
+        if (payLoadToCheck.equals(payLoadReturned)) {
             if (LDebug.ON) Log.d(LOG_TAG, "Payload OK");
         } else {
             if (LDebug.ON) Log.d(LOG_TAG, "Payload mismatch");
@@ -1813,7 +1813,7 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
             // we come here if connection first failed, such as if we needed to get the user login
             // the failure sent off the login request as an intent, which then
             // sent back another intent, which arrives here
-            if (requestCode == REQUEST_CODE_RESOLUTION && resultCode == RESULT_OK) {
+            if ((requestCode == REQUEST_CODE_RESOLUTION) && (resultCode == RESULT_OK)) {
                if (LDebug.ON) Log.d(LOG_TAG, "in 'onActivityResult' resolution callback (requestCode == REQUEST_CODE_RESOLUTION && resultCode == RESULT_OK)");
                 mGoogleApiClient.connect();
             }

@@ -347,7 +347,7 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
                 // ultimately user will get to choose/edit in Confirm dialog
                 String appName = getActivity().getResources().getString(R.string.app_name);
                 SimpleDateFormat fileNameFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
-                String exportFileName = appName + " " + ((visName == "" ? "" : visName + " "))
+                String exportFileName = appName + " " + (((visName.length() == 0) ? "" : visName + " "))
                         + fileNameFormat.format(new Date());
                 expArgs.putString(MainVNActivity.ARG_VISIT_TO_EXPORT_FILENAME, exportFileName);
                 // put any other parameters in, such as

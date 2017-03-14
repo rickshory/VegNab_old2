@@ -168,11 +168,7 @@ public class SelectSpeciesFragment extends ListFragment
             mCurSubplotTypeRecId = args.getLong(ARG_SUBPLOT_TYPE_ID);
             mPresenceOnly = args.getBoolean(ARG_PRESENCE_ONLY_SUBPLOT);
             mPickPlaceholder = args.getBoolean(ARG_PICK_PLACEHOLDER);
-            if (args.containsKey(ARG_SEARCH_TEXT)) {
-                mStSearch = args.getString(ARG_SEARCH_TEXT);
-            } else {
-                mStSearch = "";
-            }
+            mStSearch = args.getString(ARG_SEARCH_TEXT, "");
             mProjectId = args.getLong(ARG_PROJECT_ID);
             mNamerId = args.getLong(ARG_NAMER_ID);
         }

@@ -1341,7 +1341,6 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         mBtnIdent.setText(btnMsg);
     }
 
-
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position,
                                long id) {
