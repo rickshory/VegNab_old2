@@ -213,15 +213,20 @@ public class SelectSpeciesFragment extends ListFragment
 
     @Override
     public void onPause(){
-       if (LDebug.ON) Log.d(LOG_TAG, "in 'onPause'");
-
+        if (LDebug.ON) Log.d(LOG_TAG, "in 'onPause'; mPickPlaceholder "
+                + (mPickPlaceholder ? "true" : "false") + "; mStSearch: '" + mStSearch + "'" );
         super.onPause();
+        if (LDebug.ON) Log.d(LOG_TAG, "in 'onPause after super'; mPickPlaceholder "
+                + (mPickPlaceholder ? "true" : "false") + "; mStSearch: '" + mStSearch + "'" );
     }
 
     @Override
     public void onResume(){
-        if (LDebug.ON) Log.d(LOG_TAG, "in 'onResume'");
+        if (LDebug.ON) Log.d(LOG_TAG, "in 'onResume'; mPickPlaceholder "
+                + (mPickPlaceholder ? "true" : "false") + "; mStSearch: '" + mStSearch + "'" );
         super.onResume();
+        if (LDebug.ON) Log.d(LOG_TAG, "in 'onResume after super'; mPickPlaceholder "
+                + (mPickPlaceholder ? "true" : "false") + "; mStSearch: '" + mStSearch + "'" );
         refreshMatchList(); // if Placeholders were IDd, show changes
     }
 
