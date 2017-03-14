@@ -22,6 +22,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -216,7 +217,7 @@ public class SelectSpeciesFragment extends ListFragment
         if (LDebug.ON) Log.d(LOG_TAG, "in 'onPause'; mPickPlaceholder "
                 + (mPickPlaceholder ? "true" : "false") + "; mStSearch: '" + mStSearch + "'" );
         super.onPause();
-        if (LDebug.ON) Log.d(LOG_TAG, "in 'onPause after super'; mPickPlaceholder "
+        if (LDebug.ON) Log.d(LOG_TAG, "in 'onPause' after super; mPickPlaceholder "
                 + (mPickPlaceholder ? "true" : "false") + "; mStSearch: '" + mStSearch + "'" );
     }
 
@@ -225,7 +226,7 @@ public class SelectSpeciesFragment extends ListFragment
         if (LDebug.ON) Log.d(LOG_TAG, "in 'onResume'; mPickPlaceholder "
                 + (mPickPlaceholder ? "true" : "false") + "; mStSearch: '" + mStSearch + "'" );
         super.onResume();
-        if (LDebug.ON) Log.d(LOG_TAG, "in 'onResume after super'; mPickPlaceholder "
+        if (LDebug.ON) Log.d(LOG_TAG, "in 'onResume' after super; mPickPlaceholder "
                 + (mPickPlaceholder ? "true" : "false") + "; mStSearch: '" + mStSearch + "'" );
         refreshMatchList(); // if Placeholders were IDd, show changes
     }
@@ -241,6 +242,15 @@ public class SelectSpeciesFragment extends ListFragment
         outState.putBoolean(ARG_PRESENCE_ONLY_SUBPLOT, mPresenceOnly);
         outState.putLong(ARG_PROJECT_ID, mProjectId);
         outState.putLong(ARG_NAMER_ID, mNamerId);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mStSearch = savedInstanceState.getString(ARG_SEARCH_TEXT, "");
+        mPickPlaceholder = savedInstanceState.getBoolean(ARG_PICK_PLACEHOLDER);
+        if (LDebug.ON) Log.d(LOG_TAG, "in 'onActivityCreated' after super; mPickPlaceholder "
+                + (mPickPlaceholder ? "true" : "false") + "; mStSearch: '" + mStSearch + "'" );
     }
 
     @Override
