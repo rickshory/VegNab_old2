@@ -22,7 +22,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -183,7 +182,7 @@ public class SelectSpeciesFragment extends ListFragment
             @Override
             public void run() {
                 // update mViewSearchChars if a newly created placeholder code was remotely edited
-                if (mPhCodeFixed != "") {
+                if (mPhCodeFixed.length() > 0) {
                     mViewSearchChars.setText(mPhCodeFixed);
                     mPhCodeFixed = "";
                 }
@@ -226,7 +225,8 @@ public class SelectSpeciesFragment extends ListFragment
         if (LDebug.ON) Log.d(LOG_TAG, "in 'onResume'; mPickPlaceholder "
                 + (mPickPlaceholder ? "true" : "false") + "; mStSearch: '" + mStSearch + "'" );
         super.onResume();
-        if (LDebug.ON) Log.d(LOG_TAG, "in 'onResume' after super; mPickPlaceholder "
+        mStSearch = mViewSearchChars.getText().toString();
+        if (LDebug.ON) Log.d(LOG_TAG, "in 'onResume' after super and getText; mPickPlaceholder "
                 + (mPickPlaceholder ? "true" : "false") + "; mStSearch: '" + mStSearch + "'" );
         refreshMatchList(); // if Placeholders were IDd, show changes
     }
@@ -242,15 +242,6 @@ public class SelectSpeciesFragment extends ListFragment
         outState.putBoolean(ARG_PRESENCE_ONLY_SUBPLOT, mPresenceOnly);
         outState.putLong(ARG_PROJECT_ID, mProjectId);
         outState.putLong(ARG_NAMER_ID, mNamerId);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mStSearch = savedInstanceState.getString(ARG_SEARCH_TEXT, "");
-        mPickPlaceholder = savedInstanceState.getBoolean(ARG_PICK_PLACEHOLDER);
-        if (LDebug.ON) Log.d(LOG_TAG, "in 'onActivityCreated' after super; mPickPlaceholder "
-                + (mPickPlaceholder ? "true" : "false") + "; mStSearch: '" + mStSearch + "'" );
     }
 
     @Override
