@@ -390,7 +390,7 @@
     <string name="sel_spp_list_ctx_edit_ph_not">Can only edit Placeholders.</string>
 
     <string name="sel_spp_help_list_item_title">\"Species Item\" Help</string>
-    <string name="sel_spp_help_list_item_text">Choose \"Edit\" to change an item, \"Delete\" to remove it. You can also edit by just tapping an idtem.</string>
+    <string name="sel_spp_help_list_item_text">Choose \"Forget species\" to stop giving it higher relevance, \"Edit Placeholder\" to change, add photos, or identify a Placeholder.</string>
 
     <string name="veg_subpl_list_ctxmenu_item_edit">Edit</string>
     <string name="veg_subpl_list_ctxmenu_item_delete">Delete</string>
@@ -402,7 +402,7 @@
     <string name="veg_subpl_list_ctx_delete_verify_post">\"?</string>
 
     <string name="veg_subpl_help_list_item_title">\"Species Item\" Help</string>
-    <string name="veg_subpl_help_list_item_text">Choose \"Edit\" to change an item, \"Delete\" to remove it. You can also edit by just tapping an idtem.</string>
+    <string name="veg_subpl_help_list_item_text">Choose \"Edit\" to change an item, \"Delete\" to remove it. You can also edit by just tapping an item.</string>
 
     <string name="configurable_edit_title_new">New Item</string>
     <string name="configurable_edit_title_edit">Edit Item</string>

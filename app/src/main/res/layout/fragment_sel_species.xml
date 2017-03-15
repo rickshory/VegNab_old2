@@ -16,7 +16,15 @@
         android:inputType="text"
         android:maxLines="1"
         />
-
+    <CheckBox
+        android:id="@+id/ck_pick_ph"
+        android:visibility = "gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/txt_search_chars"
+        android:layout_below="@id/txt_search_chars"
+        android:text=""
+        />
     <View android:id="@+id/sel_spp_divider_line"
         android:layout_width="fill_parent"
         android:layout_height="1dp"

@@ -39,6 +39,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -85,11 +86,13 @@ public class SelectSpeciesFragment extends ListFragment
     long mRowCt;
     String mStSearch = "", mStMatch = "", mPhCodeFixed = "";
     EditText mViewSearchChars;
+    CheckBox mViewPickPhs;
 //	ListView mSppItemsList;
     TextWatcher sppCodeTextWatcher = new TextWatcher() {
         @Override
         public void afterTextChanged(Editable s) {
             mPickPlaceholder = false; // pop out of this mode on any keystroke
+            mViewPickPhs.setChecked(false);
             // use this method; test length of string; e.g. 'count' of other methods does not give this length
             //Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "'");
            if (LDebug.ON) Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "', length: " + s.length());
@@ -140,6 +143,7 @@ public class SelectSpeciesFragment extends ListFragment
         // inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_sel_species, container, false);
         mViewSearchChars = (EditText) rootView.findViewById(R.id.txt_search_chars);
+        mViewPickPhs = (CheckBox) rootView.findViewById(R.id.ck_pick_ph);
 
         mViewSearchChars.addTextChangedListener(sppCodeTextWatcher);
         registerForContextMenu(mViewSearchChars); // enable long-press
@@ -226,6 +230,7 @@ public class SelectSpeciesFragment extends ListFragment
                 + (mPickPlaceholder ? "true" : "false") + "; mStSearch: '" + mStSearch + "'" );
         super.onResume();
         mStSearch = mViewSearchChars.getText().toString();
+        mPickPlaceholder = mViewPickPhs.isChecked();
         if (LDebug.ON) Log.d(LOG_TAG, "in 'onResume' after super and getText; mPickPlaceholder "
                 + (mPickPlaceholder ? "true" : "false") + "; mStSearch: '" + mStSearch + "'" );
         refreshMatchList(); // if Placeholders were IDd, show changes
@@ -401,6 +406,7 @@ public class SelectSpeciesFragment extends ListFragment
                         .setValue(1)
                         .build());
                 mPickPlaceholder = true;
+                mViewPickPhs.setChecked(true);
                 getLoaderManager().restartLoader(Loaders.SPP_MATCHES, null, SelectSpeciesFragment.this);
                 return true;
 
