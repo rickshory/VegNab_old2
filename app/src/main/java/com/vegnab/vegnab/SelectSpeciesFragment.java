@@ -321,7 +321,31 @@ public class SelectSpeciesFragment extends ListFragment
             }
             break;
 		case android.R.id.list:
-			inflater.inflate(R.menu.context_sel_spp_list_items, menu);
+            inflater.inflate(R.menu.context_sel_spp_list_items, menu);
+            // try to remove items not relevant to the selection
+            AdapterView.AdapterContextMenuInfo info;
+            try {
+                // Casts the incoming data object into the type for AdapterView objects.
+                info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+            } catch (ClassCastException e) {
+                if (LDebug.ON) Log.d(LOG_TAG, "bad menuInfo", e); // If the menu object can't be cast
+                break;
+            }
+            Cursor cursor = (Cursor) getListAdapter().getItem(info.position);
+            if (cursor == null) { // if requested item isn't available, do nothing
+                if (LDebug.ON) Log.d(LOG_TAG, "can't get context menu cursor");
+                break;
+            }
+            int isPlaceHolder = cursor.getInt(
+                    cursor.getColumnIndexOrThrow("IsPlaceholder"));
+            // item is either a Placeholder, or a defined species
+            if (isPlaceHolder == 1) {
+                // if a Placeholder, the 'forget species' option does not apply
+                menu.removeItem(R.id.sel_spp_list_item_forget);
+            } else {
+                // if a defined species, the 'edit Placeholder' option does not apply
+                menu.removeItem(R.id.sel_spp_list_item_edit_ph);
+            }
 			break;
         }
     }
