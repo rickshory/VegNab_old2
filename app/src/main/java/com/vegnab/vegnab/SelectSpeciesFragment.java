@@ -328,23 +328,22 @@ public class SelectSpeciesFragment extends ListFragment
                 // Casts the incoming data object into the type for AdapterView objects.
                 info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             } catch (ClassCastException e) {
-                if (LDebug.ON) Log.d(LOG_TAG, "bad menuInfo", e); // If the menu object can't be cast
+                if (LDebug.ON) Log.d(LOG_TAG, "bad menuInfo", e); // if the menu object can't be cast
                 break;
             }
-            Cursor cursor = (Cursor) getListAdapter().getItem(info.position);
-            if (cursor == null) { // if requested item isn't available, do nothing
-                if (LDebug.ON) Log.d(LOG_TAG, "can't get context menu cursor");
-                break;
-            }
-            int isPlaceHolder = cursor.getInt(
-                    cursor.getColumnIndexOrThrow("IsPlaceholder"));
-            // item is either a Placeholder, or a defined species
-            if (isPlaceHolder == 1) {
-                // if a Placeholder, the 'forget species' option does not apply
-                menu.removeItem(R.id.sel_spp_list_item_forget);
-            } else {
-                // if a defined species, the 'edit Placeholder' option does not apply
+            mSppMatchCursor.moveToPosition(info.position);
+            int isPlaceHolder = mSppMatchCursor.getInt(
+                    mSppMatchCursor.getColumnIndexOrThrow("IsPlaceholder"));
+            if (isPlaceHolder == 0) {
+                // if not a Placeholder, the 'edit Placeholder' option does not apply
                 menu.removeItem(R.id.sel_spp_list_item_edit_ph);
+            } else { // a defined species
+                int subListOrder = mSppMatchCursor.getInt(
+                        mSppMatchCursor.getColumnIndexOrThrow("SubListOrder"));
+                if (subListOrder != 2) { // not a previously found species
+                    // option to forget its top relevance does not apply
+                    menu.removeItem(R.id.sel_spp_list_item_forget);
+                }
             }
 			break;
         }
