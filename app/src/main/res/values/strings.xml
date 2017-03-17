@@ -390,7 +390,7 @@
     <string name="sel_spp_list_ctx_edit_ph_not">Can only edit Placeholders.</string>
 
     <string name="sel_spp_help_list_item_title">\"Species Item\" Help</string>
-    <string name="sel_spp_help_list_item_text">Options only appear if they apply to an item:\n\"Forget species\" stops its top relevance\n\"Edit Placeholder\" lets you change, add photos, or identify a Placeholder.</string>
+    <string name="sel_spp_help_list_item_text">Options only appear if they apply to an item:\n\n\"Forget species\" stops its top relevance.\n\n\"Edit Placeholder\" lets you change, add photos, or identify a Placeholder.</string>
 
     <string name="veg_subpl_list_ctxmenu_item_edit">Edit</string>
     <string name="veg_subpl_list_ctxmenu_item_delete">Delete</string>

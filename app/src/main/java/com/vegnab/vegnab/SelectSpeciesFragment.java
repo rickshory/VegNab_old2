@@ -337,13 +337,13 @@ public class SelectSpeciesFragment extends ListFragment
             if (isPlaceHolder == 0) {
                 // if not a Placeholder, the 'edit Placeholder' option does not apply
                 menu.removeItem(R.id.sel_spp_list_item_edit_ph);
-            } else { // a defined species
-                int subListOrder = mSppMatchCursor.getInt(
-                        mSppMatchCursor.getColumnIndexOrThrow("SubListOrder"));
-                if (subListOrder != 2) { // not a previously found species
-                    // option to forget its top relevance does not apply
-                    menu.removeItem(R.id.sel_spp_list_item_forget);
-                }
+            }
+            int subListOrder = mSppMatchCursor.getInt(
+                    mSppMatchCursor.getColumnIndexOrThrow("SubListOrder"));
+            if ((isPlaceHolder == 1) || (subListOrder > 2)) {
+                // a Placeholder, or a defined species not previously found
+                // option to forget its top relevance does not apply
+                menu.removeItem(R.id.sel_spp_list_item_forget);
             }
 			break;
         }
