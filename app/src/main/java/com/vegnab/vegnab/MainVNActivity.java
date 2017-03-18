@@ -61,6 +61,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
@@ -75,6 +76,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.Toast;
 import android.os.Build;
@@ -117,6 +119,9 @@ public class MainVNActivity extends AppCompatActivity
 
     private static final String LOG_TAG = MainVNActivity.class.getSimpleName();
     static String mUniqueDeviceId, mDeviceIdSource;
+    private String[] mDrawerTitles;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
     long mRowCt, mVisitId = 0, mSubplotTypeId = 0, mProjectId = 0, mNamerId = 0,
             mVisitIdToExport = 0, mNewPurcRecId = 0;
     boolean mConnectionRequested = false;
