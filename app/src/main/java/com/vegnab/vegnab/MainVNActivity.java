@@ -363,6 +363,8 @@ public class MainVNActivity extends AppCompatActivity
 */
         // Highlight the selected item, update the title, and close the drawer
         mDrawerList.setItemChecked(position, true);
+        if (LDebug.ON) Log.d(LOG_TAG, "Drawer position: " + position);
+        if (LDebug.ON) Log.d(LOG_TAG, "Position text: " + mDrawerTitles[position].toString());
         setTitle(mDrawerTitles[position]);
         mDrawerLayout.closeDrawer(mDrawerList);
     }
@@ -370,7 +372,8 @@ public class MainVNActivity extends AppCompatActivity
     @Override
     public void setTitle(CharSequence title) {
         mTitle = title;
-        getActionBar().setTitle(mTitle);
+        // following does not work yet
+//        getActionBar().setTitle(mTitle);
     }
 /*
             @Override
