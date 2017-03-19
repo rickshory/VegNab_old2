@@ -1,24 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_item_text"
+    android:background="?attr/listChoiceBackgroundIndicator"
     android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:clickable="false"
-    android:longClickable="false"
-    android:descendantFocusability="blocksDescendants">
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_weight="1"
+    android:minHeight="?attr/listPreferredItemHeightSmall"
+    android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+    android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+    android:textAppearance="?attr/textAppearanceListItemSmall"
+    />
 
-    <TextView
-        android:id="@+id/drawer_item_text"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:textAppearance="?attr/textAppearanceListItemSmall"
-        android:gravity="center_vertical"
-        android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-        android:background="?attr/listChoiceBackgroundIndicator"
-        android:minHeight="?attr/listPreferredItemHeightSmall"
-        android:layout_weight="1"
-         />
 
-</LinearLayout>
