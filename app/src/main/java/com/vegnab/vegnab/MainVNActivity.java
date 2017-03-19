@@ -76,6 +76,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -309,6 +310,15 @@ public class MainVNActivity extends AppCompatActivity
                 // could end up with overlapping views
                 return;
             }
+            mDrawerTitles = getResources().getStringArray(R.array.nav_drawer_items);
+            mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+            mDrawerList = (ListView) findViewById(R.id.left_drawer);
+            // Set the adapter for the list view
+            mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                    R.layout.drawer_list_item, mDrawerTitles));
+            // Set the list's click listener
+            mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
 
             // create an instance of New Visit fragment
             NewVisitFragment newVisitFrag = new NewVisitFragment();
