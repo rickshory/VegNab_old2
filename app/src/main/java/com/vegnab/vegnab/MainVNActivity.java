@@ -76,6 +76,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -123,6 +124,7 @@ public class MainVNActivity extends AppCompatActivity
     private String[] mDrawerTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
+    private CharSequence mTitle;
     long mRowCt, mVisitId = 0, mSubplotTypeId = 0, mProjectId = 0, mNamerId = 0,
             mVisitIdToExport = 0, mNewPurcRecId = 0;
     boolean mConnectionRequested = false;
@@ -314,7 +316,7 @@ public class MainVNActivity extends AppCompatActivity
             mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
             mDrawerList = (ListView) findViewById(R.id.left_drawer);
             // Set the adapter for the list view
-            mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+            mDrawerList.setAdapter(new ArrayAdapter<>(this,
                     R.layout.drawer_list_item, mDrawerTitles));
             // Set the list's click listener
             mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
@@ -333,6 +335,42 @@ public class MainVNActivity extends AppCompatActivity
             transaction.add(R.id.fragment_container, newVisitFrag, Tags.NEW_VISIT);
             transaction.commit();
         }
+    }
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectNavDrawerItem(position);
+        }
+    }
+
+    private void selectNavDrawerItem(int position) {
+        Toast.makeText(getApplicationContext(), "Drawer navigation is not implemented yet", Toast.LENGTH_SHORT).show();
+
+/*
+        // Swaps fragments in the main content view
+        // Create a new fragment and specify the planet to show based on position
+        Fragment fragment = new PlanetFragment();
+        Bundle args = new Bundle();
+        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
+        fragment.setArguments(args);
+
+        // Insert the fragment by replacing any existing fragment
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .commit();
+*/
+        // Highlight the selected item, update the title, and close the drawer
+        mDrawerList.setItemChecked(position, true);
+        setTitle(mDrawerTitles[position]);
+        mDrawerLayout.closeDrawer(mDrawerList);
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        mTitle = title;
+        getActionBar().setTitle(mTitle);
     }
 /*
             @Override
