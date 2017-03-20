@@ -2,6 +2,7 @@
 <resources>
 
     <color name="transparent">#00000000</color>
+    <color name="drawer_list_bkgd">#ffffff</color>
     <color name="vn_color">#7744CC</color>
     <color name="match_previously_found_species_code">#00000000</color>
     <color name="match_previously_found_species_text">#00000000</color>
