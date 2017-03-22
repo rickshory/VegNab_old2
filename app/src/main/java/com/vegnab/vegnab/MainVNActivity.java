@@ -128,7 +128,7 @@ public class MainVNActivity extends AppCompatActivity
     long mRowCt, mVisitId = 0, mSubplotTypeId = 0, mProjectId = 0, mNamerId = 0,
             mVisitIdToExport = 0, mNewPurcRecId = 0;
     boolean mConnectionRequested = false;
-    long mPhProjID = 0, mPhNameId =0;
+    long mPhProjID = 0, mPhNameId =0, mCtAllPhs = 0;
     HashMap<String, Long> mExistingPhCodes = new HashMap<String, Long>();
 
     String mExportFileName = "";
@@ -142,6 +142,7 @@ public class MainVNActivity extends AppCompatActivity
     final static String ARG_VISIT_TO_EXPORT_NAME = "visToExportName";
     final static String ARG_VISIT_TO_EXPORT_FILENAME = "visToExportFileName";
     final static String ARG_RESOLVE_PLACEHOLDERS = "resolvePlaceholders";
+    final static String ARG_CT_ALL_PLACEHOLDERS = "ctOfAllPlaceholders";
 
     final static String ARG_PH_PROJ_ID = "phProjId";
     final static String ARG_PH_NAMER_ID = "phNamerId";
@@ -305,6 +306,7 @@ public class MainVNActivity extends AppCompatActivity
         if (true) {
             if (savedInstanceState != null) {
                 mVisitId = savedInstanceState.getLong(ARG_VISIT_ID);
+                mCtAllPhs = savedInstanceState.getLong(ARG_CT_ALL_PLACEHOLDERS);
                 mConnectionRequested = savedInstanceState.getBoolean(ARG_CONNECTION_REQUESTED);
                 mSubplotTypeId = savedInstanceState.getLong(ARG_SUBPLOT_TYPE_ID, 0);
                 mNewPurcRecId = savedInstanceState.getLong(ARG_PURCH_REC_ID);
@@ -602,6 +604,7 @@ public class MainVNActivity extends AppCompatActivity
         // save the current subplot arguments in case we need to re-create the activity
         outState.putLong(ARG_SUBPLOT_TYPE_ID, mSubplotTypeId);
         outState.putLong(ARG_VISIT_ID, mVisitId);
+        outState.putLong(ARG_CT_ALL_PLACEHOLDERS, mCtAllPhs);
         outState.putBoolean(ARG_CONNECTION_REQUESTED, mConnectionRequested);
         outState.putSerializable(ARG_PH_EXISTING_SET, mExistingPhCodes);
         outState.putLong(ARG_PURCH_REC_ID, mNewPurcRecId);
@@ -613,6 +616,7 @@ public class MainVNActivity extends AppCompatActivity
        if (LDebug.ON) Log.d(LOG_TAG, "In 'onRestoreInstanceState'");
         mSubplotTypeId = savedInstanceState.getLong(ARG_SUBPLOT_TYPE_ID);
         mVisitId = savedInstanceState.getLong(ARG_VISIT_ID);
+        mCtAllPhs = savedInstanceState.getLong(ARG_CT_ALL_PLACEHOLDERS);
         mConnectionRequested = savedInstanceState.getBoolean(ARG_CONNECTION_REQUESTED);
         mExistingPhCodes = (HashMap<String, Long>) savedInstanceState.getSerializable(ARG_PH_EXISTING_SET);
         mNewPurcRecId = savedInstanceState.getLong(ARG_PURCH_REC_ID);
@@ -1668,6 +1672,15 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
         String select = null; // default for all-columns, unless re-assigned or overridden by raw SQL
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         switch (id) {
+
+            case VNContract.Loaders.ALL_PH_CODES:
+               baseUri = ContentProvider_VegNab.SQL_URI;
+                select = "SELECT PlaceHolders._id, PlaceHolders.PlaceHolderCode "
+                    + "FROM PlaceHolders;";
+                cl = new CursorLoader(this, baseUri, null, select,
+                        null, null);
+                break;
+
             case VNContract.Loaders.EXISTING_PH_CODES:
                baseUri = ContentProvider_VegNab.SQL_URI;
                 select = "SELECT PlaceHolders._id, PlaceHolders.PlaceHolderCode "
@@ -1735,6 +1748,11 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
         SharedPreferences.Editor prefEditor;
         // there will be various loaders, switch them out here
         switch (loader.getId()) {
+
+            case VNContract.Loaders.ALL_PH_CODES:
+                mCtAllPhs = finishedCursor.getCount();
+                break;
+
             case VNContract.Loaders.EXISTING_PH_CODES:
                 mExistingPhCodes.clear();
                 while (finishedCursor.moveToNext()) {

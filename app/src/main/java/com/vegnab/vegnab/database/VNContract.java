@@ -50,8 +50,11 @@ public final class VNContract {
         public static final int TABLE_MANAGER_LOADERS_STARTVALUE = 8000;
 
         // in Main Activity
-        public static final int EXISTING_PH_CODES = 5000; // Placeholder codes already defined, to check before add/edit
-        public static final int EXISTING_SPP = 5010; // check whether species list is loaded
+        // All Placeholder codes defined, to check before going to management screen
+        public static final int ALL_PH_CODES = 5000;
+        // Placeholder codes already defined for a Project/Namer, to check before add/edit
+        public static final int EXISTING_PH_CODES = 5010;
+        public static final int EXISTING_SPP = 5020; // check whether species list is loaded
 
         // in New Visit
         public static final int PROJECTS = 1; // Loader Id for Projects
