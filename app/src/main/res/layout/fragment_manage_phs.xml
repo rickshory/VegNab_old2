@@ -1,0 +1,85 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    >
+    <TextView
+        android:id="@+id/lbl_namer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/manage_phs_lbl_namer_spinner"
+        />
+    <Spinner
+        android:id="@+id/sel_namer_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/lbl_namer"
+        android:layout_below="@id/lbl_namer"
+        android:prompt="@string/manage_phs_hint_namer_spinner"
+        />
+    <TextView
+        android:id="@+id/lbl_ph_sort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/sel_namer_spinner"
+        android:layout_below="@id/sel_namer_spinner"
+        android:text="@string/manage_phs_lbl_sort_spinner"
+        />
+    <Spinner
+        android:id="@+id/ph_sort_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/lbl_ph_sort"
+        android:layout_below="@id/lbl_ph_sort"
+        android:prompt="@string/manage_phs_hint_sort_spinner"
+        />
+
+    <EditText
+        android:id="@+id/txt_search_phs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/manage_phs_hint_search"
+        android:layout_alignLeft="@id/ph_sort_spinner"
+        android:layout_below="@id/ph_sort_spinner"
+        android:inputType="text"
+        android:maxLines="1"
+        />
+    <CheckBox
+        android:id="@+id/ck_show_phs_not_idd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/txt_search_phs"
+        android:layout_below="@id/txt_search_phs"
+        android:text="@string/manage_phs_txt_ck_not_idd"
+        />
+
+    <View android:id="@+id/sel_phs_divider_line"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_alignLeft="@id/ck_show_phs_not_idd"
+        android:layout_below="@id/ck_show_phs_not_idd"
+        />
+
+    <ListView android:id="@id/android:list"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:drawSelectorOnTop="false"
+         android:layout_alignLeft="@id/sel_phs_divider_line"
+         android:layout_below="@id/sel_phs_divider_line"
+         />
+
+    <TextView android:id="@id/android:empty"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:text="@string/manage_phs_list_empty"
+         android:layout_alignLeft="@id/android:list"
+         android:layout_below="@id/android:list"
+         android:textAppearance="?android:attr/textAppearanceLarge"
+         />
+
+</RelativeLayout>

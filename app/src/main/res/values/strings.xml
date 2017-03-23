@@ -386,6 +386,14 @@
     <string name="ph_pix_grid_pic_button_err">No Placeholder defined, can\'t take pictures.</string>
     <string name="ph_pix_grid_pic_no_file">Image file not found</string>
 
+    <string name="manage_phs_lbl_namer_spinner">Show only Placeholders for:</string>
+    <string name="manage_phs_hint_namer_spinner">Namer</string>
+    <string name="manage_phs_lbl_sort_spinner">Sort by:</string>
+    <string name="manage_phs_hint_sort_spinner">Sort</string>
+    <string name="manage_phs_hint_search">Type here to search Placeholders</string>
+    <string name="manage_phs_txt_ck_not_idd">Show only Placeholder not identified yet</string>
+    <string name="manage_phs_list_empty">(no Placeholders)</string>
+
     <string name="sel_spp_list_ctxmenu_item_forget">Forget species</string>
     <string name="sel_spp_list_ctxmenu_item_edit_ph">Edit Placeholder</string>
     <string name="sel_spp_list_ctxmenu_item_help">Help</string>
