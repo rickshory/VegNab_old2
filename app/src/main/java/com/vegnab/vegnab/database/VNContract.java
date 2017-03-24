@@ -92,17 +92,21 @@ public final class VNContract {
         public static final int CURRENT_SUBPLOT_SPP = 71; // Veg species for the current subplot
         public static final int BASE_SUBPLOT = 1000; // Header info for the current subplot; base number, instances will increment
         public static final int BASE_SUBPLOT_SPP = 2000; // Veg species for the current subplot; base number, instances will increment
+
         // in Species Select
         public static final int SPP_MATCHES = 71; // Species that match the search string
         public static final int EXISTING_PH_CODES_PRECHECK = 72; // Placeholder codes already defined by this Namer, checked before add/edit
         public static final int VISIT_INFO = 73; // Fields needed from the Visit
-
 
         // in Edit VegItem
         public static final int VEGITEM_TO_EDIT = 81; // The current veg item
         public static final int VEG_ITEM_CONFIDENCE_LEVELS = 82; //
         public static final int VEG_ITEM_DUP_CODES = 83; // codes duplicated on the subplot?
         public static final int VEGITEM_DETAILS = 84; // genus, species, etc. fields of item being edited
+
+        // in Manage Placeholders
+        public static final int PHS_MATCHES = 131; // Placeholders that match any search string
+        public static final int PHS_NAMERS = 132; // all Namers, to choose from
 
         // in Edit Placeholder
         public static final int PLACEHOLDER_TO_EDIT = 91; // The current placeholder
