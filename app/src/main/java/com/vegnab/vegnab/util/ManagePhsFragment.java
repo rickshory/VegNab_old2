@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -53,7 +54,8 @@ import com.vegnab.vegnab.database.VNContract.VNRegex;
 import com.vegnab.vegnab.database.VNContract.VegcodeSources;
 
 public class ManagePhsFragment extends ListFragment
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+        implements android.widget.AdapterView.OnItemSelectedListener,
+        LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = ManagePhsFragment.class.getSimpleName();
     final static String ARG_PROJECT_ID = "projectId";
     final static String ARG_NAMER_ID = "namerId";
@@ -244,13 +246,9 @@ public class ManagePhsFragment extends ListFragment
 
     @Override
     public void onResume(){
-        if (LDebug.ON) Log.d(LOG_TAG, "in 'onResume'; mPickPlaceholder "
-                + (mPickPlaceholder ? "true" : "false") + "; mStSearch: '" + mStSearch + "'" );
         super.onResume();
         mStSearch = mViewSearchChars.getText().toString();
         mPickPlaceholder = mCkPhsNotIdd.isChecked();
-        if (LDebug.ON) Log.d(LOG_TAG, "in 'onResume' after super and getText; mPickPlaceholder "
-                + (mPickPlaceholder ? "true" : "false") + "; mStSearch: '" + mStSearch + "'" );
         refreshPhsList(); // if Placeholders were IDd, show changes
     }
 
@@ -289,6 +287,7 @@ public class ManagePhsFragment extends ListFragment
                 return;
             }
             mNamerId = id;
+            refreshPhsList();
         }
 
         if (parent.getId() == mPhSortSpinner.getId()) {
@@ -297,6 +296,7 @@ public class ManagePhsFragment extends ListFragment
                 parent.setTag("");
                 return;
             }
+            refreshPhsList();
         }
         // write code for any other spinner(s) here
     }
@@ -364,18 +364,7 @@ public class ManagePhsFragment extends ListFragment
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getActivity().getMenuInflater();
         switch (v.getId()) {
-        case R.id.txt_search_chars:
-            inflater.inflate(R.menu.context_sel_spp_search_chars, menu);
-            if (mStSearch.trim().length() == 0) {
-                // can't add placeholder if no text yet to use
-                menu.removeItem(R.id.sel_spp_search_add_placeholder);
-            }
-            if (mPlaceholderRequestListener
-                    .onRequestGetCountOfExistingPlaceholders() == 0) {
-                // if no placeholders, don't show option to pick from them
-                menu.removeItem(R.id.sel_spp_search_pick_placeholder);
-            }
-            break;
+
 		case android.R.id.list:
             inflater.inflate(R.menu.context_sel_spp_list_items, menu);
             // try to remove items not relevant to the selection
@@ -428,54 +417,6 @@ public class ManagePhsFragment extends ListFragment
         Tracker headerContextTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
 
         switch (item.getItemId()) {
-
-            case R.id.sel_spp_search_add_placeholder:
-               if (LDebug.ON) Log.d(LOG_TAG, "'Create Placeholder' selected");
-                headerContextTracker.send(new HitBuilders.EventBuilder()
-                        .setCategory("Species Select Event")
-                        .setAction("Context Menu")
-                        .setLabel("Create Placeholder")
-                        .setValue(1)
-                        .build());
-                // add or edit Placeholder
-                String phCode, wholeContents = mStSearch.trim();
-                Boolean wasShortened;
-                if (wholeContents.length() <= VNConstraints.PLACEHOLDER_MAX_LENGTH) {
-                  phCode = wholeContents;
-                    wasShortened = false;
-                } else {
-                    phCode = wholeContents.substring(0, VNConstraints.PLACEHOLDER_MAX_LENGTH).trim();
-                    wasShortened = true;
-                }
-
-//                Toast.makeText(this.getActivity(), "Placeholder code '" + phCode + "'", Toast.LENGTH_SHORT).show();
-                if (phCode.length() < 3) {
-//                    Toast.makeText(this.getActivity(), "Placeholder codes must be at least 3 characters long.", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(this.getActivity(), c.getResources().getString(R.string.placeholder_validate_code_short), Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-
-                if (phCode.matches(VNRegex.NRCS_CODE)) { // see VNContract for details
-//                    Toast.makeText(this.getActivity(), "Placeholder can\'t be like an NRCS code.", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(this.getActivity(), c.getResources().getString(R.string.placeholder_validate_code_bad), Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-
-                if (mPlaceholderRequestListener
-                        .onRequestMatchCheckOfExistingPlaceholders(phCode)) {
-                    Toast.makeText(this.getActivity(),
-                            c.getResources().getString(R.string.placeholder_validate_code_dup),
-                            Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-
-                phArgs.putLong(EditPlaceholderFragment.ARG_PLACEHOLDER_ID, 0); // new, may not be needed
-                phArgs.putLong(EditPlaceholderFragment.ARG_PH_PROJECT_ID, mProjectId);
-                phArgs.putLong(EditPlaceholderFragment.ARG_PH_NAMER_ID, mNamerId);
-                phArgs.putString(EditPlaceholderFragment.ARG_PLACEHOLDER_CODE, phCode);
-                phArgs.putBoolean(EditPlaceholderFragment.ARG_CODE_WAS_SHORTENED, wasShortened);
-                mEditPlaceholderCallback.onEditPlaceholder(phArgs);
-                return true;
 
             case R.id.sel_spp_search_pick_placeholder:
                 headerContextTracker.send(new HitBuilders.EventBuilder()
@@ -578,26 +519,89 @@ public class ManagePhsFragment extends ListFragment
 
             case Loaders.PHS_MATCHES:
                 baseUri = ContentProvider_VegNab.SQL_URI;
+                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                long mProjectId = sharedPref.getLong(VNContract.Prefs.DEFAULT_PROJECT_ID, 1);
+                mStSearch = mViewSearchChars.getText().toString();
+                boolean showOnlyNotIDd = mCkPhsNotIdd.isChecked();
+                mNamerId = mPhNamerSpinner.getId();
                 String orderBy;
-
-
-                select = "SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
-                        + "'' AS SubsppVar, Description AS Vernacular, "
-                        + "PlaceHolderCode || ': ' || Description || "
-                        + "IFNULL((' = ' || IdSppCode || (IFNULL((': ' || IdSppDescription), ''))), '') "
-                        + "AS MatchTxt, "
-                        + "1 AS SubListOrder, "
-                        + "1 AS IsPlaceholder, "
-                        + "CASE WHEN IFNULL(IdSppCode, 0) = 0 THEN 0 ELSE 1 END AS IsIdentified "
-                        + "FROM PlaceHolders "
-                        + "WHERE ProjID=? "
-                        + ((mNamerId > 0) ? "AND PlaceHolders.NamerID=? " : "")
-                        + "ORDER BY TimeFirstInput DESC;";
-                if (mNamerId > 0) {
-                    params = new String[] {"" + mProjectId, "" + mNamerId };
-                } else {
-                    params = new String[] {"" + mProjectId };
+                int pos = mPhSortSpinner.getSelectedItemPosition();
+                switch (pos) {
+                    case 1: // A to Z
+                        orderBy = "Code";
+                        break;
+                    case 2: // oldest first
+                        orderBy = "TimeFirstInput";
+                        break;
+                    case 3: // Z to A
+                        orderBy = "Code DESC";
+                        break;
+                    // for all the following, drop through to
+                    // sort order of newest-first
+                    case 0:
+                    case Spinner.INVALID_POSITION:
+                    default:
+                        orderBy = "TimeFirstInput DESC";
                 }
+                if (mStSearch.trim().length() == 0) { // do not filter results by text
+                    select = "SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
+                            + "'' AS SubsppVar, Description AS Vernacular, "
+                            + "PlaceHolderCode || ': ' || Description || "
+                            + "IFNULL((' = ' || IdSppCode || (IFNULL((': ' || IdSppDescription), ''))), '') "
+                            + "AS MatchTxt, "
+                            + "1 AS SubListOrder, "
+                            + "1 AS IsPlaceholder, "
+                            + "CASE WHEN IFNULL(IdSppCode, 0) = 0 THEN 0 ELSE 1 END AS IsIdentified "
+                            + "FROM PlaceHolders "
+                            + "WHERE ProjID=? "
+                            + ((mNamerId > 0) ? "AND PlaceHolders.NamerID=? " : "")
+                            + (showOnlyNotIDd ? "AND IsIdentified = 0 " : "")
+                            + "ORDER BY " + orderBy + ";";
+                    if (mNamerId > 0) {
+                        params = new String[] {"" + mProjectId, "" + mNamerId };
+                    } else {
+                        params = new String[] {"" + mProjectId };
+                    }
+/*
+                } else if (mStSearch.trim().length() < 3) { // match Placeholders only by code
+                    select = "SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
+                            + "'' AS SubsppVar, Description AS Vernacular, "
+                            + "PlaceHolderCode || ': ' || Description "
+                            + "|| IFNULL((' = ' || IdSppCode || (IFNULL((': ' || IdSppDescription), ''))), '') "
+                            + "AS MatchTxt, "
+                            + "1 AS SubListOrder, 1 AS IsPlaceholder, "
+                            + "CASE WHEN IFNULL(IdSppCode, 0) = 0 THEN 0 ELSE 1 END AS IsIdentified "
+                            + "FROM PlaceHolders "
+                            + "WHERE Code Like ? AND ProjID=? "
+                            + ((mNamerId > 0) ? "AND PlaceHolders.NamerID=? " : "")
+                            + (showOnlyNotIDd ? "AND IsIdentified = 0 " : "")
+                            + "ORDER BY " + orderBy + ";";
+                    if (mNamerId > 0) {
+                        params = new String[] {mStSearch + "%", "" + mProjectId, "" + mNamerId };
+                    } else {
+                        params = new String[] {mStSearch + "%", "" + mProjectId };
+                    }
+*/
+                } else { // match Placeholders by text
+                    select = "SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
+                            + "'' AS SubsppVar, Description AS Vernacular, "
+                            + "PlaceHolderCode || ': ' || Description "
+                            + "|| IFNULL((' = ' || IdSppCode || (IFNULL((': ' || IdSppDescription), ''))), '') "
+                            + "AS MatchTxt, "
+                            + "1 AS SubListOrder, 1 AS IsPlaceholder, "
+                            + "CASE WHEN IFNULL(IdSppCode, 0) = 0 THEN 0 ELSE 1 END AS IsIdentified "
+                            + "FROM PlaceHolders "
+                            + "WHERE MatchTxt Like ? AND ProjID=? "
+                            + ((mNamerId > 0) ? "AND PlaceHolders.NamerID=? " : "")
+                            + (showOnlyNotIDd ? "AND IsIdentified = 0 " : "")
+                            + "ORDER BY " + orderBy + ";";
+                    if (mNamerId > 0) {
+                        params = new String[] {"%" + mStSearch + "%", "" + mProjectId, "" + mNamerId };
+                    } else {
+                        params = new String[] {"%" + mStSearch + "%", "" + mProjectId };
+                    }
+                }
+
                 cl = new CursorLoader(getActivity(), baseUri,
                         null, select, params, null);
                 break;
