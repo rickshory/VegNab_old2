@@ -390,6 +390,12 @@
     <string name="manage_phs_hint_namer_spinner">Namer</string>
     <string name="manage_phs_lbl_sort_spinner">Sort by:</string>
     <string name="manage_phs_hint_sort_spinner">Sort</string>
+    <string-array name="phs_sort_options_array">
+        <item>Newest</item>
+        <item>A to Z</item>
+        <item>Oldest</item>
+        <item>Z to A</item>
+    </string-array>
     <string name="manage_phs_hint_search">Type here to search Placeholders</string>
     <string name="manage_phs_txt_ck_not_idd">Show only Placeholder not identified yet</string>
     <string name="manage_phs_list_empty">(no Placeholders)</string>

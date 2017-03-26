@@ -83,7 +83,7 @@ public class ManagePhsFragment extends ListFragment
     OnPlaceholderRequestListener mPlaceholderRequestListener;
 
     long mRowCt;
-    String mStSearch = "", mStMatch = "", mPhCodeFixed = "";
+    String mStSearch = "", mStMatch = "";
     EditText mViewSearchChars;
     CheckBox mCkPhsNotIdd;
 //	ListView mSppItemsList;
@@ -201,11 +201,6 @@ public class ManagePhsFragment extends ListFragment
         mViewSearchChars.postDelayed(new Runnable() {
             @Override
             public void run() {
-                // update mViewSearchChars if a newly created placeholder code was remotely edited
-                if (mPhCodeFixed.length() > 0) {
-                    mViewSearchChars.setText(mPhCodeFixed);
-                    mPhCodeFixed = "";
-                }
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(mViewSearchChars, 0);
             }
@@ -245,7 +240,7 @@ public class ManagePhsFragment extends ListFragment
         mPickPlaceholder = mCkPhsNotIdd.isChecked();
         if (LDebug.ON) Log.d(LOG_TAG, "in 'onResume' after super and getText; mPickPlaceholder "
                 + (mPickPlaceholder ? "true" : "false") + "; mStSearch: '" + mStSearch + "'" );
-        refreshMatchList(); // if Placeholders were IDd, show changes
+        refreshPhsList(); // if Placeholders were IDd, show changes
     }
 
     @Override
@@ -512,33 +507,9 @@ public class ManagePhsFragment extends ListFragment
        } // end of Switch
     }
 
-    public void forgetSppMatch(long sppRecId) {
-        Context c = getActivity();
-       if (LDebug.ON) Log.d(LOG_TAG, "About to forget Species, record id=" + sppRecId);
-        Uri uri, sUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, "species");
-        uri = ContentUris.withAppendedId(sUri, sppRecId);
-        mValues.clear();
-        mValues.put("HasBeenFound", 0);
-        ContentResolver rs = c.getContentResolver();
-        int numUpdated = rs.update(uri, mValues, null, null);
-       if (LDebug.ON) Log.d(LOG_TAG, "Updated species to HasBeenFound=false; numUpdated: " + numUpdated);
-        Toast.makeText(getActivity(),
-                c.getResources().getString(R.string.sel_spp_list_ctx_forget_spp_done),
-                Toast.LENGTH_LONG).show();
-        refreshMatchList();
-    }
-
-    public void refreshMatchList() {
+    public void refreshPhsList() {
         // use after edit/delete
         getLoaderManager().restartLoader(Loaders.PHS_MATCHES, null, this);
-    }
-
-    public void finishPlaceholder(EditPlaceholderFragment edPh) {
-        // this is mainly for fixing text that was sent to become a Placeholder, and
-        // the text was edited in the Placeholder fragment
-        if (!(edPh == null)) {
-            mPhCodeFixed = edPh.mPlaceholderCode;
-        }
     }
 
     @Override
@@ -553,6 +524,8 @@ public class ManagePhsFragment extends ListFragment
 
             case Loaders.PHS_MATCHES:
                 baseUri = ContentProvider_VegNab.SQL_URI;
+                String orderBy;
+
 
                 select = "SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
                         + "'' AS SubsppVar, Description AS Vernacular, "
