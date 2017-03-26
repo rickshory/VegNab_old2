@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -34,6 +35,7 @@ import android.widget.Toast;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.ConfigurableMsgDialog;
+import com.vegnab.vegnab.EditNamerDialog;
 import com.vegnab.vegnab.EditPlaceholderFragment;
 import com.vegnab.vegnab.EditSppItemDialog;
 import com.vegnab.vegnab.HelpUnderConstrDialog;
@@ -62,7 +64,7 @@ public class ManagePhsFragment extends ListFragment
     Cursor mPhsCursor;
     ContentValues mValues = new ContentValues();
 
-    private Spinner mPhNamerSpinner;
+    private Spinner mPhNamerSpinner, mPhSortSpinner;
     SimpleCursorAdapter mPhNamerAdapter;
     SelSppItemAdapter mPhResultsAdapter;
     TextView mViewForEmptyList;
@@ -111,14 +113,12 @@ public class ManagePhsFragment extends ListFragment
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             // the 'count' characters beginning at 'start' are about to be replaced by new text with length 'after'
             //Log.d(LOG_TAG, "beforeTextChanged, s: '" + s.toString() + "', start: " + start + ", count: " + count + ", after: " + after);
-            //
         }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             // the 'count' characters beginning at 'start' have just replaced old text that had length 'before'
             //Log.d(LOG_TAG, "onTextChanged, s: '" + s.toString() + "', start: " + start + ", before: " + before + ", count: " + count);
-
         }
     };
 
@@ -137,7 +137,7 @@ public class ManagePhsFragment extends ListFragment
         // inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_manage_phs, container, false);
 
-        mPhNamerSpinner = (Spinner) rootView.findViewById(R.id.sel_spp_namer_spinner);
+        mPhNamerSpinner = (Spinner) rootView.findViewById(R.id.sel_namer_spinner);
         mPhNamerSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
         mPhNamerSpinner.setEnabled(false); // will enable when data ready
         mPhNamerAdapter = new SimpleCursorAdapter(getActivity(),
@@ -162,6 +162,17 @@ public class ManagePhsFragment extends ListFragment
         // for testing context menu, bring spinner to front so it receives clicks
 //		mPhNamerSpinner.bringToFront();
 */
+
+        mPhSortSpinner = (Spinner) rootView.findViewById(R.id.ph_sort_spinner);
+        mPhSortSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> phSortAdapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.phs_sort_options_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        phSortAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        mPhSortSpinner.setAdapter(phSortAdapter);
+
         mViewSearchChars = (EditText) rootView.findViewById(R.id.txt_search_phs);
         mCkPhsNotIdd = (CheckBox) rootView.findViewById(R.id.ck_show_phs_not_idd);
 
@@ -250,6 +261,49 @@ public class ManagePhsFragment extends ListFragment
         outState.putString(ARG_SEARCH_TEXT, mStSearch);
         outState.putLong(ARG_PROJECT_ID, mProjectId);
         outState.putLong(ARG_NAMER_ID, mNamerId);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position,
+                               long id) {
+        // 'parent' is the spinner
+        // 'view' is one of the internal Android constants (e.g. text1=16908307, text2=16908308)
+        //    in the item layout, unless set up otherwise
+        // 'position' is the zero-based index in the list
+        // 'id' is the (one-based) database record '_id' of the item
+        // get the text by:
+        //Cursor cur = (Cursor)mNamerAdapter.getItem(position);
+        //String strSel = cur.getString(cur.getColumnIndex("NamerName"));
+        //Log.d(LOG_TAG, strSel);
+        // if spinner is filled by Content Provider, can't get text by:
+        //String strSel = parent.getItemAtPosition(position).toString();
+        // that returns something like below, which there is no way to get text out of:
+        // "android.content.ContentResolver$CursorWrapperInner@42041b40"
+
+        // sort out the spinners
+        // can't use switch because not constants
+        if (parent.getId() == mPhNamerSpinner.getId()) {
+            // workaround for spinner firing when first set
+            if(((String)parent.getTag()).equalsIgnoreCase(VNContract.Tags.SPINNER_FIRST_USE)) {
+                parent.setTag("");
+                return;
+            }
+            mNamerId = id;
+        }
+
+        if (parent.getId() == mPhSortSpinner.getId()) {
+            // workaround for spinner firing when first set
+            if(((String)parent.getTag()).equalsIgnoreCase(VNContract.Tags.SPINNER_FIRST_USE)) {
+                parent.setTag("");
+                return;
+            }
+        }
+        // write code for any other spinner(s) here
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
+//        setNamerSpinnerSelectionFromDefaultNamer();
     }
 
     @Override
