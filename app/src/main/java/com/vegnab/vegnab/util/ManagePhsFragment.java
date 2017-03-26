@@ -553,15 +553,10 @@ public class ManagePhsFragment extends ListFragment
                             + "1 AS IsPlaceholder, "
                             + "CASE WHEN IFNULL(IdSppCode, 0) = 0 THEN 0 ELSE 1 END AS IsIdentified "
                             + "FROM PlaceHolders "
-                            + "WHERE ProjID=? "
-                            + ((mNamerId > 0) ? "AND PlaceHolders.NamerID=? " : "")
+                            + "WHERE ProjID=? AND PlaceHolders.NamerID=? "
                             + (showOnlyNotIDd ? "AND IsIdentified = 0 " : "")
                             + "ORDER BY " + orderBy + ";";
-                    if (mNamerId > 0) {
-                        params = new String[] {"" + mProjectId, "" + mNamerId };
-                    } else {
-                        params = new String[] {"" + mProjectId };
-                    }
+                    params = new String[] {"" + mProjectId, ((mNamerId > 0) ? "" + mNamerId : "%") };
 /*
                 } else if (mStSearch.trim().length() < 3) { // match Placeholders only by code
                     select = "SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
@@ -572,15 +567,10 @@ public class ManagePhsFragment extends ListFragment
                             + "1 AS SubListOrder, 1 AS IsPlaceholder, "
                             + "CASE WHEN IFNULL(IdSppCode, 0) = 0 THEN 0 ELSE 1 END AS IsIdentified "
                             + "FROM PlaceHolders "
-                            + "WHERE Code Like ? AND ProjID=? "
-                            + ((mNamerId > 0) ? "AND PlaceHolders.NamerID=? " : "")
+                            + "WHERE Code Like ? AND ProjID=? AND PlaceHolders.NamerID=? "
                             + (showOnlyNotIDd ? "AND IsIdentified = 0 " : "")
                             + "ORDER BY " + orderBy + ";";
-                    if (mNamerId > 0) {
-                        params = new String[] {mStSearch + "%", "" + mProjectId, "" + mNamerId };
-                    } else {
-                        params = new String[] {mStSearch + "%", "" + mProjectId };
-                    }
+                    params = new String[] {mStSearch + "%", "" + mProjectId, ((mNamerId > 0) ? "" + mNamerId : "%") };
 */
                 } else { // match Placeholders by text
                     select = "SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
@@ -591,17 +581,12 @@ public class ManagePhsFragment extends ListFragment
                             + "1 AS SubListOrder, 1 AS IsPlaceholder, "
                             + "CASE WHEN IFNULL(IdSppCode, 0) = 0 THEN 0 ELSE 1 END AS IsIdentified "
                             + "FROM PlaceHolders "
-                            + "WHERE MatchTxt Like ? AND ProjID=? "
-                            + ((mNamerId > 0) ? "AND PlaceHolders.NamerID=? " : "")
+                            + "WHERE MatchTxt Like ? AND ProjID=? AND PlaceHolders.NamerID=? "
                             + (showOnlyNotIDd ? "AND IsIdentified = 0 " : "")
                             + "ORDER BY " + orderBy + ";";
-                    if (mNamerId > 0) {
-                        params = new String[] {"%" + mStSearch + "%", "" + mProjectId, "" + mNamerId };
-                    } else {
-                        params = new String[] {"%" + mStSearch + "%", "" + mProjectId };
-                    }
+                    params = new String[] {"%" + mStSearch + "%", "" + mProjectId,
+                            ((mNamerId > 0) ? "" + mNamerId : "%") };
                 }
-
                 cl = new CursorLoader(getActivity(), baseUri,
                         null, select, params, null);
                 break;
