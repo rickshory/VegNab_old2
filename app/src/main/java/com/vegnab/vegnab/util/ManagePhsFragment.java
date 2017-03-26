@@ -12,6 +12,7 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -26,6 +27,7 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +43,7 @@ import com.vegnab.vegnab.SelSppItemAdapter;
 import com.vegnab.vegnab.UnderConstrDialog;
 import com.vegnab.vegnab.VNApplication;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
+import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.LDebug;
 import com.vegnab.vegnab.database.VNContract.Loaders;
 import com.vegnab.vegnab.database.VNContract.VNConstraints;
@@ -59,7 +62,9 @@ public class ManagePhsFragment extends ListFragment
     Cursor mPhsCursor;
     ContentValues mValues = new ContentValues();
 
-    SelSppItemAdapter mSppResultsAdapter;
+    private Spinner mPhNamerSpinner;
+    SimpleCursorAdapter mPhNamerAdapter;
+    SelSppItemAdapter mPhResultsAdapter;
     TextView mViewForEmptyList;
 
     // declare an interface the container Activity must implement
@@ -93,11 +98,11 @@ public class ManagePhsFragment extends ListFragment
             if (mStSearch.trim().length() == 0) {
                 mViewForEmptyList.setText(
                         getActivity().getResources().getString(R.string.sel_spp_search_msg_empty_list));
-                mSppResultsAdapter.swapCursor(null);
+                mPhResultsAdapter.swapCursor(null);
             } else {
                 mViewForEmptyList.setText(
                         getActivity().getResources().getString(R.string.sel_spp_search_msg_not_finished));
-                mSppResultsAdapter.swapCursor(null);
+                mPhResultsAdapter.swapCursor(null);
                 getLoaderManager().restartLoader(Loaders.SPP_MATCHES, null, ManagePhsFragment.this);
             }
         }
@@ -131,6 +136,32 @@ public class ManagePhsFragment extends ListFragment
         }
         // inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_manage_phs, container, false);
+
+        mPhNamerSpinner = (Spinner) rootView.findViewById(R.id.sel_spp_namer_spinner);
+        mPhNamerSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
+        mPhNamerSpinner.setEnabled(false); // will enable when data ready
+        mPhNamerAdapter = new SimpleCursorAdapter(getActivity(),
+                android.R.layout.simple_spinner_item, null,
+                new String[] {"NamerName"},
+                new int[] {android.R.id.text1}, 0);
+        mPhNamerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mPhNamerSpinner.setAdapter(mPhNamerAdapter);
+        mPhNamerSpinner.setOnItemSelectedListener(this);
+        registerForContextMenu(mPhNamerSpinner); // enable long-press
+        // Prepare the loader. Either re-connect with an existing one or start a new one
+        getLoaderManager().initLoader(Loaders.NAMERS, null, this);
+
+/* may not need cover
+        // also need click, if no names & therefore selection cannot be changed
+//		mPhNamerSpinner.setOnFocusChangeListener(this); // does not work
+        // use a TextView on top of the spinner, named "lbl_spp_namer_spinner_cover"
+        mLblNewNamerSpinnerCover = (TextView) rootView.findViewById(R.id.lbl_spp_namer_spinner_cover);
+        mLblNewNamerSpinnerCover.setOnClickListener(this);
+        registerForContextMenu(mLblNewNamerSpinnerCover); // enable long-press
+        // in layout, TextView is in front of Spinner and takes precedence
+        // for testing context menu, bring spinner to front so it receives clicks
+//		mPhNamerSpinner.bringToFront();
+*/
         mViewSearchChars = (EditText) rootView.findViewById(R.id.txt_search_phs);
         mCkPhsNotIdd = (CheckBox) rootView.findViewById(R.id.ck_show_phs_not_idd);
 
@@ -140,9 +171,9 @@ public class ManagePhsFragment extends ListFragment
         mViewForEmptyList = (TextView) rootView.findViewById(android.R.id.empty);
 
         // use query to return 'MatchTxt', concatenated from code and description; more reading room
-        mSppResultsAdapter = new SelSppItemAdapter(getActivity(),
+        mPhResultsAdapter = new SelSppItemAdapter(getActivity(),
                 R.layout.list_spp_search_item, null, 0);
-        setListAdapter(mSppResultsAdapter);
+        setListAdapter(mPhResultsAdapter);
         getLoaderManager().initLoader(Loaders.SPP_MATCHES, null, this);
 
         return rootView;
@@ -424,33 +455,6 @@ public class ManagePhsFragment extends ListFragment
                 flexHlpDlg.show(getFragmentManager(), "frg_help_search_chars");
                 return true;
 
-            case R.id.sel_spp_list_item_forget:
-               if (LDebug.ON) Log.d(LOG_TAG, "Spp list item 'Forget Species' selected");
-                headerContextTracker.send(new HitBuilders.EventBuilder()
-                        .setCategory("Species Select Event")
-                        .setAction("Context Menu")
-                        .setLabel("List Item Forget Species")
-                        .setValue(1)
-                        .build());
-                // Forget remembered species
-                if (info == null) {
-                    Toast.makeText(getActivity(),
-                            c.getResources().getString(R.string.sel_spp_list_ctx_forget_not_spp),
-                            Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                mPhsCursor.moveToPosition(info.position);
-                itemIsPlaceholder = mPhsCursor.getInt(
-                        mPhsCursor.getColumnIndexOrThrow("IsPlaceholder"));
-                if (itemIsPlaceholder == 1) {
-                    Toast.makeText(getActivity(),
-                            c.getResources().getString(R.string.sel_spp_list_ctx_forget_not_spp),
-                            Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                forgetSppMatch(info.id);
-                return true;
-
             case R.id.sel_spp_list_item_edit_ph:
                if (LDebug.ON) Log.d(LOG_TAG, "Spp list item 'Edit Placeholder' selected");
                 headerContextTracker.send(new HitBuilders.EventBuilder()
@@ -547,29 +551,38 @@ public class ManagePhsFragment extends ListFragment
         String[] params = null;
         switch (id) {
 
+            case Loaders.PHS_MATCHES:
+                baseUri = ContentProvider_VegNab.SQL_URI;
 
-//            public static final int PHS_NAMERS = 132; // all Namers, to choose from
-        case Loaders.PHS_MATCHES:
-            baseUri = ContentProvider_VegNab.SQL_URI;
+                select = "SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
+                        + "'' AS SubsppVar, Description AS Vernacular, "
+                        + "PlaceHolderCode || ': ' || Description || "
+                        + "IFNULL((' = ' || IdSppCode || (IFNULL((': ' || IdSppDescription), ''))), '') "
+                        + "AS MatchTxt, "
+                        + "1 AS SubListOrder, "
+                        + "1 AS IsPlaceholder, "
+                        + "CASE WHEN IFNULL(IdSppCode, 0) = 0 THEN 0 ELSE 1 END AS IsIdentified "
+                        + "FROM PlaceHolders "
+                        + "WHERE ProjID=? "
+                        + ((mNamerId > 0) ? "AND PlaceHolders.NamerID=? " : "")
+                        + "ORDER BY TimeFirstInput DESC;";
+                if (mNamerId > 0) {
+                    params = new String[] {"" + mProjectId, "" + mNamerId };
+                } else {
+                    params = new String[] {"" + mProjectId };
+                }
+                cl = new CursorLoader(getActivity(), baseUri,
+                        null, select, params, null);
+                break;
 
-            select = "SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
-                    + "'' AS SubsppVar, Description AS Vernacular, "
-                    + "PlaceHolderCode || ': ' || Description || "
-                    + "IFNULL((' = ' || IdSppCode || (IFNULL((': ' || IdSppDescription), ''))), '') "
-                    + "AS MatchTxt, "
-                    + "1 AS SubListOrder, "
-                    + "1 AS IsPlaceholder, "
-                    + "CASE WHEN IFNULL(IdSppCode, 0) = 0 THEN 0 ELSE 1 END AS IsIdentified "
-                    + "FROM PlaceHolders "
-                    + "WHERE ProjID=? AND PlaceHolders.NamerID=? "
-                    + "ORDER BY TimeFirstInput DESC;";
-            params = new String[] {"" + mProjectId, "" + mNamerId };
-
-
-            cl = new CursorLoader(getActivity(), baseUri,
-                    null, select, params, null);
-            break;
-
+            case Loaders.PHS_NAMERS:
+                baseUri = ContentProvider_VegNab.SQL_URI;
+                select = "SELECT _id, NamerName FROM Namers "
+                        + "UNION SELECT 0, '(all)' "
+                        + "ORDER BY _id;";
+                cl = new CursorLoader(getActivity(), baseUri,
+                        null, select, null, null);
+                break;
         }
         return cl;
 
@@ -581,36 +594,33 @@ public class ManagePhsFragment extends ListFragment
         mRowCt = finishedCursor.getCount();
         switch (loader.getId()) {
 
-            case Loaders.VISIT_INFO:
-                if (finishedCursor.moveToFirst()) {
-                    mProjectId = finishedCursor.getLong(finishedCursor.getColumnIndexOrThrow("ProjID"));
-                    mNamerId = finishedCursor.getLong(finishedCursor.getColumnIndexOrThrow("NamerID"));
-                    // now that NamerID is valid, get existing Placeholders to disallow duplicates
-                    // they will exist as a hashmap in the Main activity
-                    Bundle args = new Bundle();
-                    args.putLong(MainVNActivity.ARG_PH_PROJ_ID, mProjectId);
-                    args.putLong(MainVNActivity.ARG_PH_NAMER_ID, mNamerId);
-                    mPlaceholderRequestListener
-                            .onRequestGenerateExistingPlaceholders(args);
+            case Loaders.PHS_MATCHES:
+                mPhResultsAdapter.swapCursor(finishedCursor);
+                mPhsCursor = finishedCursor;
+                if ((mPickPlaceholder) && (mRowCt == 0)) {
+                            /*    <string name="sel_spp_search_msg_empty_list">(matches will appear here)</string>
+        <string name="sel_spp_search_msg_not_finished">(working)</string>
+        <string name="sel_spp_search_msg_no_matches">(no matches)</string>*/
+                    Toast.makeText(getActivity(),
+                            getActivity().getResources().getString(R.string.sel_spp_pick_placeholder_none),
+                            Toast.LENGTH_SHORT).show();
+                }
+                if ((mRowCt == 0) && (mStSearch.trim().length() != 0)) {
+                    mViewForEmptyList.setText(
+                            getActivity().getResources().getString(R.string.sel_spp_search_msg_no_matches));
                 }
                 break;
 
-            case Loaders.SPP_MATCHES:
-            mSppResultsAdapter.swapCursor(finishedCursor);
-            mPhsCursor = finishedCursor;
-            if ((mPickPlaceholder) && (mRowCt == 0)) {
-                        /*    <string name="sel_spp_search_msg_empty_list">(matches will appear here)</string>
-    <string name="sel_spp_search_msg_not_finished">(working)</string>
-    <string name="sel_spp_search_msg_no_matches">(no matches)</string>*/
-                Toast.makeText(getActivity(),
-                        getActivity().getResources().getString(R.string.sel_spp_pick_placeholder_none),
-                        Toast.LENGTH_SHORT).show();
-            }
-            if ((mRowCt == 0) && (mStSearch.trim().length() != 0)) {
-                mViewForEmptyList.setText(
-                        getActivity().getResources().getString(R.string.sel_spp_search_msg_no_matches));
-            }
-            break;
+
+            case Loaders.PHS_NAMERS:
+                // Swap the new cursor in.
+                // The framework will take care of closing the old cursor once we return.
+                mPhNamerAdapter.swapCursor(finishedCursor);
+                if (mRowCt > 0) {
+                    mPhNamerSpinner.setEnabled(true);
+                }
+                break;
+
         }
     }
 
@@ -619,11 +629,14 @@ public class ManagePhsFragment extends ListFragment
         // This is called when the last Cursor provided to onLoadFinished()
         // is about to be closed. Need to make sure it is no longer is use.
         switch (loader.getId()) {
-            case Loaders.VISIT_INFO:
+
+            case Loaders.PHS_MATCHES:
+                mPhResultsAdapter.swapCursor(null);
                 break;
-        case Loaders.SPP_MATCHES:
-            mSppResultsAdapter.swapCursor(null);
-            break;
+
+            case Loaders.NAMERS:
+                mPhNamerAdapter.swapCursor(null);
+                break;
         }
     }
 }
