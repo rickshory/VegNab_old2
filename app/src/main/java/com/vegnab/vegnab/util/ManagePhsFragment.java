@@ -78,6 +78,7 @@ public class ManagePhsFragment extends ListFragment
     }
     OnEditPlaceholderListener mEditPlaceholderCallback; // declare the interface
 
+/*
     public interface OnPlaceholderRequestListener {
         // methods that must be implemented in the container Activity
         void onRequestGenerateExistingPlaceholders(Bundle args);
@@ -85,20 +86,21 @@ public class ManagePhsFragment extends ListFragment
         boolean onRequestMatchCheckOfExistingPlaceholders(String ph);
     }
     OnPlaceholderRequestListener mPlaceholderRequestListener;
-
+*/
     long mRowCt;
-    String mStSearch = "", mStMatch = "";
+    String mStSearch = "";
     EditText mViewSearchChars;
-    CheckBox mCkPhsNotIdd;
+    CheckBox mViewCkPhsNotIdd;
 //	ListView mSppItemsList;
     TextWatcher sppCodeTextWatcher = new TextWatcher() {
         @Override
         public void afterTextChanged(Editable s) {
-            mCkPhsNotIdd.setChecked(false);
             // use this method; test length of string; e.g. 'count' of other methods does not give this length
             //Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "'");
            if (LDebug.ON) Log.d(LOG_TAG, "afterTextChanged, s: '" + s.toString() + "', length: " + s.length());
             mStSearch = s.toString();
+            refreshPhsList();
+/*
             if (mStSearch.trim().length() == 0) {
                 mViewForEmptyList.setText(
                         getActivity().getResources().getString(R.string.sel_spp_search_msg_empty_list));
@@ -109,6 +111,7 @@ public class ManagePhsFragment extends ListFragment
                 mPhResultsAdapter.swapCursor(null);
                 getLoaderManager().restartLoader(Loaders.SPP_MATCHES, null, ManagePhsFragment.this);
             }
+*/
         }
 
         @Override
@@ -176,18 +179,17 @@ public class ManagePhsFragment extends ListFragment
         mPhSortSpinner.setAdapter(phSortAdapter);
 
         mViewSearchChars = (EditText) rootView.findViewById(R.id.txt_search_phs);
-        mCkPhsNotIdd = (CheckBox) rootView.findViewById(R.id.ck_show_phs_not_idd);
-
         mViewSearchChars.addTextChangedListener(sppCodeTextWatcher);
-        registerForContextMenu(mViewSearchChars); // enable long-press
-
+//        registerForContextMenu(mViewSearchChars); // enable long-press
+        mViewCkPhsNotIdd = (CheckBox) rootView.findViewById(R.id.ck_show_phs_not_idd);
         mViewForEmptyList = (TextView) rootView.findViewById(android.R.id.empty);
 
         // use query to return 'MatchTxt', concatenated from code and description; more reading room
+        // use same internal layout for items as in species search fragment
         mPhResultsAdapter = new SelSppItemAdapter(getActivity(),
                 R.layout.list_spp_search_item, null, 0);
         setListAdapter(mPhResultsAdapter);
-        getLoaderManager().initLoader(Loaders.SPP_MATCHES, null, this);
+        getLoaderManager().initLoader(Loaders.PHS_MATCHES, null, this);
 
         return rootView;
     }
@@ -247,8 +249,6 @@ public class ManagePhsFragment extends ListFragment
     @Override
     public void onResume(){
         super.onResume();
-        mStSearch = mViewSearchChars.getText().toString();
-        mPickPlaceholder = mCkPhsNotIdd.isChecked();
         refreshPhsList(); // if Placeholders were IDd, show changes
     }
 
@@ -426,7 +426,7 @@ public class ManagePhsFragment extends ListFragment
                         .setValue(1)
                         .build());
                 mPickPlaceholder = true;
-                mCkPhsNotIdd.setChecked(true);
+                mViewCkPhsNotIdd.setChecked(true);
                 getLoaderManager().restartLoader(Loaders.SPP_MATCHES, null, ManagePhsFragment.this);
                 return true;
 
@@ -522,7 +522,7 @@ public class ManagePhsFragment extends ListFragment
                 SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
                 long mProjectId = sharedPref.getLong(VNContract.Prefs.DEFAULT_PROJECT_ID, 1);
                 mStSearch = mViewSearchChars.getText().toString();
-                boolean showOnlyNotIDd = mCkPhsNotIdd.isChecked();
+                boolean showOnlyNotIDd = mViewCkPhsNotIdd.isChecked();
                 mNamerId = mPhNamerSpinner.getId();
                 String orderBy;
                 int pos = mPhSortSpinner.getSelectedItemPosition();
