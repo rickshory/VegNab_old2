@@ -207,12 +207,9 @@ public class ManagePhsFragment extends ListFragment
             mProjectId = args.getLong(ARG_PROJECT_ID);
             mNamerId = args.getLong(ARG_NAMER_ID);
         }
-        // get the ProjectID and NamerID for this Visit
-        getLoaderManager().initLoader(Loaders.VISIT_INFO, null, this);
-        // when above is done, will call fetchExistingPlaceholders();
 
         mViewSearchChars.requestFocus();
-
+/*
         mViewSearchChars.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -220,9 +217,9 @@ public class ManagePhsFragment extends ListFragment
                 imm.showSoftInput(mViewSearchChars, 0);
             }
         }, 50);
-
+*/
         // set up the list to receive long-press
-        registerForContextMenu(getListView());
+//        registerForContextMenu(getListView());
     }
 
     @Override
@@ -234,11 +231,13 @@ public class ManagePhsFragment extends ListFragment
         } catch (ClassCastException e) {
             throw new ClassCastException (activity.toString() + " must implement OnEditPlaceholderListener");
         }
+/*
         try {
             mPlaceholderRequestListener = (OnPlaceholderRequestListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException (activity.toString() + " must implement OnPlaceholderRequestListener");
         }
+*/
     }
 
     @Override
@@ -286,7 +285,7 @@ public class ManagePhsFragment extends ListFragment
                 parent.setTag("");
                 return;
             }
-            mNamerId = id;
+//            mNamerId = id;
             refreshPhsList();
         }
 
@@ -309,52 +308,47 @@ public class ManagePhsFragment extends ListFragment
     @Override
     public void onListItemClick(ListView l, View v, int pos, long id) {
 //        Toast.makeText(this.getActivity(), "Clicked position " + pos + ", id " + id, Toast.LENGTH_SHORT).show();
-        // check if selected code is in mVegCodesAlreadyOnSubplot
+/*
+        // get an Analytics event tracker
+        Tracker headerContextTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+        headerContextTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Placeholder Select Event")
+                .setAction("List click")
+                .setLabel("List Item Edit Placeholder")
+                .setValue(1)
+                .build());
+//                // Search Characters help
+//                helpTitle = "Edit";
+//                helpMessage = "Edit Placeholder tapped";
+//                flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
+//                flexHlpDlg.show(getFragmentManager(), "frg_spp_item_edit_ph");
+*/
 //    	getListView().getItemAtPosition(pos).toString(); // not useful, gets cursor wrapper
+        // Edit placeholder
         mPhsCursor.moveToPosition(pos);
-// available fields: _id, Code, Genus, Species, SubsppVar, Vernacular, MatchTxt, SubListOrder, IsPlaceholder
-        String vegCode = mPhsCursor.getString(
-                mPhsCursor.getColumnIndexOrThrow("Code"));
-       if (LDebug.ON) Log.d(LOG_TAG, "mPhsCursor, pos = " + pos + " SppCode: " + vegCode);
-        String vegDescr = mPhsCursor.getString(
-                mPhsCursor.getColumnIndexOrThrow("MatchTxt"));
-        String vegGenus = mPhsCursor.getString(
-                mPhsCursor.getColumnIndexOrThrow("Genus"));
-        String vegSpecies = mPhsCursor.getString(
-                mPhsCursor.getColumnIndexOrThrow("Species"));
-        String vegSubsppVar = mPhsCursor.getString(
-                mPhsCursor.getColumnIndexOrThrow("SubsppVar"));
-        String vegVernacular = mPhsCursor.getString(
-                mPhsCursor.getColumnIndexOrThrow("Vernacular"));
-        int vegSubListOrder = mPhsCursor.getInt(
-                mPhsCursor.getColumnIndexOrThrow("SubListOrder"));
-        int vegIsPlaceholder = mPhsCursor.getInt(
+        if (LDebug.ON) Log.d(LOG_TAG, "Placeholder list item " + pos + " selected");
+        // following should not be necessary, list should only contain Placeholders
+        int itemIsPlaceholder = mPhsCursor.getInt(
                 mPhsCursor.getColumnIndexOrThrow("IsPlaceholder"));
-
-       if (LDebug.ON) Log.d(LOG_TAG, "about to dispatch 'EditSppItemDialog' dialog to create new record");
-        Bundle args = new Bundle();
-        args.putLong(EditSppItemDialog.VEG_ITEM_REC_ID, 0); // don't need this, default is in class
-
-        if (vegIsPlaceholder == 1) {
-            args.putInt(EditSppItemDialog.REC_SOURCE, VegcodeSources.PLACE_HOLDERS);
-        } else {
-            args.putInt(EditSppItemDialog.REC_SOURCE, VegcodeSources.REGIONAL_LIST);
+        if (itemIsPlaceholder != 1) {
+            Toast.makeText(getActivity(),
+                    getActivity().getResources().getString(R.string.sel_spp_list_ctx_edit_ph_not),
+                    Toast.LENGTH_SHORT).show();
+            return;
         }
-        args.putLong(EditSppItemDialog.SOURCE_REC_ID, id);
+        Bundle phArgs = new Bundle();
+        phArgs.putLong(EditPlaceholderFragment.ARG_PLACEHOLDER_ID, mPhsCursor.getLong(
+                mPhsCursor.getColumnIndexOrThrow("_id")));
+        phArgs.putString(EditPlaceholderFragment.ARG_PLACEHOLDER_CODE, mPhsCursor.getString(
+                mPhsCursor.getColumnIndexOrThrow("Code")));
+        phArgs.putBoolean(EditPlaceholderFragment.ARG_CODE_WAS_SHORTENED, false);
+        mEditPlaceholderCallback.onEditPlaceholder(phArgs);
+        return;
 
-        // streamline this, get directly from cursor
-        args.putString(EditSppItemDialog.VEG_CODE, vegCode);
-        args.putString(EditSppItemDialog.VEG_DESCR, vegDescr);
-        args.putString(EditSppItemDialog.VEG_GENUS, vegGenus);
-        args.putString(EditSppItemDialog.VEG_SPECIES, vegSpecies);
-        args.putString(EditSppItemDialog.VEG_SUBSPP_VAR, vegSubsppVar);
-        args.putString(EditSppItemDialog.VEG_VERNACULAR, vegVernacular);
-        args.putInt(EditSppItemDialog.VEG_SUB_LIST_ORDER, vegSubListOrder);
-        args.putInt(EditSppItemDialog.VEG_IS_PLACEHOLDER, vegIsPlaceholder);
 
-        EditSppItemDialog newVegItemDlg = EditSppItemDialog.newInstance(args);
+//        EditSppItemDialog newVegItemDlg = EditSppItemDialog.newInstance(args);
 
-        newVegItemDlg.show(getFragmentManager(), "frg_new_veg_item");
+//        newVegItemDlg.show(getFragmentManager(), "frg_new_veg_item");
     }
 
     // create context menus
@@ -409,93 +403,11 @@ public class ManagePhsFragment extends ListFragment
         HelpUnderConstrDialog hlpDlg = new HelpUnderConstrDialog();
         ConfigurableMsgDialog flexHlpDlg = new ConfigurableMsgDialog();
         String helpTitle, helpMessage;
-        Bundle phArgs = new Bundle();
-        int itemIsPlaceholder;
-
 
         // get an Analytics event tracker
-        Tracker headerContextTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
+//        Tracker headerContextTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
 
         switch (item.getItemId()) {
-
-            case R.id.sel_spp_search_pick_placeholder:
-                headerContextTracker.send(new HitBuilders.EventBuilder()
-                        .setCategory("Species Select Event")
-                        .setAction("Context Menu")
-                        .setLabel("Pick Placeholder")
-                        .setValue(1)
-                        .build());
-                mPickPlaceholder = true;
-                mViewCkPhsNotIdd.setChecked(true);
-                getLoaderManager().restartLoader(Loaders.SPP_MATCHES, null, ManagePhsFragment.this);
-                return true;
-
-            case R.id.sel_spp_search_help:
-               if (LDebug.ON) Log.d(LOG_TAG, "'Search Chars Help' selected");
-                headerContextTracker.send(new HitBuilders.EventBuilder()
-                        .setCategory("Species Select Event")
-                        .setAction("Context Menu")
-                        .setLabel("Search Chars Help")
-                        .setValue(1)
-                        .build());
-                // Search Characters help
-                helpTitle = c.getResources().getString(R.string.sel_spp_help_search_title);
-                helpMessage = c.getResources().getString(R.string.sel_spp_help_search_text);
-                flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-                flexHlpDlg.show(getFragmentManager(), "frg_help_search_chars");
-                return true;
-
-            case R.id.sel_spp_list_item_edit_ph:
-               if (LDebug.ON) Log.d(LOG_TAG, "Spp list item 'Edit Placeholder' selected");
-                headerContextTracker.send(new HitBuilders.EventBuilder()
-                        .setCategory("Species Select Event")
-                        .setAction("Context Menu")
-                        .setLabel("List Item Edit Placeholder")
-                        .setValue(1)
-                        .build());
-//                // Search Characters help
-//                helpTitle = "Edit";
-//                helpMessage = "Edit Placeholder tapped";
-//                flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-//                flexHlpDlg.show(getFragmentManager(), "frg_spp_item_edit_ph");
-
-                // Edit placeholder
-                if (info == null) {
-                    Toast.makeText(getActivity(),
-                            c.getResources().getString(R.string.sel_spp_list_ctx_edit_ph_not),
-                            Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                mPhsCursor.moveToPosition(info.position);
-                itemIsPlaceholder = mPhsCursor.getInt(
-                        mPhsCursor.getColumnIndexOrThrow("IsPlaceholder"));
-                if (itemIsPlaceholder != 1) {
-                    Toast.makeText(getActivity(),
-                            c.getResources().getString(R.string.sel_spp_list_ctx_edit_ph_not),
-                            Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                phArgs.putLong(EditPlaceholderFragment.ARG_PLACEHOLDER_ID, info.id);
-                phArgs.putString(EditPlaceholderFragment.ARG_PLACEHOLDER_CODE, mPhsCursor.getString(
-                        mPhsCursor.getColumnIndexOrThrow("Code")));
-                phArgs.putBoolean(EditPlaceholderFragment.ARG_CODE_WAS_SHORTENED, false);
-                mEditPlaceholderCallback.onEditPlaceholder(phArgs);
-                return true;
-
-            case R.id.sel_spp_list_item_help:
-               if (LDebug.ON) Log.d(LOG_TAG, "Spp list item 'Help' selected");
-                headerContextTracker.send(new HitBuilders.EventBuilder()
-                        .setCategory("Species Select Event")
-                        .setAction("Context Menu")
-                        .setLabel("List Item Help")
-                        .setValue(1)
-                        .build());
-                // Search Characters help
-                helpTitle = c.getResources().getString(R.string.sel_spp_help_list_item_title);
-                helpMessage = c.getResources().getString(R.string.sel_spp_help_list_item_text);
-                flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-                flexHlpDlg.show(getFragmentManager(), "frg_spp_item_help");
-                return true;
 
             default:
                 return super.onContextItemSelected(item);
@@ -613,20 +525,11 @@ public class ManagePhsFragment extends ListFragment
             case Loaders.PHS_MATCHES:
                 mPhResultsAdapter.swapCursor(finishedCursor);
                 mPhsCursor = finishedCursor;
-                if ((mPickPlaceholder) && (mRowCt == 0)) {
-                            /*    <string name="sel_spp_search_msg_empty_list">(matches will appear here)</string>
-        <string name="sel_spp_search_msg_not_finished">(working)</string>
-        <string name="sel_spp_search_msg_no_matches">(no matches)</string>*/
-                    Toast.makeText(getActivity(),
-                            getActivity().getResources().getString(R.string.sel_spp_pick_placeholder_none),
-                            Toast.LENGTH_SHORT).show();
-                }
                 if ((mRowCt == 0) && (mStSearch.trim().length() != 0)) {
                     mViewForEmptyList.setText(
                             getActivity().getResources().getString(R.string.sel_spp_search_msg_no_matches));
                 }
                 break;
-
 
             case Loaders.PHS_NAMERS:
                 // Swap the new cursor in.
@@ -636,7 +539,6 @@ public class ManagePhsFragment extends ListFragment
                     mPhNamerSpinner.setEnabled(true);
                 }
                 break;
-
         }
     }
 
