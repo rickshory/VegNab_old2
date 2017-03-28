@@ -3,6 +3,7 @@
 
     <string-array name="nav_drawer_items">
         <item>Placeholders</item>
+        <item>Spellings</item>
         <item>Cloud storage</item>
     </string-array>
 
