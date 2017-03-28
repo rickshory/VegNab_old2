@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -164,6 +165,12 @@ public class ManagePhsFragment extends ListFragment
         mViewSearchChars.addTextChangedListener(sppCodeTextWatcher);
 //        registerForContextMenu(mViewSearchChars); // enable long-press
         mViewCkPhsNotIdd = (CheckBox) rootView.findViewById(R.id.ck_show_phs_not_idd);
+        mViewCkPhsNotIdd.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                refreshPhsList();
+            }
+        });
+
         mViewForEmptyList = (TextView) rootView.findViewById(android.R.id.empty);
 
         // use query to return 'MatchTxt', concatenated from code and description; more reading room
