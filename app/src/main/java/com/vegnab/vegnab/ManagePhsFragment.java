@@ -1,8 +1,6 @@
-package com.vegnab.vegnab.util;
+package com.vegnab.vegnab;
 
 import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -23,7 +21,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -33,28 +30,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-import com.vegnab.vegnab.ConfigurableMsgDialog;
-import com.vegnab.vegnab.EditNamerDialog;
-import com.vegnab.vegnab.EditPlaceholderFragment;
-import com.vegnab.vegnab.EditSppItemDialog;
-import com.vegnab.vegnab.HelpUnderConstrDialog;
-import com.vegnab.vegnab.MainVNActivity;
-import com.vegnab.vegnab.R;
-import com.vegnab.vegnab.SelSppItemAdapter;
-import com.vegnab.vegnab.UnderConstrDialog;
-import com.vegnab.vegnab.VNApplication;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.LDebug;
 import com.vegnab.vegnab.database.VNContract.Loaders;
-import com.vegnab.vegnab.database.VNContract.VNConstraints;
-import com.vegnab.vegnab.database.VNContract.VNRegex;
-import com.vegnab.vegnab.database.VNContract.VegcodeSources;
 
 public class ManagePhsFragment extends ListFragment
-        implements android.widget.AdapterView.OnItemSelectedListener,
+        implements AdapterView.OnItemSelectedListener,
         LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = ManagePhsFragment.class.getSimpleName();
     final static String ARG_PROJECT_ID = "projectId";
