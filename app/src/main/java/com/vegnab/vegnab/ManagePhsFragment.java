@@ -137,7 +137,7 @@ public class ManagePhsFragment extends ListFragment
         mPhNamerSpinner.setOnItemSelectedListener(this);
         registerForContextMenu(mPhNamerSpinner); // enable long-press
         // Prepare the loader. Either re-connect with an existing one or start a new one
-        getLoaderManager().initLoader(Loaders.NAMERS, null, this);
+        getLoaderManager().initLoader(Loaders.PHS_NAMERS, null, this);
 
 /* may not need cover
         // also need click, if no names & therefore selection cannot be changed
@@ -405,6 +405,7 @@ public class ManagePhsFragment extends ListFragment
 
     public void refreshPhsList() {
         // use after edit/delete
+        if (LDebug.ON) Log.d(LOG_TAG, "in 'refreshPhsList'");
         getLoaderManager().restartLoader(Loaders.PHS_MATCHES, null, this);
     }
 
