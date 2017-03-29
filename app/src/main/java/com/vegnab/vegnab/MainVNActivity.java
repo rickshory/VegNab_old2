@@ -347,7 +347,23 @@ public class MainVNActivity extends AppCompatActivity
     }
 
     private void selectNavDrawerItem(int position) {
-        Toast.makeText(getApplicationContext(), "Drawer navigation is not implemented yet", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(),
+//                "Drawer position " + position + " clicked", Toast.LENGTH_SHORT).show();
+        switch (position) { // the Activity has first opportunity to handle these
+            // any not handled come here to this Fragment
+            case 0: // Placeholders
+                Toast.makeText(getApplicationContext(),
+                        "Placeholder management, under constructions", Toast.LENGTH_SHORT).show();
+                break;
+            case 1: // Spellings
+                Toast.makeText(getApplicationContext(),
+                        "Spelling corrections, not implemented yet", Toast.LENGTH_SHORT).show();
+                break;
+            case 2: // Cloud storage
+                Toast.makeText(getApplicationContext(),
+                        "Cloud storage, not implemented yet", Toast.LENGTH_SHORT).show();
+                break;
+        }
 
 /*
         // Swaps fragments in the main content view
