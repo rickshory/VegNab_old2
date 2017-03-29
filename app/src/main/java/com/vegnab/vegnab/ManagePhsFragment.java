@@ -420,12 +420,18 @@ public class ManagePhsFragment extends ListFragment
         switch (id) {
 
             case Loaders.PHS_MATCHES:
+                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES");
                 baseUri = ContentProvider_VegNab.SQL_URI;
                 SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
                 long mProjectId = sharedPref.getLong(VNContract.Prefs.DEFAULT_PROJECT_ID, 1);
+                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got ProjectID=" + mProjectId);
                 mStSearch = mViewSearchChars.getText().toString();
+                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got mStSearch=" + mStSearch);
                 boolean showOnlyNotIDd = mViewCkPhsNotIdd.isChecked();
+                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got showOnlyNotIDd="
+                        + (showOnlyNotIDd ? "true" : "false"));
                 mNamerId = mPhNamerSpinner.getId();
+                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got mNamerId=" + mNamerId);
                 String orderBy;
                 int pos = mPhSortSpinner.getSelectedItemPosition();
                 switch (pos) {
@@ -445,6 +451,7 @@ public class ManagePhsFragment extends ListFragment
                     default:
                         orderBy = "TimeFirstInput DESC";
                 }
+                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got orderBy=" + orderBy);
                 if (mStSearch.trim().length() == 0) { // do not filter results by text
                     select = "SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
                             + "'' AS SubsppVar, Description AS Vernacular, "
@@ -489,6 +496,7 @@ public class ManagePhsFragment extends ListFragment
                     params = new String[] {"%" + mStSearch + "%", "" + mProjectId,
                             ((mNamerId > 0) ? "" + mNamerId : "%") };
                 }
+                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got select=" + select);
                 cl = new CursorLoader(getActivity(), baseUri,
                         null, select, params, null);
                 break;
