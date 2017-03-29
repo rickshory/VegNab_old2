@@ -104,6 +104,7 @@ public class MainVNActivity extends AppCompatActivity
         ConfirmDelNamerDialog.EditNamerDialogListener,
         ConfigurableEditDialog.ConfigurableEditDialogListener,
         SelectSpeciesFragment.OnEditPlaceholderListener,
+        ManagePhsFragment.OnEditPlaceholderListener,
         EditSppItemDialog.EditSppItemDialogListener,
         EditPlaceholderFragment.OnButtonListener,
         EditPlaceholderFragment.EditPlaceholderFragmentListener,
@@ -347,13 +348,9 @@ public class MainVNActivity extends AppCompatActivity
     }
 
     private void selectNavDrawerItem(int position) {
-//        Toast.makeText(getApplicationContext(),
-//                "Drawer position " + position + " clicked", Toast.LENGTH_SHORT).show();
         switch (position) { // the Activity has first opportunity to handle these
             // any not handled come here to this Fragment
             case 0: // Placeholders
-//                Toast.makeText(getApplicationContext(),
-//                        "Placeholder management, under constructions", Toast.LENGTH_SHORT).show();
                 // swap Manage Placeholders fragment in place of existing fragment
                 if (LDebug.ON) Log.d(LOG_TAG, "About to go to Manage Placeholders");
                 // presently does not take any parameters
