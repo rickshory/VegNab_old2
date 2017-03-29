@@ -352,8 +352,19 @@ public class MainVNActivity extends AppCompatActivity
         switch (position) { // the Activity has first opportunity to handle these
             // any not handled come here to this Fragment
             case 0: // Placeholders
-                Toast.makeText(getApplicationContext(),
-                        "Placeholder management, under constructions", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(),
+//                        "Placeholder management, under constructions", Toast.LENGTH_SHORT).show();
+                // swap Manage Placeholders fragment in place of existing fragment
+                if (LDebug.ON) Log.d(LOG_TAG, "About to go to Manage Placeholders");
+                // presently does not take any parameters
+                //Bundle args = new Bundle();
+                ManagePhsFragment mngPhFrag = new ManagePhsFragment();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                // put the present fragment on the backstack so the user can navigate back to it
+                // the tag is for the fragment now being added, not the one replaced
+                transaction.replace(R.id.fragment_container, mngPhFrag, Tags.MANAGE_PLACEHOLDERS);
+                transaction.addToBackStack(null);
+                transaction.commit();
                 break;
             case 1: // Spellings
                 Toast.makeText(getApplicationContext(),

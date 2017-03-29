@@ -144,6 +144,9 @@ public final class VNContract {
         public static final String DATA_SCREENS_CONTAINER = "DataScreensContainer";
         public static final String VEG_SUBPLOT = "VegSubplot";
         public static final String SELECT_SPECIES = "SelectSpecies";
+        public static final String MANAGE_PLACEHOLDERS = "ManagePlaceholders";
+        public static final String MANAGE_SPELLINGS = "ManageSpellings";
+        public static final String CLOUD_STORAGE = "CloudStorage";
         public static final String EDIT_PLACEHOLDER = "EditPlaceholder";
         public static final String PLACEHOLDER_PIX_GRID = "PlaceholderPixGrid";
         public static final String PLACEHOLDER_PIC_DETAIL = "PlaceholderPicDetail";
