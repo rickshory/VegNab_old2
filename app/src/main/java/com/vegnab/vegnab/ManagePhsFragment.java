@@ -430,7 +430,10 @@ public class ManagePhsFragment extends ListFragment
                 boolean showOnlyNotIDd = mViewCkPhsNotIdd.isChecked();
                 if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got showOnlyNotIDd="
                         + (showOnlyNotIDd ? "true" : "false"));
-                mNamerId = mPhNamerSpinner.getId();
+//                mNamerId = mPhNamerSpinner.getId();
+                int p = mPhNamerSpinner.getLastVisiblePosition(); // try this
+                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got position in namer spinner=" + p);
+                mNamerId = mPhNamerSpinner.getItemIdAtPosition(p);
                 if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got mNamerId=" + mNamerId);
                 String orderBy;
                 int pos = mPhSortSpinner.getSelectedItemPosition();

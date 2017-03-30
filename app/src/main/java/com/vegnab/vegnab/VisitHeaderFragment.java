@@ -415,6 +415,7 @@ public class VisitHeaderFragment extends Fragment implements OnClickListener,
     public void onPause() {
         super.onPause();
         // if namer spinner has been changed
+        // TODO fix this; gets the ID of the spinner view, not the item in it
         if (mNamerSpinner.getId() != mNamerId) {
             // attempt to save record
             saveVisitRecord();
