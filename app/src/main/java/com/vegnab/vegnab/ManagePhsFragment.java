@@ -540,6 +540,7 @@ public class ManagePhsFragment extends ListFragment
                     mViewForEmptyList.setText(
                             getActivity().getResources().getString(R.string.sel_spp_search_msg_no_matches));
                 }
+                if (LDebug.ON) Log.d(LOG_TAG, "in onLoadFinished, PHS_MATCHES, mRowCt=" + mRowCt);
                 break;
 
             case Loaders.PHS_NAMERS:
