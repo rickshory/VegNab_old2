@@ -36,6 +36,9 @@ import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.LDebug;
 import com.vegnab.vegnab.database.VNContract.Loaders;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ManagePhsFragment extends ListFragment
         implements AdapterView.OnItemSelectedListener,
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -464,6 +467,9 @@ public class ManagePhsFragment extends ListFragment
                         orderBy = "TimeFirstInput DESC";
                 }
                 if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got orderBy=" + orderBy);
+                List<String> prms = new ArrayList<String>(); // have to build SQL and
+                // parameter list dynamically because there is no numeric wildcard for SQLite
+                // to use all numeric values, leave the field entirely out of the WHERE clause
                 if (mStSearch.trim().length() == 0) { // do not filter results by text
                     select = "SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
                             + "'' AS SubsppVar, Description AS Vernacular, "
@@ -474,10 +480,15 @@ public class ManagePhsFragment extends ListFragment
                             + "1 AS IsPlaceholder, "
                             + "CASE WHEN IFNULL(IdSppCode, 0) = 0 THEN 0 ELSE 1 END AS IsIdentified "
                             + "FROM PlaceHolders "
-                            + "WHERE ProjID=? AND PlaceHolders.NamerID=? "
+                            + "WHERE ProjID=? "
+                            + ((mNamerId > 0) ? "AND PlaceHolders.NamerID=? " : "")
                             + (showOnlyNotIDd ? "AND IsIdentified = 0 " : "")
                             + "ORDER BY " + orderBy + ";";
-                    params = new String[] {"" + mProjectId, ((mNamerId > 0) ? "" + mNamerId : "%") };
+                    prms.add( "" + mProjectId ); // always use Project ID
+                    if (mNamerId > 0) prms.add( "" + mNamerId );
+                    params = new String[ prms.size() ];
+                    prms.toArray( params );
+//                    params = new String[] {"" + mProjectId, ((mNamerId > 0) ? "" + mNamerId : "%") };
 /*
                 } else if (mStSearch.trim().length() < 3) { // match Placeholders only by code
                     select = "SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
@@ -502,11 +513,17 @@ public class ManagePhsFragment extends ListFragment
                             + "1 AS SubListOrder, 1 AS IsPlaceholder, "
                             + "CASE WHEN IFNULL(IdSppCode, 0) = 0 THEN 0 ELSE 1 END AS IsIdentified "
                             + "FROM PlaceHolders "
-                            + "WHERE MatchTxt Like ? AND ProjID=? AND PlaceHolders.NamerID=? "
+                            + "WHERE MatchTxt Like ? AND ProjID=? "
+                            + ((mNamerId > 0) ? "AND PlaceHolders.NamerID=? " : "")
                             + (showOnlyNotIDd ? "AND IsIdentified = 0 " : "")
                             + "ORDER BY " + orderBy + ";";
-                    params = new String[] {"%" + mStSearch + "%", "" + mProjectId,
-                            ((mNamerId > 0) ? "" + mNamerId : "%") };
+                    prms.add( "%" + mStSearch + "%" );
+                    prms.add( "" + mProjectId );
+                    if (mNamerId > 0) prms.add( "" + mNamerId );
+                    params = new String[ prms.size() ];
+                    prms.toArray( params );
+//                    params = new String[] {"%" + mStSearch + "%", "" + mProjectId,
+//                            ((mNamerId > 0) ? "" + mNamerId : "%") };
                 }
                 if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got select=" + select);
                 if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, params=" + java.util.Arrays.toString(params));
