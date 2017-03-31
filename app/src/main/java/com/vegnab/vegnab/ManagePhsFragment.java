@@ -431,9 +431,18 @@ public class ManagePhsFragment extends ListFragment
                 if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got showOnlyNotIDd="
                         + (showOnlyNotIDd ? "true" : "false"));
 //                mNamerId = mPhNamerSpinner.getId();
-                int p = mPhNamerSpinner.getLastVisiblePosition(); // try this
-                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got position in namer spinner=" + p);
-                mNamerId = mPhNamerSpinner.getItemIdAtPosition(p);
+                try { // first time, PhName spinner may not be set up yet
+                    Cursor cr = (Cursor) mPhNamerSpinner.getSelectedItem();
+                    mNamerId = cr.getLong(cr.getColumnIndexOrThrow("_id"));
+                } catch (Exception e) {
+                    if (LDebug.ON) Log.d(LOG_TAG, "mNamerId error: " + e.toString());
+                } finally {
+                    mNamerId = 0; // show Placeholders for all Namers, until resolved
+                }
+//                mNamerId = ((Cursor) mPhNamerSpinner.getSelectedItem()).getLong(0);
+//                int p = mPhNamerSpinner.getLastVisiblePosition(); // try this
+//                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got position in namer spinner=" + p);
+//                mNamerId = mPhNamerSpinner.getItemIdAtPosition(p);
                 if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got mNamerId=" + mNamerId);
                 String orderBy;
                 int pos = mPhSortSpinner.getSelectedItemPosition();
