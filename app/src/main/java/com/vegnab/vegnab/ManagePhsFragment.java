@@ -509,6 +509,7 @@ public class ManagePhsFragment extends ListFragment
                             ((mNamerId > 0) ? "" + mNamerId : "%") };
                 }
                 if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got select=" + select);
+                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, params=" + java.util.Arrays.toString(params));
                 cl = new CursorLoader(getActivity(), baseUri,
                         null, select, params, null);
                 break;
