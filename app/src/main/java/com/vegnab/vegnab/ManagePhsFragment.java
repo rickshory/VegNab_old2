@@ -300,21 +300,6 @@ public class ManagePhsFragment extends ListFragment
     @Override
     public void onListItemClick(ListView l, View v, int pos, long id) {
 //        Toast.makeText(this.getActivity(), "Clicked position " + pos + ", id " + id, Toast.LENGTH_SHORT).show();
-/*
-        // get an Analytics event tracker
-        Tracker headerContextTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
-        headerContextTracker.send(new HitBuilders.EventBuilder()
-                .setCategory("Placeholder Select Event")
-                .setAction("List click")
-                .setLabel("List Item Edit Placeholder")
-                .setValue(1)
-                .build());
-//                // Search Characters help
-//                helpTitle = "Edit";
-//                helpMessage = "Edit Placeholder tapped";
-//                flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
-//                flexHlpDlg.show(getFragmentManager(), "frg_spp_item_edit_ph");
-*/
 //    	getListView().getItemAtPosition(pos).toString(); // not useful, gets cursor wrapper
         // Edit placeholder
         mPhsCursor.moveToPosition(pos);
@@ -433,7 +418,6 @@ public class ManagePhsFragment extends ListFragment
                 boolean showOnlyNotIDd = mViewCkPhsNotIdd.isChecked();
                 if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got showOnlyNotIDd="
                         + (showOnlyNotIDd ? "true" : "false"));
-//                mNamerId = mPhNamerSpinner.getId();
                 try { // first time, PhName spinner may not be set up yet
                     Cursor cr = (Cursor) mPhNamerSpinner.getSelectedItem();
                     mNamerId = cr.getLong(cr.getColumnIndexOrThrow("_id"));
@@ -442,10 +426,6 @@ public class ManagePhsFragment extends ListFragment
                 } finally {
                     mNamerId = 0; // show Placeholders for all Namers, until resolved
                 }
-//                mNamerId = ((Cursor) mPhNamerSpinner.getSelectedItem()).getLong(0);
-//                int p = mPhNamerSpinner.getLastVisiblePosition(); // try this
-//                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got position in namer spinner=" + p);
-//                mNamerId = mPhNamerSpinner.getItemIdAtPosition(p);
                 if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got mNamerId=" + mNamerId);
                 String orderBy;
                 int pos = mPhSortSpinner.getSelectedItemPosition();
