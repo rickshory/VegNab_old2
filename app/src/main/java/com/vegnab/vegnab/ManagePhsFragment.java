@@ -486,9 +486,6 @@ public class ManagePhsFragment extends ListFragment
                             + "ORDER BY " + orderBy + ";";
                     prms.add( "" + mProjectId ); // always use Project ID
                     if (mNamerId > 0) prms.add( "" + mNamerId );
-                    params = new String[ prms.size() ];
-                    prms.toArray( params );
-//                    params = new String[] {"" + mProjectId, ((mNamerId > 0) ? "" + mNamerId : "%") };
 /*
                 } else if (mStSearch.trim().length() < 3) { // match Placeholders only by code
                     select = "SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
@@ -520,11 +517,9 @@ public class ManagePhsFragment extends ListFragment
                     prms.add( "%" + mStSearch + "%" );
                     prms.add( "" + mProjectId );
                     if (mNamerId > 0) prms.add( "" + mNamerId );
-                    params = new String[ prms.size() ];
-                    prms.toArray( params );
-//                    params = new String[] {"%" + mStSearch + "%", "" + mProjectId,
-//                            ((mNamerId > 0) ? "" + mNamerId : "%") };
                 }
+                params = new String[ prms.size() ];
+                prms.toArray( params );
                 if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got select=" + select);
                 if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, params=" + java.util.Arrays.toString(params));
                 cl = new CursorLoader(getActivity(), baseUri,
