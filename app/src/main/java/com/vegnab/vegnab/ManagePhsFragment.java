@@ -562,6 +562,7 @@ public class ManagePhsFragment extends ListFragment
                 if (mRowCt > 0) {
                     mPhNamerSpinner.setEnabled(true);
                 }
+                refreshPhsList(); // may not have completed on start because this loader was not finished
                 break;
         }
     }
