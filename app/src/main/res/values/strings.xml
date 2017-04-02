@@ -387,9 +387,9 @@
     <string name="ph_pix_grid_pic_button_err">No Placeholder defined, can\'t take pictures.</string>
     <string name="ph_pix_grid_pic_no_file">Image file not found</string>
 
-    <string name="manage_phs_lbl_namer_spinner">Show only Placeholders for:</string>
+    <string name="manage_phs_lbl_namer_spinner">Placeholders of:</string>
     <string name="manage_phs_hint_namer_spinner">Namer</string>
-    <string name="manage_phs_lbl_sort_spinner">Sort by:</string>
+    <string name="manage_phs_lbl_sort_spinner">Sort:</string>
     <string name="manage_phs_hint_sort_spinner">Sort</string>
     <string-array name="phs_sort_options_array">
         <item>Newest</item>

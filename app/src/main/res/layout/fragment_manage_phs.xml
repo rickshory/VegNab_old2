@@ -7,27 +7,35 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     >
-    <TextView
-        android:id="@+id/lbl_namer"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/namer_view_group"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/manage_phs_lbl_namer_spinner"
+        >
+        <TextView
+            android:id="@+id/lbl_namer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/manage_phs_lbl_namer_spinner"
         />
-    <Spinner
-        android:id="@+id/sel_namer_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/lbl_namer"
-        android:layout_below="@id/lbl_namer"
-        android:prompt="@string/manage_phs_hint_namer_spinner"
-        />
+        <Spinner
+            android:id="@+id/sel_namer_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignTop="@id/lbl_namer"
+            android:layout_toRightOf="@id/lbl_namer"
+            android:prompt="@string/manage_phs_hint_namer_spinner"
+            />
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/sort_view_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/sel_namer_spinner"
-        android:layout_below="@id/sel_namer_spinner"
+        android:layout_alignLeft="@id/namer_view_group"
+        android:layout_below="@id/namer_view_group"
         >
 
         <TextView
