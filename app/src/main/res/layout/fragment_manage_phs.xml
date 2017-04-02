@@ -24,7 +24,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_alignTop="@id/lbl_namer"
             android:layout_toRightOf="@id/lbl_namer"
             android:prompt="@string/manage_phs_hint_namer_spinner"
             />
@@ -50,7 +49,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_alignTop="@id/lbl_ph_sort"
             android:layout_toRightOf="@id/lbl_ph_sort"
             android:prompt="@string/manage_phs_hint_sort_spinner"
             />
