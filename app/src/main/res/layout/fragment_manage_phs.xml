@@ -21,30 +21,40 @@
         android:layout_below="@id/lbl_namer"
         android:prompt="@string/manage_phs_hint_namer_spinner"
         />
-    <TextView
-        android:id="@+id/lbl_ph_sort"
-        android:layout_width="wrap_content"
+
+    <RelativeLayout
+        android:id="@+id/sort_view_group"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/sel_namer_spinner"
         android:layout_below="@id/sel_namer_spinner"
-        android:text="@string/manage_phs_lbl_sort_spinner"
-        />
-    <Spinner
-        android:id="@+id/ph_sort_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/lbl_ph_sort"
-        android:layout_below="@id/lbl_ph_sort"
-        android:prompt="@string/manage_phs_hint_sort_spinner"
-        />
+        >
+
+        <TextView
+            android:id="@+id/lbl_ph_sort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/manage_phs_lbl_sort_spinner"
+            />
+        <Spinner
+            android:id="@+id/ph_sort_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignTop="@id/lbl_ph_sort"
+            android:layout_toRightOf="@id/lbl_ph_sort"
+            android:prompt="@string/manage_phs_hint_sort_spinner"
+            />
+    </RelativeLayout>
 
     <EditText
         android:id="@+id/txt_search_phs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/manage_phs_hint_search"
-        android:layout_alignLeft="@id/ph_sort_spinner"
-        android:layout_below="@id/ph_sort_spinner"
+        android:layout_alignLeft="@id/sort_view_group"
+        android:layout_below="@id/sort_view_group"
         android:inputType="text"
         android:maxLines="1"
         />
