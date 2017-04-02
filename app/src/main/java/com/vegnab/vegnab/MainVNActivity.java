@@ -20,6 +20,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -468,7 +469,8 @@ public class MainVNActivity extends AppCompatActivity
 
         case R.id.action_legal_notices:
             // following is required, to use Drive API
-            String legalInfo = GooglePlayServicesUtil.getOpenSourceSoftwareLicenseInfo(this);
+            GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+            String legalInfo = googleAPI.getOpenSourceSoftwareLicenseInfo(this);
             AlertDialog.Builder legalInfoDialog = new AlertDialog.Builder(this);
             legalInfoDialog.setTitle(this.getResources().getString(R.string.action_legal_notices));
             legalInfoDialog.setMessage(legalInfo);
