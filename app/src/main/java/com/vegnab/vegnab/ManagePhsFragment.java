@@ -43,9 +43,6 @@ public class ManagePhsFragment extends ListFragment
         implements AdapterView.OnItemSelectedListener,
         LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = ManagePhsFragment.class.getSimpleName();
-    final static String ARG_PROJECT_ID = "projectId";
-    final static String ARG_NAMER_ID = "namerId";
-    final static String ARG_SEARCH_TEXT = "search_text";
 
     long mProjectId = 0;
     long mNamerId = 0;
@@ -116,15 +113,6 @@ public class ManagePhsFragment extends ListFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        // if the activity was re-created (e.g. from a screen rotate)
-        // restore the previous screen, remembered by onSaveInstanceState()
-        // This is mostly needed in fixed-pane layouts
-        if (savedInstanceState != null) {
-            // restore search text and any search options
-            mStSearch = savedInstanceState.getString(ARG_SEARCH_TEXT);
-            mProjectId = savedInstanceState.getLong(ARG_PROJECT_ID);
-            mNamerId = savedInstanceState.getLong(ARG_NAMER_ID);
-        }
         // inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_manage_phs, container, false);
 
@@ -189,29 +177,7 @@ public class ManagePhsFragment extends ListFragment
         @Override
     public void onStart() {
         super.onStart();
-        // during startup, check if arguments are passed to the fragment
-        // this is where to do this because the layout has been applied
-        // to the fragment
-        Bundle args = getArguments();
-
-        if (args != null) {
-            mStSearch = args.getString(ARG_SEARCH_TEXT, "");
-            mProjectId = args.getLong(ARG_PROJECT_ID);
-            mNamerId = args.getLong(ARG_NAMER_ID);
-        }
-
         mViewSearchChars.requestFocus();
-/*
-        mViewSearchChars.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(mViewSearchChars, 0);
-            }
-        }, 50);
-*/
-        // set up the list to receive long-press
-//        registerForContextMenu(getListView());
     }
 
     @Override
@@ -223,13 +189,6 @@ public class ManagePhsFragment extends ListFragment
         } catch (ClassCastException e) {
             throw new ClassCastException (activity.toString() + " must implement OnEditPlaceholderListener");
         }
-/*
-        try {
-            mPlaceholderRequestListener = (OnPlaceholderRequestListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException (activity.toString() + " must implement OnPlaceholderRequestListener");
-        }
-*/
     }
 
     @Override
@@ -246,10 +205,6 @@ public class ManagePhsFragment extends ListFragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        // save the current search text and any options
-        outState.putString(ARG_SEARCH_TEXT, mStSearch);
-        outState.putLong(ARG_PROJECT_ID, mProjectId);
-        outState.putLong(ARG_NAMER_ID, mNamerId);
     }
 
     @Override
