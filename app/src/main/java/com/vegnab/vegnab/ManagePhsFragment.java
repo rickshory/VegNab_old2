@@ -227,21 +227,24 @@ public class ManagePhsFragment extends ListFragment
         // sort out the spinners
         // can't use switch because not constants
         if (parent.getId() == mPhNamerSpinner.getId()) {
+/*
             // workaround for spinner firing when first set
             if(((String)parent.getTag()).equalsIgnoreCase(VNContract.Tags.SPINNER_FIRST_USE)) {
                 parent.setTag("");
                 return;
             }
-//            mNamerId = id;
+*/
             refreshPhsList();
         }
 
         if (parent.getId() == mPhSortSpinner.getId()) {
+/*
             // workaround for spinner firing when first set
             if(((String)parent.getTag()).equalsIgnoreCase(VNContract.Tags.SPINNER_FIRST_USE)) {
                 parent.setTag("");
                 return;
             }
+*/
             refreshPhsList();
         }
         // write code for any other spinner(s) here
