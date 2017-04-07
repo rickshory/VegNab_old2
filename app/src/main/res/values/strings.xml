@@ -401,6 +401,14 @@
     <string name="manage_phs_txt_ck_not_idd">Show only Placeholder not identified yet</string>
     <string name="manage_phs_list_empty">(no Placeholders)</string>
 
+    <string name="spellings_lbl_table_spinner">Fix spellings of:</string>
+    <string-array name="spellings_tables_array">
+        <item>Species Namers</item>
+        <item>Projects</item>
+        <item>ID Namers</item>
+        <item>ID References</item>
+        <item>ID Methods</item>
+    </string-array>
     <string name="sel_spp_list_ctxmenu_item_forget">Forget species</string>
     <string name="sel_spp_list_ctxmenu_item_edit_ph">Edit Placeholder</string>
     <string name="sel_spp_list_ctxmenu_item_help">Help</string>
