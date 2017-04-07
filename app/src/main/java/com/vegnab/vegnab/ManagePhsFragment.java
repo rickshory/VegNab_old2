@@ -382,7 +382,6 @@ public class ManagePhsFragment extends ListFragment
                     mNamerId = cr.getLong(cr.getColumnIndexOrThrow("_id"));
                 } catch (Exception e) {
                     if (LDebug.ON) Log.d(LOG_TAG, "mNamerId error: " + e.toString());
-                } finally {
                     mNamerId = 0; // show Placeholders for all Namers, until resolved
                 }
                 if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got mNamerId=" + mNamerId);
