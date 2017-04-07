@@ -6,6 +6,7 @@
         <item>Spellings</item>
         <item>Cloud storage</item>
     </string-array>
+    <string name="nav_drawer_item_already_up">Already up</string>
 
     <string name="app_name">VegNab</string>
     <string name="empty_string"></string>

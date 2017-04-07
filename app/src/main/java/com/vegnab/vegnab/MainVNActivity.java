@@ -344,11 +344,23 @@ public class MainVNActivity extends AppCompatActivity
         switch (position) { // the Activity has first opportunity to handle these
             // any not handled come here to this Fragment
             case 0: // Placeholders
+                ManagePhsFragment mngPhFrag;
+                // check if this fragment is already up
+                mngPhFrag = (ManagePhsFragment)
+                        getSupportFragmentManager().findFragmentByTag(Tags.MANAGE_PLACEHOLDERS);
+                if (mngPhFrag != null) {
+                    if (LDebug.ON) Log.d(LOG_TAG, "mngPhFrag != null");
+                    Context c = getApplicationContext();
+                    Toast.makeText(c, c.getResources()
+                            .getString(R.string.nav_drawer_item_already_up),
+                            Toast.LENGTH_SHORT).show();
+                    break;
+                } // nav_drawer_item_already_up
                 // swap Manage Placeholders fragment in place of existing fragment
                 if (LDebug.ON) Log.d(LOG_TAG, "About to go to Manage Placeholders");
                 // presently does not take any parameters
                 //Bundle args = new Bundle();
-                ManagePhsFragment mngPhFrag = new ManagePhsFragment();
+                mngPhFrag = new ManagePhsFragment();
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 // put the present fragment on the backstack so the user can navigate back to it
                 // the tag is for the fragment now being added, not the one replaced
