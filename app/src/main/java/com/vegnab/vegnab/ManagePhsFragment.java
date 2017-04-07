@@ -151,6 +151,7 @@ public class ManagePhsFragment extends ListFragment
         phSortAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         mPhSortSpinner.setAdapter(phSortAdapter);
+        mPhSortSpinner.setOnItemSelectedListener(this);
 
         mViewSearchChars = (EditText) rootView.findViewById(R.id.txt_search_phs);
         mViewSearchChars.addTextChangedListener(sppCodeTextWatcher);
