@@ -355,7 +355,7 @@ public class MainVNActivity extends AppCompatActivity
                             .getString(R.string.nav_drawer_item_already_up),
                             Toast.LENGTH_SHORT).show();
                     break;
-                } // nav_drawer_item_already_up
+                }
                 // swap Manage Placeholders fragment in place of existing fragment
                 if (LDebug.ON) Log.d(LOG_TAG, "About to go to Manage Placeholders");
                 // presently does not take any parameters

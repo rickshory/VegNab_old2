@@ -403,6 +403,8 @@
     <string name="manage_phs_list_empty">(no Placeholders)</string>
 
     <string name="spellings_lbl_table_spinner">Fix spellings of:</string>
+    <string name="spellings_spinner_hint">Choose</string>
+    <string name="spellings_list_empty">(No items)</string>
     <string-array name="spellings_tables_array">
         <item>Species Namers</item>
         <item>Projects</item>
@@ -410,6 +412,7 @@
         <item>ID References</item>
         <item>ID Methods</item>
     </string-array>
+
     <string name="sel_spp_list_ctxmenu_item_forget">Forget species</string>
     <string name="sel_spp_list_ctxmenu_item_edit_ph">Edit Placeholder</string>
     <string name="sel_spp_list_ctxmenu_item_help">Help</string>
