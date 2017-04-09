@@ -104,6 +104,9 @@ public final class VNContract {
         public static final int VEG_ITEM_DUP_CODES = 83; // codes duplicated on the subplot?
         public static final int VEGITEM_DETAILS = 84; // genus, species, etc. fields of item being edited
 
+        // in Fix Spellings
+        public static final int SPELL_ITEMS = 141; // Items available to edit the spelling of
+
         // in Manage Placeholders
         public static final int PHS_MATCHES = 131; // Placeholders that match any search string
         public static final int PHS_NAMERS = 132; // all Namers, to choose from
