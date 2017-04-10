@@ -46,29 +46,22 @@ public class FixSpellingsFragment extends ListFragment
 
     long mProjectId = 0;
     long mItemId = 0;
-    Cursor mSpellItemsCursor;
+    Cursor mSpellSourceCursor, mSpellItemsCursor;
     ContentValues mValues = new ContentValues();
 
     private Spinner mSpellSourceSpinner;
     SimpleCursorAdapter mSpellSourceAdapter, mSpellItemAdapter;
     TextView mViewForEmptyList;
 
+/* may not need another interface
     // declare an interface the container Activity must implement
     public interface OnEditPlaceholderListener {
         // methods that must be implemented in the container Activity
         void onEditPlaceholder(Bundle args);
     }
     OnEditPlaceholderListener mEditPlaceholderCallback; // declare the interface
-
-/*
-    public interface OnPlaceholderRequestListener {
-        // methods that must be implemented in the container Activity
-        void onRequestGenerateExistingPlaceholders(Bundle args);
-        long onRequestGetCountOfExistingPlaceholders();
-        boolean onRequestMatchCheckOfExistingPlaceholders(String ph);
-    }
-    OnPlaceholderRequestListener mPlaceholderRequestListener;
 */
+
     long mRowCt;
 
     @Override
@@ -76,42 +69,30 @@ public class FixSpellingsFragment extends ListFragment
             Bundle savedInstanceState) {
         // inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_manage_phs, container, false);
-
-        mSpellSourceSpinner = (Spinner) rootView.findViewById(R.id.sel_namer_spinner);
+        mSpellSourceSpinner = (Spinner) rootView.findViewById(R.id.fix_spellings_spinner);
         mSpellSourceSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
-        mSpellSourceSpinner.setEnabled(false); // will enable when data ready
-        mSpellSourceAdapter = new SimpleCursorAdapter(getActivity(),
-                android.R.layout.simple_spinner_item, null,
-                new String[] {"NamerName"},
-                new int[] {android.R.id.text1}, 0);
-        mSpellSourceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpellSourceSpinner.setAdapter(mSpellSourceAdapter);
-        mSpellSourceSpinner.setOnItemSelectedListener(this);
-        registerForContextMenu(mSpellSourceSpinner); // enable long-press
-        // Prepare the loader. Either re-connect with an existing one or start a new one
-        getLoaderManager().initLoader(Loaders.SPELL_ITEMS, null, this);
+//        mSpellSourceSpinner.setEnabled(false); // will enable when data ready
+//        mSpellSourceAdapter = new SimpleCursorAdapter(getActivity(),
+//                android.R.layout.simple_spinner_item, null,
+///                new String[] {"NamerName"},
+//                new int[] {android.R.id.text1}, 0);
+//        mSpellSourceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        mSpellSourceSpinner.setAdapter(mSpellSourceAdapter);
+//        mSpellSourceSpinner.setOnItemSelectedListener(this);
+//        registerForContextMenu(mSpellSourceSpinner); // enable long-press
+//        // Prepare the loader. Either re-connect with an existing one or start a new one
+//        getLoaderManager().initLoader(Loaders.SPELL_ITEMS, null, this);
 
-
-        mPhSortSpinner = (Spinner) rootView.findViewById(R.id.ph_sort_spinner);
-        mPhSortSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
+//        mPhSortSpinner = (Spinner) rootView.findViewById(R.id.ph_sort_spinner);
+//        mPhSortSpinner.setTag(VNContract.Tags.SPINNER_FIRST_USE); // flag to catch and ignore erroneous first firing
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> spellTablesAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.spellings_tables_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         spellTablesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
-        mPhSortSpinner.setAdapter(spellTablesAdapter);
-        mPhSortSpinner.setOnItemSelectedListener(this);
-
-        mViewSearchChars = (EditText) rootView.findViewById(R.id.txt_search_phs);
-        mViewSearchChars.addTextChangedListener(sppCodeTextWatcher);
-//        registerForContextMenu(mViewSearchChars); // enable long-press
-        mViewCkPhsNotIdd = (CheckBox) rootView.findViewById(R.id.ck_show_phs_not_idd);
-        mViewCkPhsNotIdd.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                refreshPhsList();
-            }
-        });
+        mSpellSourceSpinner.setAdapter(spellTablesAdapter);
+        mSpellSourceSpinner.setOnItemSelectedListener(this);
 
         mViewForEmptyList = (TextView) rootView.findViewById(android.R.id.empty);
 
@@ -128,18 +109,20 @@ public class FixSpellingsFragment extends ListFragment
         @Override
     public void onStart() {
         super.onStart();
-        mViewSearchChars.requestFocus();
+//        mViewSearchChars.requestFocus();
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+/* may not need an interface
         // assure the container activity has implemented the callback interfaces
         try {
             mEditPlaceholderCallback = (OnEditPlaceholderListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException (activity.toString() + " must implement OnEditPlaceholderListener");
         }
+*/
     }
 
     @Override
@@ -150,7 +133,7 @@ public class FixSpellingsFragment extends ListFragment
     @Override
     public void onResume(){
         super.onResume();
-        refreshPhsList(); // if Placeholders were IDd, show changes
+        refreshItemsList(); // if Placeholders were IDd, show changes
     }
 
     @Override
@@ -178,42 +161,30 @@ public class FixSpellingsFragment extends ListFragment
         // sort out the spinners
         // can't use switch because not constants
         if (parent.getId() == mSpellSourceSpinner.getId()) {
-/*
             // workaround for spinner firing when first set
             if(((String)parent.getTag()).equalsIgnoreCase(VNContract.Tags.SPINNER_FIRST_USE)) {
                 parent.setTag("");
                 return;
             }
-*/
-            refreshPhsList();
-        }
-
-        if (parent.getId() == mPhSortSpinner.getId()) {
-/*
-            // workaround for spinner firing when first set
-            if(((String)parent.getTag()).equalsIgnoreCase(VNContract.Tags.SPINNER_FIRST_USE)) {
-                parent.setTag("");
-                return;
-            }
-*/
-            refreshPhsList();
+            refreshItemsList();
         }
         // write code for any other spinner(s) here
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> arg0) {
-//        setNamerSpinnerSelectionFromDefaultNamer();
+//        setSpinnerSelectionFromDefault();
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int pos, long id) {
 //        Toast.makeText(this.getActivity(), "Clicked position " + pos + ", id " + id, Toast.LENGTH_SHORT).show();
 //    	getListView().getItemAtPosition(pos).toString(); // not useful, gets cursor wrapper
-        // Edit placeholder
+        // Edit item
         mSpellItemsCursor.moveToPosition(pos);
-        if (LDebug.ON) Log.d(LOG_TAG, "Placeholder list item " + pos + " selected");
-        // following should not be necessary, list should only contain Placeholders
+        if (LDebug.ON) Log.d(LOG_TAG, "List item " + pos + " selected");
+        /* use something like this in context menu to allow deleting or not
+
         int itemIsPlaceholder = mSpellItemsCursor.getInt(
                 mSpellItemsCursor.getColumnIndexOrThrow("IsPlaceholder"));
         if (itemIsPlaceholder != 1) {
@@ -222,19 +193,31 @@ public class FixSpellingsFragment extends ListFragment
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        Bundle phArgs = new Bundle();
-        phArgs.putLong(EditPlaceholderFragment.ARG_PLACEHOLDER_ID, mSpellItemsCursor.getLong(
-                mSpellItemsCursor.getColumnIndexOrThrow("_id")));
-        phArgs.putString(EditPlaceholderFragment.ARG_PLACEHOLDER_CODE, mSpellItemsCursor.getString(
-                mSpellItemsCursor.getColumnIndexOrThrow("Code")));
-        phArgs.putBoolean(EditPlaceholderFragment.ARG_CODE_WAS_SHORTENED, false);
-        mEditPlaceholderCallback.onEditPlaceholder(phArgs);
+        */
+
+        /* use something like this, a dialog as for manual location entry
+               if (LDebug.ON) Log.d(LOG_TAG, "'Enter manually' selected");
+        headerContextTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Visit Header Event")
+                .setAction("Context Menu")
+                .setLabel("Enter Location Manually")
+                .setValue(1)
+                .build());
+        // enter location manually
+        Bundle args = new Bundle();
+        args.putString(LocManualEntryDialog.ARG_TOOLBAR_HEADER,
+                c.getResources().getString(R.string.loc_manual_header));
+        if (mGotSomeLocation) {
+            // send args with keys from this class
+            args.putDouble(ARG_LOC_LATITUDE, mLatitude);
+            args.putDouble(ARG_LOC_LONGITUDE, mLongitude);
+            args.putFloat(ARG_LOC_ACCURACY, mAccuracy);
+        }
+        LocManualEntryDialog locMnlDlg = LocManualEntryDialog.newInstance(args);
+        locMnlDlg.show(getFragmentManager(), "frg_loc_manl_entry");
+        return true;
+        */
         return;
-
-
-//        EditSppItemDialog newVegItemDlg = EditSppItemDialog.newInstance(args);
-
-//        newVegItemDlg.show(getFragmentManager(), "frg_new_veg_item");
     }
 
     // create context menus
@@ -247,7 +230,7 @@ public class FixSpellingsFragment extends ListFragment
 
 		case android.R.id.list:
             inflater.inflate(R.menu.context_sel_spp_list_items, menu);
-            // try to remove items not relevant to the selection
+            // add only the item "Delete" if relevant to the selection
             AdapterView.AdapterContextMenuInfo info;
             try {
                 // Casts the incoming data object into the type for AdapterView objects.
@@ -256,6 +239,7 @@ public class FixSpellingsFragment extends ListFragment
                 if (LDebug.ON) Log.d(LOG_TAG, "bad menuInfo", e); // if the menu object can't be cast
                 break;
             }
+/*
             mSpellItemsCursor.moveToPosition(info.position);
             int isPlaceHolder = mSpellItemsCursor.getInt(
                     mSpellItemsCursor.getColumnIndexOrThrow("IsPlaceholder"));
@@ -263,18 +247,12 @@ public class FixSpellingsFragment extends ListFragment
                 // if not a Placeholder, the 'edit Placeholder' option does not apply
                 menu.removeItem(R.id.sel_spp_list_item_edit_ph);
             }
-            int subListOrder = mSpellItemsCursor.getInt(
-                    mSpellItemsCursor.getColumnIndexOrThrow("SubListOrder"));
-            if ((isPlaceHolder == 1) || (subListOrder > 2)) {
-                // a Placeholder, or a defined species not previously found
-                // option to forget its top relevance does not apply
-                menu.removeItem(R.id.sel_spp_list_item_forget);
-            }
+*/
 			break;
         }
     }
 
-    // This is executed when the user selects an option
+    // This is executed when the user selects a context menu option
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 //    AdapterViewCompat.AdapterContextMenuInfo info = (AdapterViewCompat.AdapterContextMenuInfo) item.getMenuInfo();
@@ -294,16 +272,17 @@ public class FixSpellingsFragment extends ListFragment
 //        Tracker headerContextTracker = ((VNApplication) getActivity().getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
 
         switch (item.getItemId()) {
+            // confirm that the item can be deleted, and verify with the user
 
             default:
                 return super.onContextItemSelected(item);
        } // end of Switch
     }
 
-    public void refreshPhsList() {
+    public void refreshItemsList() {
         // use after edit/delete
-        if (LDebug.ON) Log.d(LOG_TAG, "in 'refreshPhsList'");
-        getLoaderManager().restartLoader(Loaders.PHS_MATCHES, null, this);
+        if (LDebug.ON) Log.d(LOG_TAG, "in 'refreshItemsList'");
+        getLoaderManager().restartLoader(Loaders.SPELL_ITEMS, null, this);
     }
 
     @Override
@@ -316,45 +295,38 @@ public class FixSpellingsFragment extends ListFragment
         String[] params = null;
         switch (id) {
 
-            case Loaders.PHS_MATCHES:
-                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES");
+            case Loaders.SPELL_ITEMS:
+                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, SPELL_ITEMS");
                 baseUri = ContentProvider_VegNab.SQL_URI;
                 SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
                 long mProjectId = sharedPref.getLong(VNContract.Prefs.DEFAULT_PROJECT_ID, 1);
-                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got ProjectID=" + mProjectId);
-                mStSearch = mViewSearchChars.getText().toString();
-                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got mStSearch=" + mStSearch);
-                boolean showOnlyNotIDd = mViewCkPhsNotIdd.isChecked();
-                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got showOnlyNotIDd="
-                        + (showOnlyNotIDd ? "true" : "false"));
-                try { // first time, PhName spinner may not be set up yet
-                    Cursor cr = (Cursor) mSpellSourceSpinner.getSelectedItem();
-                    mItemId = cr.getLong(cr.getColumnIndexOrThrow("_id"));
-                } catch (Exception e) {
-                    if (LDebug.ON) Log.d(LOG_TAG, "mItemId error: " + e.toString());
-                    mItemId = 0; // show Placeholders for all Namers, until resolved
-                }
-                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got mItemId=" + mItemId);
-                String orderBy;
-                int pos = mPhSortSpinner.getSelectedItemPosition();
+                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, SPELL_ITEMS, got ProjectID=" + mProjectId);
+                String tableName;
+                int pos = mSpellSourceSpinner.getSelectedItemPosition();
                 switch (pos) {
-                    case 1: // A to Z
-                        orderBy = "Code";
+                    case 0: // Species Namers
+                        tableName = "Namers";
                         break;
-                    case 2: // oldest first
-                        orderBy = "TimeFirstInput";
+                    case 1: // Projects
+                        tableName = "Projects";
                         break;
-                    case 3: // Z to A
-                        orderBy = "Code DESC";
+                    // TODO check spellings of these table names
+                    case 2: // ID Namers
+                        tableName = "IDNamers";
+                        break;
+                    case 3: // ID References
+                        tableName = "IDReferences";
                         break;
                     // for all the following, drop through to
                     // sort order of newest-first
-                    case 0:
+                    case 4: // ID Methods
+                        tableName = "IDMethods";
+                        break;
                     case Spinner.INVALID_POSITION:
                     default:
-                        orderBy = "TimeFirstInput DESC";
+                        tableName = "";
                 }
-                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got orderBy=" + orderBy);
+                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, SPELL_ITEMS, got tableName=" + tableName);
                 List<String> prms = new ArrayList<String>(); // have to build SQL and
                 // parameter list dynamically because there is no numeric wildcard for SQLite
                 // to use all numeric values, leave the field entirely out of the WHERE clause
@@ -374,21 +346,7 @@ public class FixSpellingsFragment extends ListFragment
                             + "ORDER BY " + orderBy + ";";
                     prms.add( "" + mProjectId ); // always use Project ID
                     if (mItemId > 0) prms.add( "" + mItemId );
-/*
-                } else if (mStSearch.trim().length() < 3) { // match Placeholders only by code
-                    select = "SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
-                            + "'' AS SubsppVar, Description AS Vernacular, "
-                            + "PlaceHolderCode || ': ' || Description "
-                            + "|| IFNULL((' = ' || IdSppCode || (IFNULL((': ' || IdSppDescription), ''))), '') "
-                            + "AS MatchTxt, "
-                            + "1 AS SubListOrder, 1 AS IsPlaceholder, "
-                            + "CASE WHEN IFNULL(IdSppCode, 0) = 0 THEN 0 ELSE 1 END AS IsIdentified "
-                            + "FROM PlaceHolders "
-                            + "WHERE Code Like ? AND ProjID=? AND PlaceHolders.NamerID=? "
-                            + (showOnlyNotIDd ? "AND IsIdentified = 0 " : "")
-                            + "ORDER BY " + orderBy + ";";
-                    params = new String[] {mStSearch + "%", "" + mProjectId, ((mItemId > 0) ? "" + mItemId : "%") };
-*/
+
                 } else { // match Placeholders by text
                     select = "SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
                             + "'' AS SubsppVar, Description AS Vernacular, "
@@ -450,7 +408,7 @@ public class FixSpellingsFragment extends ListFragment
                 if (mRowCt > 0) {
                     mSpellSourceSpinner.setEnabled(true);
                 }
-                refreshPhsList(); // may not have completed on start because this loader was not finished
+                refreshItemsList(); // may not have completed on start because this loader was not finished
                 break;
         }
     }
