@@ -98,8 +98,8 @@ public class FixSpellingsFragment extends ListFragment
 
         mSpellItemAdapter = new SimpleCursorAdapter(getActivity(),
                 android.R.layout.simple_list_item_2, null,
-                new String[] {"SpellItem", "SpellItem"},
-                new int[] {android.R.id.text1, android.R.id.text2}, 0); // replace one of these 'SpellItem'
+                new String[] {"SpellItem", "UsageNote"},
+                new int[] {android.R.id.text1, android.R.id.text2}, 0);
         setListAdapter(mSpellItemAdapter);
         getLoaderManager().initLoader(Loaders.PHS_MATCHES, null, this);
 
