@@ -302,10 +302,65 @@ public class FixSpellingsFragment extends ListFragment
                 long mProjectId = sharedPref.getLong(VNContract.Prefs.DEFAULT_PROJECT_ID, 1);
                 if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, SPELL_ITEMS, got ProjectID=" + mProjectId);
                 String tableName;
+                List<String> prms = new ArrayList<String>(); // build parameter list dynamically
                 int pos = mSpellSourceSpinner.getSelectedItemPosition();
+                /*
+                Items appear in the list as their text, of, course; but the second line gives
+                some information so the user knows e.g. if the item can be deleted.
+                For Namers: e.g. "Ellie Expert"
+                Second line, e.g. "8 Visits, 14 Placeholders"
+                If there is only one Project, all these are of course in that Project.
+                If there is more than one Project, but all these are in that
+                Project, then nothing else appears.
+                If there are multiple Projects, and some Items are in the current Project, but
+                some are also in other Projects, the second line appears e.g.
+                "8 Visits, 14 Placeholders (9 Visits, 16 Placeholders in all Projects)"
+                If there are none, this should make it obvious the Item is unused, and can be deleted.
+                "0 Visits, 0 Placeholders"
+                Unless the Item is used on Projects other than the current one.
+                "0 Visits, 0 Placeholders (3 Visits, 5 Placeholders in all Projects)"
+                The SQL derives a count of total usages in all Projects. If this is zero, the
+                item can be deleted.
+                The SQL compares the usages count for the current Project and for all
+                Projects. If these are the same, the short form appears, otherwise the long form.
+                */
                 switch (pos) {
                     case 0: // Species Namers
                         tableName = "Namers";
+                        select = "SELECT _id, NamerName AS SpellItem, ("
+                                + " (SELECT count(_id)  FROM Visits"
+                                + " WHERE Visits.NamerID = Namers._id AND Visits.ProjID = ?)"
+                                + " + (SELECT count(_id)  FROM Placeholders"
+                                + " WHERE Placeholders.NamerID = Namers._id AND Placeholders.ProjID = ?)"
+                                + " ) UsageCount, ("
+                                + " (SELECT count(_id) || "
+                                + "CASE WHEN count(_id) = 1 THEN ' Visit' ELSE ' Visits' END "
+                                + " FROM Visits"
+                                + " WHERE Visits.NamerID = Namers._id)"
+                                + " || ', ' || (SELECT count(_id) || "
+                                + "CASE WHEN count(_id) = 1 THEN ' Placeholder' ELSE ' Placeholders' END"
+                                + " FROM Placeholders"
+                                + " WHERE Placeholders.NamerID = Namers._id)"
+                                + "|| CASE WHEN (((SELECT count(_id)  FROM Visits"
+                                + " WHERE Visits.NamerID = Namers._id AND Visits.ProjID = ?)"
+                                + " + (SELECT count(_id) FROM Placeholders"
+                                + " WHERE Placeholders.NamerID = Namers._id AND Placeholders.ProjID = ?)"
+                                + ") == ((SELECT count(_id)  FROM Visits"
+                                + " WHERE Visits.NamerID = Namers._id)"
+                                + " + (SELECT count(_id) FROM Placeholders"
+                                + " WHERE Placeholders.NamerID = Namers._id))) THEN '' ELSE ("
+                                + " ' (' || (SELECT count(_id) || "
+                                + "CASE WHEN count(_id) = 1 THEN ' Visit' ELSE ' Visits' END "
+                                + " FROM Visits WHERE Visits.NamerID = Namers._id)"
+                                + "|| ', ' || (SELECT count(_id) || "
+                                + "CASE WHEN count(_id) = 1 THEN ' Placeholder' ELSE ' Placeholders' END"
+                                + " FROM Placeholders WHERE Placeholders.NamerID = Namers._id)"
+                                + "|| ' on all Projects)' ) END"
+                                + " ) UsageNote FROM Namers;";
+                        prms.add( "" + mProjectId );
+                        prms.add( "" + mProjectId );
+                        prms.add( "" + mProjectId );
+                        prms.add( "" + mProjectId );
                         break;
                     case 1: // Projects
                         tableName = "Projects";
@@ -317,72 +372,35 @@ public class FixSpellingsFragment extends ListFragment
                     case 3: // ID References
                         tableName = "IDReferences";
                         break;
-                    // for all the following, drop through to
-                    // sort order of newest-first
+                    // for all the following, drop through
                     case 4: // ID Methods
                         tableName = "IDMethods";
                         break;
                     case Spinner.INVALID_POSITION:
                     default:
                         tableName = "";
-                }
+                        // dummy query that gets no records
+                        select = "SELECT _id, NamerName AS SpellItem, "
+                            + "0 AS UsageCount, '' AS UsageNote "
+                            + "FROM Namers WHERE Namers._id = 0;";
+                } // end of case that selects which table
                 if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, SPELL_ITEMS, got tableName=" + tableName);
-                List<String> prms = new ArrayList<String>(); // have to build SQL and
-                // parameter list dynamically because there is no numeric wildcard for SQLite
-                // to use all numeric values, leave the field entirely out of the WHERE clause
-                if (mStSearch.trim().length() == 0) { // do not filter results by text
-                    select = "SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
-                            + "'' AS SubsppVar, Description AS Vernacular, "
-                            + "PlaceHolderCode || ': ' || Description || "
-                            + "IFNULL((' = ' || IdSppCode || (IFNULL((': ' || IdSppDescription), ''))), '') "
-                            + "AS MatchTxt, "
-                            + "1 AS SubListOrder, "
-                            + "1 AS IsPlaceholder, "
-                            + "CASE WHEN IFNULL(IdSppCode, 0) = 0 THEN 0 ELSE 1 END AS IsIdentified "
-                            + "FROM PlaceHolders "
-                            + "WHERE ProjID=? "
-                            + ((mItemId > 0) ? "AND PlaceHolders.NamerID=? " : "")
-                            + (showOnlyNotIDd ? "AND IsIdentified = 0 " : "")
-                            + "ORDER BY " + orderBy + ";";
-                    prms.add( "" + mProjectId ); // always use Project ID
-                    if (mItemId > 0) prms.add( "" + mItemId );
 
-                } else { // match Placeholders by text
-                    select = "SELECT _id, PlaceHolderCode AS Code, '' AS Genus, '' AS Species, "
-                            + "'' AS SubsppVar, Description AS Vernacular, "
-                            + "PlaceHolderCode || ': ' || Description "
-                            + "|| IFNULL((' = ' || IdSppCode || (IFNULL((': ' || IdSppDescription), ''))), '') "
-                            + "AS MatchTxt, "
-                            + "1 AS SubListOrder, 1 AS IsPlaceholder, "
-                            + "CASE WHEN IFNULL(IdSppCode, 0) = 0 THEN 0 ELSE 1 END AS IsIdentified "
-                            + "FROM PlaceHolders "
-                            + "WHERE MatchTxt Like ? AND ProjID=? "
-                            + ((mItemId > 0) ? "AND PlaceHolders.NamerID=? " : "")
-                            + (showOnlyNotIDd ? "AND IsIdentified = 0 " : "")
-                            + "ORDER BY " + orderBy + ";";
-                    prms.add( "%" + mStSearch + "%" );
-                    prms.add( "" + mProjectId );
-                    if (mItemId > 0) prms.add( "" + mItemId );
+                if (prms.size() == 0) {
+                    params = null;
+                } else {
+                    params = new String[ prms.size() ];
+                    prms.toArray( params );
                 }
-                params = new String[ prms.size() ];
-                prms.toArray( params );
                 if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got select=" + select);
                 if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, params=" + java.util.Arrays.toString(params));
                 cl = new CursorLoader(getActivity(), baseUri,
                         null, select, params, null);
                 break;
 
-            case Loaders.SPELL_ITEMS:
-                baseUri = ContentProvider_VegNab.SQL_URI;
-                select = "SELECT _id, NamerName FROM Namers "
-                        + "UNION SELECT 0, '(all)' "
-                        + "ORDER BY _id;";
-                cl = new CursorLoader(getActivity(), baseUri,
-                        null, select, null, null);
-                break;
+            // if any other Loaders, their code would go here
         }
         return cl;
-
     }
 
     @Override
