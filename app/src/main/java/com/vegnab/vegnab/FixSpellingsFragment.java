@@ -362,6 +362,7 @@ public class FixSpellingsFragment extends ListFragment
                         prms.add( "" + mProjectId );
                         prms.add( "" + mProjectId );
                         break;
+/* for testing, comment out the others
                     case 1: // Projects
                         tableName = "Projects";
                         break;
@@ -376,6 +377,7 @@ public class FixSpellingsFragment extends ListFragment
                     case 4: // ID Methods
                         tableName = "IDMethods";
                         break;
+*/
                     case Spinner.INVALID_POSITION:
                     default:
                         tableName = "";
@@ -383,6 +385,7 @@ public class FixSpellingsFragment extends ListFragment
                         select = "SELECT _id, NamerName AS SpellItem, "
                             + "0 AS UsageCount, '' AS UsageNote "
                             + "FROM Namers WHERE Namers._id = 0;";
+                        break;
                 } // end of case that selects which table
                 if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, SPELL_ITEMS, got tableName=" + tableName);
 
@@ -392,8 +395,8 @@ public class FixSpellingsFragment extends ListFragment
                     params = new String[ prms.size() ];
                     prms.toArray( params );
                 }
-                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, got select=" + select);
-                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, PHS_MATCHES, params=" + java.util.Arrays.toString(params));
+                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, SPELL_ITEMS, got select=" + select);
+                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, SPELL_ITEMS, params=" + java.util.Arrays.toString(params));
                 cl = new CursorLoader(getActivity(), baseUri,
                         null, select, params, null);
                 break;
@@ -409,25 +412,18 @@ public class FixSpellingsFragment extends ListFragment
         mRowCt = finishedCursor.getCount();
         switch (loader.getId()) {
 
-            case Loaders.PHS_MATCHES:
-                mPhResultsAdapter.swapCursor(finishedCursor);
-                mSpellItemsCursor = finishedCursor;
-                if ((mRowCt == 0) && (mStSearch.trim().length() != 0)) {
-                    mViewForEmptyList.setText(
-                            getActivity().getResources().getString(R.string.sel_spp_search_msg_no_matches));
-                }
-                if (LDebug.ON) Log.d(LOG_TAG, "in onLoadFinished, PHS_MATCHES, mRowCt=" + mRowCt);
-                break;
-
             case Loaders.SPELL_ITEMS:
                 // Swap the new cursor in.
                 // The framework will take care of closing the old cursor once we return.
                 mSpellSourceAdapter.swapCursor(finishedCursor);
-                if (mRowCt > 0) {
-                    mSpellSourceSpinner.setEnabled(true);
+                if (mRowCt == 0) {
+//                    mViewForEmptyList.setText(
+//                            getActivity().getResources().getString(R.string.sel_spp_search_msg_no_matches));
                 }
-                refreshItemsList(); // may not have completed on start because this loader was not finished
+//                refreshItemsList(); // may not have completed on start because this loader was not finished
+                if (LDebug.ON) Log.d(LOG_TAG, "in onLoadFinished, SPELL_ITEMS, mRowCt=" + mRowCt);
                 break;
+            // code for any other loaders would go here
         }
     }
 
@@ -437,13 +433,10 @@ public class FixSpellingsFragment extends ListFragment
         // is about to be closed. Need to make sure it is no longer is use.
         switch (loader.getId()) {
 
-            case Loaders.PHS_MATCHES:
-                mPhResultsAdapter.swapCursor(null);
-                break;
-
             case Loaders.SPELL_ITEMS:
                 mSpellSourceAdapter.swapCursor(null);
                 break;
+            // code for any other loaders would go here
         }
     }
 }
