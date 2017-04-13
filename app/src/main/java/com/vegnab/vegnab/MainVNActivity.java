@@ -341,6 +341,7 @@ public class MainVNActivity extends AppCompatActivity
     }
 
     private void selectNavDrawerItem(int position) {
+        FragmentTransaction transaction;
         switch (position) { // the Activity has first opportunity to handle these
             // any not handled come here to this Fragment
             case 0: // Placeholders
@@ -361,17 +362,40 @@ public class MainVNActivity extends AppCompatActivity
                 // presently does not take any parameters
                 //Bundle args = new Bundle();
                 mngPhFrag = new ManagePhsFragment();
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction = getSupportFragmentManager().beginTransaction();
                 // put the present fragment on the backstack so the user can navigate back to it
                 // the tag is for the fragment now being added, not the one replaced
                 transaction.replace(R.id.fragment_container, mngPhFrag, Tags.MANAGE_PLACEHOLDERS);
                 transaction.addToBackStack(null);
                 transaction.commit();
                 break;
+
             case 1: // Spellings
-                Toast.makeText(getApplicationContext(),
-                        "Spelling corrections, not implemented yet", Toast.LENGTH_SHORT).show();
+                FixSpellingsFragment fixSpFrag;
+                // check if this fragment is already up
+                fixSpFrag = (FixSpellingsFragment)
+                        getSupportFragmentManager().findFragmentByTag(Tags.MANAGE_SPELLINGS);
+                if (fixSpFrag != null) {
+                    if (LDebug.ON) Log.d(LOG_TAG, "fixSpFrag != null");
+                    Context c = getApplicationContext();
+                    Toast.makeText(c, c.getResources()
+                                    .getString(R.string.nav_drawer_item_already_up),
+                            Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                // swap Fix Spellings fragment in place of existing fragment
+                if (LDebug.ON) Log.d(LOG_TAG, "About to go to Fix Spellings");
+                // presently does not take any parameters
+                //Bundle args = new Bundle();
+                fixSpFrag = new FixSpellingsFragment();
+                transaction = getSupportFragmentManager().beginTransaction();
+                // put the present fragment on the backstack so the user can navigate back to it
+                // the tag is for the fragment now being added, not the one replaced
+                transaction.replace(R.id.fragment_container, fixSpFrag, Tags.MANAGE_SPELLINGS);
+                transaction.addToBackStack(null);
+                transaction.commit();
                 break;
+
             case 2: // Cloud storage
                 Toast.makeText(getApplicationContext(),
                         "Cloud storage, not implemented yet", Toast.LENGTH_SHORT).show();
