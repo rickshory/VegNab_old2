@@ -50,7 +50,7 @@ public class FixSpellingsFragment extends ListFragment
     ContentValues mValues = new ContentValues();
 
     private Spinner mSpellSourceSpinner;
-    SimpleCursorAdapter mSpellItemAdapter;
+    SimpleCursorAdapter mSpellItemsAdapter;
     TextView mViewForEmptyList;
 
 /* may not need another interface
@@ -96,11 +96,11 @@ public class FixSpellingsFragment extends ListFragment
 
         mViewForEmptyList = (TextView) rootView.findViewById(android.R.id.empty);
 
-        mSpellItemAdapter = new SimpleCursorAdapter(getActivity(),
+        mSpellItemsAdapter = new SimpleCursorAdapter(getActivity(),
                 android.R.layout.simple_list_item_2, null,
                 new String[] {"SpellItem", "UsageNote"},
                 new int[] {android.R.id.text1, android.R.id.text2}, 0);
-        setListAdapter(mSpellItemAdapter);
+        setListAdapter(mSpellItemsAdapter);
         getLoaderManager().initLoader(Loaders.PHS_MATCHES, null, this);
 
         return rootView;
@@ -182,7 +182,7 @@ public class FixSpellingsFragment extends ListFragment
 //    	getListView().getItemAtPosition(pos).toString(); // not useful, gets cursor wrapper
         // Edit item
         if (LDebug.ON) Log.d(LOG_TAG, "List item " + pos + " selected");
-        mSpellItemsCursor = mSpellItemAdapter.getCursor();
+        mSpellItemsCursor = mSpellItemsAdapter.getCursor();
         mSpellItemsCursor.moveToPosition(pos);
 
         /* use something like this in context menu to allow deleting or not
@@ -417,7 +417,7 @@ public class FixSpellingsFragment extends ListFragment
             case Loaders.SPELL_ITEMS:
                 // Swap the new cursor in.
                 // The framework will take care of closing the old cursor once we return.
-                mSpellItemAdapter.swapCursor(finishedCursor);
+                mSpellItemsAdapter.swapCursor(finishedCursor);
                 if (mRowCt == 0) {
 //                    mViewForEmptyList.setText(
 //                            getActivity().getResources().getString(R.string.sel_spp_search_msg_no_matches));
@@ -436,7 +436,7 @@ public class FixSpellingsFragment extends ListFragment
         switch (loader.getId()) {
 
             case Loaders.SPELL_ITEMS:
-                mSpellItemAdapter.swapCursor(null);
+                mSpellItemsAdapter.swapCursor(null);
                 break;
             // code for any other loaders would go here
         }
