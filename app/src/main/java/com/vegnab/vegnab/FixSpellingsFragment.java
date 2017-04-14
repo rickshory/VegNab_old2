@@ -61,8 +61,16 @@ public class FixSpellingsFragment extends ListFragment
     }
     OnEditPlaceholderListener mEditPlaceholderCallback; // declare the interface
 */
-
     long mRowCt;
+
+    final static String ARG_ITEM_TO_EDIT = "itemToEdit";
+    final static String ARG_TABLE_NAME = "tableName";
+    final static String ARG_FIELD_NAME = "fieldName";
+    final static String ARG_RECORD_ID = "recID";
+    final static String ARG_TEXT_FORMAT = "textFormat";
+    final static String ARG_LENGTH_MIN = "minTextLength";
+    final static String ARG_LENGTH_MAX = "maxTextLength";
+    final static String ARG_EXISTING_VALUES = "existingValues";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
