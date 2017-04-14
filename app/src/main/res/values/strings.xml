@@ -413,6 +413,9 @@
         <item>ID Methods</item>
     </string-array>
 
+    <string name="edit_spellings_toolbar_title">Edit Spelling</string>
+    <string name="edit_spellings_lbl_edit_all">Change throughout the app:</string>
+
     <string name="sel_spp_list_ctxmenu_item_forget">Forget species</string>
     <string name="sel_spp_list_ctxmenu_item_edit_ph">Edit Placeholder</string>
     <string name="sel_spp_list_ctxmenu_item_help">Help</string>
