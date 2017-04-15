@@ -62,6 +62,7 @@ public class FixSpellingsFragment extends ListFragment
     OnEditPlaceholderListener mEditPlaceholderCallback; // declare the interface
 */
     long mRowCt;
+    String mItemToEdit;
 
     final static String ARG_ITEM_TO_EDIT = "itemToEdit";
     final static String ARG_TABLE_NAME = "tableName";
@@ -193,6 +194,9 @@ public class FixSpellingsFragment extends ListFragment
         mSpellItemsCursor = mSpellItemsAdapter.getCursor();
         mSpellItemsCursor.moveToPosition(pos);
 
+//        mItemRecId = mSpellItemsCursor.getString(mSpellItemsCursor.getColumnIndexOrThrow("_id"));
+        mItemToEdit = mSpellItemsCursor.getString(mSpellItemsCursor.getColumnIndexOrThrow("SpellItem"));
+
         /* use something like this in context menu to allow deleting or not
 
         int itemIsPlaceholder = mSpellItemsCursor.getInt(
@@ -213,20 +217,17 @@ public class FixSpellingsFragment extends ListFragment
                 .setLabel("Enter Location Manually")
                 .setValue(1)
                 .build());
-        // enter location manually
-        Bundle args = new Bundle();
-        args.putString(LocManualEntryDialog.ARG_TOOLBAR_HEADER,
-                c.getResources().getString(R.string.loc_manual_header));
-        if (mGotSomeLocation) {
-            // send args with keys from this class
-            args.putDouble(ARG_LOC_LATITUDE, mLatitude);
-            args.putDouble(ARG_LOC_LONGITUDE, mLongitude);
-            args.putFloat(ARG_LOC_ACCURACY, mAccuracy);
-        }
-        LocManualEntryDialog locMnlDlg = LocManualEntryDialog.newInstance(args);
-        locMnlDlg.show(getFragmentManager(), "frg_loc_manl_entry");
-        return true;
         */
+        // edit item
+        Bundle args = new Bundle();
+        Context c = getActivity();
+        args.putString(EditSpellingDialog.ARG_TOOLBAR_HEADER,
+                c.getResources().getString(R.string.edit_spellings_toolbar_title));
+        args.putString(ARG_ITEM_TO_EDIT, mItemToEdit);
+        // put other args in here
+
+        EditSpellingDialog edSplDlg = EditSpellingDialog.newInstance(args);
+        edSplDlg.show(getFragmentManager(), "frg_edit_spelling");
         return;
     }
 
