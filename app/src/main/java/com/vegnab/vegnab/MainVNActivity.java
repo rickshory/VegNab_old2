@@ -106,6 +106,7 @@ public class MainVNActivity extends AppCompatActivity
         ConfigurableEditDialog.ConfigurableEditDialogListener,
         SelectSpeciesFragment.OnEditPlaceholderListener,
         ManagePhsFragment.OnEditPlaceholderListener,
+        EditSpellingDialog.SpellingEditListener,
         EditSppItemDialog.EditSppItemDialogListener,
         EditPlaceholderFragment.OnButtonListener,
         EditPlaceholderFragment.EditPlaceholderFragmentListener,
@@ -602,6 +603,13 @@ public class MainVNActivity extends AppCompatActivity
     return;
     }
 */
+
+    public void onEditSpelling(DialogFragment dialog, Bundle args) {
+        // probably just dismiss the EditSpellingDialog, and
+        // the FixSpellingsFragment that called it
+        // after doing any database updates directly in EditSpellingDialog
+    }
+
     public void onLocManualEntry(DialogFragment dialog, Bundle args) {
         if (LDebug.ON) Log.d(LOG_TAG, "in onLocManualEntry");
         // method receives bundle with lat/lon/acc/source/provider
