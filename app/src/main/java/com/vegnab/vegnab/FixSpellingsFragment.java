@@ -68,7 +68,7 @@ public class FixSpellingsFragment extends ListFragment
     final static String ARG_TABLE_NAME = "tableName";
     final static String ARG_FIELD_NAME = "fieldName";
     final static String ARG_RECORD_ID = "recID";
-    final static String ARG_TEXT_FORMAT = "textFormat";
+    final static String ARG_INPUT_TYPE = "textFormat";
     final static String ARG_LENGTH_MIN = "minTextLength";
     final static String ARG_LENGTH_MAX = "maxTextLength";
     final static String ARG_EXISTING_VALUES = "existingValues";
@@ -187,45 +187,50 @@ public class FixSpellingsFragment extends ListFragment
 
     @Override
     public void onListItemClick(ListView l, View v, int pos, long id) {
+        if (LDebug.ON) Log.d(LOG_TAG, "List item clicked, item " + pos);
 //        Toast.makeText(this.getActivity(), "Clicked position " + pos + ", id " + id, Toast.LENGTH_SHORT).show();
 //    	getListView().getItemAtPosition(pos).toString(); // not useful, gets cursor wrapper
         // Edit item
         if (LDebug.ON) Log.d(LOG_TAG, "List item " + pos + " selected");
-        mSpellItemsCursor = mSpellItemsAdapter.getCursor();
-        mSpellItemsCursor.moveToPosition(pos);
-
-//        mItemRecId = mSpellItemsCursor.getString(mSpellItemsCursor.getColumnIndexOrThrow("_id"));
-        mItemToEdit = mSpellItemsCursor.getString(mSpellItemsCursor.getColumnIndexOrThrow("SpellItem"));
-
-        /* use something like this in context menu to allow deleting or not
-
-        int itemIsPlaceholder = mSpellItemsCursor.getInt(
-                mSpellItemsCursor.getColumnIndexOrThrow("IsPlaceholder"));
-        if (itemIsPlaceholder != 1) {
-            Toast.makeText(getActivity(),
-                    getActivity().getResources().getString(R.string.sel_spp_list_ctx_edit_ph_not),
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-        */
-
-        /* use something like this, a dialog as for manual location entry
-               if (LDebug.ON) Log.d(LOG_TAG, "'Enter manually' selected");
-        headerContextTracker.send(new HitBuilders.EventBuilder()
-                .setCategory("Visit Header Event")
-                .setAction("Context Menu")
-                .setLabel("Enter Location Manually")
-                .setValue(1)
-                .build());
-        */
-        // edit item
         Bundle args = new Bundle();
         Context c = getActivity();
         args.putString(EditSpellingDialog.ARG_TOOLBAR_HEADER,
                 c.getResources().getString(R.string.edit_spellings_toolbar_title));
-        args.putString(ARG_ITEM_TO_EDIT, mItemToEdit);
-        // put other args in here
+        Cursor cr = mSpellItemsAdapter.getCursor();
+        cr.moveToPosition(pos);
+        args.putString(ARG_ITEM_TO_EDIT,
+                cr.getString(cr.getColumnIndexOrThrow("SpellItem")));
+        args.putLong(ARG_RECORD_ID,
+                cr.getLong(cr.getColumnIndexOrThrow("_id")));
+        int src = mSpellSourceSpinner.getSelectedItemPosition();
+        switch (src) {
+            case 0: // Species Namers
+                args.putString(ARG_TABLE_NAME, "Namers");
+                args.putString(ARG_FIELD_NAME, "NamerName");
+                args.putString(ARG_INPUT_TYPE, "textPersonName|textCapWords"); // is this a String?
+                args.putInt(ARG_LENGTH_MIN, 2);
+                args.putInt(ARG_LENGTH_MAX, 16);
+                // ARG_EXISTING_VALUES
+                break;
+            case 1: // Projects
+                break;
+            case 2: // ID Namers
+                break;
+            case 3: // ID References
+                break;
+            case 4: // ID Methods
+                break;
 
+// do anything with these?
+//        case Spinner.INVALID_POSITION:
+//        default:
+//        break;
+        } // end of case that selects which table
+/*
+tableName = "Projects";
+tableName = "IDNamers";
+tableName = "IDReferences";
+tableName = "IDMethods";*/
         EditSpellingDialog edSplDlg = EditSpellingDialog.newInstance(args);
         edSplDlg.show(getFragmentManager(), "frg_edit_spelling");
         return;
@@ -242,7 +247,17 @@ public class FixSpellingsFragment extends ListFragment
 		case android.R.id.list:
             inflater.inflate(R.menu.context_sel_spp_list_items, menu);
             // add only the item "Delete" if relevant to the selection
-            AdapterView.AdapterContextMenuInfo info;
+
+        /* or use something like this to allow deleting or not
+        int itemIsPlaceholder = mSpellItemsCursor.getInt(
+                mSpellItemsCursor.getColumnIndexOrThrow("IsPlaceholder"));
+        if (itemIsPlaceholder != 1) {
+            Toast.makeText(getActivity(),
+                    getActivity().getResources().getString(R.string.sel_spp_list_ctx_edit_ph_not),
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        */            AdapterView.AdapterContextMenuInfo info;
             try {
                 // Casts the incoming data object into the type for AdapterView objects.
                 info = (AdapterView.AdapterContextMenuInfo) menuInfo;
