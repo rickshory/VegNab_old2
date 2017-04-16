@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.LDebug;
 
+import java.util.HashMap;
+
 // android.app.DialogFragment; // maybe use this instead
 
 public class EditSpellingDialog extends DialogFragment {
@@ -99,6 +101,11 @@ public class EditSpellingDialog extends DialogFragment {
         if (a.containsKey(FixSpellingsFragment.ARG_ITEM_TO_EDIT))
             mEditItem.setText(""
                 + a.getString(FixSpellingsFragment.ARG_ITEM_TO_EDIT));
+        HashMap<Long, String> existingItems = new HashMap<Long, String>();
+        if (a.containsKey(FixSpellingsFragment.ARG_EXISTING_VALUES)) {
+            existingItems = (HashMap<Long, String>) savedInstanceState.getSerializable(
+                    FixSpellingsFragment.ARG_EXISTING_VALUES);
+        }
         // also get ARG_TABLE_NAME, ARG_FIELD_NAME, ARG_RECORD_ID
         // ARG_TEXT_FORMAT, ARG_LENGTH_MIN, ARG_LENGTH_MAX, ARG_EXISTING_VALUES
 

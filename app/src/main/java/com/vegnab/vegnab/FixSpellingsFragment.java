@@ -37,6 +37,7 @@ import com.vegnab.vegnab.database.VNContract.LDebug;
 import com.vegnab.vegnab.database.VNContract.Loaders;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class FixSpellingsFragment extends ListFragment
@@ -202,6 +203,13 @@ public class FixSpellingsFragment extends ListFragment
                 cr.getString(cr.getColumnIndexOrThrow("SpellItem")));
         args.putLong(ARG_RECORD_ID,
                 cr.getLong(cr.getColumnIndexOrThrow("_id")));
+        HashMap<Long, String> existingItems = new HashMap<Long, String>();
+        cr.moveToFirst();
+        while (cr.moveToNext()) {
+            existingItems.put(cr.getLong(cr.getColumnIndexOrThrow("_id")),
+                    cr.getString(cr.getColumnIndexOrThrow("SpellItem")));
+        }
+        args.putSerializable(ARG_EXISTING_VALUES, existingItems);
         int src = mSpellSourceSpinner.getSelectedItemPosition();
         switch (src) {
             case 0: // Species Namers
@@ -210,7 +218,6 @@ public class FixSpellingsFragment extends ListFragment
                 args.putString(ARG_INPUT_TYPE, "textPersonName|textCapWords"); // is this a String?
                 args.putInt(ARG_LENGTH_MIN, 2);
                 args.putInt(ARG_LENGTH_MAX, 16);
-                // ARG_EXISTING_VALUES
                 break;
             case 1: // Projects
                 break;
