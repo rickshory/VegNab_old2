@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.Toolbar;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,11 +99,19 @@ public class EditSpellingDialog extends DialogFragment {
         });
         mEditItem = (EditText) view.findViewById(R.id.txt_edit_spelling);
         Bundle a = this.getArguments();
-        if (a.containsKey(FixSpellingsFragment.ARG_ITEM_TO_EDIT))
+        if (a.containsKey(FixSpellingsFragment.ARG_ITEM_TO_EDIT)) {
             mEditItem.setText(""
-                + a.getString(FixSpellingsFragment.ARG_ITEM_TO_EDIT));
+                    + a.getString(FixSpellingsFragment.ARG_ITEM_TO_EDIT));
+        }
         if (a.containsKey(FixSpellingsFragment.ARG_INPUT_TYPE)) {
-            mEditItem.setInputType(a.getInt(FixSpellingsFragment.ARG_ITEM_TO_EDIT));
+            mEditItem.setInputType(a.getInt(FixSpellingsFragment.ARG_INPUT_TYPE));
+        }
+        if (a.containsKey(FixSpellingsFragment.ARG_LENGTH_MAX)) {
+            // not sure if input type is a filter, so add on to any existing
+            InputFilter[] filterArray = mEditItem.getFilters();
+            filterArray[filterArray.length] =
+                    new InputFilter.LengthFilter(a.getInt(FixSpellingsFragment.ARG_LENGTH_MAX));
+            mEditItem.setFilters(filterArray);
         }
         HashMap<Long, String> existingItems = new HashMap<Long, String>();
         if (a.containsKey(FixSpellingsFragment.ARG_EXISTING_VALUES)) {
