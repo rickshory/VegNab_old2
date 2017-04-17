@@ -13,6 +13,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -215,7 +216,7 @@ public class FixSpellingsFragment extends ListFragment
             case 0: // Species Namers
                 args.putString(ARG_TABLE_NAME, "Namers");
                 args.putString(ARG_FIELD_NAME, "NamerName");
-                args.putString(ARG_INPUT_TYPE, "textPersonName|textCapWords"); // is this a String?
+                args.putInt(ARG_INPUT_TYPE, InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
                 args.putInt(ARG_LENGTH_MIN, 2);
                 args.putInt(ARG_LENGTH_MAX, 16);
                 break;
@@ -228,7 +229,7 @@ public class FixSpellingsFragment extends ListFragment
             case 2: // ID Namers
                 args.putString(ARG_TABLE_NAME, "IdNamers");
                 args.putString(ARG_FIELD_NAME, "IdNamerName");
-                args.putString(ARG_INPUT_TYPE, "textPersonName|textCapWords"); // is this a String?
+                args.putInt(ARG_INPUT_TYPE, InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
                 args.putInt(ARG_LENGTH_MIN, 2);
                 args.putInt(ARG_LENGTH_MAX, 30);
                 break;

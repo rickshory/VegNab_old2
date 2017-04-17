@@ -101,6 +101,9 @@ public class EditSpellingDialog extends DialogFragment {
         if (a.containsKey(FixSpellingsFragment.ARG_ITEM_TO_EDIT))
             mEditItem.setText(""
                 + a.getString(FixSpellingsFragment.ARG_ITEM_TO_EDIT));
+        if (a.containsKey(FixSpellingsFragment.ARG_INPUT_TYPE)) {
+            mEditItem.setInputType(a.getInt(FixSpellingsFragment.ARG_ITEM_TO_EDIT));
+        }
         HashMap<Long, String> existingItems = new HashMap<Long, String>();
         if (a.containsKey(FixSpellingsFragment.ARG_EXISTING_VALUES)) {
             try {
