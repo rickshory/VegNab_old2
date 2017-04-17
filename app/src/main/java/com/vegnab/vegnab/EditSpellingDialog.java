@@ -103,8 +103,13 @@ public class EditSpellingDialog extends DialogFragment {
                 + a.getString(FixSpellingsFragment.ARG_ITEM_TO_EDIT));
         HashMap<Long, String> existingItems = new HashMap<Long, String>();
         if (a.containsKey(FixSpellingsFragment.ARG_EXISTING_VALUES)) {
-            existingItems = (HashMap<Long, String>) savedInstanceState.getSerializable(
-                    FixSpellingsFragment.ARG_EXISTING_VALUES);
+            try {
+                existingItems = (HashMap<Long, String>) savedInstanceState.getSerializable(
+                        FixSpellingsFragment.ARG_EXISTING_VALUES);
+            } catch (Exception e) {
+                if (LDebug.ON) Log.d(LOG_TAG, "exception: " + e.getMessage());
+            }
+
         }
         // also get ARG_TABLE_NAME, ARG_FIELD_NAME, ARG_RECORD_ID
         // ARG_TEXT_FORMAT, ARG_LENGTH_MIN, ARG_LENGTH_MAX, ARG_EXISTING_VALUES

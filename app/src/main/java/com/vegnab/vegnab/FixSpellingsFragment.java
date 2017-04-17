@@ -220,12 +220,29 @@ public class FixSpellingsFragment extends ListFragment
                 args.putInt(ARG_LENGTH_MAX, 16);
                 break;
             case 1: // Projects
+                args.putString(ARG_TABLE_NAME, "Projects");
+                args.putString(ARG_FIELD_NAME, "ProjCode");
+                args.putInt(ARG_LENGTH_MIN, 2);
+                args.putInt(ARG_LENGTH_MAX, 10);
                 break;
             case 2: // ID Namers
+                args.putString(ARG_TABLE_NAME, "IdNamers");
+                args.putString(ARG_FIELD_NAME, "IdNamerName");
+                args.putString(ARG_INPUT_TYPE, "textPersonName|textCapWords"); // is this a String?
+                args.putInt(ARG_LENGTH_MIN, 2);
+                args.putInt(ARG_LENGTH_MAX, 30);
                 break;
             case 3: // ID References
+                args.putString(ARG_TABLE_NAME, "IdRefs");
+                args.putString(ARG_FIELD_NAME, "IdRef");
+                args.putInt(ARG_LENGTH_MIN, 2);
+                args.putInt(ARG_LENGTH_MAX, 255);
                 break;
             case 4: // ID Methods
+                args.putString(ARG_TABLE_NAME, "IdMethods");
+                args.putString(ARG_FIELD_NAME, "IdMethod");
+                args.putInt(ARG_LENGTH_MIN, 2);
+                args.putInt(ARG_LENGTH_MAX, 255);
                 break;
 
 // do anything with these?
