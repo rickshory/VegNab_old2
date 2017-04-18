@@ -30,6 +30,7 @@ public class EditSpellingDialog extends DialogFragment {
     private static final String LOG_TAG = EditSpellingDialog.class.getSimpleName();
     private TextView mEditItem;
     private String mItemText;
+    private int mMaxLength;
 
     public interface SpellingEditListener {
         // methods that must be implemented in the container Activity
@@ -113,18 +114,6 @@ public class EditSpellingDialog extends DialogFragment {
                     new InputFilter.LengthFilter(a.getInt(FixSpellingsFragment.ARG_LENGTH_MAX));
             mEditItem.setFilters(filterArray);
         }
-        HashMap<Long, String> existingItems = new HashMap<Long, String>();
-        if (a.containsKey(FixSpellingsFragment.ARG_EXISTING_VALUES)) {
-            try {
-                existingItems = (HashMap<Long, String>) savedInstanceState.getSerializable(
-                        FixSpellingsFragment.ARG_EXISTING_VALUES);
-            } catch (Exception e) {
-                if (LDebug.ON) Log.d(LOG_TAG, "exception: " + e.getMessage());
-            }
-
-        }
-        // also get ARG_TABLE_NAME, ARG_FIELD_NAME, ARG_RECORD_ID
-        // ARG_TEXT_FORMAT, ARG_LENGTH_MIN, ARG_LENGTH_MAX, ARG_EXISTING_VALUES
 
         return view;
     }
@@ -171,6 +160,28 @@ public class EditSpellingDialog extends DialogFragment {
         // ARG_TEXT_FORMAT, ARG_LENGTH_MIN, ARG_LENGTH_MAX, ARG_EXISTING_VALUES
         // if valid, maybe go ahead and update the database using
         // ARG_TABLE_NAME, ARG_FIELD_NAME, ARG_RECORD_ID
+        int lengthMin = 0, lengthMax = Integer.MAX_VALUE;
+        Bundle a = this.getArguments();
+        if (a.containsKey(FixSpellingsFragment.ARG_LENGTH_MIN)) {
+            lengthMin = a.getInt(FixSpellingsFragment.ARG_LENGTH_MIN);
+        }
+        if (a.containsKey(FixSpellingsFragment.ARG_LENGTH_MAX)) {
+            lengthMax = a.getInt(FixSpellingsFragment.ARG_LENGTH_MAX);
+        }
+        HashMap<Long, String> existingItems = new HashMap<Long, String>();
+        if (a.containsKey(FixSpellingsFragment.ARG_EXISTING_VALUES)) {
+            try {
+                existingItems = (HashMap<Long, String>) a.getSerializable(
+                        FixSpellingsFragment.ARG_EXISTING_VALUES);
+            } catch (Exception e) {
+                if (LDebug.ON) Log.d(LOG_TAG, "exception: " + e.getMessage());
+            }
+
+        }
+        // also get ARG_TABLE_NAME, ARG_FIELD_NAME, ARG_RECORD_ID
+        // ARG_TEXT_FORMAT, ARG_LENGTH_MIN, ARG_LENGTH_MAX, ARG_EXISTING_VALUES
+
+        //mMaxLength
 
         return false; // for now, return false
     } // end of validation
