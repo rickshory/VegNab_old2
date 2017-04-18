@@ -29,8 +29,6 @@ public class EditSpellingDialog extends DialogFragment {
     private int mValidationLevel = VNContract.Validation.CRITICAL;
     private static final String LOG_TAG = EditSpellingDialog.class.getSimpleName();
     private TextView mEditItem;
-    private String mItemText;
-    private int mMaxLength;
 
     public interface SpellingEditListener {
         // methods that must be implemented in the container Activity
@@ -155,13 +153,21 @@ public class EditSpellingDialog extends DialogFragment {
         String stringProblem;
         String errTitle = c.getResources().getString(R.string.vis_hdr_validate_generic_title);
         ConfigurableMsgDialog flexErrDlg;
-
-        // validate based on
-        // ARG_TEXT_FORMAT, ARG_LENGTH_MIN, ARG_LENGTH_MAX, ARG_EXISTING_VALUES
-        // if valid, maybe go ahead and update the database using
-        // ARG_TABLE_NAME, ARG_FIELD_NAME, ARG_RECORD_ID
+        
         int lengthMin = 0, lengthMax = Integer.MAX_VALUE;
+        long recId;
+        String tableName, fieldName;
         Bundle a = this.getArguments();
+        if (a.containsKey(FixSpellingsFragment.ARG_RECORD_ID)) {
+            recId = a.getLong(FixSpellingsFragment.ARG_RECORD_ID);
+        } else return false; // won't be able to do anything without record ID
+        if (a.containsKey(FixSpellingsFragment.ARG_TABLE_NAME)) {
+            tableName = a.getString(FixSpellingsFragment.ARG_TABLE_NAME);
+        } else return false;
+        if (a.containsKey(FixSpellingsFragment.ARG_FIELD_NAME)) {
+            fieldName = a.getString(FixSpellingsFragment.ARG_FIELD_NAME);
+        } else return false;
+        // validate based on input type too?
         if (a.containsKey(FixSpellingsFragment.ARG_LENGTH_MIN)) {
             lengthMin = a.getInt(FixSpellingsFragment.ARG_LENGTH_MIN);
         }
@@ -176,12 +182,8 @@ public class EditSpellingDialog extends DialogFragment {
             } catch (Exception e) {
                 if (LDebug.ON) Log.d(LOG_TAG, "exception: " + e.getMessage());
             }
-
         }
-        // also get ARG_TABLE_NAME, ARG_FIELD_NAME, ARG_RECORD_ID
-        // ARG_TEXT_FORMAT, ARG_LENGTH_MIN, ARG_LENGTH_MAX, ARG_EXISTING_VALUES
 
-        //mMaxLength
 
         return false; // for now, return false
     } // end of validation
