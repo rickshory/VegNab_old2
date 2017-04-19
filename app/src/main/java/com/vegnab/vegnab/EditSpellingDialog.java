@@ -237,7 +237,15 @@ public class EditSpellingDialog extends DialogFragment {
             } // end of validation not silent
             mEditItem.requestFocus();
             return false; // end of Item too long
-        } else { //
+        } else { // test the list of existing items
+
+
+            if (existingItems.containsValue(stItem)) {
+                Toast.makeText(this.getActivity(),
+                        c.getResources().getString(R.string.edit_spellings_item_already_in),
+                        Toast.LENGTH_LONG).show();
+                return false;
+            }
 
         } // end of validate item
 
