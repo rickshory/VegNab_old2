@@ -238,18 +238,32 @@ public class EditSpellingDialog extends DialogFragment {
             mEditItem.requestFocus();
             return false; // end of Item too long
         } else { // test the list of existing items
-
-
-            if (existingItems.containsValue(stItem)) {
-                Toast.makeText(this.getActivity(),
-                        c.getResources().getString(R.string.edit_spellings_item_already_in),
-                        Toast.LENGTH_LONG).show();
-                return false;
+            if (existingItems.containsKey(recId)) {
+                // remove the item matching the one we are working on, so
+                // as to not interfere with duplicate checking
+                existingItems.remove(recId);
             }
-
+            if (existingItems.containsValue(stItem)) {
+                // if it still contains this value, it's a duplicate
+                if (LDebug.ON) Log.d(LOG_TAG, "Item already in: " + stItem);
+                if (mValidationLevel > VNContract.Validation.SILENT) {
+                    stringProblem = c.getResources().getString(R.string.edit_spellings_item_already_in);
+                    if (mValidationLevel == VNContract.Validation.QUIET) {
+                        Toast.makeText(this.getActivity(),
+                                stringProblem,
+                                Toast.LENGTH_LONG).show();
+                    }
+                    if (mValidationLevel == VNContract.Validation.CRITICAL) {
+                        flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
+                        flexErrDlg.show(getFragmentManager(), "edit_spellings_item_already_in");
+                        mEditItem.requestFocus();
+                    }
+                } // end of validation not silent
+                mEditItem.requestFocus();
+                return false; // end of Item too long
+            }
         } // end of validate item
-
-
+        
         return false; // for now, return false
     } // end of validation
 }
