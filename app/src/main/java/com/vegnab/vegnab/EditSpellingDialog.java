@@ -153,7 +153,7 @@ public class EditSpellingDialog extends DialogFragment {
         String stringProblem;
         String errTitle = c.getResources().getString(R.string.vis_hdr_validate_generic_title);
         ConfigurableMsgDialog flexErrDlg;
-        
+
         int lengthMin = 0, lengthMax = Integer.MAX_VALUE;
         long recId;
         String tableName, fieldName;
@@ -181,8 +181,65 @@ public class EditSpellingDialog extends DialogFragment {
                         FixSpellingsFragment.ARG_EXISTING_VALUES);
             } catch (Exception e) {
                 if (LDebug.ON) Log.d(LOG_TAG, "exception: " + e.getMessage());
+                return false;
             }
         }
+
+        // validate item
+        String stItem = mEditItem.getText().toString().trim();
+        if (stItem.length() == 0) {
+            if (LDebug.ON) Log.d(LOG_TAG, "Item is length zero");
+            if (mValidationLevel > VNContract.Validation.SILENT) {
+                stringProblem = c.getResources().getString(R.string.edit_spellings_item_missing);
+                if (mValidationLevel == VNContract.Validation.QUIET) {
+                    Toast.makeText(this.getActivity(),
+                            stringProblem,
+                            Toast.LENGTH_LONG).show();
+                }
+                if (mValidationLevel == VNContract.Validation.CRITICAL) {
+                    flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
+                    flexErrDlg.show(getFragmentManager(), "edit_spellings_item_missing");
+                }
+            } // end of validation not silent
+            mEditItem.requestFocus();
+            return false; // end of Item length zero
+        } else if (stItem.length() < lengthMin) {
+            if (LDebug.ON) Log.d(LOG_TAG, "Item is too short, < " + lengthMin);
+            if (mValidationLevel > VNContract.Validation.SILENT) {
+                stringProblem = c.getResources().getString(R.string.edit_spellings_item_too_short);
+                if (mValidationLevel == VNContract.Validation.QUIET) {
+                    Toast.makeText(this.getActivity(),
+                            stringProblem,
+                            Toast.LENGTH_LONG).show();
+                }
+                if (mValidationLevel == VNContract.Validation.CRITICAL) {
+                    flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
+                    flexErrDlg.show(getFragmentManager(), "edit_spellings_item_too_short");
+                    mEditItem.requestFocus();
+                }
+            } // end of validation not silent
+            mEditItem.requestFocus();
+            return false; // end of Item too short
+        } else if (stItem.length() > lengthMax) {
+            if (LDebug.ON) Log.d(LOG_TAG, "Item is too long, > " + lengthMax);
+            if (mValidationLevel > VNContract.Validation.SILENT) {
+                stringProblem = c.getResources().getString(R.string.edit_spellings_item_too_long);
+                if (mValidationLevel == VNContract.Validation.QUIET) {
+                    Toast.makeText(this.getActivity(),
+                            stringProblem,
+                            Toast.LENGTH_LONG).show();
+                }
+                if (mValidationLevel == VNContract.Validation.CRITICAL) {
+                    flexErrDlg = ConfigurableMsgDialog.newInstance(errTitle, stringProblem);
+                    flexErrDlg.show(getFragmentManager(), "edit_spellings_item_too_long");
+                    mEditItem.requestFocus();
+                }
+            } // end of validation not silent
+            mEditItem.requestFocus();
+            return false; // end of Item too long
+        } else { //
+
+        } // end of validate item
 
 
         return false; // for now, return false

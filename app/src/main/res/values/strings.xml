@@ -415,6 +415,10 @@
 
     <string name="edit_spellings_toolbar_title">Edit Spelling</string>
     <string name="edit_spellings_lbl_edit_all">Change throughout the app:</string>
+    <string name="edit_spellings_item_missing">Item missing</string>
+    <string name="edit_spellings_item_too_short">Item is too short</string>
+    <string name="edit_spellings_item_too_long">Item is too long</string>
+    <string name="edit_spellings_item_already_in">Another item is already spelled this way</string>
 
     <string name="sel_spp_list_ctxmenu_item_forget">Forget species</string>
     <string name="sel_spp_list_ctxmenu_item_edit_ph">Edit Placeholder</string>
