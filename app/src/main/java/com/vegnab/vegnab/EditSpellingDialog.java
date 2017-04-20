@@ -112,13 +112,36 @@ public class EditSpellingDialog extends DialogFragment {
             mEditItem.setInputType(a.getInt(FixSpellingsFragment.ARG_INPUT_TYPE));
         }
         if (a.containsKey(FixSpellingsFragment.ARG_LENGTH_MAX)) {
-            // not sure if input type is a filter, so add on to any existing
-            InputFilter[] filterArray = mEditItem.getFilters();
-            filterArray[filterArray.length] =
-                    new InputFilter.LengthFilter(a.getInt(FixSpellingsFragment.ARG_LENGTH_MAX));
-            mEditItem.setFilters(filterArray);
+            if (LDebug.ON) Log.d(LOG_TAG, "About to set item max length to "
+                    + a.getInt(FixSpellingsFragment.ARG_LENGTH_MAX));
+            InputFilter curFilters[];
+            InputFilter.LengthFilter lengthFilter;
+            boolean alreadyHasALengthFilter = false;
+            lengthFilter = new InputFilter.LengthFilter(a.getInt(FixSpellingsFragment.ARG_LENGTH_MAX));
+            curFilters = mEditItem.getFilters();
+            if (curFilters != null) {
+                if (LDebug.ON) Log.d(LOG_TAG, "There were already " + curFilters.length + " filters");
+                for (int idx = 0; idx < curFilters.length; idx++) {
+                    if (curFilters[idx] instanceof InputFilter.LengthFilter) {
+                        curFilters[idx] = lengthFilter;
+                        alreadyHasALengthFilter = true;
+                        if (LDebug.ON) Log.d(LOG_TAG, "There was already a length filter, now replaced");
+                    }
+                }
+                if (!alreadyHasALengthFilter) {
+                    // there are filters, but a length filter is not one of them
+                    // add the new one
+                    InputFilter newFilters[] = new InputFilter[curFilters.length + 1];
+                    System.arraycopy(curFilters, 0, newFilters, 0, curFilters.length);
+                    newFilters[curFilters.length] = lengthFilter;
+                    mEditItem.setFilters(newFilters);
+                    if (LDebug.ON) Log.d(LOG_TAG, "No length filter yet, new one added");
+                }
+            } else { // no filters yet, set the filters array to only this length filter
+                mEditItem.setFilters(new InputFilter[] { lengthFilter });
+                if (LDebug.ON) Log.d(LOG_TAG, "No existing filters, length filter added");
+            }
         }
-
         return view;
     }
 
