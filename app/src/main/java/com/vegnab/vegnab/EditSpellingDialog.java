@@ -2,8 +2,12 @@ package com.vegnab.vegnab;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +22,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.LDebug;
 
@@ -263,7 +268,16 @@ public class EditSpellingDialog extends DialogFragment {
                 return false; // end of Item too long
             }
         } // end of validate item
-        
-        return false; // for now, return false
+        // if we got to here, we have everything we need to update the item
+        Uri uri, tblUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, tableName);
+        uri = ContentUris.withAppendedId(tblUri, recId);
+        ContentValues values = new ContentValues();
+        values.put(fieldName, stItem);
+        if (LDebug.ON) Log.d(LOG_TAG, "about to update record; values: "
+                + values.toString().trim() + "; URI: " + uri.toString());
+        ContentResolver rs = getActivity().getContentResolver();
+        int numUpdated = rs.update(uri, values, null, null);
+        return true;
     } // end of validation
+    
 }
