@@ -605,9 +605,24 @@ public class MainVNActivity extends AppCompatActivity
 */
 
     public void onEditSpelling(DialogFragment dialog, Bundle args) {
-        // probably just dismiss the EditSpellingDialog, and
-        // the FixSpellingsFragment that called it
-        // after doing any database updates directly in EditSpellingDialog
+        // any database spelling updates happened in EditSpellingDialog
+        // dismiss the EditSpellingDialog
+        dialog.dismiss();
+        // also try to dismiss the FixSpellingsFragment that called it
+        if (LDebug.ON) Log.d(LOG_TAG, "in onEditSpelling, dismissed EditSpellingDialog");
+        FragmentManager manager = getSupportFragmentManager();
+        FixSpellingsFragment fixSplFragment = (FixSpellingsFragment)
+                manager.findFragmentByTag(Tags.MANAGE_SPELLINGS);
+        if (fixSplFragment != null) { // remove the fragment
+            if (LDebug.ON) Log.d(LOG_TAG, "in onEditSpelling, found fixSplFragment and about to remove it");
+            FragmentTransaction trans = manager.beginTransaction();
+            trans.remove(fixSplFragment);
+            if (LDebug.ON) Log.d(LOG_TAG, "in onEditSpelling, after remove");
+            trans.commit();
+            if (LDebug.ON) Log.d(LOG_TAG, "in onEditSpelling, after commit");
+            manager.popBackStack();
+            if (LDebug.ON) Log.d(LOG_TAG, "in onEditSpelling, after popBackStack");
+        }
     }
 
     public void onLocManualEntry(DialogFragment dialog, Bundle args) {

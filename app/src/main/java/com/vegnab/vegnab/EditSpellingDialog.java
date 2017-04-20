@@ -85,14 +85,15 @@ public class EditSpellingDialog extends DialogFragment {
                             Toast.LENGTH_LONG).show();
                     try { // can fail with null pointer exception if fragment is gone
                         Bundle args = new Bundle();
+                        // maybe send in bundle that fragment(s) that are up, and need refresh
                         // send args generalized for ? main
 //                        args.putString(MainVNActivity.ARG_?);
-// maybe just update the database here, rather than sending back to the app?
-
+                        // already updated the database, after validation
+                        // here, rather than sending back to the app?
                         // We send the dialog only to dismiss it in the activity. Can we dismiss it here?
                         mEditSpellingCallback.onEditSpelling(EditSpellingDialog.this, args);
                     } catch (Exception e) {
-                        // ignore; if fails, will not update spelling
+                        // ignore; if fails, will not dismiss dialog or fragment called from
                     }
                 } else {
                     Toast.makeText(getContext(),
@@ -277,7 +278,8 @@ public class EditSpellingDialog extends DialogFragment {
                 + values.toString().trim() + "; URI: " + uri.toString());
         ContentResolver rs = getActivity().getContentResolver();
         int numUpdated = rs.update(uri, values, null, null);
-        return true;
+        if (numUpdated == 1) return true;
+        return false;
     } // end of validation
-    
+
 }
