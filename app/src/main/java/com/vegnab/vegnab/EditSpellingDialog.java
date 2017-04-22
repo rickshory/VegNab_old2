@@ -80,9 +80,9 @@ public class EditSpellingDialog extends DialogFragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (validateEditSpelling()) {
-                    Toast.makeText(getContext(),
-                            "Validated OK",
-                            Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getContext(),
+//                            "Validated OK",
+//                            Toast.LENGTH_LONG).show();
                     try { // can fail with null pointer exception if fragment is gone
                         Bundle args = new Bundle();
                         // maybe send in bundle that fragment(s) that are up, and need refresh
@@ -96,9 +96,9 @@ public class EditSpellingDialog extends DialogFragment {
                         // ignore; if fails, will not dismiss dialog or fragment called from
                     }
                 } else {
-                    Toast.makeText(getContext(),
-                            "Did not validate",
-                            Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getContext(),
+//                            "Did not validate",
+//                            Toast.LENGTH_LONG).show();
                 }
             }
         });
