@@ -185,13 +185,13 @@ public class EditSpellingDialog extends DialogFragment {
 
         int lengthMin = 0, lengthMax = Integer.MAX_VALUE;
         long recId;
-        String tableName, fieldName;
+        String tableUriName, fieldName;
         Bundle a = this.getArguments();
         if (a.containsKey(FixSpellingsFragment.ARG_RECORD_ID)) {
             recId = a.getLong(FixSpellingsFragment.ARG_RECORD_ID);
-        } else return false; // won't be able to do anything without record ID
-        if (a.containsKey(FixSpellingsFragment.ARG_TABLE_NAME)) {
-            tableName = a.getString(FixSpellingsFragment.ARG_TABLE_NAME);
+        } else return false; // won't be able to do anything without record ID, or these other params
+        if (a.containsKey(FixSpellingsFragment.ARG_TABLE_URI)) {
+            tableUriName = a.getString(FixSpellingsFragment.ARG_TABLE_URI);
         } else return false;
         if (a.containsKey(FixSpellingsFragment.ARG_FIELD_NAME)) {
             fieldName = a.getString(FixSpellingsFragment.ARG_FIELD_NAME);
@@ -293,22 +293,7 @@ public class EditSpellingDialog extends DialogFragment {
             }
         } // end of validate item
         // if we got to here, we have everything we need to update the item
-        Uri uri = ContentProvider_VegNab.SQL_URI;
-        String select = "UPDATE " + tableName + " SET " + fieldName + " = ? "
-                + "WHERE _id = ?);";
-        ContentResolver rs = getActivity().getContentResolver();
-        int numUpdated = rs.update(uri, null, select,  new String[] { stItem, "" + recId });
-/*
-        Uri baseUri = ContentProvider_VegNab.SQL_URI;
-        if (LDebug.ON) Log.d(LOG_TAG, "about to update record " + recId + " in field "
-                + fieldName + " in table " + tableName);
-        String select = "UPDATE " + tableName + " SET " + fieldName + "=? "
-                + "WHERE _id=?);";
-        CursorLoader cl = new CursorLoader(this.getActivity(), baseUri,
-                null, select, new String[] { stItem, "" + recId }, null);
-        // update query does not return a cursor, so nothing more to do
-
-        Uri uri, tblUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, tableName);
+        Uri uri, tblUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, tableUriName);
         uri = ContentUris.withAppendedId(tblUri, recId);
         ContentValues values = new ContentValues();
         values.put(fieldName, stItem);
@@ -316,7 +301,6 @@ public class EditSpellingDialog extends DialogFragment {
                 + values.toString().trim() + "; URI: " + uri.toString());
         ContentResolver rs = getActivity().getContentResolver();
         int numUpdated = rs.update(uri, values, null, null);
-*/
         if (numUpdated == 1) return true;
         return false;
     } // end of validation

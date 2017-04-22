@@ -68,6 +68,7 @@ public class FixSpellingsFragment extends ListFragment
 
     final static String ARG_ITEM_TO_EDIT = "itemToEdit";
     final static String ARG_TABLE_NAME = "tableName";
+    final static String ARG_TABLE_URI = "tableUri";
     final static String ARG_FIELD_NAME = "fieldName";
     final static String ARG_RECORD_ID = "recID";
     final static String ARG_INPUT_TYPE = "textFormat";
@@ -215,6 +216,7 @@ public class FixSpellingsFragment extends ListFragment
         switch (src) {
             case 0: // Species Namers
                 args.putString(ARG_TABLE_NAME, "Namers");
+                args.putString(ARG_TABLE_URI, "namers");
                 args.putString(ARG_FIELD_NAME, "NamerName");
                 args.putInt(ARG_INPUT_TYPE, InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
                 args.putInt(ARG_LENGTH_MIN, 2);
@@ -222,12 +224,14 @@ public class FixSpellingsFragment extends ListFragment
                 break;
             case 1: // Projects
                 args.putString(ARG_TABLE_NAME, "Projects");
+                args.putString(ARG_TABLE_URI, "projects");
                 args.putString(ARG_FIELD_NAME, "ProjCode");
                 args.putInt(ARG_LENGTH_MIN, 2);
                 args.putInt(ARG_LENGTH_MAX, 10);
                 break;
             case 2: // ID Namers
                 args.putString(ARG_TABLE_NAME, "IdNamers");
+                args.putString(ARG_TABLE_URI, "idnamers");
                 args.putString(ARG_FIELD_NAME, "IdNamerName");
                 args.putInt(ARG_INPUT_TYPE, InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
                 args.putInt(ARG_LENGTH_MIN, 2);
@@ -235,12 +239,14 @@ public class FixSpellingsFragment extends ListFragment
                 break;
             case 3: // ID References
                 args.putString(ARG_TABLE_NAME, "IdRefs");
+                args.putString(ARG_TABLE_URI, "idrefs");
                 args.putString(ARG_FIELD_NAME, "IdRef");
                 args.putInt(ARG_LENGTH_MIN, 2);
                 args.putInt(ARG_LENGTH_MAX, 255);
                 break;
             case 4: // ID Methods
                 args.putString(ARG_TABLE_NAME, "IdMethods");
+                args.putString(ARG_TABLE_URI, "idmethods");
                 args.putString(ARG_FIELD_NAME, "IdMethod");
                 args.putInt(ARG_LENGTH_MIN, 2);
                 args.putInt(ARG_LENGTH_MAX, 255);
