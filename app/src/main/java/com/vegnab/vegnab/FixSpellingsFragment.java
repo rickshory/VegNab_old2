@@ -257,11 +257,7 @@ public class FixSpellingsFragment extends ListFragment
 //        default:
 //        break;
         } // end of case that selects which table
-/*
-tableName = "Projects";
-tableName = "IDNamers";
-tableName = "IDReferences";
-tableName = "IDMethods";*/
+
         EditSpellingDialog edSplDlg = EditSpellingDialog.newInstance(args);
         edSplDlg.show(getFragmentManager(), "frg_edit_spelling");
         return;
@@ -358,7 +354,6 @@ tableName = "IDMethods";*/
                 SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
                 long mProjectId = sharedPref.getLong(VNContract.Prefs.DEFAULT_PROJECT_ID, 1);
                 if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, SPELL_ITEMS, got ProjectID=" + mProjectId);
-                String tableName;
                 List<String> prms = new ArrayList<String>(); // build parameter list dynamically
                 int pos = mSpellSourceSpinner.getSelectedItemPosition();
                 /*
@@ -383,7 +378,6 @@ tableName = "IDMethods";*/
                 */
                 switch (pos) {
                     case 0: // Species Namers
-                        tableName = "Namers";
                         select = "SELECT _id, NamerName AS SpellItem, ("
                                 + " (SELECT count(_id)  FROM Visits"
                                 + " WHERE Visits.NamerID = Namers._id AND Visits.ProjID = ?)"
@@ -419,32 +413,39 @@ tableName = "IDMethods";*/
                         prms.add( "" + mProjectId );
                         prms.add( "" + mProjectId );
                         break;
-/* for testing, comment out the others
                     case 1: // Projects
-                        tableName = "Projects";
+                        select = "SELECT _id, ProjCode AS SpellItem, ("
+                                + "(SELECT count(_id) "
+                                + "FROM Visits "
+                                + "WHERE Visits.ProjID = Projects._id)"
+                                + ") UsageCount, ("
+                                + "(SELECT count(_id) || "
+                                + "CASE WHEN count(_id) = 1 THEN ' Visit' ELSE ' Visits' END "
+                                + "FROM Visits "
+                                + "WHERE Visits.ProjID = Projects._id)"
+                                + ") UsageNote  FROM Projects;";
                         break;
-                    // TODO check spellings of these table names
+
+/* for testing, comment out the others
                     case 2: // ID Namers
-                        tableName = "IDNamers";
+
                         break;
                     case 3: // ID References
-                        tableName = "IDReferences";
+
                         break;
                     // for all the following, drop through
                     case 4: // ID Methods
-                        tableName = "IDMethods";
+
                         break;
 */
                     case Spinner.INVALID_POSITION:
                     default:
-                        tableName = "";
                         // dummy query that gets no records
                         select = "SELECT _id, NamerName AS SpellItem, "
                             + "0 AS UsageCount, '' AS UsageNote "
                             + "FROM Namers WHERE Namers._id = 0;";
                         break;
                 } // end of case that selects which table
-                if (LDebug.ON) Log.d(LOG_TAG, "in onCreateLoader, SPELL_ITEMS, got tableName=" + tableName);
 
                 if (prms.size() == 0) {
                     params = null;
