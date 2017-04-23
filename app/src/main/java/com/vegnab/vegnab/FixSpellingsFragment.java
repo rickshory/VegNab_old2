@@ -426,9 +426,27 @@ public class FixSpellingsFragment extends ListFragment
                                 + ") UsageNote  FROM Projects;";
                         break;
 
-/* for testing, comment out the others
                     case 2: // ID Namers
+                        select = "SELECT _id, IdNamerName AS SpellItem, ("
+                                + " (SELECT count(_id)  FROM Placeholders"
+                                + " WHERE Placeholders.IdNamerID = IdNamers._id AND Placeholders.ProjID = ?)"
+                                + " ) UsageCount, ("
+                                + " (SELECT 'Used in ' || (SELECT count(_id) || "
+                                + "CASE WHEN count(_id) = 1 THEN ' Placeholder' ELSE ' Placeholders' END"
+                                + " FROM Placeholders"
+                                + " WHERE Placeholders.IdNamerID = IdNamers._id) "
+                                + "|| CASE WHEN (("
+                                + " (SELECT count(_id) FROM Placeholders"
+                                + " WHERE Placeholders.IdNamerID = IdNamers._id AND Placeholders.ProjID = ?)"
+                                + ") == ((SELECT count(_id) FROM Placeholders"
+                                + " WHERE Placeholders.IdNamerID = IdNamers._id))) THEN '' ELSE ("
+                                + " ' (' || (SELECT count(_id) || "
+                                + "CASE WHEN count(_id) = 1 THEN ' Placeholder' ELSE ' Placeholders' END"
+                                + " FROM Placeholders WHERE Placeholders.IdNamerID = IdNamers._id)"
+                                + "|| ' on all Projects)' ) END"
+                                + " ) UsageNote FROM IdNamers;";
 
+/* for testing, comment out the others
                         break;
                     case 3: // ID References
 
