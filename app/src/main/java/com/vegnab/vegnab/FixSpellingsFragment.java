@@ -427,24 +427,32 @@ public class FixSpellingsFragment extends ListFragment
                         break;
 
                     case 2: // ID Namers
-                        select = "SELECT _id, IdNamerName AS SpellItem, ("
-                                + " (SELECT count(_id)  FROM Placeholders"
-                                + " WHERE Placeholders.IdNamerID = IdNamers._id AND Placeholders.ProjID = ?)"
-                                + " ) UsageCount, ("
-                                + " (SELECT 'Used in ' || (SELECT count(_id) || "
-                                + "CASE WHEN count(_id) = 1 THEN ' Placeholder' ELSE ' Placeholders' END"
-                                + " FROM Placeholders"
-                                + " WHERE Placeholders.IdNamerID = IdNamers._id) "
-                                + "|| CASE WHEN (("
-                                + " (SELECT count(_id) FROM Placeholders"
-                                + " WHERE Placeholders.IdNamerID = IdNamers._id AND Placeholders.ProjID = ?)"
-                                + ") == ((SELECT count(_id) FROM Placeholders"
-                                + " WHERE Placeholders.IdNamerID = IdNamers._id))) THEN '' ELSE ("
-                                + " ' (' || (SELECT count(_id) || "
-                                + "CASE WHEN count(_id) = 1 THEN ' Placeholder' ELSE ' Placeholders' END"
-                                + " FROM Placeholders WHERE Placeholders.IdNamerID = IdNamers._id)"
-                                + "|| ' on all Projects)' ) END"
-                                + " ) UsageNote FROM IdNamers;";
+                        select = "SELECT _id, IdNamerName AS SpellItem, "
+                                + "(SELECT count(_id) FROM Placeholders "
+                                + "WHERE Placeholders.IdNamerID = IdNamers._id "
+                                + "AND Placeholders.ProjID = ?) UsageCount, "
+                                + "('Used in ' || (SELECT count(_id) "
+                                + "|| CASE WHEN count(_id) = 1 THEN ' Placeholder ID' ELSE ' Placeholder IDs' END "
+                                + "FROM Placeholders "
+                                + "WHERE Placeholders.IdNamerID = IdNamers._id "
+                                + "AND Placeholders.ProjID = ?) "
+                                + "|| CASE WHEN ("
+                                + "(SELECT count(_id) FROM Placeholders "
+                                + "WHERE Placeholders.IdNamerID = IdNamers._id "
+                                + "AND Placeholders.ProjID = ?)"
+                                + ") == ("
+                                + "(SELECT count(_id) FROM Placeholders WHERE Placeholders.IdNamerID = IdNamers._id)"
+                                + ") THEN '' "
+                                + "ELSE (' (' || (SELECT count(_id) || CASE WHEN count(_id) = 1 "
+                                + "THEN ' Placeholder ID' "
+                                + "ELSE ' Placeholder IDs' END FROM Placeholders "
+                                + "WHERE Placeholders.IdNamerID = IdNamers._id) || ' on all Projects)' ) END "
+                                + ") UsageNote "
+                                + "FROM IdNamers;";
+                        prms.add( "" + mProjectId );
+                        prms.add( "" + mProjectId );
+                        prms.add( "" + mProjectId );
+                        break;
 
 /* for testing, comment out the others
                         break;
