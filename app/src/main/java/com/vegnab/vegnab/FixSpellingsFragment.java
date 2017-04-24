@@ -454,16 +454,63 @@ public class FixSpellingsFragment extends ListFragment
                         prms.add( "" + mProjectId );
                         break;
 
-/* for testing, comment out the others
-                        break;
                     case 3: // ID References
-
+                        select = "SELECT _id, IdRef AS SpellItem, "
+                                + "(SELECT count(_id) FROM Placeholders "
+                                + "WHERE Placeholders.IdRefID = IdRefs._id "
+                                + "AND Placeholders.ProjID = ?) UsageCount, "
+                                + "('Used in ' || (SELECT count(_id) "
+                                + "|| CASE WHEN count(_id) = 1 THEN ' Placeholder ID' ELSE ' Placeholder IDs' END "
+                                + "FROM Placeholders "
+                                + "WHERE Placeholders.IdRefID = IdRefs._id "
+                                + "AND Placeholders.ProjID = ?) "
+                                + "|| CASE WHEN ("
+                                + "(SELECT count(_id) FROM Placeholders "
+                                + "WHERE Placeholders.IdRefID = IdRefs._id "
+                                + "AND Placeholders.ProjID = ?)"
+                                + ") == ("
+                                + "(SELECT count(_id) FROM Placeholders WHERE Placeholders.IdRefID = IdRefs._id)"
+                                + ") THEN '' "
+                                + "ELSE (' (' || (SELECT count(_id) || CASE WHEN count(_id) = 1 "
+                                + "THEN ' Placeholder ID' "
+                                + "ELSE ' Placeholder IDs' END FROM Placeholders "
+                                + "WHERE Placeholders.IdRefID = IdRefs._id) || ' on all Projects)' ) END "
+                                + ") UsageNote "
+                                + "FROM IdRefs;";
+                        prms.add( "" + mProjectId );
+                        prms.add( "" + mProjectId );
+                        prms.add( "" + mProjectId );
                         break;
-                    // for all the following, drop through
+
                     case 4: // ID Methods
-
+                        select = "SELECT _id, IdMethod AS SpellItem, "
+                                + "(SELECT count(_id) FROM Placeholders "
+                                + "WHERE Placeholders.IdMethodID = IdMethods._id "
+                                + "AND Placeholders.ProjID = ?) UsageCount, "
+                                + "('Used in ' || (SELECT count(_id) "
+                                + "|| CASE WHEN count(_id) = 1 THEN ' Placeholder ID' ELSE ' Placeholder IDs' END "
+                                + "FROM Placeholders "
+                                + "WHERE Placeholders.IdMethodID = IdMethods._id "
+                                + "AND Placeholders.ProjID = ?) "
+                                + "|| CASE WHEN ("
+                                + "(SELECT count(_id) FROM Placeholders "
+                                + "WHERE Placeholders.IdMethodID = IdMethods._id "
+                                + "AND Placeholders.ProjID = ?)"
+                                + ") == ("
+                                + "(SELECT count(_id) FROM Placeholders WHERE Placeholders.IdMethodID = IdMethods._id)"
+                                + ") THEN '' "
+                                + "ELSE (' (' || (SELECT count(_id) || CASE WHEN count(_id) = 1 "
+                                + "THEN ' Placeholder ID' "
+                                + "ELSE ' Placeholder IDs' END FROM Placeholders "
+                                + "WHERE Placeholders.IdMethodID = IdMethods._id) || ' on all Projects)' ) END "
+                                + ") UsageNote "
+                                + "FROM IdMethods;";
+                        prms.add( "" + mProjectId );
+                        prms.add( "" + mProjectId );
+                        prms.add( "" + mProjectId );
                         break;
-*/
+
+                    // for all the following, drop through
                     case Spinner.INVALID_POSITION:
                     default:
                         // dummy query that gets no records
