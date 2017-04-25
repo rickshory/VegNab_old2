@@ -216,12 +216,6 @@ public class MainVNActivity extends AppCompatActivity
             prefEditor.commit();
         }
 
-        // Has the master species list been populated? As a default, assume not.
-        if (!sharedPref.contains(Prefs.SPECIES_LIST_DOWNLOADED)) {
-            prefEditor = sharedPref.edit();
-            prefEditor.putBoolean(Prefs.SPECIES_LIST_DOWNLOADED, false);
-            prefEditor.commit();
-        }
         // start following loader, does not use UI, but tests if the master species list is populated
         getSupportLoaderManager().restartLoader(VNContract.Loaders.EXISTING_SPP, null, this);
 
@@ -699,12 +693,10 @@ public class MainVNActivity extends AppCompatActivity
 
     @Override
     public void onNewVisitGoButtonClicked() {
-        // check if SPECIES_LIST_DOWNLOADED
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        Boolean hasSpp = sharedPref.getBoolean(Prefs.SPECIES_LIST_DOWNLOADED, false);
         // get an Analytics event tracker
         Tracker newVisitTracker = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
-        if (hasSpp) {
+        if (true) { // build in any conditions here, such as user logged in
             // build and send the Analytics event
             // track that user started a new visit
             Long plotTypeID = sharedPref.getLong(Prefs.DEFAULT_PLOTTYPE_ID, 0);
@@ -716,36 +708,7 @@ public class MainVNActivity extends AppCompatActivity
                     .setValue(plotTypeID)
                     .build());
             goToVisitHeaderScreen(0);
-        } else {
-            newVisitTracker.send(new HitBuilders.EventBuilder()
-                    .setCategory("Visit Event")
-                    .setAction("Download Species")
-                    .build());
-            String errTitle = this.getResources().getString(R.string.dnld_spp_no_spp_title);
-            String errMsg = this.getResources().getString(R.string.dnld_spp_no_spp_msg);
-            ConfigurableMsgDialog flexMsgDlg =
-                    ConfigurableMsgDialog.newInstance(errTitle,  errMsg);
-            flexMsgDlg.show(getSupportFragmentManager(), "frg_dnld_spp");
-            goToGetSppScreen();
         }
-    }
-
-    public void goToGetSppScreen() {
-        // get tracker
-        Tracker t = ((VNApplication) getApplication()).getTracker(VNApplication.TrackerName.APP_TRACKER);
-        // set screen name
-        t.setScreenName("VegSubplotScreen");
-        // send a screen view
-        t.send(new HitBuilders.ScreenViewBuilder().build());
-        // continue with work
-        DownloadSppFragment frgDnldSpp = new DownloadSppFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        // replace the fragment in the fragment container with this new fragment and
-        // put the present fragment on the backstack so the user can navigate back to it
-        // the tag is for the fragment now being added, not the one replaced
-        transaction.replace(R.id.fragment_container, frgDnldSpp, "frg_download_spp");
-        transaction.addToBackStack(null);
-        transaction.commit();
     }
 
     public void goToVisitHeaderScreen(long visitID) {
@@ -1846,9 +1809,6 @@ IABHELPER_INVALID_CONSUMPTION = -1010;
                         hasSpp = true;
                     }
                 }
-                prefEditor = sharedPref.edit();
-                prefEditor.putBoolean(Prefs.SPECIES_LIST_DOWNLOADED, hasSpp);
-                prefEditor.commit();
                 break;
 
             case VNContract.Loaders.UPDATE_LOCAL_SPP:

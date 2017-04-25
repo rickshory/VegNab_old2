@@ -21,9 +21,6 @@
     <screenName name="com.vegnab.vegnab.VegSubplotFragment">
         VegNab Alpha Test VegSubplotScreen
     </screenName>
-    <screenName name="com.vegnab.vegnab.DownloadSppFragment">
-        VegNab Alpha Test DownloadSpeciesScreen
-    </screenName>
     <screenName name="com.vegnab.vegnab.SelectSpeciesFragment">
         VegNab Alpha Test SelectSpeciesScreen
     </screenName>
