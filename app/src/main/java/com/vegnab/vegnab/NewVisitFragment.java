@@ -116,7 +116,6 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
 //            // action_new_proj: currently handled by Activity, change to 'new item' in Projects spinner
 //            // action_del_proj: currently handled by Activity, change to Context menu of Projects spinner
 //            // action_new_plottype: not implemented yet, msg handled by Activity
-//            // action_get_species: handled by Activity
 //            // action_export_db: handled by Activity
 //            // action_unhide_visits: handled here
 

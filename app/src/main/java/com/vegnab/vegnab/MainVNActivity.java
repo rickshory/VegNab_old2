@@ -537,9 +537,6 @@ public class MainVNActivity extends AppCompatActivity
             public static final String WEBVIEW_REGIONAL_LISTS = "WebviewSppLists";
     */
             return true;
-        case R.id.action_get_species:
-            goToGetSppScreen();
-            return true;
 
         case R.id.action_export_db:
             exportDB();

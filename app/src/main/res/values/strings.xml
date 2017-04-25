@@ -18,7 +18,6 @@
     <string name="action_new_proj">New Project</string>
     <string name="action_delete_proj">Delete Project</string>
     <string name="action_new_plottype">New Plot Type</string>
-    <string name="action_get_species">Get species</string>
     <string name="action_export_db">Export database</string>
     <string name="action_hide_visit">Hide Visit</string>
     <string name="action_unhide_visits">Un-hide Visits</string>
