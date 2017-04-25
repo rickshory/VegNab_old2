@@ -1,6 +1,7 @@
 package com.vegnab.vegnab;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -226,20 +227,21 @@ public class DonateFragment extends Fragment implements OnClickListener {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         // assure the container activity has implemented the callback interface
-        try {
-            mButtonCallback = (OnButtonListener) getActivity();
-           if (LDebug.ON) Log.d(LOG_TAG, "(OnButtonListener) getActivity()");
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Main Activity must implement OnButtonListener interface");
-        }
-        try {
-            mIAPDoneListener = (OnIAPDoneListener) getActivity();
-           if (LDebug.ON) Log.d(LOG_TAG, "(IAPDoneListener) getActivity()");
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Main Activity must implement IAPDoneListener interface");
+        if (context instanceof Activity) {
+            Activity a = (Activity) context;
+            try {
+                mButtonCallback = (OnButtonListener) a;
+            } catch (ClassCastException e) {
+                throw new ClassCastException("Main Activity must implement OnButtonListener interface");
+            }
+            try {
+                mIAPDoneListener = (OnIAPDoneListener) a;
+            } catch (ClassCastException e) {
+                throw new ClassCastException("Main Activity must implement IAPDoneListener interface");
+            }
         }
     }
 

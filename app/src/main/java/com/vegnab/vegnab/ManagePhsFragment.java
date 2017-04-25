@@ -182,13 +182,16 @@ public class ManagePhsFragment extends ListFragment
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         // assure the container activity has implemented the callback interfaces
-        try {
-            mEditPlaceholderCallback = (OnEditPlaceholderListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException (activity.toString() + " must implement OnEditPlaceholderListener");
+        if (context instanceof Activity){
+            Activity a = (Activity) context;
+            try {
+                mEditPlaceholderCallback = (OnEditPlaceholderListener) a;
+            } catch (ClassCastException e) {
+                throw new ClassCastException (a.toString() + " must implement OnEditPlaceholderListener");
+            }
         }
     }
 

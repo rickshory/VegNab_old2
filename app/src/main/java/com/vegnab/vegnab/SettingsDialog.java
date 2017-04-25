@@ -40,7 +40,8 @@ public class SettingsDialog extends DialogFragment {
         try {
             mSetLocalSppCallback = (OnUseLocalSppChange) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException (activity.toString() + " must implement OnUseLocalSppChange");
+            throw new ClassCastException (activity.toString()
+                    + " must implement OnUseLocalSppChange");
         }
     }
 

@@ -182,14 +182,17 @@ public class VegSubplotFragment extends ListFragment
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-       if (LDebug.ON) Log.d(LOG_TAG, "onAttach, position = " + mPosition);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (LDebug.ON) Log.d(LOG_TAG, "onAttach, position = " + mPosition);
         // assure the container activity has implemented the callback interface
-        try {
-            mButtonCallback = (OnButtonListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException (activity.toString() + " must implement OnButtonListener");
+        if (context instanceof Activity) {
+            Activity a = (Activity) context;
+            try {
+                mButtonCallback = (OnButtonListener) a;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(a.toString() + " must implement OnButtonListener");
+            }
         }
     }
 

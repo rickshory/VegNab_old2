@@ -214,19 +214,22 @@ public class NewVisitFragment extends ListFragment implements OnClickListener,
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         // assure the container activity has implemented the callback interface
-        try {
-            mButtonCallback = (OnButtonListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException (activity.toString() + " must implement OnButtonListener");
-        }
-        // OnVisitClickListener mListClickCallback;
-        try {
-            mListClickCallback = (OnVisitClickListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException (activity.toString() + " must implement OnVisitClickListener");
+        if (context instanceof Activity) {
+            Activity a = (Activity) context;
+            try {
+                mButtonCallback = (OnButtonListener) a;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(a.toString() + " must implement OnButtonListener");
+            }
+            // OnVisitClickListener mListClickCallback;
+            try {
+                mListClickCallback = (OnVisitClickListener) a;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(a.toString() + " must implement OnVisitClickListener");
+            }
         }
     }
 
