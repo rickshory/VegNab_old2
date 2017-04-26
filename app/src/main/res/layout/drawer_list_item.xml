@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <TextView
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_item_text"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
     android:background="?attr/listChoiceBackgroundIndicator"
     android:gravity="center_vertical"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:layout_weight="1"
-    android:minHeight="?attr/listPreferredItemHeightSmall"
+    android:minHeight="?attr/listPreferredItemHeight"
     android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
     android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-    android:textAppearance="?attr/textAppearanceListItem"
+    android:textAppearance="@android:style/TextAppearance.Large"
     />
 
 
