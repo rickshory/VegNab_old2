@@ -59,9 +59,9 @@ android {
     productFlavors {
         alphatest {
             applicationId "com.vegnab.alphatest"
-            versionName 'alphatest-0.3'
+            versionName 'alphatest-0.4'
             buildConfigField "String", "PUBLIC_DB_FOLDER", '"VegNabAlphaTest"'
-            versionCode 4
+            versionCode 5
         }
         betatest {
             applicationId "com.vegnab.betatest"
@@ -96,7 +96,7 @@ dependencies {
     compile files('libs/sqliteassethelper-2.0.1.jar')
     compile project(':volley')
     compile 'com.android.support:support-v4:23.3.0'
-    compile "com.android.support:appcompat-v7:23.3.0"
+    compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.google.android.gms:play-services:8.1.0'
     compile 'com.google.android.gms:play-services-ads:8.1.0'
     compile 'com.google.android.gms:play-services-identity:8.1.0'
