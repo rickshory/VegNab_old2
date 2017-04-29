@@ -352,6 +352,27 @@ public class MainVNActivity extends AppCompatActivity
                             Toast.LENGTH_SHORT).show();
                     break;
                 }
+                // disallow if already working on a Placeholder
+                EditPlaceholderFragment edPhFrag = (EditPlaceholderFragment)
+                        getSupportFragmentManager().findFragmentByTag(Tags.EDIT_PLACEHOLDER);
+                if (edPhFrag != null) {
+                    if (LDebug.ON) Log.d(LOG_TAG, "edPhFrag != null");
+                    Context c = getApplicationContext();
+                    Toast.makeText(c, c.getResources()
+                                    .getString(R.string.nav_drawer_item_already_ph),
+                            Toast.LENGTH_LONG).show();
+                    break;
+                }
+                PhPixGridFragment ppgFrag = (PhPixGridFragment)
+                        getSupportFragmentManager().findFragmentByTag(Tags.PLACEHOLDER_PIX_GRID);
+                if (ppgFrag != null) {
+                    if (LDebug.ON) Log.d(LOG_TAG, "ppgFrag != null");
+                    Context c = getApplicationContext();
+                    Toast.makeText(c, c.getResources()
+                                    .getString(R.string.nav_drawer_item_already_ph),
+                            Toast.LENGTH_LONG).show();
+                    break;
+                }
                 // swap Manage Placeholders fragment in place of existing fragment
                 if (LDebug.ON) Log.d(LOG_TAG, "About to go to Manage Placeholders");
                 // presently does not take any parameters
