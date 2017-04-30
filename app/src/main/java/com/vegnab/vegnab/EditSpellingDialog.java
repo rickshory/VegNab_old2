@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -111,6 +112,16 @@ public class EditSpellingDialog extends DialogFragment {
         if (a.containsKey(FixSpellingsFragment.ARG_INPUT_TYPE)) {
             mEditItem.setInputType(a.getInt(FixSpellingsFragment.ARG_INPUT_TYPE));
         }
+        // if a species Namer, validate for filename too because this will be a
+        //  folder name for Placeholder pictures
+        if (a.containsKey(FixSpellingsFragment.ARG_TABLE_URI)) {
+            if (a.getString(FixSpellingsFragment.ARG_TABLE_URI) == "namers") {
+                if (LDebug.ON) Log.d(LOG_TAG, "Editing a namer, about to set filename inputFilter");
+                mEditItem.setFilters(new InputFilter[] { fileNameFilter });
+            }
+        }
+
+        // check for and add length filter
         if (a.containsKey(FixSpellingsFragment.ARG_LENGTH_MAX)) {
             if (LDebug.ON) Log.d(LOG_TAG, "About to set item max length to "
                     + a.getInt(FixSpellingsFragment.ARG_LENGTH_MAX));
@@ -142,6 +153,7 @@ public class EditSpellingDialog extends DialogFragment {
                 if (LDebug.ON) Log.d(LOG_TAG, "No existing filters, length filter added");
             }
         }
+
         return view;
     }
 
@@ -176,6 +188,30 @@ public class EditSpellingDialog extends DialogFragment {
 
     }
 
+    public static InputFilter fileNameFilter = new InputFilter() {
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            String blockCharacterSet = "~#^|$%*!@/()-'\":;,?{}=!$^';,?×÷<>{}€£¥₩%~`¤♡♥_|《》¡¿°•○●□■◇◆♧♣▲▼▶◀↑↓←→☆★▪:-);-):-D:-(:'(:O 1234567890";
+            if (source != null && blockCharacterSet.contains(("" + source))) {
+                return "";
+            }
+            return null;
+        }
+    };
+
+    /*
+InputFilter filter = new InputFilter()
+{
+public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend)
+{
+if (source.length() < 1) return null;
+char last = source.charAt(source.length() - 1);
+String reservedChars = "?:\"*|/\\<>";
+if(reservedChars.indexOf(last) > -1) return source.subSequence(0, source.length() - 1);
+return null;
+}
+};
+    */
     private boolean validateEditSpelling() {
         // validate all user-accessible items
         Context c = getActivity();
