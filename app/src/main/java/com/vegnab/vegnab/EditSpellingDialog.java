@@ -29,6 +29,8 @@ import com.vegnab.vegnab.database.VNContract.LDebug;
 
 import java.util.HashMap;
 
+import static com.vegnab.vegnab.util.TextInputFilters.fileNameFilter;
+
 // android.app.DialogFragment; // maybe use this instead
 
 public class EditSpellingDialog extends DialogFragment {
@@ -188,30 +190,6 @@ public class EditSpellingDialog extends DialogFragment {
 
     }
 
-    public static InputFilter fileNameFilter = new InputFilter() {
-        @Override
-        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-            String blockCharacterSet = "~#^|$%*!@/()-'\":;,?{}=!$^';,?×÷<>{}€£¥₩%~`¤♡♥_|《》¡¿°•○●□■◇◆♧♣▲▼▶◀↑↓←→☆★▪:-);-):-D:-(:'(:O 1234567890";
-            if (source != null && blockCharacterSet.contains(("" + source))) {
-                return "";
-            }
-            return null;
-        }
-    };
-
-    /*
-InputFilter filter = new InputFilter()
-{
-public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend)
-{
-if (source.length() < 1) return null;
-char last = source.charAt(source.length() - 1);
-String reservedChars = "?:\"*|/\\<>";
-if(reservedChars.indexOf(last) > -1) return source.subSequence(0, source.length() - 1);
-return null;
-}
-};
-    */
     private boolean validateEditSpelling() {
         // validate all user-accessible items
         Context c = getActivity();
