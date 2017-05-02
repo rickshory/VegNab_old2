@@ -9,6 +9,18 @@ import android.text.Spanned;
 
 public class TextInputFilters {
 
+    public static InputFilter sppNamerFilter = new InputFilter() {
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend)
+        {
+            if (source.length() < 1) return null;
+            char last = source.charAt(source.length() - 1);
+            String reservedChars = "?:\"*|/\\<>~#^$%!@();,.&-_+={}'×÷[]€£¥₩`¤♡♥《》¡¿°•○●□■◇◆♧♣▲▼▶◀↑↓←→☆★▪1234567890";
+            if(reservedChars.indexOf(last) > -1) return source.subSequence(0, source.length() - 1);
+            return null;
+        }
+    };
+
     public static InputFilter fileNameFilter = new InputFilter() {
         @Override
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend)
