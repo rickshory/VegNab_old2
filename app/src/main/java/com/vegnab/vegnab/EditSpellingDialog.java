@@ -26,10 +26,9 @@ import android.widget.Toast;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.LDebug;
+import com.vegnab.vegnab.util.InputFilterSppNamer;
 
 import java.util.HashMap;
-
-import static com.vegnab.vegnab.util.TextInputFilters.sppNamerFilter;
 
 // android.app.DialogFragment; // maybe use this instead
 
@@ -119,7 +118,7 @@ public class EditSpellingDialog extends DialogFragment {
         if (a.containsKey(FixSpellingsFragment.ARG_TABLE_URI)) {
             if (a.getString(FixSpellingsFragment.ARG_TABLE_URI) == "namers") {
                 if (LDebug.ON) Log.d(LOG_TAG, "Editing a namer, about to set filename inputFilter");
-                mEditItem.setFilters(new InputFilter[] { sppNamerFilter });
+                mEditItem.setFilters(new InputFilter[] { new InputFilterSppNamer() });
             }
         }
 
