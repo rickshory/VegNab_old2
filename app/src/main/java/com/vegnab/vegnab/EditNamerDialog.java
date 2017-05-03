@@ -6,6 +6,7 @@ import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract.LDebug;
 import com.vegnab.vegnab.database.VNContract.Loaders;
 import com.vegnab.vegnab.database.VNContract.Prefs;
+import com.vegnab.vegnab.util.InputFilterSppNamer;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -20,6 +21,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,6 +71,35 @@ public class EditNamerDialog extends DialogFragment implements android.view.View
         View view = inflater.inflate(R.layout.fragment_edit_namer, root);
         mTxtNamerMsg = (TextView) view.findViewById(R.id.lbl_namer);
         mEditNamerName = (EditText) view.findViewById(R.id.txt_edit_namer);
+        if (LDebug.ON) Log.d(LOG_TAG, "Editing a namer, about to set InputFilterSppNamer");
+        mEditNamerName.setFilters(new InputFilter[] { new InputFilterSppNamer() }); // prevents all but alpha chars
+        InputFilter curFilters[];
+        InputFilter.LengthFilter lengthFilter;
+        boolean alreadyHasALengthFilter = false;
+        lengthFilter = new InputFilter.LengthFilter(16);
+        curFilters = mEditNamerName.getFilters();
+        if (curFilters != null) {
+            if (LDebug.ON) Log.d(LOG_TAG, "There were already " + curFilters.length + " filters");
+            for (int idx = 0; idx < curFilters.length; idx++) {
+                if (curFilters[idx] instanceof InputFilter.LengthFilter) {
+                    curFilters[idx] = lengthFilter;
+                    alreadyHasALengthFilter = true;
+                    if (LDebug.ON) Log.d(LOG_TAG, "There was already a length filter, now replaced");
+                }
+            }
+            if (!alreadyHasALengthFilter) {
+                // there are filters, but a length filter is not one of them
+                // add the new one
+                InputFilter newFilters[] = new InputFilter[curFilters.length + 1];
+                System.arraycopy(curFilters, 0, newFilters, 0, curFilters.length);
+                newFilters[curFilters.length] = lengthFilter;
+                mEditNamerName.setFilters(newFilters);
+                if (LDebug.ON) Log.d(LOG_TAG, "No length filter yet, new one added");
+            }
+        } else { // no filters yet, set the filters array to only this length filter
+            mEditNamerName.setFilters(new InputFilter[] { lengthFilter });
+            if (LDebug.ON) Log.d(LOG_TAG, "No existing filters, length filter added");
+        }
         // attempt to automatically show soft keyboard
         mEditNamerName.requestFocus();
         getDialog().getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
