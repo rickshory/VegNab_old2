@@ -314,7 +314,16 @@ public class EditSpellingDialog extends DialogFragment {
                 + values.toString().trim() + "; URI: " + uri.toString());
         ContentResolver rs = getActivity().getContentResolver();
         int numUpdated = rs.update(uri, values, null, null);
+
+
+        // if this was a species Namer, update the folder for pictures
+        String folderName = BuildConfig.PUBLIC_DB_FOLDER;
+        if (LDebug.ON) Log.d(LOG_TAG, "PUBLIC_DB_FOLDER: " + folderName);
+        if (LDebug.ON) Log.d(LOG_TAG, "folder name length: " + folderName.length());
+
+
         if (numUpdated == 1) return true;
+
         return false;
     } // end of validation
 
