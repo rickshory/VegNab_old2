@@ -316,6 +316,13 @@ public class EditSpellingDialog extends DialogFragment {
                 if (LDebug.ON) Log.d(LOG_TAG, "Existing namer:" + currentNamerString);
                 if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
                     //min SDK version is Honeycomb 3.0, API level 11, so can depend on following
+                    File appPixDir = new File(Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_PICTURES), BuildConfig.PUBLIC_DB_FOLDER);
+                    if (appPixDir.exists()) {
+                        if (LDebug.ON) Log.d(LOG_TAG, "appPixDir exists: " + appPixDir.getAbsolutePath());
+                    } else {
+                        if (LDebug.ON) Log.d(LOG_TAG, "appPixDir does not exists");
+                    }
                     File namerPixDir = new File(Environment.getExternalStoragePublicDirectory(
                             Environment.DIRECTORY_PICTURES), BuildConfig.PUBLIC_DB_FOLDER
                             + File.pathSeparator + currentNamerString);
