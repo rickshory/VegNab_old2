@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
@@ -28,6 +29,7 @@ import com.vegnab.vegnab.database.VNContract;
 import com.vegnab.vegnab.database.VNContract.LDebug;
 import com.vegnab.vegnab.util.InputFilterSppNamer;
 
+import java.io.File;
 import java.util.HashMap;
 
 // android.app.DialogFragment; // maybe use this instead
@@ -306,6 +308,39 @@ public class EditSpellingDialog extends DialogFragment {
             }
         } // end of validate item
         // if we got to here, we have everything we need to update the item
+        // if this was a species Namer, update the folder for pictures
+        if (tableUriName == "namers") {
+            if (LDebug.ON) Log.d(LOG_TAG, "Editing a namer, about to get existing name");
+            if (a.containsKey(FixSpellingsFragment.ARG_ITEM_TO_EDIT)) {
+                String currentNamerString = a.getString(FixSpellingsFragment.ARG_ITEM_TO_EDIT);
+                if (LDebug.ON) Log.d(LOG_TAG, "Existing namer:" + currentNamerString);
+                if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                    //min SDK version is Honeycomb 3.0, API level 11, so can depend on following
+                    File namerPixDir = new File(Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_PICTURES), BuildConfig.PUBLIC_DB_FOLDER
+                            + File.pathSeparator + currentNamerString);
+                    if (namerPixDir.exists()){
+                        if (LDebug.ON) Log.d(LOG_TAG, "namerPixDir exists");
+                        if (namerPixDir.isDirectory()) {
+                            if (LDebug.ON) Log.d(LOG_TAG, "namerPixDir is a folder");
+                            String appPixDirName = namerPixDir.getParent();
+                            if (LDebug.ON) Log.d(LOG_TAG, "appPixDirName: " + appPixDirName);
+                            if (LDebug.ON) Log.d(LOG_TAG, "appPixDirName length: " + appPixDirName.length());
+                        } else {
+                            if (LDebug.ON) Log.d(LOG_TAG, "namerPixDir is not a folder");
+                        }
+                    } else {
+                        if (LDebug.ON) Log.d(LOG_TAG, "namerPixDir does not exist");
+                    }
+                } else {
+                    if (LDebug.ON) Log.d(getString(R.string.app_name), "External storage is not mounted READ/WRITE.");
+                }
+            } else {
+                if (LDebug.ON) Log.d(LOG_TAG, "no existing Namer in args");
+            }
+        }
+
+        // update the item in the database
         Uri uri, tblUri = Uri.withAppendedPath(ContentProvider_VegNab.CONTENT_URI, tableUriName);
         uri = ContentUris.withAppendedId(tblUri, recId);
         ContentValues values = new ContentValues();
@@ -314,14 +349,6 @@ public class EditSpellingDialog extends DialogFragment {
                 + values.toString().trim() + "; URI: " + uri.toString());
         ContentResolver rs = getActivity().getContentResolver();
         int numUpdated = rs.update(uri, values, null, null);
-
-
-        // if this was a species Namer, update the folder for pictures
-        String folderName = BuildConfig.PUBLIC_DB_FOLDER;
-        if (LDebug.ON) Log.d(LOG_TAG, "PUBLIC_DB_FOLDER: " + folderName);
-        if (LDebug.ON) Log.d(LOG_TAG, "folder name length: " + folderName.length());
-
-
         if (numUpdated == 1) return true;
 
         return false;
