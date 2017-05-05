@@ -320,25 +320,24 @@ public class EditSpellingDialog extends DialogFragment {
                             Environment.DIRECTORY_PICTURES), BuildConfig.PUBLIC_DB_FOLDER);
                     if (appPixDir.exists()) {
                         if (LDebug.ON) Log.d(LOG_TAG, "appPixDir exists: " + appPixDir.getAbsolutePath());
+                        File namerPixDir = new File(appPixDir, currentNamerString);
+                        if (namerPixDir.exists()){
+                            if (LDebug.ON) Log.d(LOG_TAG, "namerPixDir exists: " + namerPixDir.getAbsolutePath());
+                            if (namerPixDir.isDirectory()) {
+                                if (LDebug.ON) Log.d(LOG_TAG, "namerPixDir is a folder");
+//                                String appPixDirName = namerPixDir.getParent();
+//                                if (LDebug.ON) Log.d(LOG_TAG, "appPixDirName: " + appPixDirName);
+//                                if (LDebug.ON) Log.d(LOG_TAG, "appPixDirName length: " + appPixDirName.length());
+                            } else {
+                                if (LDebug.ON) Log.d(LOG_TAG, "namerPixDir is not a folder");
+                            }
+                        } else {
+                            if (LDebug.ON) Log.d(LOG_TAG, "namerPixDir does not exist");
+                        }
                     } else {
                         if (LDebug.ON) Log.d(LOG_TAG, "appPixDir does not exists");
                     }
-                    File namerPixDir = new File(Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_PICTURES), BuildConfig.PUBLIC_DB_FOLDER
-                            + File.pathSeparator + currentNamerString);
-                    if (namerPixDir.exists()){
-                        if (LDebug.ON) Log.d(LOG_TAG, "namerPixDir exists");
-                        if (namerPixDir.isDirectory()) {
-                            if (LDebug.ON) Log.d(LOG_TAG, "namerPixDir is a folder");
-                            String appPixDirName = namerPixDir.getParent();
-                            if (LDebug.ON) Log.d(LOG_TAG, "appPixDirName: " + appPixDirName);
-                            if (LDebug.ON) Log.d(LOG_TAG, "appPixDirName length: " + appPixDirName.length());
-                        } else {
-                            if (LDebug.ON) Log.d(LOG_TAG, "namerPixDir is not a folder");
-                        }
-                    } else {
-                        if (LDebug.ON) Log.d(LOG_TAG, "namerPixDir does not exist");
-                    }
+
                 } else {
                     if (LDebug.ON) Log.d(getString(R.string.app_name), "External storage is not mounted READ/WRITE.");
                 }
