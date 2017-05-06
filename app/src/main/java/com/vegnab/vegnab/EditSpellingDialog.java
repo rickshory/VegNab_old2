@@ -325,6 +325,17 @@ public class EditSpellingDialog extends DialogFragment {
                             if (LDebug.ON) Log.d(LOG_TAG, "namerPixDir exists: " + namerPixDir.getAbsolutePath());
                             if (namerPixDir.isDirectory()) {
                                 if (LDebug.ON) Log.d(LOG_TAG, "namerPixDir is a folder");
+                                String pixDirNameOrig = namerPixDir.getAbsolutePath();
+                                File namerPixDirNew = new File(appPixDir, stItem);
+                                String pixDirNameNew = namerPixDirNew.getAbsolutePath();
+                                boolean namerPixDirChanged = namerPixDir.renameTo(namerPixDirNew);
+                                if (namerPixDirChanged) {
+                                    if (LDebug.ON) Log.d(LOG_TAG, "folder '" + pixDirNameOrig
+                                            + "' renamed '" + pixDirNameNew + "'" );
+                                    if (LDebug.ON) Log.d(LOG_TAG, "from getAbsolutePath: " + namerPixDir.getAbsolutePath());
+                                } else {
+                                    if (LDebug.ON) Log.d(LOG_TAG, "could not rename namerPixDir");
+                                }
 //                                String appPixDirName = namerPixDir.getParent();
 //                                if (LDebug.ON) Log.d(LOG_TAG, "appPixDirName: " + appPixDirName);
 //                                if (LDebug.ON) Log.d(LOG_TAG, "appPixDirName length: " + appPixDirName.length());
@@ -337,12 +348,11 @@ public class EditSpellingDialog extends DialogFragment {
                     } else {
                         if (LDebug.ON) Log.d(LOG_TAG, "appPixDir does not exists");
                     }
-
                 } else {
                     if (LDebug.ON) Log.d(getString(R.string.app_name), "External storage is not mounted READ/WRITE.");
                 }
             } else {
-                if (LDebug.ON) Log.d(LOG_TAG, "no existing Namer in args");
+                if (LDebug.ON) Log.d(LOG_TAG, "no Namer in args");
             }
         }
 
