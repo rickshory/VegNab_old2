@@ -7,6 +7,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -330,6 +331,9 @@ public class EditSpellingDialog extends DialogFragment {
                                 String pixDirNameNew = namerPixDirNew.getAbsolutePath();
                                 boolean namerPixDirChanged = namerPixDir.renameTo(namerPixDirNew);
                                 if (namerPixDirChanged) {
+                                    // make renamed folder visible
+                                    MediaScannerConnection.scanFile(getActivity().getApplicationContext(),
+                                            new String[]{namerPixDirNew.getAbsolutePath()}, null, null);
                                     if (LDebug.ON) Log.d(LOG_TAG, "folder '" + pixDirNameOrig
                                             + "' renamed '" + pixDirNameNew + "'" );
                                     if (LDebug.ON) Log.d(LOG_TAG, "from getAbsolutePath: " + namerPixDir.getAbsolutePath());
