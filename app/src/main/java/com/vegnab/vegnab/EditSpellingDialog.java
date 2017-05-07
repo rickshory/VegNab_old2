@@ -31,7 +31,9 @@ import com.vegnab.vegnab.database.VNContract.LDebug;
 import com.vegnab.vegnab.util.InputFilterSppNamer;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 // android.app.DialogFragment; // maybe use this instead
 
@@ -326,14 +328,25 @@ public class EditSpellingDialog extends DialogFragment {
                             if (LDebug.ON) Log.d(LOG_TAG, "namerPixDir exists: " + namerPixDir.getAbsolutePath());
                             if (namerPixDir.isDirectory()) {
                                 if (LDebug.ON) Log.d(LOG_TAG, "namerPixDir is a folder");
+                                // to correctly update Media after renaming,
+                                // will send a list that contains both the old filenames ("deleted")
+                                // and the new filenames ("added")
+                                // first get the old filenames
+                                List<File> files = getListFiles(namerPixDir);
+                                // for testing, list them
+                                for (File f : files) {
+                                    if (LDebug.ON) Log.d(LOG_TAG, "existing file: " + f.getAbsolutePath());
+                                }
                                 String pixDirNameOrig = namerPixDir.getAbsolutePath();
                                 File namerPixDirNew = new File(appPixDir, stItem);
                                 String pixDirNameNew = namerPixDirNew.getAbsolutePath();
                                 boolean namerPixDirChanged = namerPixDir.renameTo(namerPixDirNew);
                                 if (namerPixDirChanged) {
+                                    /* fix this, not correct
                                     // make renamed folder visible
                                     MediaScannerConnection.scanFile(getActivity().getApplicationContext(),
                                             new String[]{namerPixDirNew.getAbsolutePath()}, null, null);
+                                    */
                                     if (LDebug.ON) Log.d(LOG_TAG, "folder '" + pixDirNameOrig
                                             + "' renamed '" + pixDirNameNew + "'" );
                                     if (LDebug.ON) Log.d(LOG_TAG, "from getAbsolutePath: " + namerPixDir.getAbsolutePath());
@@ -373,5 +386,18 @@ public class EditSpellingDialog extends DialogFragment {
 
         return false;
     } // end of validation
+
+    List<File> getListFiles(File parentDir) {
+        ArrayList<File> inFiles = new ArrayList<File>();
+        File[] files = parentDir.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                inFiles.addAll(getListFiles(file));
+            } else {
+                inFiles.add(file);
+            }
+        }
+        return inFiles;
+    }
 
 }
