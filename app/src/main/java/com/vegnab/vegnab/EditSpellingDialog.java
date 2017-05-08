@@ -333,8 +333,11 @@ public class EditSpellingDialog extends DialogFragment {
                                 // and the new filenames ("added")
                                 // first get the old filenames
                                 List<File> files = getListFiles(namerPixDir);
-                                // for testing, list them
+                                // store old filenames
+                                List<String> toScan = new ArrayList<String>();
                                 for (File f : files) {
+                                    toScan.add( f.getAbsolutePath() );
+                                    // for testing, log them
                                     if (LDebug.ON) Log.d(LOG_TAG, "existing file: " + f.getAbsolutePath());
                                 }
                                 String pixDirNameOrig = namerPixDir.getAbsolutePath();
@@ -342,11 +345,21 @@ public class EditSpellingDialog extends DialogFragment {
                                 String pixDirNameNew = namerPixDirNew.getAbsolutePath();
                                 boolean namerPixDirChanged = namerPixDir.renameTo(namerPixDirNew);
                                 if (namerPixDirChanged) {
-                                    /* fix this, not correct
-                                    // make renamed folder visible
-                                    MediaScannerConnection.scanFile(getActivity().getApplicationContext(),
-                                            new String[]{namerPixDirNew.getAbsolutePath()}, null, null);
-                                    */
+                                    files.clear();
+                                    files = getListFiles(namerPixDirNew);
+                                    for (File f : files) {
+                                        toScan.add( f.getAbsolutePath() );
+                                        // for testing, log them
+                                        if (LDebug.ON) Log.d(LOG_TAG, "renamed file: " + f.getAbsolutePath());
+                                    }
+                                    if (toScan.size() > 0) {
+                                        String[] namesToScan = new String[ toScan.size() ];
+                                        toScan.toArray( namesToScan );
+                                        // rescan these files, by pathname
+                                        MediaScannerConnection.scanFile(getActivity().getApplicationContext(),
+                                                namesToScan, null, null);
+                                    }
+
                                     if (LDebug.ON) Log.d(LOG_TAG, "folder '" + pixDirNameOrig
                                             + "' renamed '" + pixDirNameNew + "'" );
                                     if (LDebug.ON) Log.d(LOG_TAG, "from getAbsolutePath: " + namerPixDir.getAbsolutePath());
