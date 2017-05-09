@@ -37,7 +37,9 @@ import com.vegnab.vegnab.database.VNContract.LDebug;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class PhPixGridFragment extends Fragment implements View.OnClickListener,
@@ -398,7 +400,6 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         return f;
     }
 
-
     private void galleryAddPic() {
         Intent mediaScanIntent = new Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE");
         File f = new File(mCurrentPhotoPath);
@@ -437,5 +438,22 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
 //           if (LDebug.ON) Log.d(LOG_TAG, "new record in savePlaceHolderPix; URI re-parsed: " + phNewUri.toString());
 //            long numUpdated = 1;
         }
+    }
+
+    private void getImageFiles(File pixDir) {
+
+    }
+
+    List<File> getListFiles(File parentDir) {
+        ArrayList<File> inFiles = new ArrayList<File>();
+        File[] files = parentDir.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                inFiles.addAll(getListFiles(file));
+            } else {
+                inFiles.add(file);
+            }
+        }
+        return inFiles;
     }
 }
