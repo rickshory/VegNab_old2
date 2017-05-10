@@ -18,6 +18,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -49,6 +50,7 @@ import com.vegnab.vegnab.database.VNContract.Loaders;
 import com.vegnab.vegnab.database.VNContract.Prefs;
 import com.vegnab.vegnab.database.VNContract.Validation;
 import com.vegnab.vegnab.database.VNContract.VNRegex;
+import com.vegnab.vegnab.util.InputFilterPlaceholderCode;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -269,6 +271,9 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         // inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_edit_placeholder, container, false);
         mViewPlaceholderCode = (EditText) rootView.findViewById(R.id.txt_placeholder_code);
+        if (LDebug.ON) Log.d(LOG_TAG, "Editing a Placeholder, about to set InputFilterPlaceholderCode");
+        // prevents all but alphanumeric chars
+        mViewPlaceholderCode.setFilters(new InputFilter[] { new InputFilterPlaceholderCode() });
         mViewPlaceholderCode.setOnFocusChangeListener(this);
         registerForContextMenu(mViewPlaceholderCode); // enable long-press
 
