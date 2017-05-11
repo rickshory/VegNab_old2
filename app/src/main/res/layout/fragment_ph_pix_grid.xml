@@ -20,6 +20,14 @@
         android:layout_below="@id/phPixGridTitleText"
         />
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/phPixGridRecyView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/placeholder_take_picture_button"
+        android:layout_below="@id/placeholder_take_picture_button"
+        />
+
     <GridView
         android:id="@+id/phPixGridView"
         android:layout_width="fill_parent"
