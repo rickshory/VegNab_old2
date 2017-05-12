@@ -205,11 +205,13 @@ public final class VNContract {
     public class VNGridImageItem {
         private Bitmap image;
         private String title;
+        private String path;
 
-        public VNGridImageItem(Bitmap image, String title) {
+        public VNGridImageItem(Bitmap image, String title, String path) {
             super();
             this.image = image;
             this.title = title;
+            this.path = path;
         }
         public Bitmap getImage() {
             return image;
@@ -222,6 +224,12 @@ public final class VNContract {
         }
         public void setTitle(String title) {
             this.title = title;
+        }
+        public String getPath() {
+            return path;
+        }
+        public void setPath(String path) {
+            this.path = path;
         }
     }
 
