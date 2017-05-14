@@ -8,25 +8,27 @@ import android.support.v4.widget.ResourceCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.vegnab.vegnab.database.VNContract.VNGridImageItem;
 import com.vegnab.vegnab.database.VNContract.LDebug;
 
 import java.io.File;
 import java.util.ArrayList;
 
-public class PhPixGridArrayAdapter extends ArrayAdapter {
+public class PhPixGridArrayAdapter extends ArrayAdapter<VNGridImageItem> {
         //implements AdapterView.OnItemClickListener
     private static final String LOG_TAG = PhPixGridArrayAdapter.class.getSimpleName();
-
+    Context ctx;
     private LayoutInflater mInflater;
 
-    public PhPixGridArrayAdapter(Context ctx, int layout, ArrayList data) {
-        super(ctx, layout, data);
-        mInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public PhPixGridArrayAdapter(Context ctx, int layout, ArrayList<VNGridImageItem> items) {
+        super(ctx, layout, items);
+        this.ctx = ctx;
     }
 
     // following commented-out techniques may give smoother scrolling, but code at bottom is OK for now
@@ -34,6 +36,11 @@ public class PhPixGridArrayAdapter extends ArrayAdapter {
 //	private int layoutResourceId;
 //	private ArrayList data = new ArrayList();
 //
+//  private view holder class
+    private class ViewHolder {
+        ImageView imageView;
+        TextView txtTitle;
+    }
 
 //	public GridViewAdapter(Context context, int layoutResourceId, ArrayList data) {
 //		super(context, layoutResourceId, data);
@@ -57,10 +64,23 @@ public class PhPixGridArrayAdapter extends ArrayAdapter {
 
         }*/    // break the following apart to use with cursor instead of array
 //	@Override
-//	public View getView(int position, View convertView, ViewGroup parent) {
-//		View row = convertView;
-//		ViewHolder holder = null;
-//
+	public View getView(int position, View convertView, ViewGroup parent) {
+        View v = convertView;
+        if (v == null) {
+            LayoutInflater vi = LayoutInflater.from(getContext());
+            v = vi.inflate(R.layout.news_list_item, parent,false);
+
+            bindView(position, v);
+        } else
+        {
+            bindView(position, v);
+        }
+        return v;
+        ViewHolder holder = null;
+        VNGridImageItem gridItem = getItem(position);
+        LayoutInflater mInflater = (LayoutInflater)
+                ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
     // adapt the following for newView
 //		if (row == null) {
 //			LayoutInflater inflater = ((Activity) context).getLayoutInflater();
@@ -78,7 +98,7 @@ public class PhPixGridArrayAdapter extends ArrayAdapter {
 //		holder.imageTitle.setText(item.getTitle());
 //		holder.image.setImageBitmap(item.getImage());
 //		return row;
-//	}
+	}
 //
 //	static class ViewHolder {
 //		TextView imageTitle;
