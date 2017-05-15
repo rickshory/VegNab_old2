@@ -56,8 +56,10 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     private TextView mViewPlaceholderGridHeader;
     private GridView mPhPixGridView;
     private PhPixGridAdapter mPhPixGridAdapter;
+    private PhPixGridArrayAdapter mPhPixGridArrayAdapter;
     SimpleDateFormat mTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
     Cursor mPixMatchCursor;
+    ArrayList<VNContract.VNGridImageItem> mPixItemsList;
     private Bitmap mImageBitmap;
     private String mCurrentPhotoPath;
     private static final String JPEG_FILE_SUFFIX = ".jpg";

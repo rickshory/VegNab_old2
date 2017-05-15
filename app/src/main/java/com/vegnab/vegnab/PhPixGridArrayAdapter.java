@@ -46,7 +46,7 @@ public class PhPixGridArrayAdapter extends ArrayAdapter<VNGridImageItem> {
     // break the following apart to use with cursor instead of array
 //	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-        
+
         String imagePath = null;
         VNGridImageItem gridItem = getItem(position);
         LayoutInflater mInflater = (LayoutInflater)
