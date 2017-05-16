@@ -31,7 +31,8 @@ import android.widget.Toast;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
-import com.vegnab.vegnab.database.VNContract;
+import com.vegnab.vegnab.database.VNContract.Loaders;
+import com.vegnab.vegnab.database.VNContract.VNGridImageItem;
 import com.vegnab.vegnab.database.VNContract.LDebug;
 
 import java.io.File;
@@ -59,7 +60,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     private PhPixGridArrayAdapter mPhPixGridArrayAdapter;
     SimpleDateFormat mTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
     Cursor mPixMatchCursor;
-    ArrayList<VNContract.VNGridImageItem> mPixItemsList;
+    ArrayList<VNGridImageItem> mPixItemsList;
     private Bitmap mImageBitmap;
     private String mCurrentPhotoPath;
     private static final String JPEG_FILE_SUFFIX = ".jpg";
@@ -102,6 +103,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         mPhPixGridAdapter = new PhPixGridAdapter(getActivity(), R.layout.grid_ph_pix, null, 0);
         mPhPixGridView.setAdapter(mPhPixGridAdapter);
         return rootView;
+
     }
 
     @Override
@@ -124,9 +126,9 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
             // also use for special arguments like screen layout
 
             // start loader to get header parameters
-            getLoaderManager().initLoader(VNContract.Loaders.PLACEHOLDER_OF_PIX, null, this);
+            getLoaderManager().initLoader(Loaders.PLACEHOLDER_OF_PIX, null, this);
             // start loader to populate grid
-            getLoaderManager().initLoader(VNContract.Loaders.PLACEHOLDER_PIX, null, this);
+            getLoaderManager().initLoader(Loaders.PLACEHOLDER_PIX, null, this);
 //            mTxtNote.setText(args.getString(ARG_NOTE_ID));
         }
 
@@ -287,7 +289,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         String select = null; // default for all-columns, unless re-assigned or overridden by raw SQL
         String[] params = null;
         switch (id) {
-            case VNContract.Loaders.PLACEHOLDER_OF_PIX:
+            case Loaders.PLACEHOLDER_OF_PIX:
                 baseUri = ContentProvider_VegNab.SQL_URI;
                 select = "SELECT PlaceHolders.PlaceHolderCode, PlaceHolders.Description, Namers.NamerName " +
                         "FROM PlaceHolders LEFT JOIN Namers ON PlaceHolders.NamerID = Namers._id " +
@@ -297,7 +299,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                         null, select, params, null);
                 break;
 
-            case VNContract.Loaders.PLACEHOLDER_PIX:
+            case Loaders.PLACEHOLDER_PIX:
                 baseUri = ContentProvider_VegNab.SQL_URI;
                 select = "SELECT PlaceHolderPix._id, PlaceHolderPix.PhotoPath, PlaceHolderPix.PhotoNotes " +
                         "FROM PlaceHolderPix " +
@@ -319,7 +321,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
 //        mRowCt = c.getCount();
         switch (loader.getId()) {
 
-            case VNContract.Loaders.PLACEHOLDER_OF_PIX:
+            case Loaders.PLACEHOLDER_OF_PIX:
                if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_OF_PIX, records: " + c.getCount());
                 if (c.moveToFirst()) {
                     mPlaceholderCode = c.getString(c.getColumnIndexOrThrow("PlaceHolderCode"));
@@ -331,7 +333,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                 }
                 break;
 
-            case VNContract.Loaders.PLACEHOLDER_PIX:
+            case Loaders.PLACEHOLDER_PIX:
 //               if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PIX, just before swapCursor");
                 mPhPixGridAdapter.swapCursor(c);
 //               if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PIX, just before copy cursor");
@@ -346,12 +348,12 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         // is about to be closed. Need to make sure it is no longer is use.
         switch (loader.getId()) {
 
-            case VNContract.Loaders.PLACEHOLDER_OF_PIX:
+            case Loaders.PLACEHOLDER_OF_PIX:
                if (LDebug.ON) Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_OF_PIX.");
     //			don't need to do anything here, no cursor adapter
                 break;
 
-            case VNContract.Loaders.PLACEHOLDER_PIX:
+            case Loaders.PLACEHOLDER_PIX:
                if (LDebug.ON) Log.d(LOG_TAG, "onLoaderReset, PLACEHOLDER_PIX.");
     //			don't need to do anything here, no cursor adapter
                 break;
@@ -435,7 +437,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
            if (LDebug.ON) Log.d(LOG_TAG, "new record in savePlaceHolderPix has Id == " + newRecId + "); canceled");
 //            return 0;
         } else {
-            getLoaderManager().restartLoader(VNContract.Loaders.PLACEHOLDER_PIX, null, this);
+            getLoaderManager().restartLoader(Loaders.PLACEHOLDER_PIX, null, this);
 //            Uri phNewUri = ContentUris.withAppendedId(phUri, newRecId);
 //           if (LDebug.ON) Log.d(LOG_TAG, "new record in savePlaceHolderPix; URI re-parsed: " + phNewUri.toString());
 //            long numUpdated = 1;
