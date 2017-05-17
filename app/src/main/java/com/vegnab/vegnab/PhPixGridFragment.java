@@ -123,7 +123,20 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                 mPlaceholderId = args.getLong(ARG_PLACEHOLDER_ID, 0);
 //                mPlaceholderCode = args.getString(ARG_PLACEHOLDER_CODE);
             }
+
             // also use for special arguments like screen layout
+            /*    List<File> getListFiles(File parentDir) {
+        ArrayList<File> inFiles = new ArrayList<File>();
+        File[] files = parentDir.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                inFiles.addAll(getListFiles(file));
+            } else {
+                inFiles.add(file);
+            }
+        }
+        return inFiles;
+    }*/
 
             // start loader to get header parameters
             getLoaderManager().initLoader(Loaders.PLACEHOLDER_OF_PIX, null, this);
@@ -223,7 +236,13 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
 
     public static Uri getImageContentUri(Context context, String filePath) {
         Uri uri = null;
-        File imageFile = new File(filePath);
+//        File imageFile = new File(filePath);
+        try {
+            uri = Uri.fromFile(new File(filePath));
+        } catch (Exception e) {
+            if (LDebug.ON) Log.d(LOG_TAG, "getImageContentUri; Exception: " + e.toString());
+        }
+/*
         Cursor cursor = context.getContentResolver().query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 new String[] { MediaStore.Images.Media._ID },
@@ -245,6 +264,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         } catch (Exception e) {
             // ignore
         }
+*/
         return uri;
     }
 
