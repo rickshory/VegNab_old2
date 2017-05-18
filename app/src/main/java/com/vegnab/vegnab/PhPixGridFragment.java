@@ -97,6 +97,29 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         } else {
             p.setVisibility(View.GONE);
         }
+        // get the folder based on Namer and Placeholder
+        File pixDir = getAlbumDir();
+        ArrayList<VNGridImageItem> pixFiles = new ArrayList<>();
+        if (pixDir.isDirectory()) {
+            int pos = 0;
+            String picItemTitle;
+            String picFilePath;
+            VNGridImageItem item;
+            File[] files = pixDir.listFiles();
+            for (File file : files) {
+                if (!file.isDirectory()) {
+                    picItemTitle = file.getName();
+                    picFilePath = file.getAbsolutePath();
+                    item.setTitle(picItemTitle);
+                    item.setPath(picFilePath);
+
+                    
+                    pixFiles.add(pos, item);
+                    pos++;
+                }
+            }
+        }
+
         mPhPixGridView = (GridView) rootView.findViewById(R.id.phPixGridView);
 //        mPhPixGridView.setOnClickListener(this);
         //mPhPixGridAdapter = new PhPixGridAdapter(this, R.layout.grid_item_layout, getData());
@@ -125,19 +148,6 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
             }
 
             // also use for special arguments like screen layout
-            /*    List<File> getListFiles(File parentDir) {
-        ArrayList<File> inFiles = new ArrayList<File>();
-        File[] files = parentDir.listFiles();
-        for (File file : files) {
-            if (file.isDirectory()) {
-                inFiles.addAll(getListFiles(file));
-            } else {
-                inFiles.add(file);
-            }
-        }
-        return inFiles;
-    }*/
-
             // start loader to get header parameters
             getLoaderManager().initLoader(Loaders.PLACEHOLDER_OF_PIX, null, this);
             // start loader to populate grid
