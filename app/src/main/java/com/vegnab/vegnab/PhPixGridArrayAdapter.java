@@ -28,6 +28,8 @@ public class PhPixGridArrayAdapter extends ArrayAdapter<VNGridImageItem> {
     public PhPixGridArrayAdapter(Context ctx, int layout, ArrayList<VNGridImageItem> items) {
         super(ctx, layout, items);
         this.ctx = ctx;
+        mInflater = (LayoutInflater) ctx
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     // following commented-out techniques may give smoother scrolling, but code at bottom is OK for now
@@ -46,73 +48,75 @@ public class PhPixGridArrayAdapter extends ArrayAdapter<VNGridImageItem> {
     // break the following apart to use with cursor instead of array
 //	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+        View view;
 
         String imagePath = null;
         VNGridImageItem gridItem = getItem(position);
-        LayoutInflater mInflater = (LayoutInflater)
-                ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.grid_ph_pix, null);
-            // get the title
-            TextView phGridCellText = (TextView) convertView.findViewById(R.id.phGridItemText);
-            String note = gridItem.getTitle();
-            if (note == null) {
-                note = "(no note)";
+            view = mInflater.inflate(R.layout.grid_ph_pix, null);
+        } else {
+            // convertView was already laid out
+            view = convertView;
+            imagePath = (String) convertView.getTag();
+        }
+        // get the title
+        TextView phGridCellText = (TextView) view.findViewById(R.id.phGridItemText);
+        String note = gridItem.getTitle();
+        if (note == null) {
+            note = "(no note)";
+        }
+        phGridCellText.setText(note);
+
+        // get the path and use it as this view's tag
+        imagePath = gridItem.getPath();
+        view.setTag(imagePath);
+
+        // get the image thumbnail
+
+        ImageView phGridCellImage = (ImageView) view.findViewById(R.id.phGridItemImage);
+        File imgFile = new  File(imagePath);
+        if (imgFile.exists()) {
+            // There isn't enough memory to open up more than a few camera photos
+            // so pre-scale the target bitmap into which the file is decoded
+            // Get the size of the ImageView
+            int targetW = phGridCellImage.getWidth();
+            int targetH = phGridCellImage.getHeight();
+            if (LDebug.ON) Log.d(LOG_TAG, "grid cell image Ht " + targetH + ", Wd " + targetW);
+            // for testing, manually override
+            targetW = 100;
+            targetH = 100;
+            // Get the size of the image
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            bmOptions.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(imagePath, bmOptions);
+            int photoW = bmOptions.outWidth;
+            int photoH = bmOptions.outHeight;
+            // determine the aspect ratio
+            int scaleFactor = 1;
+            if ((targetW > 0) || (targetH > 0)) {
+                scaleFactor = Math.min(photoW/targetW, photoH/targetH);
             }
-            phGridCellText.setText(note);
+            // Set bitmap options to scale the image decode target
+            bmOptions.inJustDecodeBounds = false;
+            bmOptions.inSampleSize = scaleFactor;
+            // bmOptions.inPurgeable = true;
+            // Decode the JPEG file into a Bitmap
+            if (LDebug.ON) Log.d(LOG_TAG, "Scale Factor " + scaleFactor + ", About to decode: " + imagePath);
+            Bitmap bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
+            if (LDebug.ON) Log.d(LOG_TAG, "bitmap Ht " + bitmap.getHeight() + ", width " + bitmap.getWidth());
 
-            // get the path and use it as this view's tag
-            imagePath = gridItem.getPath();
-            convertView.setTag(imagePath);
-
-            // get the image thumbnail
-
-            ImageView phGridCellImage = (ImageView) convertView.findViewById(R.id.phGridItemImage);
-            File imgFile = new  File(imagePath);
-            if (imgFile.exists()) {
-                // There isn't enough memory to open up more than a few camera photos
-                // so pre-scale the target bitmap into which the file is decoded
-                // Get the size of the ImageView
-                int targetW = phGridCellImage.getWidth();
-                int targetH = phGridCellImage.getHeight();
-                if (LDebug.ON) Log.d(LOG_TAG, "grid cell image Ht " + targetH + ", Wd " + targetW);
-                // for testing, manually override
-                targetW = 100;
-                targetH = 100;
-                // Get the size of the image
-                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                bmOptions.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(imagePath, bmOptions);
-                int photoW = bmOptions.outWidth;
-                int photoH = bmOptions.outHeight;
-                // determine the aspect ratio
-                int scaleFactor = 1;
-                if ((targetW > 0) || (targetH > 0)) {
-                    scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-                }
-                // Set bitmap options to scale the image decode target
-                bmOptions.inJustDecodeBounds = false;
-                bmOptions.inSampleSize = scaleFactor;
-                // bmOptions.inPurgeable = true;
-                // Decode the JPEG file into a Bitmap
-                if (LDebug.ON) Log.d(LOG_TAG, "Scale Factor " + scaleFactor + ", About to decode: " + imagePath);
-                Bitmap bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
-                if (LDebug.ON) Log.d(LOG_TAG, "bitmap Ht " + bitmap.getHeight() + ", width " + bitmap.getWidth());
-
-                // associate the Bitmap to the ImageView
-                phGridCellImage.setImageBitmap(bitmap);
+            // associate the Bitmap to the ImageView
+            phGridCellImage.setImageBitmap(bitmap);
 
 //            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
 //            phGridCellImage.setImageBitmap(myBitmap);
 //            phGridCellImage.setAdjustViewBounds(true);
-            } else {
-                // set bitmap to a not-found icon
-            }
         } else {
-            // convertView was already laid out
-            imagePath = (String) convertView.getTag();
+            // set bitmap to a not-found icon
         }
-        return convertView;
+
+        return view;
 
     // adapt the following for newView
 //		if (row == null) {
