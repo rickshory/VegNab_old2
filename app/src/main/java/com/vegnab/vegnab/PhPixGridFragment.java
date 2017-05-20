@@ -102,9 +102,10 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         ArrayList<VNGridImageItem> pixFiles = new ArrayList<>();
         if (pixDir.isDirectory()) {
             int pos = 0;
-            String picItemTitle;
-            String picFilePath;
-            VNGridImageItem item;
+
+            String picItemTitle = "";
+            String picFilePath = "";
+            VNGridImageItem item = new VNGridImageItem();
             File[] files = pixDir.listFiles();
             for (File file : files) {
                 if (!file.isDirectory()) {
@@ -113,7 +114,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                     item.setTitle(picItemTitle);
                     item.setPath(picFilePath);
 
-                    
+
                     pixFiles.add(pos, item);
                     pos++;
                 }

@@ -132,6 +132,13 @@ public class PhPixGridArrayAdapter extends ArrayAdapter<VNGridImageItem> {
 //		holder.image.setImageBitmap(item.getImage());
 //		return row;
 	}
+    //
+
+    public class GridImageItem {
+        public Bitmap image;
+        public String title;
+        public String path;
+    }
 
     /*
     @Override

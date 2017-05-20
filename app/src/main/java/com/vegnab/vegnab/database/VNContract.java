@@ -207,8 +207,14 @@ public final class VNContract {
         private String title;
         private String path;
 
+        public VNGridImageItem() {
+            this.image = null;
+            this.title = "";
+            this.path = "";
+        }
+
         public VNGridImageItem(Bitmap image, String title, String path) {
-            super();
+//            super();
             this.image = image;
             this.title = title;
             this.path = path;
