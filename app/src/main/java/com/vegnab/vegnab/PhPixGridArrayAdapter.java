@@ -13,8 +13,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.vegnab.vegnab.database.VNContract.VNGridImageItem;
 import com.vegnab.vegnab.database.VNContract.LDebug;
+import com.vegnab.vegnab.util.VNGridImageItem;
 
 import java.io.File;
 import java.util.ArrayList;

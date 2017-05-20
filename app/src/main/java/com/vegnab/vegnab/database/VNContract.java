@@ -201,44 +201,6 @@ public final class VNContract {
         public static final boolean ON = true; // true or false to conditionally compile Log statements
     }
 
-    // class for use in grid view
-    public class VNGridImageItem {
-        private Bitmap image;
-        private String title;
-        private String path;
-
-        public VNGridImageItem() {
-            this.image = null;
-            this.title = "";
-            this.path = "";
-        }
-
-        public VNGridImageItem(Bitmap image, String title, String path) {
-//            super();
-            this.image = image;
-            this.title = title;
-            this.path = path;
-        }
-        public Bitmap getImage() {
-            return image;
-        }
-        public void setImage(Bitmap image) {
-            this.image = image;
-        }
-        public String getTitle() {
-            return title;
-        }
-        public void setTitle(String title) {
-            this.title = title;
-        }
-        public String getPath() {
-            return path;
-        }
-        public void setPath(String path) {
-            this.path = path;
-        }
-    }
-
     // inner classes to define tables
     public static abstract class Project implements BaseColumns {
         public static final String TABLE_NAME = "Projects";
