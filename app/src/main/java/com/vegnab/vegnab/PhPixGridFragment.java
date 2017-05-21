@@ -32,13 +32,14 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
 import com.vegnab.vegnab.database.VNContract.Loaders;
-import com.vegnab.vegnab.database.VNContract.VNGridImageItem;
 import com.vegnab.vegnab.database.VNContract.LDebug;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -60,7 +61,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     private PhPixGridArrayAdapter mPhPixGridArrayAdapter;
     SimpleDateFormat mTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
     Cursor mPixMatchCursor;
-    ArrayList<VNGridImageItem> mPixItemsList;
+
     private Bitmap mImageBitmap;
     private String mCurrentPhotoPath;
     private static final String JPEG_FILE_SUFFIX = ".jpg";
@@ -99,28 +100,29 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         }
         // get the folder based on Namer and Placeholder
         File pixDir = getAlbumDir();
-        ArrayList<VNGridImageItem> pixFiles = new ArrayList<>();
         if (pixDir.isDirectory()) {
+            File[] allFiles = pixDir.listFiles();
+            Arrays.sort(allFiles, new Comparator<File>() {
+                public int compare(File f1, File f2) {
+//                return Long.compare(f1.lastModified(), f2.lastModified()); // API 19
+                    return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
+                }
+            });
+            ArrayList<String> pixFilePaths = new ArrayList<>();
             int pos = 0;
 
-            String picItemTitle = "";
-            String picFilePath = "";
-            VNGridImageItem item = new VNGridImageItem();
-            File[] files = pixDir.listFiles();
-            for (File file : files) {
+            for (File file : allFiles) {
+//                if ((!file.isDirectory()) && (file.) ) {
                 if (!file.isDirectory()) {
-                    picItemTitle = file.getName();
-                    picFilePath = file.getAbsolutePath();
-                    item.setTitle(picItemTitle);
-                    item.setPath(picFilePath);
-
-
-                    pixFiles.add(pos, item);
+                    pixFilePaths.add(pos, file.getAbsolutePath());
                     pos++;
                 }
             }
         }
 
+        /*
+
+*/
         mPhPixGridView = (GridView) rootView.findViewById(R.id.phPixGridView);
 //        mPhPixGridView.setOnClickListener(this);
         //mPhPixGridAdapter = new PhPixGridAdapter(this, R.layout.grid_item_layout, getData());

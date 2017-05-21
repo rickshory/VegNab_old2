@@ -96,7 +96,7 @@ public class VNGridImageItem {
             if (VNContract.LDebug.ON) Log.d(LOG_TAG, "Scale Factor " + scaleFactor + ", About to decode: " + this.path);
             Bitmap bitmap = BitmapFactory.decodeFile(this.path, bmOptions);
             if (VNContract.LDebug.ON) Log.d(LOG_TAG, "bitmap Ht " + bitmap.getHeight() + ", width " + bitmap.getWidth());
-            
+
             // set the image
             this.image = bitmap;
             this.isComplete = true;
