@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
@@ -114,6 +115,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
             for (File file : allFiles) {
 //                if ((!file.isDirectory()) && (file.) ) {
                 if (!file.isDirectory()) {
+
                     pixFilePaths.add(pos, file.getAbsolutePath());
                     pos++;
                 }
@@ -130,6 +132,20 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         mPhPixGridView.setAdapter(mPhPixGridAdapter);
         return rootView;
 
+    }
+    public static String getMimeTypeFromUri(Context context, Uri uri) {
+        String extension;
+        //Check uri format to avoid null
+        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+            //If scheme is a content
+            final MimeTypeMap mime = MimeTypeMap.getSingleton();
+            extension = mime.getExtensionFromMimeType(context.getContentResolver().getType(uri));
+        } else {
+            //If scheme is a File
+            //This will replace white spaces with %20 and also other special characters. This will avoid returning null values on file name with spaces and special characters.
+            extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(new File(uri.getPath())).toString());
+        }
+        return extension;
     }
 
     @Override
