@@ -113,18 +113,18 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
             int pos = 0;
 
             for (File file : allFiles) {
-//                if ((!file.isDirectory()) && (file.) ) {
                 if (!file.isDirectory()) {
-
-                    pixFilePaths.add(pos, file.getAbsolutePath());
-                    pos++;
+                    String ext = getMimeTypeFromFile(file);
+                    if (LDebug.ON) Log.d(LOG_TAG, ext + " for " + file.getAbsolutePath());
+                    if (ext.equals("jpeg")) {
+                        pixFilePaths.add(pos, file.getAbsolutePath());
+                        pos++;
+                    }
                 }
             }
+            if (LDebug.ON) Log.d(LOG_TAG, "pixFilePaths: " + pixFilePaths.toString());
         }
 
-        /*
-
-*/
         mPhPixGridView = (GridView) rootView.findViewById(R.id.phPixGridView);
 //        mPhPixGridView.setOnClickListener(this);
         //mPhPixGridAdapter = new PhPixGridAdapter(this, R.layout.grid_item_layout, getData());
@@ -133,16 +133,25 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         return rootView;
 
     }
-    public static String getMimeTypeFromUri(Context context, Uri uri) {
-        String extension;
+    private String getMimeTypeFromFile(File file) {
+        String extension = null;
+        Uri uri = null;
+        try {
+            uri = Uri.fromFile(file);
+        } catch (Exception e) {
+            if (LDebug.ON) Log.d(LOG_TAG, "getMimeTypeFromFile; Exception: " + e.toString());
+            return extension;
+        }
         //Check uri format to avoid null
         if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
             //If scheme is a content
             final MimeTypeMap mime = MimeTypeMap.getSingleton();
-            extension = mime.getExtensionFromMimeType(context.getContentResolver().getType(uri));
+            extension = mime.getExtensionFromMimeType(
+                    getActivity().getApplicationContext().getContentResolver().getType(uri));
         } else {
             //If scheme is a File
-            //This will replace white spaces with %20 and also other special characters. This will avoid returning null values on file name with spaces and special characters.
+            //This will replace white spaces with %20 and also other special characters.
+            //This will avoid returning null values on file name with spaces and special characters.
             extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(new File(uri.getPath())).toString());
         }
         return extension;
