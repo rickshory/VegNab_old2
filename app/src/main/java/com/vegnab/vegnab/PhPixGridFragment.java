@@ -101,8 +101,11 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         }
         // get the folder based on Namer and Placeholder
         File pixDir = getAlbumDir();
+        if (LDebug.ON) Log.d(LOG_TAG, "getAlbumDir: " + pixDir.toString());
         if (pixDir.isDirectory()) {
+            if (LDebug.ON) Log.d(LOG_TAG, "pixDir.isDirectory");
             File[] allFiles = pixDir.listFiles();
+            if (LDebug.ON) Log.d(LOG_TAG, "allFiles.length: " + allFiles.length);
             Arrays.sort(allFiles, new Comparator<File>() {
                 public int compare(File f1, File f2) {
 //                return Long.compare(f1.lastModified(), f2.lastModified()); // API 19
@@ -113,13 +116,17 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
             int pos = 0;
 
             for (File file : allFiles) {
+                if (LDebug.ON) Log.d(LOG_TAG, "file: " + file.toString());
                 if (!file.isDirectory()) {
+                    if (LDebug.ON) Log.d(LOG_TAG, "is not Directory: " + file.toString());
                     String ext = getMimeTypeFromFile(file);
                     if (LDebug.ON) Log.d(LOG_TAG, ext + " for " + file.getAbsolutePath());
                     if (ext.equals("jpeg")) {
                         pixFilePaths.add(pos, file.getAbsolutePath());
                         pos++;
                     }
+                } else {
+                    if (LDebug.ON) Log.d(LOG_TAG, "isDirectory: " + file.toString());
                 }
             }
             if (LDebug.ON) Log.d(LOG_TAG, "pixFilePaths: " + pixFilePaths.toString());
