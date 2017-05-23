@@ -382,7 +382,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                                 if (LDebug.ON) Log.d(LOG_TAG, "is not Directory: " + file.toString());
                                 String ext = getMimeTypeFromFile(file);
                                 if (LDebug.ON) Log.d(LOG_TAG, ext + " for " + file.getAbsolutePath());
-                                if (ext.equals("jpeg")) {
+                                if (ext.equals("jpg")) {
                                     pixFilePaths.add(pos, file.getAbsolutePath());
                                     pos++;
                                 }
