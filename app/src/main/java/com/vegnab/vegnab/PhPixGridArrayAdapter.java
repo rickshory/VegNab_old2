@@ -14,18 +14,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.vegnab.vegnab.database.VNContract.LDebug;
-import com.vegnab.vegnab.util.VNGridImageItem;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
-public class PhPixGridArrayAdapter extends ArrayAdapter<VNGridImageItem> {
+public class PhPixGridArrayAdapter extends ArrayAdapter<String> {
         //implements AdapterView.OnItemClickListener
     private static final String LOG_TAG = PhPixGridArrayAdapter.class.getSimpleName();
     Context ctx;
     private LayoutInflater mInflater;
 
-    public PhPixGridArrayAdapter(Context ctx, int layout, ArrayList<VNGridImageItem> items) {
+    public PhPixGridArrayAdapter(Context ctx, int layout, ArrayList<String> items) {
         super(ctx, layout, items);
         this.ctx = ctx;
         mInflater = (LayoutInflater) ctx
@@ -50,33 +51,27 @@ public class PhPixGridArrayAdapter extends ArrayAdapter<VNGridImageItem> {
 	public View getView(int position, View convertView, ViewGroup parent) {
         View view;
 
-        String imagePath = null;
-        VNGridImageItem gridItem = getItem(position);
+        String imagePath;
 
         if (convertView == null) {
             view = mInflater.inflate(R.layout.grid_ph_pix, null);
+            imagePath = getItem(position);
         } else {
             // convertView was already laid out
             view = convertView;
             imagePath = (String) convertView.getTag();
         }
+        File imgFile = new  File(imagePath);
+        ImageView phGridCellImage = (ImageView) view.findViewById(R.id.phGridItemImage);
         // get the title
         TextView phGridCellText = (TextView) view.findViewById(R.id.phGridItemText);
-        String note = gridItem.getTitle();
-        if (note == null) {
-            note = "(no note)";
-        }
-        phGridCellText.setText(note);
-
-        // get the path and use it as this view's tag
-        imagePath = gridItem.getPath();
-        view.setTag(imagePath);
-
-        // get the image thumbnail
-
-        ImageView phGridCellImage = (ImageView) view.findViewById(R.id.phGridItemImage);
-        File imgFile = new  File(imagePath);
+        String note;
         if (imgFile.exists()) {
+            // for now, use the date as the note
+            note = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(
+                    new Date(imgFile.lastModified())
+            );
+            // get the image thumbnail
             // There isn't enough memory to open up more than a few camera photos
             // so pre-scale the target bitmap into which the file is decoded
             // Get the size of the ImageView
@@ -113,9 +108,11 @@ public class PhPixGridArrayAdapter extends ArrayAdapter<VNGridImageItem> {
 //            phGridCellImage.setImageBitmap(myBitmap);
 //            phGridCellImage.setAdjustViewBounds(true);
         } else {
+            note = "(no note)";
             // set bitmap to a not-found icon
         }
-
+        phGridCellText.setText(note);
+        view.setTag(imagePath);
         return view;
 
     // adapt the following for newView
