@@ -102,8 +102,8 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         mPhPixGridView = (GridView) rootView.findViewById(R.id.phPixGridView);
 //        mPhPixGridView.setOnClickListener(this);
         //mPhPixGridAdapter = new PhPixGridAdapter(this, R.layout.grid_item_layout, getData());
-        mPhPixGridAdapter = new PhPixGridAdapter(getActivity(), R.layout.grid_ph_pix, null, 0);
-        mPhPixGridView.setAdapter(mPhPixGridAdapter);
+//        mPhPixGridAdapter = new PhPixGridAdapter(getActivity(), R.layout.grid_ph_pix, null, 0);
+//        mPhPixGridView.setAdapter(mPhPixGridAdapter);
         return rootView;
 
     }
@@ -392,6 +392,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                         }
                         if (LDebug.ON) Log.d(LOG_TAG, "pixFilePaths: " + pixFilePaths.toString());
                     }
+                    mPhPixGridView.setAdapter(mPhPixGridArrayAdapter);
 
                 } else { // no record to edit yet, set up new record
 //                    mViewPlaceholderCode.setText(mPlaceholderCode);
@@ -400,7 +401,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
 
             case Loaders.PLACEHOLDER_PIX:
 //               if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PIX, just before swapCursor");
-                mPhPixGridAdapter.swapCursor(c);
+//                mPhPixGridAdapter.swapCursor(c);
 //               if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PIX, just before copy cursor");
                 mPixMatchCursor = c;
                 break;
