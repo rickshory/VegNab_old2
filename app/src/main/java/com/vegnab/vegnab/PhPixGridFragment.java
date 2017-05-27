@@ -360,6 +360,8 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                     mPlaceholderDescr = c.getString(c.getColumnIndexOrThrow("Description"));
                     mPlaceholderNamer = c.getString(c.getColumnIndexOrThrow("NamerName"));
                     mViewPlaceholderGridHeader.setText(mPlaceholderCode + ": " + mPlaceholderDescr);
+                    ArrayList<String> pixFilePaths = new ArrayList<>();
+                    int pos = 0;
                     // get the folder based on Namer and Placeholder
                     File pixDir = getAlbumDir();
                     if (LDebug.ON) Log.d(LOG_TAG, "getAlbumDir: " + pixDir.toString());
@@ -373,8 +375,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                                 return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
                             }
                         });
-                        ArrayList<String> pixFilePaths = new ArrayList<>();
-                        int pos = 0;
+
 
                         for (File file : allFiles) {
                             if (LDebug.ON) Log.d(LOG_TAG, "file: " + file.toString());
@@ -392,6 +393,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                         }
                         if (LDebug.ON) Log.d(LOG_TAG, "pixFilePaths: " + pixFilePaths.toString());
                     }
+                    mPhPixGridArrayAdapter = new PhPixGridArrayAdapter(getContext(), pixFilePaths);
                     mPhPixGridView.setAdapter(mPhPixGridArrayAdapter);
 
                 } else { // no record to edit yet, set up new record

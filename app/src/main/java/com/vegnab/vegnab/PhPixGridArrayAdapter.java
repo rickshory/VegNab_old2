@@ -25,9 +25,15 @@ public class PhPixGridArrayAdapter extends ArrayAdapter<String> {
     private static final String LOG_TAG = PhPixGridArrayAdapter.class.getSimpleName();
     Context ctx;
     private LayoutInflater mInflater;
+//    // View lookup cache
+//    private static class ViewHolder {
+//        TextView name;
+//        TextView home;
+//    }
 
-    public PhPixGridArrayAdapter(Context ctx, int layout, ArrayList<String> items) {
-        super(ctx, layout, items);
+    public PhPixGridArrayAdapter(Context ctx, ArrayList<String> items) {
+
+        super(ctx, R.layout.grid_ph_pix, items);
         this.ctx = ctx;
         mInflater = (LayoutInflater) ctx
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
