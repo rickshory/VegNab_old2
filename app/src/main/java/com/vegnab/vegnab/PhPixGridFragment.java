@@ -372,7 +372,8 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                         Arrays.sort(allFiles, new Comparator<File>() {
                             public int compare(File f1, File f2) {
 //                return Long.compare(f1.lastModified(), f2.lastModified()); // API 19
-                                return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
+                                // sort newest first
+                                return Long.valueOf(f2.lastModified()).compareTo(f1.lastModified());
                             }
                         });
 
