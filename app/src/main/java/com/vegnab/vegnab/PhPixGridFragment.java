@@ -59,9 +59,12 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     private TextView mViewPlaceholderGridHeader;
     private GridView mPhPixGridView;
     private PhPixGridAdapter mPhPixGridAdapter;
-    private PhPixGridArrayAdapter mPhPixGridArrayAdapter;
+    private ArrayList<String> mPixFilePaths = new ArrayList<String>();
+//    PhPixGridArrayAdapter mPhPixGridArrayAdapter;
     SimpleDateFormat mTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
     Cursor mPixMatchCursor;
+    private PhPixGridArrayAdapter mPhPixGridArrayAdapter = new PhPixGridArrayAdapter(getContext(), mPixFilePaths);
+
 
     private Bitmap mImageBitmap;
     private String mCurrentPhotoPath;
@@ -100,6 +103,8 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
             p.setVisibility(View.GONE);
         }
         mPhPixGridView = (GridView) rootView.findViewById(R.id.phPixGridView);
+        mPhPixGridView.setAdapter(mPhPixGridArrayAdapter);
+
 //        mPhPixGridView.setOnClickListener(this);
         //mPhPixGridAdapter = new PhPixGridAdapter(this, R.layout.grid_item_layout, getData());
 //        mPhPixGridAdapter = new PhPixGridAdapter(getActivity(), R.layout.grid_ph_pix, null, 0);
@@ -360,7 +365,6 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                     mPlaceholderDescr = c.getString(c.getColumnIndexOrThrow("Description"));
                     mPlaceholderNamer = c.getString(c.getColumnIndexOrThrow("NamerName"));
                     mViewPlaceholderGridHeader.setText(mPlaceholderCode + ": " + mPlaceholderDescr);
-                    ArrayList<String> pixFilePaths = new ArrayList<>();
                     int pos = 0;
                     // get the folder based on Namer and Placeholder
                     File pixDir = getAlbumDir();
@@ -371,13 +375,11 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                         if (LDebug.ON) Log.d(LOG_TAG, "allFiles.length: " + allFiles.length);
                         Arrays.sort(allFiles, new Comparator<File>() {
                             public int compare(File f1, File f2) {
-//                return Long.compare(f1.lastModified(), f2.lastModified()); // API 19
                                 // sort newest first
+//                return Long.compare(f2.lastModified(), f1.lastModified()); // API 19
                                 return Long.valueOf(f2.lastModified()).compareTo(f1.lastModified());
                             }
                         });
-
-
                         for (File file : allFiles) {
                             if (LDebug.ON) Log.d(LOG_TAG, "file: " + file.toString());
                             if (!file.isDirectory()) {
@@ -385,18 +387,15 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                                 String ext = getMimeTypeFromFile(file);
                                 if (LDebug.ON) Log.d(LOG_TAG, ext + " for " + file.getAbsolutePath());
                                 if (ext.equals("jpg")) {
-                                    pixFilePaths.add(pos, file.getAbsolutePath());
+                                    mPixFilePaths.add(pos, file.getAbsolutePath());
                                     pos++;
                                 }
                             } else {
                                 if (LDebug.ON) Log.d(LOG_TAG, "isDirectory: " + file.toString());
                             }
                         }
-                        if (LDebug.ON) Log.d(LOG_TAG, "pixFilePaths: " + pixFilePaths.toString());
+                        if (LDebug.ON) Log.d(LOG_TAG, "mPixFilePaths: " + mPixFilePaths.toString());
                     }
-                    mPhPixGridArrayAdapter = new PhPixGridArrayAdapter(getContext(), pixFilePaths);
-                    mPhPixGridView.setAdapter(mPhPixGridArrayAdapter);
-
                 } else { // no record to edit yet, set up new record
 //                    mViewPlaceholderCode.setText(mPlaceholderCode);
                 }
