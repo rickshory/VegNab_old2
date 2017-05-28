@@ -32,7 +32,6 @@ public class PhPixGridArrayAdapter extends ArrayAdapter<String> {
 //    }
 
     public PhPixGridArrayAdapter(Context ctx, ArrayList<String> items) {
-
         super(ctx, R.layout.grid_ph_pix, items);
         this.ctx = ctx;
         mInflater = (LayoutInflater) ctx
