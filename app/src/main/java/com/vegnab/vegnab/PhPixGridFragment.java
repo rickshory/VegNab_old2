@@ -63,7 +63,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
 //    PhPixGridArrayAdapter mPhPixGridArrayAdapter;
     SimpleDateFormat mTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
     Cursor mPixMatchCursor;
-    private PhPixGridArrayAdapter mPhPixGridArrayAdapter = new PhPixGridArrayAdapter(getContext(), mPixFilePaths);
+//    private PhPixGridArrayAdapter mPhPixGridArrayAdapter = new PhPixGridArrayAdapter(getContext(), mPixFilePaths);
 
 
     private Bitmap mImageBitmap;
@@ -103,7 +103,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
             p.setVisibility(View.GONE);
         }
         mPhPixGridView = (GridView) rootView.findViewById(R.id.phPixGridView);
-        mPhPixGridView.setAdapter(mPhPixGridArrayAdapter);
+//        mPhPixGridView.setAdapter(mPhPixGridArrayAdapter);
 
 //        mPhPixGridView.setOnClickListener(this);
         //mPhPixGridAdapter = new PhPixGridAdapter(this, R.layout.grid_item_layout, getData());
@@ -384,17 +384,24 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                             if (LDebug.ON) Log.d(LOG_TAG, "file: " + file.toString());
                             if (!file.isDirectory()) {
                                 if (LDebug.ON) Log.d(LOG_TAG, "is not Directory: " + file.toString());
-                                String ext = getMimeTypeFromFile(file);
-                                if (LDebug.ON) Log.d(LOG_TAG, ext + " for " + file.getAbsolutePath());
-                                if (ext.equals("jpg")) {
-                                    mPixFilePaths.add(pos, file.getAbsolutePath());
-                                    pos++;
+                                if (file.length() > 0) {
+                                    String ext = getMimeTypeFromFile(file);
+                                    if (LDebug.ON) Log.d(LOG_TAG, ext + " for " + file.getAbsolutePath());
+                                    if (ext.equals("jpg")) {
+                                        mPixFilePaths.add(pos, file.getAbsolutePath());
+                                        pos++;
+                                    }
+                                } else {
+                                    if (LDebug.ON) Log.d(LOG_TAG, "zero length file skipped: " + file.toString());
                                 }
                             } else {
                                 if (LDebug.ON) Log.d(LOG_TAG, "isDirectory: " + file.toString());
                             }
                         }
                         if (LDebug.ON) Log.d(LOG_TAG, "mPixFilePaths: " + mPixFilePaths.toString());
+                        PhPixGridArrayAdapter mPhPixGridArrayAdapter = new PhPixGridArrayAdapter(getContext(), mPixFilePaths);
+                        mPhPixGridView.setAdapter(mPhPixGridArrayAdapter);
+
                     }
                 } else { // no record to edit yet, set up new record
 //                    mViewPlaceholderCode.setText(mPlaceholderCode);
