@@ -22,14 +22,15 @@ import java.util.Date;
 
 public class PhPixGridArrayAdapter extends ArrayAdapter<String> {
         //implements AdapterView.OnItemClickListener
+        // View lookup cache
+        private static class ViewHolder {
+            ImageView pic;
+            TextView note;
+        }
     private static final String LOG_TAG = PhPixGridArrayAdapter.class.getSimpleName();
     Context ctx;
     private LayoutInflater mInflater;
-//    // View lookup cache
-//    private static class ViewHolder {
-//        TextView name;
-//        TextView home;
-//    }
+
 
     public PhPixGridArrayAdapter(Context ctx, ArrayList<String> items) {
         super(ctx, R.layout.grid_ph_pix, items);
@@ -38,34 +39,39 @@ public class PhPixGridArrayAdapter extends ArrayAdapter<String> {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    // following commented-out techniques may give smoother scrolling, but code at bottom is OK for now
-//	private Context context;
-//	private int layoutResourceId;
-//	private ArrayList data = new ArrayList();
-//
-
-//	public GridViewAdapter(Context context, int layoutResourceId, ArrayList data) {
-//		super(context, layoutResourceId, data);
-//		this.layoutResourceId = layoutResourceId;
-//		this.context = context;
-//		this.data = data;
-//	}
-//
-    // break the following apart to use with cursor instead of array
 //	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+        // Get the data item for this position
+        String imagePath = getItem(position);
+        // Check if an existing view is being reused, otherwise inflate the view
+        ViewHolder viewHolder; // view lookup cache stored in tag
+
         View view;
-
-        String imagePath;
-
         if (convertView == null) {
-            view = mInflater.inflate(R.layout.grid_ph_pix, null);
-            imagePath = getItem(position);
+            // If there's no view to re-use, inflate a brand new view for row
+            viewHolder = new ViewHolder();
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            convertView = inflater.inflate(R.layout.grid_ph_pix, parent, false);
+            viewHolder.pic = (ImageView) convertView.findViewById(R.id.phGridItemImage);
+            viewHolder.note = (TextView) convertView.findViewById(R.id.phGridItemText);
+            // Cache the viewHolder object inside the fresh view
+            convertView.setTag(viewHolder);
+//        if (convertView == null) {
+//            view = mInflater.inflate(R.layout.grid_ph_pix, null);
+//            imagePath = getItem(position);
         } else {
-            // convertView was already laid out
-            view = convertView;
-            imagePath = (String) convertView.getTag();
+            // View is being recycled, retrieve the viewHolder object from tag
+            viewHolder = (ViewHolder) convertView.getTag();
+//            // convertView was already laid out
+//            view = convertView;
+//            imagePath = (String) convertView.getTag();
         }
+        // Populate the data from the data object via the viewHolder object
+        // into the template view.
+        viewHolder.name.setText(user.name);
+        viewHolder.home.setText(user.hometown);
+        // Return the completed view to render on screen
+        return convertView;
         File imgFile = new  File(imagePath);
         ImageView phGridCellImage = (ImageView) view.findViewById(R.id.phGridItemImage);
         // get the title
