@@ -44,7 +44,7 @@ public class PhPixGridArrayAdapter extends ArrayAdapter<String> {
         // Get the data item for this position
         String imagePath = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
-        ViewHolder viewHolder; // view lookup cache stored in tag
+        ViewHolder viewHolder; // view lookup cache to be stored in tag
 
         View view;
         if (convertView == null) {
@@ -56,26 +56,13 @@ public class PhPixGridArrayAdapter extends ArrayAdapter<String> {
             viewHolder.note = (TextView) convertView.findViewById(R.id.phGridItemText);
             // Cache the viewHolder object inside the fresh view
             convertView.setTag(viewHolder);
-//        if (convertView == null) {
-//            view = mInflater.inflate(R.layout.grid_ph_pix, null);
-//            imagePath = getItem(position);
         } else {
             // View is being recycled, retrieve the viewHolder object from tag
             viewHolder = (ViewHolder) convertView.getTag();
-//            // convertView was already laid out
-//            view = convertView;
-//            imagePath = (String) convertView.getTag();
         }
         // Populate the data from the data object via the viewHolder object
         // into the template view.
-        viewHolder.name.setText(user.name);
-        viewHolder.home.setText(user.hometown);
-        // Return the completed view to render on screen
-        return convertView;
         File imgFile = new  File(imagePath);
-        ImageView phGridCellImage = (ImageView) view.findViewById(R.id.phGridItemImage);
-        // get the title
-        TextView phGridCellText = (TextView) view.findViewById(R.id.phGridItemText);
         String note;
         if (imgFile.exists()) {
             // for now, use the date as the note
@@ -86,8 +73,8 @@ public class PhPixGridArrayAdapter extends ArrayAdapter<String> {
             // There isn't enough memory to open up more than a few camera photos
             // so pre-scale the target bitmap into which the file is decoded
             // Get the size of the ImageView
-            int targetW = phGridCellImage.getWidth();
-            int targetH = phGridCellImage.getHeight();
+            int targetW = viewHolder.pic.getWidth();
+            int targetH = viewHolder.pic.getHeight();
             if (LDebug.ON) Log.d(LOG_TAG, "grid cell image Ht " + targetH + ", Wd " + targetW);
             // for testing, manually override
             targetW = 100;
@@ -113,7 +100,7 @@ public class PhPixGridArrayAdapter extends ArrayAdapter<String> {
             if (LDebug.ON) Log.d(LOG_TAG, "bitmap Ht " + bitmap.getHeight() + ", width " + bitmap.getWidth());
 
             // associate the Bitmap to the ImageView
-            phGridCellImage.setImageBitmap(bitmap);
+            viewHolder.pic.setImageBitmap(bitmap);
 
 //            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
 //            phGridCellImage.setImageBitmap(myBitmap);
@@ -122,66 +109,10 @@ public class PhPixGridArrayAdapter extends ArrayAdapter<String> {
             note = "(no note)";
             // set bitmap to a not-found icon
         }
-        phGridCellText.setText(note);
-        view.setTag(imagePath);
-        return view;
 
-    // adapt the following for newView
-//		if (row == null) {
-//			LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-//			row = inflater.inflate(layoutResourceId, parent, false);
-//			holder = new ViewHolder();
-//			holder.imageTitle = (TextView) row.findViewById(R.id.phGridItemText);
-//			holder.image = (ImageView) row.findViewById(R.id.phGridItemImage);
-//			row.setTag(holder);
-//		} else {
-    // adapt the following for bindView
-//			holder = (ViewHolder) row.getTag();
-//		}
-//
-//		VNContract.VNGridImageItem item = data.get(position);
-//		holder.imageTitle.setText(item.getTitle());
-//		holder.image.setImageBitmap(item.getImage());
-//		return row;
+        // viewHolder.pic.setImageBitmap(bitmap); // redundant
+        viewHolder.note.setText(note);
+        // Return the completed view to render on screen
+        return convertView;
 	}
-    //
-
-    public class GridImageItem {
-        public Bitmap image;
-        public String title;
-        public String path;
-    }
-
-    /*
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position,
-                            long id) {
-// above is from original example
-    //Item click listener for pictures grid
-    final AdapterView.OnItemClickListener mPixGrid_ItemClickListener = new AdapterView.OnItemClickListener() {
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Context c = getActivity();
-//            Toast.makeText(getActivity(), "Item Clicked: " + position + ", id=" + id, Toast.LENGTH_SHORT).show();
-            mPixMatchCursor.moveToPosition(position);
-            String path = mPixMatchCursor.getString(mPixMatchCursor.getColumnIndexOrThrow("PhotoPath"));
-//            Toast.makeText(getActivity(), "" + path, Toast.LENGTH_SHORT).show();
-            Uri uri = getImageContentUri(c, path);
-//            Toast.makeText(getActivity(), "" + uri.toString(), Toast.LENGTH_SHORT).show();
-            if (uri == null) {
-                Toast.makeText(c, c.getResources().getString(R.string.ph_pix_grid_pic_no_file),
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_VIEW);
-                intent.setDataAndType(uri, "image/*");
-                startActivity(intent);
-            }
-        }
-    };
-// below is from original example
-        Intent trans=new Intent(MainActivity.this,Listed.class);
-        trans.putExtra("first",p[arg2]);
-        startActivity(trans);
-    }
-*/
 }
