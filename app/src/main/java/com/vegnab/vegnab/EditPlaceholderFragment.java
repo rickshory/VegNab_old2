@@ -84,7 +84,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
             mPlaceholderLabelNumber = null, mPhIdentSppCode = null, mPhIdentSppDescr = null,
             mPhIdentNotes = null, mPhIdentTimeStamp = null,
             mStSearchHabitat = "", mStSearch = "";
-    Boolean mCodeWasShortened = false, mIdPlaceholder = false;
+    Boolean mCodeWasShortened = false, mIdPlaceholder = false, mPixHousekeepingDone = false;
     HashSet<String> mExistingPlaceholderCodes = new HashSet<String>();
 
     private Button mBtnIdent;
@@ -460,6 +460,25 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
         }
         //  hide views dealing with identifying the species
         configureIdViews();
+
+        // do folder/DB housekeeping on any pictures
+        if (!mPixHousekeepingDone) { // do only once per instance
+            if (mPlaceholderId > 0) { // would not be any pictures until Placeholder is created
+                // prep vars to use inside thread
+                final long phId = mPlaceholderId;
+                // Perform housekeeping off the UI thread.
+                new Thread() {
+                    @Override
+                    public void run() {
+
+                            if (LDebug.ON) Log.d(LOG_TAG, "in housekeeping thread");
+                        }
+
+                    }.start(); // end of new thread
+
+                mPixHousekeepingDone = true;
+            }
+        }
     }
 
     @Override
