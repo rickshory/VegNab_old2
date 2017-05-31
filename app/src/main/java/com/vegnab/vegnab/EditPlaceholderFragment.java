@@ -50,6 +50,7 @@ import com.vegnab.vegnab.database.VNContract.Loaders;
 import com.vegnab.vegnab.database.VNContract.Prefs;
 import com.vegnab.vegnab.database.VNContract.Validation;
 import com.vegnab.vegnab.database.VNContract.VNRegex;
+import com.vegnab.vegnab.database.VegNabDbHelper;
 import com.vegnab.vegnab.util.InputFilterPlaceholderCode;
 
 import java.text.SimpleDateFormat;
@@ -470,8 +471,27 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                 new Thread() {
                     @Override
                     public void run() {
+                        // check what image files are in the Placeholder folder and update the database
+                        if (LDebug.ON) Log.d(LOG_TAG, "in pix housekeeping thread");
+                        // File pixDir = getAlbumDir();
+                        VegNabDbHelper hkDb = new VegNabDbHelper(getContext());
+                        Cursor phCs;
+                        String sSQL, sNamer = "", sPhCode = "";
+                        // get text of Namer and Placeholder from DB, will reflect any spelling changes
+                        sSQL = "SELECT Namers.NamerName, Placeholders.PlaceHolderCode "
+                            + "FROM Placeholders LEFT JOIN Namers ON Namers._id = Placeholders.NamerID "
+                            + "WHERE Placeholders._id = " + phId + ";";
+                        phCs = hkDb.getReadableDatabase().rawQuery(sSQL, null);
+                        while (phCs.moveToNext()) { // should be just one record
+                            sNamer = phCs.getString(phCs.getColumnIndexOrThrow("NamerName"));
+                            sPhCode = phCs.getString(phCs.getColumnIndexOrThrow("PlaceHolderCode"));
+                        }
+                        phCs.close();
+                        if (LDebug.ON) Log.d(LOG_TAG, "in pix housekeeping thread: " + sNamer + "/" + sPhCode);
+                        if ((sNamer.equals("")) || (sPhCode.equals(""))) return;
 
-                            if (LDebug.ON) Log.d(LOG_TAG, "in housekeeping thread");
+
+
                         }
 
                     }.start(); // end of new thread
