@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
@@ -31,6 +32,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -53,7 +55,9 @@ import com.vegnab.vegnab.database.VNContract.VNRegex;
 import com.vegnab.vegnab.database.VegNabDbHelper;
 import com.vegnab.vegnab.util.InputFilterPlaceholderCode;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import java.util.HashSet;
@@ -489,9 +493,49 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                         phCs.close();
                         if (LDebug.ON) Log.d(LOG_TAG, "in pix housekeeping thread: " + sNamer + "/" + sPhCode);
                         if ((sNamer.equals("")) || (sPhCode.equals(""))) return;
-
-
-
+                        if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) return;
+                        File phPixDir = new File(Environment.getExternalStoragePublicDirectory(
+                                Environment.DIRECTORY_PICTURES),
+                                BuildConfig.PUBLIC_DB_FOLDER + File.separator + sNamer
+                                        + File.separator + sPhCode);
+                        if (!phPixDir.exists()) return;
+                        if (!phPixDir.isDirectory()) return;
+                        // get paths of all the image files
+                        ArrayList<String> sPaths = new ArrayList<>();
+                        File[] allFiles = phPixDir.listFiles();
+                        if (allFiles.length == 0) return;
+                        for (File file : allFiles) {
+                            if (LDebug.ON) Log.d(LOG_TAG, "file: " + file.toString());
+                            if (!file.isDirectory()) {
+                                if (LDebug.ON) Log.d(LOG_TAG, "is not Directory: " + file.toString());
+                                if (file.length() > 0) {
+                                    Uri uri = null;
+                                    try {
+                                        uri = Uri.fromFile(file);
+                                    } catch (Exception e) {
+                                        if (LDebug.ON) Log.d(LOG_TAG, "Uri.fromFile(file); Exception: " + e.toString());
+                                        // ignore
+                                    }
+                                    if (uri != null) {
+                                        if(uri.getScheme().equals(ContentResolver.SCHEME_FILE)) {
+                                            String ext = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(new File(uri.getPath())).toString());
+                                            if (LDebug.ON) Log.d(LOG_TAG, ext + " for " + file.getAbsolutePath());
+                                            if (ext.equals("jpg")) {
+                                                sPaths.add(file.getAbsolutePath());
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    if (LDebug.ON) Log.d(LOG_TAG, "zero length file skipped: " + file.toString());
+                                }
+                            } else {
+                                if (LDebug.ON) Log.d(LOG_TAG, "isDirectory: " + file.toString());
+                            }
+                        }
+                        if (sPaths.size() == 0) return; // maybe clear strings from DB if any are there?
+                        /* checking query, something like
+                        SELECT PlaceHolderPix._id, PlaceHolderPix.PlaceHolderID, PlaceHolderPix.PhotoPath, PlaceHolderPix.PhotoTimeStamp FROM PlaceHolderPix WHERE PhotoPath IN ("/storage/emulated/0/Pictures/VegNabAlphaTest/null/null/20170401_135845_1154545246.jpg", "/storage/emulated/0/Pictures/VegNabAlphaTest/Rick Shory/pinn blu/20170406_095335_786385682.jpg");
+                        */
                         }
 
                     }.start(); // end of new thread
