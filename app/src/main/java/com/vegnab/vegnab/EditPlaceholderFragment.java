@@ -535,16 +535,31 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                         }
                         if (sPaths.size() == 0) return; // maybe clear strings from DB if any are there?
                         /* checking query, something like
-                        SELECT PlaceHolderPix._id, PlaceHolderPix.PlaceHolderID, PlaceHolderPix.PhotoPath, PlaceHolderPix.PhotoTimeStamp FROM PlaceHolderPix WHERE PhotoPath IN ("/storage/emulated/0/Pictures/VegNabAlphaTest/null/null/20170401_135845_1154545246.jpg", "/storage/emulated/0/Pictures/VegNabAlphaTest/Rick Shory/pinn blu/20170406_095335_786385682.jpg");
+                        SELECT PlaceHolderPix._id, PlaceHolderPix.PlaceHolderID, PlaceHolderPix.PhotoPath, PlaceHolderPix.PhotoTimeStamp
+                        FROM PlaceHolderPix WHERE PhotoPath IN (
+                        "/storage/emulated/0/Pictures/VegNabAlphaTest/null/null/20170401_135845_1154545246.jpg",
+                        "/storage/emulated/0/Pictures/VegNabAlphaTest/Rick Shory/pinn blu/20170406_095335_786385682.jpg");
                         */
                         String sPathsList = "\"" + TextUtils.join("\", \"", sPaths) + "\"";
                         sSQL = "SELECT PlaceHolderPix._id, PlaceHolderPix.PlaceHolderID, "
                                 + "PlaceHolderPix.PhotoPath, PlaceHolderPix.PhotoTimeStamp "
                                 + "FROM PlaceHolderPix WHERE PlaceHolderPix.PlaceHolderID = " + phId + " "
                                 + "AND PhotoPath IN (" + sPathsList + ");";
+                        phCs = hkDb.getReadableDatabase().rawQuery(sSQL, null);
+                        if (phCs.getCount() == sPaths.size()) {
+                            // the files in the folder exactly match up with records in the database; we are done
+                            phCs.close();
+                            return;
+                        }
+                        // otherwise, there is some mismatch
+                        // remember any that do match
+                        ArrayList<Long> lPixIdsToKeep = new ArrayList<>();
+                        while (phCs.moveToNext()) {
+                            lPixIdsToKeep.add(phCs.getLong(phCs.getColumnIndexOrThrow("_id")));
+                        }
+                        phCs.close();
 
-
-
+                        
                         }
 
                     }.start(); // end of new thread
