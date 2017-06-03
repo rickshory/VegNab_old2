@@ -62,6 +62,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Locale;
 
 public class EditPlaceholderFragment extends Fragment implements OnClickListener,
@@ -555,11 +556,20 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                         // remember any that do match
                         ArrayList<Long> lPixIdsToKeep = new ArrayList<>();
                         while (phCs.moveToNext()) {
+                            // remember the one that matched
                             lPixIdsToKeep.add(phCs.getLong(phCs.getColumnIndexOrThrow("_id")));
+                            // done with this item in sPaths, remove
+                            Iterator<String> it = sPaths.iterator();
+                            while (it.hasNext()) {
+                                if (it.next().equals(phCs.getLong(phCs.getColumnIndexOrThrow("PhotoPath")))) {
+                                    it.remove();
+                                    break; // unique, so can stop searching
+                                }
+                            }
                         }
                         phCs.close();
 
-                        
+
                         }
 
                     }.start(); // end of new thread
