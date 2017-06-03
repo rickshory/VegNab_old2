@@ -568,6 +568,26 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                             }
                         }
                         phCs.close();
+                        if (lPixIdsToKeep.size() == 0) { // no matches, keep none for this Placeholder
+                            sSQL = "DELETE FROM PlaceHolderPix "
+                                + "WHERE PlaceHolderPix.PlaceHolderID = " + phId + ";";
+                        } else { // keep the ones that match, remove the others
+                            sSQL = "DELETE FROM PlaceHolderPix "
+                                + "WHERE PlaceHolderPix.PlaceHolderID = " + phId + " "
+                                + "AND PlaceHolderPix._id NOT IN (" + TextUtils.join(", ", lPixIdsToKeep) + ");";
+                        }
+                        // run the deletion query
+                        phCs = hkDb.getWritableDatabase().rawQuery(sSQL, null);
+                        // insert all the correct paths
+                        Iterator<String> it = sPaths.iterator();
+                        while (it.hasNext()) {
+                            sSQL = "INSERT INTO PlaceHolderPix (PlaceHolderID, PhotoPath, PhotoTimeStamp) "
+                                + "VALUES ( " + phId + ", \"" + it.next() + "\", \"\");";
+
+                            // run the append query
+                            phCs = hkDb.getWritableDatabase().rawQuery(sSQL, null);
+
+                        }
 
 
                         }
