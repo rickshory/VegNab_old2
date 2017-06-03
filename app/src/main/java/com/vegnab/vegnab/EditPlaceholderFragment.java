@@ -21,6 +21,7 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -536,6 +537,14 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                         /* checking query, something like
                         SELECT PlaceHolderPix._id, PlaceHolderPix.PlaceHolderID, PlaceHolderPix.PhotoPath, PlaceHolderPix.PhotoTimeStamp FROM PlaceHolderPix WHERE PhotoPath IN ("/storage/emulated/0/Pictures/VegNabAlphaTest/null/null/20170401_135845_1154545246.jpg", "/storage/emulated/0/Pictures/VegNabAlphaTest/Rick Shory/pinn blu/20170406_095335_786385682.jpg");
                         */
+                        String sPathsList = "\"" + TextUtils.join("\", \"", sPaths) + "\"";
+                        sSQL = "SELECT PlaceHolderPix._id, PlaceHolderPix.PlaceHolderID, "
+                                + "PlaceHolderPix.PhotoPath, PlaceHolderPix.PhotoTimeStamp "
+                                + "FROM PlaceHolderPix WHERE PlaceHolderPix.PlaceHolderID = " + phId + " "
+                                + "AND PhotoPath IN (" + sPathsList + ");";
+
+
+
                         }
 
                     }.start(); // end of new thread
