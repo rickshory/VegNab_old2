@@ -561,7 +561,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                             // done with this item in sPaths, remove
                             Iterator<String> it = sPaths.iterator();
                             while (it.hasNext()) {
-                                if (it.next().equals(phCs.getLong(phCs.getColumnIndexOrThrow("PhotoPath")))) {
+                                if (it.next().equals(phCs.getString(phCs.getColumnIndexOrThrow("PhotoPath")))) {
                                     it.remove();
                                     break; // unique, so can stop searching
                                 }
@@ -578,17 +578,17 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                         }
                         // run the deletion query
                         phCs = hkDb.getWritableDatabase().rawQuery(sSQL, null);
-                        // insert all the correct paths
-                        Iterator<String> it = sPaths.iterator();
-                        while (it.hasNext()) {
-                            sSQL = "INSERT INTO PlaceHolderPix (PlaceHolderID, PhotoPath, PhotoTimeStamp) "
-                                + "VALUES ( " + phId + ", \"" + it.next() + "\", \"\");";
 
+                        // insert all the correct paths
+                        SimpleDateFormat tFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+                        for (String sAbsPath : sPaths) {
+                            File imgFile = new  File(sAbsPath);
+                            String sDtTime = tFormat.format(new Date(imgFile.lastModified()));
+                            sSQL = "INSERT INTO PlaceHolderPix (PlaceHolderID, PhotoPath, PhotoTimeStamp) "
+                                    + "VALUES ( " + phId + ", \"" + sAbsPath + "\", \"" + sDtTime + "\");";
                             // run the append query
                             phCs = hkDb.getWritableDatabase().rawQuery(sSQL, null);
-
                         }
-
 
                         }
 
