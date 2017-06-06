@@ -365,7 +365,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                     mPlaceholderDescr = c.getString(c.getColumnIndexOrThrow("Description"));
                     mPlaceholderNamer = c.getString(c.getColumnIndexOrThrow("NamerName"));
                     mViewPlaceholderGridHeader.setText(mPlaceholderCode + ": " + mPlaceholderDescr);
-
+/*
                     int pos = 0;
                     // get the folder based on Namer and Placeholder
                     File pixDir = getAlbumDir();
@@ -400,11 +400,12 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                             }
                         }
                         if (LDebug.ON) Log.d(LOG_TAG, "mPixFilePaths: " + mPixFilePaths.toString());
+
 //                        PhPixGridArrayAdapter mPhPixGridArrayAdapter = new PhPixGridArrayAdapter(getContext(), mPixFilePaths);
 //                        mPhPixGridView.setAdapter(mPhPixGridArrayAdapter);
 
                     }
-
+*/
                 } else { // no record to edit yet, set up new record
 //                    mViewPlaceholderCode.setText(mPlaceholderCode);
                 }
