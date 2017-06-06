@@ -506,6 +506,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                         ArrayList<String> sPaths = new ArrayList<>();
                         File[] allFiles = phPixDir.listFiles();
                         if (allFiles.length == 0) return;
+                        if (LDebug.ON) Log.d(LOG_TAG, "allFiles.length: " + allFiles.length);
                         for (File file : allFiles) {
                             if (LDebug.ON) Log.d(LOG_TAG, "file: " + file.toString());
                             if (!file.isDirectory()) {
@@ -533,8 +534,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                             } else {
                                 if (LDebug.ON) Log.d(LOG_TAG, "isDirectory: " + file.toString());
                             }
-                        }
-                        //if (sPaths.size() == 0) return; // maybe clear strings from DB if any are there?
+                        } // end 'for (File file : allFiles) {'
+                        if (LDebug.ON) Log.d(LOG_TAG, "sPaths.size(): " + sPaths.size());
                         if (sPaths.size() == 0) {
                             if (LDebug.ON) Log.d(LOG_TAG, "sPaths.size() == 0");
                             // clear recs from DB if there are any
