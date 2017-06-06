@@ -107,8 +107,8 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
 
 //        mPhPixGridView.setOnClickListener(this);
         //mPhPixGridAdapter = new PhPixGridAdapter(this, R.layout.grid_item_layout, getData());
-//        mPhPixGridAdapter = new PhPixGridAdapter(getActivity(), R.layout.grid_ph_pix, null, 0);
-//        mPhPixGridView.setAdapter(mPhPixGridAdapter);
+        mPhPixGridAdapter = new PhPixGridAdapter(getActivity(), R.layout.grid_ph_pix, null, 0);
+        mPhPixGridView.setAdapter(mPhPixGridAdapter);
         return rootView;
 
     }
@@ -365,6 +365,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                     mPlaceholderDescr = c.getString(c.getColumnIndexOrThrow("Description"));
                     mPlaceholderNamer = c.getString(c.getColumnIndexOrThrow("NamerName"));
                     mViewPlaceholderGridHeader.setText(mPlaceholderCode + ": " + mPlaceholderDescr);
+
                     int pos = 0;
                     // get the folder based on Namer and Placeholder
                     File pixDir = getAlbumDir();
@@ -399,19 +400,20 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                             }
                         }
                         if (LDebug.ON) Log.d(LOG_TAG, "mPixFilePaths: " + mPixFilePaths.toString());
-                        PhPixGridArrayAdapter mPhPixGridArrayAdapter = new PhPixGridArrayAdapter(getContext(), mPixFilePaths);
-                        mPhPixGridView.setAdapter(mPhPixGridArrayAdapter);
+//                        PhPixGridArrayAdapter mPhPixGridArrayAdapter = new PhPixGridArrayAdapter(getContext(), mPixFilePaths);
+//                        mPhPixGridView.setAdapter(mPhPixGridArrayAdapter);
 
                     }
+
                 } else { // no record to edit yet, set up new record
 //                    mViewPlaceholderCode.setText(mPlaceholderCode);
                 }
                 break;
 
             case Loaders.PLACEHOLDER_PIX:
-//               if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PIX, just before swapCursor");
-//                mPhPixGridAdapter.swapCursor(c);
-//               if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PIX, just before copy cursor");
+               if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PIX, just before swapCursor");
+                mPhPixGridAdapter.swapCursor(c);
+               if (LDebug.ON) Log.d(LOG_TAG, "onLoadFinished, PLACEHOLDER_PIX, just before copy cursor");
                 mPixMatchCursor = c;
                 break;
         }
