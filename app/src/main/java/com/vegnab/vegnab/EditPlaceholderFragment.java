@@ -611,6 +611,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                                     + "VALUES ( " + phId + ", \"" + sAbsPath + "\", \"" + sDtTime + "\");";
                             // run the append query
                             if (LDebug.ON) Log.d(LOG_TAG, "about to run query: " + sSQL);
+                            // try content provider instead
                             phCs = hkDb.getWritableDatabase().rawQuery(sSQL, null);
                             if (LDebug.ON) Log.d(LOG_TAG, "after APPEND query");
                             phCs.close(); // does this really open a cursor? Error here?
