@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.vegnab.vegnab.database.VNContract.LDebug;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class PhPixGridAdapter extends ResourceCursorAdapter {
     private static final String LOG_TAG = PhPixGridAdapter.class.getSimpleName();
@@ -71,16 +73,20 @@ public class PhPixGridAdapter extends ResourceCursorAdapter {
     public void bindView(View v, Context ctx, Cursor c) {
         // available fields: PhotoPath, PlaceHolderID, PhotoTimeStamp, PhotoNotes, PhotoURL
         TextView phGridCellText = (TextView) v.findViewById(R.id.phGridItemText);
+/*
         String note = c.getString(c.getColumnIndexOrThrow("PhotoNotes"));
         if (note == null) {
             note = "(no note)";
         }
         phGridCellText.setText(note);
-
+*/
         ImageView phGridCellImage = (ImageView) v.findViewById(R.id.phGridItemImage);
         String path = c.getString(c.getColumnIndexOrThrow("PhotoPath"));
         File imgFile = new  File(path);
         if (imgFile.exists()) {
+            // for now, use the date as the note
+            phGridCellText.setText(new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(
+                    new Date(imgFile.lastModified())));
             // There isn't enough memory to open up more than a few camera photos
             // so pre-scale the target bitmap into which the file is decoded
             // Get the size of the ImageView
