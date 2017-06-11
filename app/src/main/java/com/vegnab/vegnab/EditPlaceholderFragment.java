@@ -494,14 +494,26 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                         }
                         phCs.close();
                         if (LDebug.ON) Log.d(LOG_TAG, "in pix housekeeping thread: " + sNamer + "/" + sPhCode);
-                        if ((sNamer.equals("")) || (sPhCode.equals(""))) return;
-                        if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) return;
+                        if ((sNamer.equals("")) || (sPhCode.equals(""))) {
+                            hkDb.close();
+                            return;
+                        }
+                        if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                            hkDb.close();
+                            return;
+                        }
                         File phPixDir = new File(Environment.getExternalStoragePublicDirectory(
                                 Environment.DIRECTORY_PICTURES),
                                 BuildConfig.PUBLIC_DB_FOLDER + File.separator + sNamer
                                         + File.separator + sPhCode);
-                        if (!phPixDir.exists()) return;
-                        if (!phPixDir.isDirectory()) return;
+                        if (!phPixDir.exists()) {
+                            hkDb.close();
+                            return;
+                        }
+                        if (!phPixDir.isDirectory()) {
+                            hkDb.close();
+                            return;
+                        }
                         // get paths of all the image files
                         ArrayList<String> sPaths = new ArrayList<>();
                         File[] allFiles = phPixDir.listFiles();
