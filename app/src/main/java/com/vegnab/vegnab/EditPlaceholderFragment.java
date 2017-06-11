@@ -505,8 +505,11 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                         // get paths of all the image files
                         ArrayList<String> sPaths = new ArrayList<>();
                         File[] allFiles = phPixDir.listFiles();
-                        if (allFiles.length == 0) return;
                         if (LDebug.ON) Log.d(LOG_TAG, "allFiles.length: " + allFiles.length);
+                        if (allFiles.length == 0) {
+                            hkDb.close();
+                            return;
+                        }
                         for (File file : allFiles) {
                             if (LDebug.ON) Log.d(LOG_TAG, "file: " + file.toString());
                             if (!file.isDirectory()) {
@@ -542,8 +545,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                             // if none, this will have no effect
                             sSQL = "DELETE FROM PlaceHolderPix "
                                     + "WHERE PlaceHolderPix.PlaceHolderID = " + phId + ";";
-                            phCs = hkDb.getWritableDatabase().rawQuery(sSQL, null);
-                            phCs.close(); // does this really open a cursor?
+                            hkDb.getWritableDatabase().execSQL(sSQL);
+                            hkDb.close();
                             return;
                         }
 
@@ -564,6 +567,7 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                             if (LDebug.ON) Log.d(LOG_TAG, "(phCs.getCount() == sPaths.size()): " + sPaths.size());
                             // the files in the folder exactly match up with records in the database; we are done
                             phCs.close();
+                            hkDb.close();
                             return;
                         }
                         // otherwise, there is some mismatch
@@ -598,9 +602,8 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                         }
                         // run the deletion query
                         if (LDebug.ON) Log.d(LOG_TAG, "about to run DELETE query");
-                        phCs = hkDb.getWritableDatabase().rawQuery(sSQL, null);
+                        hkDb.getWritableDatabase().execSQL(sSQL);
                         if (LDebug.ON) Log.d(LOG_TAG, "after DELETE query");
-                        phCs.close(); // does this really open a cursor? Error here?
 
                         // insert all the correct paths
                         SimpleDateFormat tFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
@@ -612,9 +615,9 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                             // run the append query
                             if (LDebug.ON) Log.d(LOG_TAG, "about to run query: " + sSQL);
                             // try content provider instead
-                            phCs = hkDb.getWritableDatabase().rawQuery(sSQL, null);
+                            hkDb.getWritableDatabase().execSQL(sSQL);
                             if (LDebug.ON) Log.d(LOG_TAG, "after APPEND query");
-                            phCs.close(); // does this really open a cursor? Error here?
+                            hkDb.close();
                         }
 
                         }
