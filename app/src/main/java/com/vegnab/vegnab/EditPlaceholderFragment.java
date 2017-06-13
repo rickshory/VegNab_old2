@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -557,7 +558,11 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                             // if none, this will have no effect
                             sSQL = "DELETE FROM PlaceHolderPix "
                                     + "WHERE PlaceHolderPix.PlaceHolderID = " + phId + ";";
-                            hkDb.getWritableDatabase().execSQL(sSQL);
+                            try {
+                                hkDb.getWritableDatabase().execSQL(sSQL);
+                            } catch (SQLException e) {
+                                if (LDebug.ON) Log.d(LOG_TAG, "error in query: " + sSQL);
+                            }
                             hkDb.close();
                             return;
                         }
