@@ -635,8 +635,11 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                                     + "VALUES ( " + phId + ", \"" + sAbsPath + "\", \"" + sDtTime + "\");";
                             // run the append query
                             if (LDebug.ON) Log.d(LOG_TAG, "about to run query: " + sSQL);
-                            // try content provider instead
-                            hkDb.getWritableDatabase().execSQL(sSQL);
+                            try {
+                                hkDb.getWritableDatabase().execSQL(sSQL);
+                            } catch (SQLException e) {
+                                if (LDebug.ON) Log.d(LOG_TAG, "error in query: " + sSQL);
+                            }
                             if (LDebug.ON) Log.d(LOG_TAG, "after APPEND query");
                             hkDb.close();
                         }
