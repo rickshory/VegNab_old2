@@ -619,7 +619,11 @@ public class EditPlaceholderFragment extends Fragment implements OnClickListener
                         }
                         // run the deletion query
                         if (LDebug.ON) Log.d(LOG_TAG, "about to run DELETE query");
-                        hkDb.getWritableDatabase().execSQL(sSQL);
+                        try {
+                            hkDb.getWritableDatabase().execSQL(sSQL);
+                        } catch (SQLException e) {
+                            if (LDebug.ON) Log.d(LOG_TAG, "error in query: " + sSQL);
+                        }
                         if (LDebug.ON) Log.d(LOG_TAG, "after DELETE query");
 
                         // insert all the correct paths
