@@ -97,10 +97,10 @@ dependencies {
     compile project(':volley')
     compile 'com.android.support:support-v4:23.3.0'
     compile 'com.android.support:appcompat-v7:23.3.0'
-    compile 'com.google.android.gms:play-services:8.1.0'
-    compile 'com.google.android.gms:play-services-ads:8.1.0'
-    compile 'com.google.android.gms:play-services-identity:8.1.0'
-    compile 'com.google.android.gms:play-services-gcm:8.1.0'
+    compile 'com.google.android.gms:play-services:11.0.1'
+    compile 'com.google.android.gms:play-services-ads:11.0.1'
+    compile 'com.google.android.gms:play-services-identity:11.0.1'
+    compile 'com.google.android.gms:play-services-gcm:11.0.1'
 }
 
 //// this part goes outside the <android> tags
@@ -126,3 +126,4 @@ dependencies {
 
 
 apply from: "../artifacts.gradle"
+apply plugin: 'com.google.gms.google-services'
