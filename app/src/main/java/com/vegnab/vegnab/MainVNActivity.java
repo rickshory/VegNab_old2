@@ -1307,8 +1307,12 @@ public class MainVNActivity extends AppCompatActivity
         ContentResolver rs = getContentResolver();
         // create a new record
         uri = rs.insert(purchUri, cv);
-        mNewPurcRecId = Long.parseLong(uri.getLastPathSegment());
-        if (LDebug.ON) Log.d(LOG_TAG, "mNewPurcRecId of new record stored in DB: " + mNewPurcRecId);
+        try {
+            mNewPurcRecId = Long.parseLong(uri.getLastPathSegment());
+            if (LDebug.ON) Log.d(LOG_TAG, "mNewPurcRecId of new record stored in DB: " + mNewPurcRecId);
+        } catch (NullPointerException e ) { // no LastPathSegment
+            if (LDebug.ON) Log.d(LOG_TAG, "mNewPurcRecId of new record stored in DB: not found");
+        }
     }
 
     void logPurchaseActivity (Purchase p, IabResult result, boolean isConsumed, String notes) {
@@ -1369,8 +1373,12 @@ public class MainVNActivity extends AppCompatActivity
         }
         // create a new record
         uri = rs.insert(purchUri, contentValues);
-        mNewPurcRecId = Long.parseLong(uri.getLastPathSegment());
-        if (LDebug.ON) Log.d(LOG_TAG, "mNewPurcRecId of new record stored in DB: " + mNewPurcRecId);
+        try {
+            mNewPurcRecId = Long.parseLong(uri.getLastPathSegment());
+            if (LDebug.ON) Log.d(LOG_TAG, "mNewPurcRecId of new record stored in DB: " + mNewPurcRecId);
+        } catch (NullPointerException e) { // no LastPathSegment
+            if (LDebug.ON) Log.d(LOG_TAG, "mNewPurcRecId of new record stored in DB: not found");
+        }
     };
 
     // experimental payload method
