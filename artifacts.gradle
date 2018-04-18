@@ -17,6 +17,6 @@ android.applicationVariants.all { variant ->
 //        } else {
 //            newApkName = "${appName}-${output.baseName}-${variant.versionName}-unaligned.apk"
 //        }
-        output.outputFile = new File(output.outputFile.parent, newApkName)
+        output.outputFileName = new File(output.outputFileName.parent, newApkName)
     }
 }
