@@ -225,6 +225,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         super.onCreate(savedInstanceState);
         mPhPixGridView.setOnItemClickListener(mPixGrid_ItemClickListener);
     }
