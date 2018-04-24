@@ -439,23 +439,31 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     }
 
     // Photo album for this Placeholder
-    private String getAlbumName() {
+    private String getAlbumName() {  // redundant, this fn no longer used
         // PUBLIC_DB_FOLDER is e.g. "VegNab" or "VegNabAlphaTest"; same as for copies of the DB
 //        return BuildConfig.PUBLIC_DB_FOLDER + "/" + mPlaceholderNamer.replace("[^a-zA-Z0-9-]", "_");
-        return BuildConfig.PUBLIC_DB_FOLDER + "/" + mPlaceholderNamer + "/" + mPlaceholderCode;
+//        return BuildConfig.PUBLIC_DB_FOLDER + "/" + mPlaceholderNamer + "/" + mPlaceholderCode;
+        // 2018-04-24, changed to using default gallery, with filename to suggest this app's pix
+        // Will more easily allow user to assign previously taken pix to a Placeholder
+        return "";
     }
 
     private File getAlbumDir() {
         File storageDir = null;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             //min SDK version is Honeycomb 3.0, API level 11, so can depend on following
+//            storageDir = new File(Environment.getExternalStoragePublicDirectory(
+//                    Environment.DIRECTORY_PICTURES), getAlbumName());
+            // 2018-04-24, changed to using default gallery, where filename will suggest this app's pix
+            // More easily allow user to assign previously taken pix to a Placeholder
             storageDir = new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_PICTURES), getAlbumName());
+                    Environment.DIRECTORY_PICTURES), "");
 //            storageDir = mAlbumStorageDirFactory.getAlbumStorageDir(getAlbumName());
             if (storageDir != null) {
                 if (! storageDir.mkdirs()) {
                     if (! storageDir.exists()){
-                       if (LDebug.ON) Log.d(LOG_TAG, "Could not create folder: " + getAlbumName());
+//                       if (LDebug.ON) Log.d(LOG_TAG, "Could not create folder: " + getAlbumName());
+                       if (LDebug.ON) Log.d(LOG_TAG, "Could not create photos folder");
                         return null;
                     }
                 }
@@ -470,7 +478,8 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 //        String imageFileName = mPlaceholderCode.replace("[^a-zA-Z0-9-]", "_") + timeStamp + "_";
-        String imageFileName = timeStamp + "_";
+        String imageFileName = "VN_" + mPlaceholderCode.replace("[^a-zA-Z0-9-]", "_")
+                + "_" + timeStamp;
         File albumF = getAlbumDir();
         File imageF = File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
         return imageF;
