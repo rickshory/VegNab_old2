@@ -70,7 +70,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     Cursor mPixMatchCursor;
 //    private PhPixGridArrayAdapter mPhPixGridArrayAdapter = new PhPixGridArrayAdapter(getContext(), mPixFilePaths);
 
-    private boolean mHasCameraPermission = false;
+    private boolean mHasCameraPermission = false, mHasStoragePermission = false;
     private Bitmap mImageBitmap;
     private String mCurrentPhotoPath;
     private static final String JPEG_FILE_SUFFIX = ".jpg";
@@ -233,13 +233,34 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                             ActivityCompat.requestPermissions(getActivity(),
                                     new String[]{Manifest.permission.CAMERA},
                                     VNPermissions.REQUEST_CAMERA);
-                            // VNPermissions.REQUEST_CAMERA is an
-                            // app-defined int constant. The callback method gets the
-                            // result of the request.
                         }
                     } else {
                         // Permission has already been granted
                         mHasCameraPermission = true;
+                    }
+                    if (ContextCompat.checkSelfPermission(getActivity(),
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        // Permission is not granted
+                        mHasStoragePermission = false; // do not yet have this permission
+                        // Should we show an explanation?
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                            // Show an explanation to the user *asynchronously* -- don't block
+                            // this thread waiting for the user's response! After the user
+                            // sees the explanation, try again to request the permission.
+                            new askUserForStoragePermission().execute();
+                        } else {
+                            // No explanation needed; request the permission
+                            ActivityCompat.requestPermissions(getActivity(),
+                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                    VNPermissions.REQUEST_WRITE_EXTERNAL_STORAGE);
+                        }
+                    } else {
+                        // Permission has already been granted
+                        mHasStoragePermission = true;
+                    }
+                    if (mHasCameraPermission && mHasStoragePermission) {
                         dispatchTakePictureIntent();
                     }
                 }
@@ -271,6 +292,23 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         }
     }
 
+    private class askUserForStoragePermission extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            ConfigurableMsgDialog locCamDlg = ConfigurableMsgDialog.newInstance(
+                    getActivity().getResources().getString(R.string.permission_req_title),
+                    getActivity().getResources().getString(R.string.phpix_storage_req_msg));
+            locCamDlg.show(getFragmentManager(), "frg_storage_req");
+            return null;
+        }
+
+        protected void onPostExecute(Void result) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.CAMERA},
+                    VNPermissions.REQUEST_WRITE_EXTERNAL_STORAGE);
+            // response comes through onRequestPermissionsResult callback
+        }
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -286,6 +324,17 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                 }
                 return;
             }
+            case VNPermissions.REQUEST_WRITE_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mHasStoragePermission = true;
+                } else {
+                    mHasStoragePermission = false;
+                }
+                return;
+            }
+
             // other 'case' lines to check for other permissions this app might request
         }
     }
