@@ -1797,7 +1797,7 @@ id/vis_hdr_loc_help
         @Override
         protected Void doInBackground(Void... params) {
             ConfigurableMsgDialog locReqDlg = ConfigurableMsgDialog.newInstance(
-                    getActivity().getResources().getString(R.string.vis_hdr_loc_req_title),
+                    getActivity().getResources().getString(R.string.permission_req_title),
                     getActivity().getResources().getString(R.string.vis_hdr_loc_req_msg));
             locReqDlg.show(getFragmentManager(), "frg_loc_req");
             return null;

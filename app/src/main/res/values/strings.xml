@@ -224,6 +224,9 @@
 
     <string name="vis_hdr_loc_req_title">Permission required</string>
     <string name="vis_hdr_loc_req_msg">Grant VegNab permission to retrieve locations? Otherwise, you will have to enter locations manually.</string>
+    <string name="permission_req_title">Permission required</string>
+    <string name="phpix_cam_req_msg">Grant VegNab permission to use the camera? Otherwise, you can\'t take Placeholer pictures.</string>
+    <string name="phpix_storage_req_msg">Grant VegNab permission for storage? Otherwise, you can\'t save Placeholder pictures.</string>
 
     <string name="vis_hdr_loc_detail_title">Location details</string>
     <string name="vis_hdr_loc_detail_notyet">Location not acquired yet.</string>

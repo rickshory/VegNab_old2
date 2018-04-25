@@ -1,5 +1,6 @@
 package com.vegnab.vegnab;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -10,11 +11,14 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
@@ -32,6 +36,7 @@ import android.widget.Toast;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.vegnab.vegnab.contentprovider.ContentProvider_VegNab;
+import com.vegnab.vegnab.database.VNContract.VNPermissions;
 import com.vegnab.vegnab.database.VNContract.Loaders;
 import com.vegnab.vegnab.database.VNContract.LDebug;
 
@@ -65,7 +70,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
     Cursor mPixMatchCursor;
 //    private PhPixGridArrayAdapter mPhPixGridArrayAdapter = new PhPixGridArrayAdapter(getContext(), mPixFilePaths);
 
-
+    private boolean mHasCameraPermission = false;
     private Bitmap mImageBitmap;
     private String mCurrentPhotoPath;
     private static final String JPEG_FILE_SUFFIX = ".jpg";
@@ -211,7 +216,32 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                     flexHlpDlg = ConfigurableMsgDialog.newInstance(helpTitle, helpMessage);
                     flexHlpDlg.show(getFragmentManager(), "frg_ph_pix_no_ph_code");
                 } else {
-                    dispatchTakePictureIntent();
+                    if (ContextCompat.checkSelfPermission(getActivity(),
+                            Manifest.permission.CAMERA)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        // Permission is not granted
+                        mHasCameraPermission = false; // do not yet have this permission
+                        // Should we show an explanation?
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                                Manifest.permission.CAMERA)) {
+                            // Show an explanation to the user *asynchronously* -- don't block
+                            // this thread waiting for the user's response! After the user
+                            // sees the explanation, try again to request the permission.
+                            new askUserForCameraPermission().execute();
+                        } else {
+                            // No explanation needed; request the permission
+                            ActivityCompat.requestPermissions(getActivity(),
+                                    new String[]{Manifest.permission.CAMERA},
+                                    VNPermissions.REQUEST_CAMERA);
+                            // VNPermissions.REQUEST_CAMERA is an
+                            // app-defined int constant. The callback method gets the
+                            // result of the request.
+                        }
+                    } else {
+                        // Permission has already been granted
+                        mHasCameraPermission = true;
+                        dispatchTakePictureIntent();
+                    }
                 }
 
                 break;
@@ -220,6 +250,43 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
                 Toast.makeText(this.getActivity(), "Something else clicked.", Toast.LENGTH_SHORT).show();
                 break;
 
+        }
+    }
+
+    private class askUserForCameraPermission extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            ConfigurableMsgDialog locCamDlg = ConfigurableMsgDialog.newInstance(
+                    getActivity().getResources().getString(R.string.permission_req_title),
+                    getActivity().getResources().getString(R.string.phpix_cam_req_msg));
+            locCamDlg.show(getFragmentManager(), "frg_cam_req");
+            return null;
+        }
+
+        protected void onPostExecute(Void result) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.CAMERA},
+                    VNPermissions.REQUEST_CAMERA);
+            // response comes through onRequestPermissionsResult callback
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case VNPermissions.REQUEST_CAMERA: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mHasCameraPermission = true;
+                } else {
+                    mHasCameraPermission = false;
+                }
+                return;
+            }
+            // other 'case' lines to check for other permissions this app might request
         }
     }
 
