@@ -574,7 +574,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
             // 2018-04-24, changed to using default gallery, where filename will suggest this app's pix
             // More easily allow user to assign previously taken pix to a Placeholder
             storageDir = new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_PICTURES), "");
+                    Environment.DIRECTORY_PICTURES), BuildConfig.PUBLIC_DB_FOLDER);
 //            storageDir = mAlbumStorageDirFactory.getAlbumStorageDir(getAlbumName());
             if (storageDir != null) {
                 if (! storageDir.mkdirs()) {
@@ -595,7 +595,7 @@ public class PhPixGridFragment extends Fragment implements View.OnClickListener,
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 //        String imageFileName = mPlaceholderCode.replace("[^a-zA-Z0-9-]", "_") + timeStamp + "_";
-        String imageFileName = "VN_" + mPlaceholderCode.replace("[^a-zA-Z0-9-]", "_")
+        String imageFileName = mPlaceholderCode.replace(" ", "_")
                 + "_" + timeStamp;
         File albumF = getAlbumDir();
         File imageF = File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
